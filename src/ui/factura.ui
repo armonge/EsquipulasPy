@@ -21,7 +21,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabdetails">
        <attribute name="icon">
@@ -42,11 +42,8 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="text">
-             <string>&lt;b&gt;Facturar No.&lt;/b&gt;</string>
+             <string>Facturar No.</string>
             </property>
            </widget>
           </item>
@@ -58,11 +55,8 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="text">
-             <string>&lt;b&gt;Fecha&lt;/b&gt;</string>
+             <string>Fecha</string>
             </property>
             <property name="buddy">
              <cstring>dtPicker</cstring>
@@ -99,11 +93,8 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="text">
-             <string>&amp;&lt;b&gt;Facturar a:&lt;/b&gt;</string>
+             <string>&amp;Facturar a:</string>
             </property>
             <property name="buddy">
              <cstring>txtcliente</cstring>
@@ -153,11 +144,8 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="text">
-             <string>&lt;b&gt;Vendedor:&lt;/b&gt;</string>
+             <string>Vendedor:</string>
             </property>
             <property name="buddy">
              <cstring>txtcliente</cstring>
@@ -207,11 +195,8 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="text">
-             <string>&amp;&lt;b&gt;Bodega:&lt;/b&gt;</string>
+             <string>&amp;Bodega:</string>
             </property>
             <property name="buddy">
              <cstring>txtbodega</cstring>
@@ -352,7 +337,7 @@ color: rgb(255, 0, 0);</string>
         <item>
          <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>&lt;b&gt;Observaciones&lt;/b&gt;</string>
+           <string>Observaciones</string>
           </property>
          </widget>
         </item>
@@ -391,11 +376,8 @@ color: rgb(255, 0, 0);</string>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="text">
-             <string>&lt;b&gt;Subtotal&lt;/b&gt;</string>
+             <string>Subtotal</string>
             </property>
            </widget>
           </item>
@@ -420,7 +402,7 @@ color: rgb(255, 0, 0);</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">border:1px solid #000</string>
             </property>
             <property name="text">
              <string/>
@@ -440,11 +422,8 @@ color: rgb(255, 0, 0);</string>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="styleSheet">
-               <string notr="true"/>
-              </property>
               <property name="text">
-               <string>&lt;b&gt;Iva&lt;/b&gt;</string>
+               <string>Iva</string>
               </property>
              </widget>
             </item>
@@ -455,9 +434,6 @@ color: rgb(255, 0, 0);</string>
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
-              </property>
-              <property name="styleSheet">
-               <string notr="true"/>
               </property>
               <property name="text">
                <string/>
@@ -492,6 +468,9 @@ color: rgb(255, 0, 0);</string>
               <height>16777215</height>
              </size>
             </property>
+            <property name="styleSheet">
+             <string notr="true">border:1px solid #000</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -508,11 +487,8 @@ color: rgb(255, 0, 0);</string>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
             <property name="text">
-             <string>&lt;b&gt;Total&lt;/b&gt;</string>
+             <string>Total</string>
             </property>
            </widget>
           </item>
@@ -535,6 +511,9 @@ color: rgb(255, 0, 0);</string>
               <width>300</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border:1px solid #000</string>
             </property>
             <property name="text">
              <string/>
@@ -596,6 +575,32 @@ color: rgb(255, 0, 0);</string>
           </item>
           <item>
            <widget class="QLineEdit" name="txtSearch"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnAnular">
+            <property name="text">
+             <string>Anular Factura</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cboFiltro">
+            <item>
+             <property name="text">
+              <string>Ambas</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Anuladas</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>No Anuladas</string>
+             </property>
+            </item>
+           </widget>
           </item>
          </layout>
         </item>
@@ -694,9 +699,6 @@ color: rgb(255, 0, 0);</string>
    </property>
    <property name="text">
     <string>Guardar</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+G</string>
    </property>
   </action>
   <action name="actionCancel">
