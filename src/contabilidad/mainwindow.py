@@ -11,6 +11,7 @@ from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL
 from ui.Ui_mainwindowcontabilidad import Ui_MainWindow
 from utility.mainwindowbase import MainWindowBase
 from conciliacion import frmConciliacion
+from inventario.catalogos import frmCatConceptos
 from contabilidad.operations import frmOperations
 from contabilidad.cuentas import frmAccounts
 from estadoresultado import frmEstadoResultado
@@ -34,6 +35,17 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.actionLockSession.setVisible( status )
         self.actionUnlockSession.setVisible( not status )
 
+    @pyqtSlot(  )
+    def on_btnConceptos_clicked( self ):
+        """
+        Catalogo de conceptos de modulo de contabilidad
+        """
+        conceptos=frmCatConceptos(3,self)
+        self.mdiArea.addSubWindow(conceptos)
+        conceptos.show()
+        
+    
+    
     @pyqtSlot(  )
     def on_btnConciliacion_clicked( self ):
         """
