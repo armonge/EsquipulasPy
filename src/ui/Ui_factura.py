@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\factura.ui'
+# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/factura.ui'
 #
-# Created: Sat Jul 24 01:07:09 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Fri Jul 23 21:53:45 2010
+#      by: PyQt4 UI code generator 4.7.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -32,7 +32,6 @@ class Ui_frmFactura(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
         self.label_2.setSizePolicy(sizePolicy)
-        self.label_2.setStyleSheet("None")
         self.label_2.setObjectName("label_2")
         self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
         self.label_5 = QtGui.QLabel(self.tabdetails)
@@ -41,7 +40,6 @@ class Ui_frmFactura(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
         self.label_5.setSizePolicy(sizePolicy)
-        self.label_5.setStyleSheet("None")
         self.label_5.setObjectName("label_5")
         self.gridLayout.addWidget(self.label_5, 0, 2, 1, 1)
         self.dtPicker = QtGui.QDateTimeEdit(self.tabdetails)
@@ -61,7 +59,6 @@ class Ui_frmFactura(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
-        self.label.setStyleSheet("None")
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
         self.swcliente = QtGui.QStackedWidget(self.tabdetails)
@@ -96,7 +93,6 @@ class Ui_frmFactura(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_11.sizePolicy().hasHeightForWidth())
         self.label_11.setSizePolicy(sizePolicy)
-        self.label_11.setStyleSheet("None")
         self.label_11.setObjectName("label_11")
         self.gridLayout.addWidget(self.label_11, 2, 0, 1, 1)
         self.swvendedor = QtGui.QStackedWidget(self.tabdetails)
@@ -131,7 +127,6 @@ class Ui_frmFactura(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
         self.label_6.setSizePolicy(sizePolicy)
-        self.label_6.setStyleSheet("None")
         self.label_6.setObjectName("label_6")
         self.gridLayout.addWidget(self.label_6, 3, 0, 1, 1)
         self.swbodega = QtGui.QStackedWidget(self.tabdetails)
@@ -233,7 +228,6 @@ class Ui_frmFactura(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
         self.label_3.setSizePolicy(sizePolicy)
-        self.label_3.setStyleSheet("None")
         self.label_3.setObjectName("label_3")
         self.gridLayout_2.addWidget(self.label_3, 0, 1, 1, 1)
         self.lblsubtotal = QtGui.QLabel(self.tabdetails)
@@ -244,7 +238,7 @@ class Ui_frmFactura(object):
         self.lblsubtotal.setSizePolicy(sizePolicy)
         self.lblsubtotal.setMinimumSize(QtCore.QSize(60, 0))
         self.lblsubtotal.setMaximumSize(QtCore.QSize(300, 16777215))
-        self.lblsubtotal.setStyleSheet("None")
+        self.lblsubtotal.setStyleSheet("border:1px solid #000")
         self.lblsubtotal.setText("")
         self.lblsubtotal.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.lblsubtotal.setObjectName("lblsubtotal")
@@ -257,7 +251,6 @@ class Ui_frmFactura(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_8.sizePolicy().hasHeightForWidth())
         self.label_8.setSizePolicy(sizePolicy)
-        self.label_8.setStyleSheet("None")
         self.label_8.setObjectName("label_8")
         self.horizontalLayout_2.addWidget(self.label_8)
         self.lbltasaiva = QtGui.QLabel(self.tabdetails)
@@ -266,7 +259,6 @@ class Ui_frmFactura(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lbltasaiva.sizePolicy().hasHeightForWidth())
         self.lbltasaiva.setSizePolicy(sizePolicy)
-        self.lbltasaiva.setStyleSheet("None")
         self.lbltasaiva.setText("")
         self.lbltasaiva.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.lbltasaiva.setObjectName("lbltasaiva")
@@ -280,6 +272,7 @@ class Ui_frmFactura(object):
         self.lbliva.setSizePolicy(sizePolicy)
         self.lbliva.setMinimumSize(QtCore.QSize(60, 0))
         self.lbliva.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.lbliva.setStyleSheet("border:1px solid #000")
         self.lbliva.setText("")
         self.lbliva.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.lbliva.setObjectName("lbliva")
@@ -290,7 +283,6 @@ class Ui_frmFactura(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_9.sizePolicy().hasHeightForWidth())
         self.label_9.setSizePolicy(sizePolicy)
-        self.label_9.setStyleSheet("None")
         self.label_9.setObjectName("label_9")
         self.gridLayout_2.addWidget(self.label_9, 2, 1, 1, 1)
         self.lbltotal = QtGui.QLabel(self.tabdetails)
@@ -301,6 +293,7 @@ class Ui_frmFactura(object):
         self.lbltotal.setSizePolicy(sizePolicy)
         self.lbltotal.setMinimumSize(QtCore.QSize(60, 0))
         self.lbltotal.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.lbltotal.setStyleSheet("border:1px solid #000")
         self.lbltotal.setText("")
         self.lbltotal.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.lbltotal.setObjectName("lbltotal")
@@ -329,6 +322,15 @@ class Ui_frmFactura(object):
         self.txtSearch = QtGui.QLineEdit(self.tabnavigation)
         self.txtSearch.setObjectName("txtSearch")
         self.horizontalLayout.addWidget(self.txtSearch)
+        self.btnAnular = QtGui.QPushButton(self.tabnavigation)
+        self.btnAnular.setObjectName("btnAnular")
+        self.horizontalLayout.addWidget(self.btnAnular)
+        self.cboFiltro = QtGui.QComboBox(self.tabnavigation)
+        self.cboFiltro.setObjectName("cboFiltro")
+        self.cboFiltro.addItem("")
+        self.cboFiltro.addItem("")
+        self.cboFiltro.addItem("")
+        self.horizontalLayout.addWidget(self.cboFiltro)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/icons/res/table.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -425,7 +427,7 @@ class Ui_frmFactura(object):
         self.label_4.setBuddy(self.txtSearch)
 
         self.retranslateUi(frmFactura)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.swcliente.setCurrentIndex(1)
         self.swvendedor.setCurrentIndex(1)
         self.swbodega.setCurrentIndex(1)
@@ -446,21 +448,25 @@ class Ui_frmFactura(object):
 
     def retranslateUi(self, frmFactura):
         frmFactura.setWindowTitle(QtGui.QApplication.translate("frmFactura", "Factura", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("frmFactura", "<b>Facturar No.</b>", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("frmFactura", "<b>Fecha</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("frmFactura", "Facturar No.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtGui.QApplication.translate("frmFactura", "Fecha", None, QtGui.QApplication.UnicodeUTF8))
         self.dtPicker.setDisplayFormat(QtGui.QApplication.translate("frmFactura", "dd/MM/yyyy", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("frmFactura", "&<b>Facturar a:</b>", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_11.setText(QtGui.QApplication.translate("frmFactura", "<b>Vendedor:</b>", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("frmFactura", "&<b>Bodega:</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("frmFactura", "&Facturar a:", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_11.setText(QtGui.QApplication.translate("frmFactura", "Vendedor:", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setText(QtGui.QApplication.translate("frmFactura", "&Bodega:", None, QtGui.QApplication.UnicodeUTF8))
         self.rbcontado.setText(QtGui.QApplication.translate("frmFactura", "Contado", None, QtGui.QApplication.UnicodeUTF8))
         self.rbcredito.setText(QtGui.QApplication.translate("frmFactura", "Crédito", None, QtGui.QApplication.UnicodeUTF8))
         self.lblanulado.setText(QtGui.QApplication.translate("frmFactura", "ANULADA", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_7.setText(QtGui.QApplication.translate("frmFactura", "<b>Observaciones</b>", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("frmFactura", "<b>Subtotal</b>", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_8.setText(QtGui.QApplication.translate("frmFactura", "<b>Iva</b>", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_9.setText(QtGui.QApplication.translate("frmFactura", "<b>Total</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_7.setText(QtGui.QApplication.translate("frmFactura", "Observaciones", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("frmFactura", "Subtotal", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_8.setText(QtGui.QApplication.translate("frmFactura", "Iva", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_9.setText(QtGui.QApplication.translate("frmFactura", "Total", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), None)
         self.label_4.setText(QtGui.QApplication.translate("frmFactura", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAnular.setText(QtGui.QApplication.translate("frmFactura", "Anular Factura", None, QtGui.QApplication.UnicodeUTF8))
+        self.cboFiltro.setItemText(0, QtGui.QApplication.translate("frmFactura", "Ambas", None, QtGui.QApplication.UnicodeUTF8))
+        self.cboFiltro.setItemText(1, QtGui.QApplication.translate("frmFactura", "Anuladas", None, QtGui.QApplication.UnicodeUTF8))
+        self.cboFiltro.setItemText(2, QtGui.QApplication.translate("frmFactura", "No Anuladas", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmFactura", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setText(QtGui.QApplication.translate("frmFactura", "Nuevo", None, QtGui.QApplication.UnicodeUTF8))
@@ -471,7 +477,6 @@ class Ui_frmFactura(object):
         self.actionGoNext.setText(QtGui.QApplication.translate("frmFactura", "Ir al siguiente registro", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoLast.setText(QtGui.QApplication.translate("frmFactura", "Ir al ultimo registro", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave.setText(QtGui.QApplication.translate("frmFactura", "Guardar", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionSave.setShortcut(QtGui.QApplication.translate("frmFactura", "Ctrl+G", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCancel.setText(QtGui.QApplication.translate("frmFactura", "Cancelar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionEditCell.setText(QtGui.QApplication.translate("frmFactura", "Editar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionEditCell.setShortcut(QtGui.QApplication.translate("frmFactura", "Ctrl+E", None, QtGui.QApplication.UnicodeUTF8))
@@ -483,3 +488,13 @@ class Ui_frmFactura(object):
         self.actionPaste.setText(QtGui.QApplication.translate("frmFactura", "Pegar", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    frmFactura = QtGui.QMainWindow()
+    ui = Ui_frmFactura()
+    ui.setupUi(frmFactura)
+    frmFactura.show()
+    sys.exit(app.exec_())
+
