@@ -19,8 +19,6 @@ from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
 from recibo import dlgRecibo
 
-#from PyQt4.QtGui import QMainWindow
-
 #controles
 IDDOCUMENTO, NDOCIMPRESO, CLIENTE,VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, FECHA, BODEGA, TASA,TASAIVA,ANULADO = range( 13 )
 
@@ -62,14 +60,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.lblanulado.setHidden(True)
 
         QTimer.singleShot( 0, self.loadModels )
-#    def creditocontado(self,on):
-#        """
-#        Asignar el 1 si es al contado, 0 si es al credito
-#        """
-#        print("hola")
-#        if not self.editmodel is None:
-#            self.editmodel.escontado = 1 if self.rbcontado.isChecked() else 0
-#            print(str(self.editmodel.escontado))
+
 
     def updateModels( self ):
         """
@@ -433,8 +424,6 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         @param status: false = editando        true = navegando
         """
-        #self.txtnfa.setReadOnly( status )
-#        self.dtPicker.setReadOnly( status )
         self.mtxtobservaciones.setReadOnly( status )
         self.rbcontado.setEnabled( ( not status ) )
         self.rbcredito.setEnabled( not status )
@@ -486,32 +475,6 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         if not self.editmodel is None:
             self.editmodel.datetime = date
-
-##            #extraer el tipo de cambio de acuerdo a la fecha junto con su id
-##            try:
-##
-##                if not QSqlDatabase.database().isOpen():
-##                    QSqlDatabase.database().open()
-##
-##                query = QSqlQuery()
-##                query.prepare( "SELECT idtc,tasa,tasabanco FROM tiposcambio t where fecha=DATE('" + datetime.toString( "yyyyMMdd" ) + "')" )
-##                if not query.exec_():
-##                    raise Exception( "No existe una tasa de cambio para la fecha " + datetime.toString( "yyyyMMdd" ) )
-##                if not query.first():
-##                    raise Exception( u"La consulta para el tipo de cambio no devolvio ningun valor" )
-##
-##                
-##                self.idtc = query.value( 0 ).toInt()[0]
-##                self.tc = Decimal( query.value( 1 ).toString() )
-##                print( self.tc )
-###                self.tasabanco=Decimal(query.value(2).toString())
-##            except Exception, e:
-##                QMessageBox.critical( self, "Llantera Esquipulas", str( e ), QMessageBox.Ok )
-##                self.dtPicker.setDateTime( self.editmodel.datetime )
-##            finally:
-##                if QSqlDatabase.database().isOpen():
-##                    QSqlDatabase.database().close()
-
 
 
     @pyqtSlot(  )
