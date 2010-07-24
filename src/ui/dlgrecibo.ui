@@ -29,7 +29,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Recibo No.</string>
+         <string>&lt;b&gt;Recibo No.&lt;/b&gt;</string>
         </property>
        </widget>
       </item>
@@ -52,41 +52,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_5">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>&amp;Fecha</string>
-        </property>
-        <property name="buddy">
-         <cstring>dtPicker</cstring>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="3">
-       <widget class="QDateTimeEdit" name="dtPicker">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-        <property name="displayFormat">
-         <string>dd/MM/yyyy</string>
-        </property>
-        <property name="calendarPopup">
-         <bool>true</bool>
+       <widget class="QLabel" name="lblfecha">
+        <property name="text">
+         <string>01/09/2010</string>
         </property>
        </widget>
       </item>
@@ -99,7 +68,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Recibimos de:</string>
+         <string>&lt;b&gt;Recibimos de:&lt;/b&gt;</string>
         </property>
        </widget>
       </item>
@@ -131,7 +100,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>En concepto de:</string>
+         <string>&lt;b&gt;En concepto de:&lt;/b&gt;</string>
         </property>
         <property name="buddy">
          <cstring>txtconcepto</cstring>
@@ -139,68 +108,31 @@
        </widget>
       </item>
       <item row="2" column="1" colspan="3">
-       <widget class="QStackedWidget" name="swconcepto">
+       <widget class="QLineEdit" name="txtconcepto">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="maximumSize">
+        <property name="minimumSize">
          <size>
-          <width>16777215</width>
-          <height>30</height>
+          <width>0</width>
+          <height>20</height>
          </size>
         </property>
-        <property name="currentIndex">
-         <number>1</number>
+        <property name="styleSheet">
+         <string notr="true"/>
         </property>
-        <widget class="QWidget" name="page_5">
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QComboBox" name="cbconcepto">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="editable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="page_6">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QLineEdit" name="txtconcepto">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="dragEnabled">
-             <bool>true</bool>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+        <property name="text">
+         <string>Cancelacion de Factura</string>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item row="3" column="0">
@@ -304,22 +236,6 @@
         </widget>
        </widget>
       </item>
-      <item row="3" column="2">
-       <widget class="QLabel" name="label_7">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Retención No.</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="3">
        <widget class="QLabel" name="lblnreten">
         <property name="enabled">
@@ -360,7 +276,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Observaciones </string>
+         <string>&lt;b&gt;Observaciones &lt;/b&gt;</string>
         </property>
        </widget>
       </item>
@@ -376,7 +292,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Total Retenido</string>
+         <string>&lt;b&gt;Total Retenido&lt;/b&gt;</string>
         </property>
        </widget>
       </item>
@@ -408,7 +324,7 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0" colspan="4">
+      <item row="6" column="0" colspan="4">
        <widget class="QPlainTextEdit" name="mtxtobservaciones">
         <property name="enabled">
          <bool>true</bool>
@@ -421,6 +337,38 @@
         </property>
         <property name="readOnly">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="label_7">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>&lt;b&gt;Retención No.&lt;/b&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_5">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>&lt;b&gt;Fecha&lt;/b&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>

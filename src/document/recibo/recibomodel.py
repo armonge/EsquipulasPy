@@ -19,7 +19,7 @@ class ReciboModel( QAbstractTableModel ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
-    def __init__( self , sesion ):
+    def __init__( self ):
         super( ReciboModel, self ).__init__()
 
 #        self.sesion = sesion

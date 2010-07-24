@@ -17,10 +17,10 @@ class FacturaModel( QAbstractTableModel ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
-    def __init__( self, sesion ):
+    def __init__( self, datosSesion ):
         super( FacturaModel, self ).__init__()
 
-        self.sesionId = sesion
+        
         self.dirty = False
         self.__documentType = 5
         self.clienteId = 0
@@ -31,11 +31,13 @@ class FacturaModel( QAbstractTableModel ):
         self.ivaId = 0
         self.lines = []
         self.printedDocumentNumber = ""
-        self.datetime =None #QDateTime.currentDateTime()
-        self.userId = 0
-
-        self.tipoCambioId = 0
-        self.tipoCambioOficial = Decimal( 0 )
+#        self.datetime =None #QDateTime.currentDateTime()
+#        
+##        self.sesionId = sesion
+##        self.userId = 0
+##        self.tipoCambioId = 0
+##        self.tipoCambioOficial = Decimal( 0 )
+        self.datosSesion = datosSesion
 
         self.escontado = 1
         self.costototal = Decimal( 0 )

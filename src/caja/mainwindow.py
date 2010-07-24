@@ -23,7 +23,7 @@ from arqueo import frmArqueo
 from cheques import frmCheques
 from cierrecaja import frmCierreCaja
 from decimal import Decimal
-
+from collections import namedtuple
 
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     """
@@ -39,19 +39,10 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         MainWindowBase.__init__( self )
         self.user = user
         
+        DatosSesion = namedtuple('DatosSesion','sesionId tiposCambioId tiposCambioOficial tiposCambioBanco fecha')
         
+        self.datosSesion = DatosSesion(1,12,'21.4138','21.50',QDate.currentDate()) 
         
-#        self.date =None
-#        self.sesion = 0
-#        self.exchangeRateId = 0
-#        self.exchangeRate = 0
-#        self.bankExchangeRate = 0
-        
-        self.sesion = 1
-        self.exchangeRateId = 12
-        self.exchangeRate = Decimal("21.4138")
-        self.date =QDate.currentDate()
-    
         self.status = True
         
         
@@ -60,7 +51,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param state: false = bloqueado        true = desbloqueado
         """
-        if self.sesion != 0:
+        if self.datosSesion.sesionId != 0:
             self.btnApertura.setEnabled( state )
             self.actionUnlockSession.setVisible( not state )
 
@@ -206,3 +197,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         clientes = frmCatClientes( self )
         self.mdiArea.addSubWindow( clientes )
         clientes.show()
+
+
+    
+        
