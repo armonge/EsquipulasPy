@@ -1,0 +1,17 @@
+CREATE VIEW vw_saldofacturas
+AS
+SELECT
+padre.iddocumento AS iddocumento,
+cast(padre.ndocimpreso as signed) AS ndocimpreso,
+padre.total - SUM(IF(ph.monto IS NULL,0,ph.monto)) - SUM(IF(hijo.idtipodoc = 10,hijo.total,0)) AS Saldo,
+pd.idpersona AS idpersona
+FROM
+documentos padre
+JOIN personasxdocumento pd ON padre.iddocumento=pd.iddocumento
+LEFT JOIN docpadrehijos ph ON ph.idpadre = padre.iddocumento
+LEFT JOIN documentos hijo ON ph.idhijo = hijo.iddocumento
+WHERE
+padre.idtipodoc = 5
+AND (hijo.idtipodoc = 18 OR hijo.idtipodoc = 10 OR (hijo.idtipodoc IS NULL))
+AND padre.anulado = 0
+GROUP BY padre.iddocumento;

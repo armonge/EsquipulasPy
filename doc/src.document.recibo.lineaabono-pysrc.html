@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.document.recibo.lineaabono</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.document-module.html">Paquete&nbsp;document</a> ::
+        <a href="src.document.recibo-module.html">Paquete&nbsp;recibo</a> ::
+        Modulo&nbsp;lineaabono
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.document.recibo.lineaabono-pysrc.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.document.recibo.lineaabono-module.html">Modulo src.document.recibo.lineaabono</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-docstring">Created on 18/05/2010</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-docstring">@author: armongeno, no me contrataron</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-docstring"> y vos como vas con tu pegue</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">decimal</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Decimal</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtSql</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QSqlQuery</tt> </tt>
+<a name="LineaAbono"></a><div id="LineaAbono-def"><a name="L10"></a><tt class="py-lineno">10</tt> <a class="py-toggle" href="#" id="LineaAbono-toggle" onclick="return toggle('LineaAbono');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.document.recibo.lineaabono.LineaAbono-class.html">LineaAbono</a><tt class="py-op">:</tt> </tt>
+</div><div id="LineaAbono-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="LineaAbono-expanded"><a name="LineaAbono.__init__"></a><div id="LineaAbono.__init__-def"><a name="L11"></a><tt class="py-lineno">11</tt> <a class="py-toggle" href="#" id="LineaAbono.__init__-toggle" onclick="return toggle('LineaAbono.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.document.recibo.lineaabono.LineaAbono-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">parent</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>     </tt>
+</div><a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">idFac</tt><tt class="py-op">=</tt><tt class="py-number">0</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nFac</tt><tt class="py-op">=</tt><tt class="py-string">""</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">monto</tt><tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">totalFac</tt><tt class="py-op">=</tt><tt class="py-number">0</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nlinea</tt><tt class="py-op">=</tt><tt class="py-number">0</tt> </tt>
+</div><a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">         </tt>
+<a name="LineaAbono.getPrice"></a><div id="LineaAbono.getPrice-def"><a name="L18"></a><tt class="py-lineno">18</tt> <a class="py-toggle" href="#" id="LineaAbono.getPrice-toggle" onclick="return toggle('LineaAbono.getPrice');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.document.recibo.lineaabono.LineaAbono-class.html#getPrice">getPrice</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>     </tt>
+</div><a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">        el precio unitario del producto en esta linea</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">price</tt> </tt>
+</div><a name="LineaAbono.setPrice"></a><div id="LineaAbono.setPrice-def"><a name="L23"></a><tt class="py-lineno">23</tt> <a class="py-toggle" href="#" id="LineaAbono.setPrice-toggle" onclick="return toggle('LineaAbono.setPrice');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.document.recibo.lineaabono.LineaAbono-class.html#setPrice">setPrice</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt>  <tt class="py-param">price</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaAbono.setPrice-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="LineaAbono.setPrice-expanded"><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">price</tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt><tt class="py-name">price</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">         </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">    <tt id="link-0" class="py-name" targets="Variable src.document.factura.lineafactura.LineaFactura.itemPrice=src.document.factura.lineafactura.LineaFactura-class.html#itemPrice,Variable src.document.recibo.lineaabono.LineaAbono.itemPrice=src.document.recibo.lineaabono.LineaAbono-class.html#itemPrice,Variable src.document.recibo.linearecibo.LineaRecibo.itemPrice=src.document.recibo.linearecibo.LineaRecibo-class.html#itemPrice"><a title="src.document.factura.lineafactura.LineaFactura.itemPrice
+src.document.recibo.lineaabono.LineaAbono.itemPrice
+src.document.recibo.linearecibo.LineaRecibo.itemPrice" class="py-name" href="#" onclick="return doclink('link-0', 'itemPrice', 'link-0');">itemPrice</a></tt> <tt class="py-op">=</tt> <tt class="py-name">property</tt><tt class="py-op">(</tt><tt id="link-1" class="py-name" targets="Method src.document.factura.lineafactura.LineaFactura.getPrice()=src.document.factura.lineafactura.LineaFactura-class.html#getPrice,Method src.document.recibo.lineaabono.LineaAbono.getPrice()=src.document.recibo.lineaabono.LineaAbono-class.html#getPrice,Method src.document.recibo.linearecibo.LineaRecibo.getPrice()=src.document.recibo.linearecibo.LineaRecibo-class.html#getPrice"><a title="src.document.factura.lineafactura.LineaFactura.getPrice
+src.document.recibo.lineaabono.LineaAbono.getPrice
+src.document.recibo.linearecibo.LineaRecibo.getPrice" class="py-name" href="#" onclick="return doclink('link-1', 'getPrice', 'link-1');">getPrice</a></tt><tt class="py-op">,</tt>  <tt id="link-2" class="py-name" targets="Method src.document.factura.lineafactura.LineaFactura.setPrice()=src.document.factura.lineafactura.LineaFactura-class.html#setPrice,Method src.document.recibo.lineaabono.LineaAbono.setPrice()=src.document.recibo.lineaabono.LineaAbono-class.html#setPrice,Method src.document.recibo.linearecibo.LineaRecibo.setPrice()=src.document.recibo.linearecibo.LineaRecibo-class.html#setPrice"><a title="src.document.factura.lineafactura.LineaFactura.setPrice
+src.document.recibo.lineaabono.LineaAbono.setPrice
+src.document.recibo.linearecibo.LineaRecibo.setPrice" class="py-name" href="#" onclick="return doclink('link-2', 'setPrice', 'link-2');">setPrice</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">     </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"><tt class="py-comment">#    @property</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-comment">#    def total(self):</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-comment">#        """</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"><tt class="py-comment">#        el total de esta linea</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"><tt class="py-comment">#        """</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"><tt class="py-comment">#        return Decimal(self.quantity * self.itemPrice ) if self.valid else Decimal(0) </tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">     </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="LineaAbono.valid"></a><div id="LineaAbono.valid-def"><a name="L36"></a><tt class="py-lineno">36</tt> <a class="py-toggle" href="#" id="LineaAbono.valid-toggle" onclick="return toggle('LineaAbono.valid');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.document.recibo.lineaabono.LineaAbono-class.html#valid">valid</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaAbono.valid-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="LineaAbono.valid-expanded"><a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line"><tt class="py-docstring">        es esta linea valida</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt>  <tt class="py-name">Decimal</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">monto</tt><tt class="py-op">)</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">True</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">False</tt> </tt>
+</div><a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        </tt>
+<a name="LineaAbono.save"></a><div id="LineaAbono.save-def"><a name="L44"></a><tt class="py-lineno">44</tt> <a class="py-toggle" href="#" id="LineaAbono.save-toggle" onclick="return toggle('LineaAbono.save');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.document.recibo.lineaabono.LineaAbono-class.html#save">save</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt>  <tt class="py-param">iddocumento</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaAbono.save-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="LineaAbono.save-expanded"><a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line"><tt class="py-docstring">        Este metodo guarda la linea en la base de datos</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"><tt class="py-docstring">        @param iddocumento el id del documento al que esta enlazada la linea</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Method src.contabilidad.conciliacion.frmConciliacion.valid()=src.contabilidad.conciliacion.frmConciliacion-class.html#valid,Method src.contabilidad.notascd.DatosDoc.valid()=src.contabilidad.notascd.DatosDoc-class.html#valid,Method src.contabilidad.notascd.dlgNotasCD.valid()=src.contabilidad.notascd.dlgNotasCD-class.html#valid,Method src.document.arqueo.arqueomodel.ArqueoModel.valid()=src.document.arqueo.arqueomodel.ArqueoModel-class.html#valid,Variable src.document.arqueo.lineaarqueo.LineaArqueo.valid=src.document.arqueo.lineaarqueo.LineaArqueo-class.html#valid,Method src.document.conciliacion.conciliacionmodel.ConciliacionModel.valid()=src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#valid,Variable src.document.conciliacion.lineaconciliacion.LineaConciliacion.valid=src.document.conciliacion.lineaconciliacion.LineaConciliacion-class.html#valid,Method src.document.devolucion.devolucionmodel.DevolucionModel.valid()=src.document.devolucion.devolucionmodel.DevolucionModel-class.html#valid,Variable src.document.devolucion.lineadevolucion.LineaDevolucion.valid=src.document.devolucion.lineadevolucion.LineaDevolucion-class.html#valid,Method src.document.entradacompra.entradacompramodel.EntradaCompraModel.valid()=src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#valid,Variable src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid=src.document.entradacompra.lineaentradacompra.LineaEntradaCompra-class.html#valid,Method src.document.factura.facturamodel.FacturaModel.valid()=src.document.factura.facturamodel.FacturaModel-class.html#valid,Variable src.document.factura.lineafactura.LineaFactura.valid=src.document.factura.lineafactura.LineaFactura-class.html#valid,Variable src.document.liquidacion.linealiquidacion.LineaLiquidacion.valid=src.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#valid,Method src.document.liquidacion.liquidacionmodel.LiquidacionModel.valid()=src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#valid,Variable src.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid=src.document.movimientosbancarios.datosdocmodel.DatosDocModel-class.html#valid,Method src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid()=src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel-class.html#valid,Method src.document.recibo.abonomodel.AbonoModel.valid()=src.document.recibo.abonomodel.AbonoModel-class.html#valid,Variable src.document.recibo.lineaabono.LineaAbono.valid=src.document.recibo.lineaabono.LineaAbono-class.html#valid,Variable src.document.recibo.linearecibo.LineaRecibo.valid=src.document.recibo.linearecibo.LineaRecibo-class.html#valid,Method src.document.recibo.recibomodel.ReciboModel.valid()=src.document.recibo.recibomodel.ReciboModel-class.html#valid,Method src.utility.accountselector.AccountsSelectorLine.valid()=src.utility.accountselector.AccountsSelectorLine-class.html#valid,Method src.utility.accountselector.AccountsSelectorModel.valid()=src.utility.accountselector.AccountsSelectorModel-class.html#valid,Method src.utility.user.User.valid()=src.utility.user.User-class.html#valid"><a title="src.contabilidad.conciliacion.frmConciliacion.valid
+src.contabilidad.notascd.DatosDoc.valid
+src.contabilidad.notascd.dlgNotasCD.valid
+src.document.arqueo.arqueomodel.ArqueoModel.valid
+src.document.arqueo.lineaarqueo.LineaArqueo.valid
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.valid
+src.document.conciliacion.lineaconciliacion.LineaConciliacion.valid
+src.document.devolucion.devolucionmodel.DevolucionModel.valid
+src.document.devolucion.lineadevolucion.LineaDevolucion.valid
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.valid
+src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid
+src.document.factura.facturamodel.FacturaModel.valid
+src.document.factura.lineafactura.LineaFactura.valid
+src.document.liquidacion.linealiquidacion.LineaLiquidacion.valid
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.valid
+src.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid
+src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid
+src.document.recibo.abonomodel.AbonoModel.valid
+src.document.recibo.lineaabono.LineaAbono.valid
+src.document.recibo.linearecibo.LineaRecibo.valid
+src.document.recibo.recibomodel.ReciboModel.valid
+src.utility.accountselector.AccountsSelectorLine.valid
+src.utility.accountselector.AccountsSelectorModel.valid
+src.utility.user.User.valid" class="py-name" href="#" onclick="return doclink('link-3', 'valid', 'link-3');">valid</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"Se intento guardar una linea no valida"</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">         </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-name">query</tt> <tt class="py-op">=</tt> <tt class="py-name">QSqlQuery</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">prepare</tt><tt class="py-op">(</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"><tt class="py-string">        INSERT INTO docpadrehijos(idpadre,idhijo,monto) </tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line"><tt class="py-string">        VALUES (:idfac,:iddocumento, :monto) </tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"><tt class="py-string">        """</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"no esta preparada"</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">         </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt><tt class="py-string">":idfac"</tt><tt class="py-op">,</tt>  <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">idFac</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt><tt class="py-string">":iddocumento"</tt><tt class="py-op">,</tt>  <tt class="py-name">iddocumento</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt><tt class="py-string">":monto"</tt><tt class="py-op">,</tt>  <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">monto</tt><tt class="py-op">.</tt><tt class="py-name">to_eng_string</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method src.contabilidad.conciliacion.dlgSelectCuenta.exec_()=src.contabilidad.conciliacion.dlgSelectCuenta-class.html#exec_"><a title="src.contabilidad.conciliacion.dlgSelectCuenta.exec_" class="py-name" href="#" onclick="return doclink('link-4', 'exec_', 'link-4');">exec_</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">lastError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"line"</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">itemId</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

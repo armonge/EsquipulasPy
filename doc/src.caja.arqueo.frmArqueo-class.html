@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.caja.arqueo.frmArqueo</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.caja-module.html">Paquete&nbsp;caja</a> ::
+        <a href="src.caja.arqueo-module.html">Modulo&nbsp;arqueo</a> ::
+        Clase&nbsp;frmArqueo
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.caja.arqueo.frmArqueo-class.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS Descripci&#243;n ==================== -->
+<h1 class="epydoc">Class frmArqueo</h1><p class="nomargin-top"><span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo">Codigo&nbsp;fuente</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_src_caja_4" name="uml_class_diagram_for_src_caja_4">
+<area shape="rect" id="node138" href="src.caja.arqueo.frmArqueo-class.html#__init__" title="Constructor" alt="" coords="225,428,421,447"/>
+<area shape="rect" id="node138" href="src.caja.arqueo.frmArqueo-class.html#updateModels" title="src.caja.arqueo.frmArqueo.updateModels" alt="" coords="225,447,421,465"/>
+<area shape="rect" id="node138" href="src.caja.arqueo.frmArqueo-class.html#updateDetailFilter" title="Esta funci&#243;n se debe implementar en los formularios para que al navegar se &#160;actualize el filtro de la tabla detalles" alt="" coords="225,465,421,484"/>
+<area shape="rect" id="node138" href="src.caja.arqueo.frmArqueo-class.html#setControls" title="Habilitar o deshabilitar los controles seg&#250;n status" alt="" coords="225,484,421,503"/>
+<area shape="rect" id="node138" href="src.caja.arqueo.frmArqueo-class.html#updateLabels" title="src.caja.arqueo.frmArqueo.updateLabels" alt="" coords="225,503,421,521"/>
+<area shape="rect" id="node138" href="src.caja.arqueo.frmArqueo-class.html#on_actionNew_activated" title="cargar todos los modelos para la edici&#243;n" alt="" coords="225,521,421,540"/>
+<area shape="rect" id="node138" href="src.caja.arqueo.frmArqueo-class.html#on_actionCancel_activated" title="Borrar todos los modelos que se hallan creado para el modo edici&#243;n, asignar los modelos de navegaci&#243;n a las vistas" alt="" coords="225,540,421,559"/>
+<area shape="rect" id="node138" href="src.caja.arqueo.frmArqueo-class.html#on_actionSave_activated" title="Redefiniendo el metodo save de Base para mostrar advertencias si el arqueo &#160;no concuerda" alt="" coords="225,559,421,577"/>
+<area shape="rect" id="node1" href="src.caja.arqueo.frmArqueo-class.html" title="Esta clase implementa el formulario arqueo" alt="" coords="213,395,432,583"/>
+<area shape="rect" id="node2" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow" alt="" coords="5,169,195,213"/>
+<area shape="rect" id="node140" href="src.ui.Ui_arqueo.Ui_frmArqueo-class.html#setupUi" title="src.ui.Ui_arqueo.Ui_frmArqueo.setupUi" alt="" coords="236,185,412,204"/>
+<area shape="rect" id="node140" href="src.ui.Ui_arqueo.Ui_frmArqueo-class.html#retranslateUi" title="src.ui.Ui_arqueo.Ui_frmArqueo.retranslateUi" alt="" coords="236,204,412,223"/>
+<area shape="rect" id="node3" href="src.ui.Ui_arqueo.Ui_frmArqueo-class.html" title="src.ui.Ui_arqueo.Ui_frmArqueo" alt="" coords="224,153,424,229"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#mapper" title="El mapper que se encarga de asignar los datos del modelo de navegaci&#243;n a &#160;los distintos widgets" alt="" coords="465,31,739,49"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#database" title="La base de datos a la cual se conecta el sistema" alt="" coords="465,49,739,68"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#status" title="esta propiedad cambia entre navegar y editar" alt="" coords="465,68,739,87"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#closeEvent" title="Guardar el tama&#241;o, la posici&#243;n en la pantalla y la posici&#243;n de la barra de &#160;tareas" alt="" coords="465,89,739,108"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#hideEvent" title="Ocultar la barra de tareas cuando se oculta el widget" alt="" coords="465,108,739,127"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#showEvent" title="src.utility.base.Base.showEvent" alt="" coords="465,127,739,145"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#editCell" title="Editar la celda actualmente seleccionada de self.tableedit" alt="" coords="465,145,739,164"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#on_dtPicker_dateTimeChanged" title="Cambiar el tipo de cambio del modelo de edici&#243;n si cambia la fecha" alt="" coords="465,164,739,183"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#navigate" title="Esta funcion se encarga de navegar entro los distintos documentos" alt="" coords="465,183,739,201"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#loadModels" title="Esta funci&#243;n se ejecuta en el constructor del formulario mediante un &#160;QTimer, carga los formularios por primera vez" alt="" coords="465,201,739,220"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#setStatus" title="src.utility.base.Base.setStatus" alt="" coords="465,220,739,239"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#getStatus" title="esta propiedad cambia entre navegar y editar" alt="" coords="465,239,739,257"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#on_txtSearch_textChanged" title="Cambiar el filtro para el navigation model" alt="" coords="465,257,739,276"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#on_tablenavigation_doubleClicked" title="Al hacer doble click en la tabla de navegaci&#243;n el se cambia a la pesta&#241;a &#160;detalles mostrando el documento seleccionado" alt="" coords="465,276,739,295"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#on_tablenavigation_clicked" title="src.utility.base.Base.on_tablenavigation_clicked" alt="" coords="465,295,739,313"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#addLine" title="a&#241;adir una linea a table edit, solo se llama directamente en una ocasion, &#160;al comenzar la edicion de un documento" alt="" coords="465,313,739,332"/>
+<area shape="rect" id="node141" href="src.utility.base.Base-class.html#on_txtObservations_textChanged" title="Asignar las observaciones al editmodel" alt="" coords="465,351,739,369"/>
+<area shape="rect" id="node4" href="src.utility.base.Base-class.html" title="Esta clase sirve de base para muchos formularios de inventario" alt="" coords="453,6,749,375"/>
+</map>
+  <img src="uml_class_diagram_for_src_caja_4.gif" alt='' usemap="#uml_class_diagram_for_src_caja_4" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Esta clase implementa el formulario arqueo</p>
+
+<!-- ==================== METODOS DE INSTANCIA ==================== -->
+<a name="section-MetodosdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Metodos de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MetodosdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.arqueo.frmArqueo-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">user</span>,
+        <span class="summary-sig-arg">parent</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Constructor</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="updateModels"></a><span class="summary-sig-name">updateModels</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.updateModels">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.arqueo.frmArqueo-class.html#updateDetailFilter" class="summary-sig-name">updateDetailFilter</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      Esta funci&#243;n se debe implementar en los formularios para que al 
+      navegar se actualize el filtro de la tabla detalles</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.updateDetailFilter">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.arqueo.frmArqueo-class.html#setControls" class="summary-sig-name">setControls</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">status</span>)</span><br />
+      Habilitar o deshabilitar los controles seg&#250;n status</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.setControls">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="updateLabels"></a><span class="summary-sig-name">updateLabels</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.updateLabels">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.arqueo.frmArqueo-class.html#on_actionNew_activated" class="summary-sig-name">on_actionNew_activated</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      cargar todos los modelos para la edici&#243;n</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.on_actionNew_activated">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.arqueo.frmArqueo-class.html#on_actionCancel_activated" class="summary-sig-name">on_actionCancel_activated</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Borrar todos los modelos que se hallan creado para el modo edici&#243;n, 
+      asignar los modelos de navegaci&#243;n a las vistas</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.on_actionCancel_activated">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.arqueo.frmArqueo-class.html#on_actionSave_activated" class="summary-sig-name">on_actionSave_activated</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Redefiniendo el metodo save de Base para mostrar advertencias si el 
+      arqueo no concuerda</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.on_actionSave_activated">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.ui.Ui_arqueo.Ui_frmArqueo-class.html">ui.Ui_arqueo.Ui_frmArqueo</a></code></b>:
+      <code><a href="src.ui.Ui_arqueo.Ui_frmArqueo-class.html#retranslateUi">retranslateUi</a></code>,
+      <code><a href="src.ui.Ui_arqueo.Ui_frmArqueo-class.html#setupUi">setupUi</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.utility.base.Base-class.html">utility.base.Base</a></code></b>:
+      <code><a href="src.utility.base.Base-class.html#addLine">addLine</a></code>,
+      <code><a href="src.utility.base.Base-class.html#closeEvent">closeEvent</a></code>,
+      <code><a href="src.utility.base.Base-class.html#editCell">editCell</a></code>,
+      <code><a href="src.utility.base.Base-class.html#getStatus">getStatus</a></code>,
+      <code><a href="src.utility.base.Base-class.html#hideEvent">hideEvent</a></code>,
+      <code><a href="src.utility.base.Base-class.html#loadModels">loadModels</a></code>,
+      <code><a href="src.utility.base.Base-class.html#navigate">navigate</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_actionDeleteRow_activated">on_actionDeleteRow_activated</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_actionPreview_activated">on_actionPreview_activated</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_actionRefresh_activated">on_actionRefresh_activated</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_dtPicker_dateTimeChanged">on_dtPicker_dateTimeChanged</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_tablenavigation_clicked">on_tablenavigation_clicked</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_tablenavigation_doubleClicked">on_tablenavigation_doubleClicked</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_txtObservations_textChanged">on_txtObservations_textChanged</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_txtSearch_textChanged">on_txtSearch_textChanged</a></code>,
+      <code><a href="src.utility.base.Base-class.html#setStatus">setStatus</a></code>,
+      <code><a href="src.utility.base.Base-class.html#showEvent">showEvent</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE INSTANCIA ==================== -->
+<a name="section-VariablesdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.utility.base.Base-class.html">utility.base.Base</a></code></b>:
+      <code><a href="src.utility.base.Base-class.html#database">database</a></code>,
+      <code><a href="src.utility.base.Base-class.html#mapper">mapper</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPIEDADES ==================== -->
+<a name="section-Propiedades"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Propiedades</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Propiedades"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.utility.base.Base-class.html">utility.base.Base</a></code></b>:
+      <code><a href="src.utility.base.Base-class.html#status">status</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== DETALLE DE LOS METODOS ==================== -->
+<a name="section-Detalledelosmetodos"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de los metodos</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelosmetodos"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">user</span>,
+        <span class="sig-arg">parent</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.__init__">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Constructor</p>
+  <dl class="fields">
+    <dt>Reemplaza:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="updateDetailFilter"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">updateDetailFilter</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.updateDetailFilter">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Esta funci&#243;n se debe implementar en los formularios para que al 
+  navegar se actualize el filtro de la tabla detalles</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>index</code></strong> - Este es el indice del mapper en el que actualmente se encuentra 
+          navegando</li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#updateDetailFilter">utility.base.Base.updateDetailFilter</a>
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="setControls"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setControls</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">status</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.setControls">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Habilitar o deshabilitar los controles seg&#250;n status</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>status</code></strong> - false = editando true = navegando</li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#setControls">utility.base.Base.setControls</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_actionNew_activated"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_actionNew_activated</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.on_actionNew_activated">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>cargar todos los modelos para la edici&#243;n</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("")</code></li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#on_actionNew_activated">utility.base.Base.on_actionNew_activated</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_actionCancel_activated"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_actionCancel_activated</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.on_actionCancel_activated">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Borrar todos los modelos que se hallan creado para el modo edici&#243;n, 
+  asignar los modelos de navegaci&#243;n a las vistas</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("")</code></li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#on_actionCancel_activated">utility.base.Base.on_actionCancel_activated</a>
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_actionSave_activated"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_actionSave_activated</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.arqueo-pysrc.html#frmArqueo.on_actionSave_activated">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Redefiniendo el metodo save de Base para mostrar advertencias si el 
+  arqueo no concuerda</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("")</code></li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#on_actionSave_activated">utility.base.Base.on_actionSave_activated</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

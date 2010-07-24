@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.document.conciliacion.conciliacionmodel.ConciliacionModel</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.document-module.html">Paquete&nbsp;document</a> ::
+        <a href="src.document.conciliacion-module.html">Paquete&nbsp;conciliacion</a> ::
+        <a href="src.document.conciliacion.conciliacionmodel-module.html">Modulo&nbsp;conciliacionmodel</a> ::
+        Clase&nbsp;ConciliacionModel
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS Descripci&#243;n ==================== -->
+<h1 class="epydoc">Class ConciliacionModel</h1><p class="nomargin-top"><span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel">Codigo&nbsp;fuente</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_src_docu_5" name="uml_class_diagram_for_src_docu_5">
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#lines" title="Las lineas en esta conciliaci&#243;n" alt="" coords="17,31,361,49"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#printedDocumentNumber" title="El numero de esta conciliaci&#243;n" alt="" coords="17,49,361,68"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#idCuentaContable" title="El &#160;id de la cuenta contable relacionada a la cuenta bancaria" alt="" coords="17,68,361,87"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#saldoInicialLibro" title="Saldo segun libro" alt="" coords="17,87,361,105"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#saldoInicialBanco" title="Saldo segun banco" alt="" coords="17,105,361,124"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#depositos" title="total de depositos en transito" alt="" coords="17,124,361,143"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#cheques" title="total de cheques en transito" alt="" coords="17,143,361,161"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#notasdebito" title="total de notas de debito" alt="" coords="17,161,361,180"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#notascredito" title="total de notas de credito" alt="" coords="17,180,361,199"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#fechaConciliacion" title="Fecha de la conciliacion" alt="" coords="17,199,361,217"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#uid" title="El id del usuario que realiza esta conciliaci&#243;n" alt="" coords="17,217,361,236"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#__init__" title="src.document.conciliacion.conciliacionmodel.ConciliacionModel.__init__" alt="" coords="17,239,361,257"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#valid" title="Un documento es valido cuando" alt="" coords="17,257,361,276"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#totalBanco" title="Es el saldo que la cuenta tiene al final del mes" alt="" coords="17,276,361,295"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#totalLibro" title="El subtotal del documento, esto es el total antes de aplicarse el IVA" alt="" coords="17,295,361,313"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#diferencia" title="Es el saldo que la cuenta tiene al final del mes" alt="" coords="17,313,361,332"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#rowCount" title="src.document.conciliacion.conciliacionmodel.ConciliacionModel.rowCount" alt="" coords="17,332,361,351"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#columnCount" title="src.document.conciliacion.conciliacionmodel.ConciliacionModel.columnCount" alt="" coords="17,351,361,369"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#data" title="Esta funcion redefine data en la clase base, es el metodo que se utiliza &#160;para mostrar los datos del modelo" alt="" coords="17,369,361,388"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#flags" title="src.document.conciliacion.conciliacionmodel.ConciliacionModel.flags" alt="" coords="17,388,361,407"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#setData" title="src.document.conciliacion.conciliacionmodel.ConciliacionModel.setData" alt="" coords="17,407,361,425"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#insertRows" title="src.document.conciliacion.conciliacionmodel.ConciliacionModel.insertRows" alt="" coords="17,425,361,444"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#removeRows" title="src.document.conciliacion.conciliacionmodel.ConciliacionModel.removeRows" alt="" coords="17,444,361,463"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#headerData" title="src.document.conciliacion.conciliacionmodel.ConciliacionModel.headerData" alt="" coords="17,463,361,481"/>
+<area shape="rect" id="node214" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#save" title="Este metodo guarda el documento actual en la base de datos" alt="" coords="17,481,361,500"/>
+<area shape="rect" id="node1" href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html" title="Esta clase es el modelo utilizado en la tabla en la que se editan los documentos" alt="" coords="5,6,373,506"/>
+</map>
+  <img src="uml_class_diagram_for_src_docu_5.gif" alt='' usemap="#uml_class_diagram_for_src_docu_5" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Esta clase es el modelo utilizado en la tabla en la que se editan los 
+  documentos</p>
+
+<!-- ==================== METODOS DE INSTANCIA ==================== -->
+<a name="section-MetodosdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Metodos de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MetodosdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#valid" class="summary-sig-name">valid</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Un documento es valido cuando</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.valid">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#totalBanco" class="summary-sig-name">totalBanco</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Es el saldo que la cuenta tiene al final del mes</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.totalBanco">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#totalLibro" class="summary-sig-name">totalLibro</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El subtotal del documento, esto es el total antes de aplicarse el IVA</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.totalLibro">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#diferencia" class="summary-sig-name">diferencia</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Es el saldo que la cuenta tiene al final del mes</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.diferencia">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="rowCount"></a><span class="summary-sig-name">rowCount</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.rowCount">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="columnCount"></a><span class="summary-sig-name">columnCount</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.columnCount">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="data"></a><span class="summary-sig-name">data</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span><br />
+      Esta funcion redefine data en la clase base, es el metodo que se 
+      utiliza para mostrar los datos del modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.data">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="flags"></a><span class="summary-sig-name">flags</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.flags">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setData"></a><span class="summary-sig-name">setData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">data</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.setData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="insertRows"></a><span class="summary-sig-name">insertRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.insertRows">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="removeRows"></a><span class="summary-sig-name">removeRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.removeRows">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="headerData"></a><span class="summary-sig-name">headerData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">section</span>,
+        <span class="summary-sig-arg">orientation</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.headerData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="save"></a><span class="summary-sig-name">save</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Este metodo guarda el documento actual en la base de datos</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.save">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE CLASE ==================== -->
+<a name="section-VariablesdeClase"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Clase</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeClase"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="__documentType"></a><span class="summary-name">__documentType</span> = <code title="IDCONCILIACION">IDCONCILIACION</code><br />
+      El id del tipo de documento
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE INSTANCIA ==================== -->
+<a name="section-VariablesdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">LineaConciliacion[]</span>
+    </td><td class="summary">
+        <a name="lines"></a><span class="summary-name">lines</span><br />
+      Las lineas en esta conciliaci&#243;n
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="printedDocumentNumber"></a><span class="summary-name">printedDocumentNumber</span><br />
+      El numero de esta conciliaci&#243;n
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="idCuentaContable"></a><span class="summary-name">idCuentaContable</span><br />
+      El  id de la cuenta contable relacionada a la cuenta bancaria
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="saldoInicialLibro"></a><span class="summary-name">saldoInicialLibro</span><br />
+      Saldo segun libro
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="saldoInicialBanco"></a><span class="summary-name">saldoInicialBanco</span><br />
+      Saldo segun banco
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="depositos"></a><span class="summary-name">depositos</span><br />
+      total de depositos en transito
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="cheques"></a><span class="summary-name">cheques</span><br />
+      total de cheques en transito
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="notasdebito"></a><span class="summary-name">notasdebito</span><br />
+      total de notas de debito
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="notascredito"></a><span class="summary-name">notascredito</span><br />
+      total de notas de credito
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">QDate</span>
+    </td><td class="summary">
+        <a name="fechaConciliacion"></a><span class="summary-name">fechaConciliacion</span><br />
+      Fecha de la conciliacion
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="uid"></a><span class="summary-name">uid</span><br />
+      El id del usuario que realiza esta conciliaci&#243;n
+    </td>
+  </tr>
+</table>
+<!-- ==================== DETALLE DE LOS METODOS ==================== -->
+<a name="section-Detalledelosmetodos"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de los metodos</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelosmetodos"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="valid"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">valid</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.valid">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Un documento es valido cuando</p>
+  <dl class="fields">
+    <dt>Retorna: bool</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="totalBanco"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">totalBanco</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.totalBanco">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Es el saldo que la cuenta tiene al final del mes</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="totalLibro"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">totalLibro</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.totalLibro">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El subtotal del documento, esto es el total antes de aplicarse el 
+  IVA</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="diferencia"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">diferencia</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.conciliacion.conciliacionmodel-pysrc.html#ConciliacionModel.diferencia">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Es el saldo que la cuenta tiene al final del mes</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>res/dialog-ok-apply.png</file>
+    <file>res/format-add-node.png</file>
+    <file>res/list-remove.png</file>
+    <file>res/object-locked.png</file>
+    <file>res/object-unlocked.png</file>
+    <file>res/system-log-in.png</file>
+    <file>res/system-log-out.png</file>
+    <file>res/view-refresh.png</file>
+    <file>res/logo.png</file>
+    <file>res/arrow-left-double.png</file>
+    <file>res/arrow-right-double.png</file>
+    <file>res/arrow-down.png</file>
+    <file>res/arrow-right.png</file>
+    <file>res/dialog-cancel.png</file>
+    <file>res/document-edit.png</file>
+    <file>res/document-new.png</file>
+    <file>res/document-preview.png</file>
+    <file>res/document-print.png</file>
+    <file>res/document-save.png</file>
+    <file>res/edit-copy.png</file>
+    <file>res/edit-cut.png</file>
+    <file>res/edit-delete.png</file>
+    <file>res/edit-paste.png</file>
+    <file>res/flag-green.png</file>
+    <file>res/go-first.png</file>
+    <file>res/go-last.png</file>
+    <file>res/system-lock-screen.png</file>
+    <file>res/go-next.png</file>
+    <file>res/go-previous.png</file>
+    <file>res/list-add.png</file>
+    <file>res/table.png</file>
+    <file>res/checkbox.png</file>
+    <file>res/help-contents.png</file>
+  </qresource>
+  <qresource prefix="images">
+    <file>res/view-pim-tasks.png</file>
+    <file>res/marca.png</file>
+    <file>res/llanta.png</file>
+    <file>res/simbolo-dolar-300x245.jpg</file>
+    <file>res/resource-group.png</file>
+    <file>res/skrooge_merge_import.png</file>
+    <file>res/skrooge_merge_import2.png</file>
+    <file>res/preferences-desktop-personal.png</file>
+    <file>res/estante.jpg</file>
+    <file>res/hi48-actions-lemon-box.png</file>
+  </qresource>
+</RCC>

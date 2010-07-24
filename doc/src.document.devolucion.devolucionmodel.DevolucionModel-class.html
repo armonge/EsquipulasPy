@@ -1,0 +1,939 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.document.devolucion.devolucionmodel.DevolucionModel</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.document-module.html">Paquete&nbsp;document</a> ::
+        <a href="src.document.devolucion-module.html">Paquete&nbsp;devolucion</a> ::
+        <a href="src.document.devolucion.devolucionmodel-module.html">Modulo&nbsp;devolucionmodel</a> ::
+        Clase&nbsp;DevolucionModel
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS Descripci&#243;n ==================== -->
+<h1 class="epydoc">Class DevolucionModel</h1><p class="nomargin-top"><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel">Codigo&nbsp;fuente</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_src_docu_7" name="uml_class_diagram_for_src_docu_7">
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#observations" title="Las observaciones del documento" alt="" coords="17,31,260,49"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#lines" title="Las lineas en esta devolucion" alt="" coords="17,49,260,68"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#printedDocumentNumber" title="El numero de esta devoluci&#243;n" alt="" coords="17,68,260,87"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#clientId" title="El id del cliente de esta devoluci&#243;n" alt="" coords="17,87,260,105"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#invoiceId" title="El &#160;id de la factura para la cual se realiza esta devoluci&#243;n" alt="" coords="17,105,260,124"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#billPrinted" title="El numero impreso de la factura" alt="" coords="17,124,260,143"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#datetime" title="La hora y fecha del documento" alt="" coords="17,143,260,161"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#uid" title="El id del usuario que realiza esta devluci&#243;n" alt="" coords="17,161,260,180"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#clientName" title="El nombre del cliente que realiza esta devoluci&#243;n" alt="" coords="17,180,260,199"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#ivaRate" title="El porcentaje de IVA en esta devolucion, es el de la factura" alt="" coords="17,199,260,217"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#ivaRateId" title="El id de este porcentaje IVA" alt="" coords="17,217,260,236"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#applyIva" title="Si se aplica o no IVA en esta devoluci&#243;n type:bool" alt="" coords="17,236,260,255"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#exchangeRateId" title="El id del tipo de cambio en esta devoluci&#243;n" alt="" coords="17,255,260,273"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#exchangeRate" title="EL tipo de cambio de esta devoluci&#243;n" alt="" coords="17,273,260,292"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#__init__" title="src.document.devolucion.devolucionmodel.DevolucionModel.__init__" alt="" coords="17,295,260,313"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#valid" title="Un documento es valido cuando" alt="" coords="17,313,260,332"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#totalD" title="El total en dolares del documento" alt="" coords="17,332,260,351"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#subtotalD" title="El subtotal en dolares del documento" alt="" coords="17,351,260,369"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#totalC" title="El total en cordobas del documento" alt="" coords="17,369,260,388"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#subtotalC" title="El subtotal en cordobas del documento" alt="" coords="17,388,260,407"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#ivaD" title="El iva en dolares" alt="" coords="17,407,260,425"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#ivaC" title="El iva en cordobas" alt="" coords="17,425,260,444"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#totalCostD" title="El costo total del documento, en dolares" alt="" coords="17,444,260,463"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#totalCostC" title="El costo en cordobas del documento" alt="" coords="17,463,260,481"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#validLines" title="la cantidad de lineas validas que hay en el documento" alt="" coords="17,481,260,500"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#rowCount" title="src.document.devolucion.devolucionmodel.DevolucionModel.rowCount" alt="" coords="17,500,260,519"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#columnCount" title="src.document.devolucion.devolucionmodel.DevolucionModel.columnCount" alt="" coords="17,519,260,537"/>
+<area shape="rect" id="node221" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#save" title="Este metodo guarda el documento actual en la base de datos" alt="" coords="17,556,260,575"/>
+<area shape="rect" id="node1" href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html" title="Esta clase es el modelo utilizado en la tabla en la que se editan los documentos" alt="" coords="5,6,272,581"/>
+</map>
+  <img src="uml_class_diagram_for_src_docu_7.gif" alt='' usemap="#uml_class_diagram_for_src_docu_7" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Esta clase es el modelo utilizado en la tabla en la que se editan los 
+  documentos</p>
+
+<!-- ==================== METODOS DE INSTANCIA ==================== -->
+<a name="section-MetodosdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Metodos de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MetodosdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#valid" class="summary-sig-name">valid</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Un documento es valido cuando</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.valid">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#totalD" class="summary-sig-name">totalD</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El total en dolares del documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.totalD">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#subtotalD" class="summary-sig-name">subtotalD</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El subtotal en dolares del documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.subtotalD">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#totalC" class="summary-sig-name">totalC</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El total en cordobas del documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.totalC">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#subtotalC" class="summary-sig-name">subtotalC</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El subtotal en cordobas del documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.subtotalC">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#ivaD" class="summary-sig-name">ivaD</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El iva en dolares</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.ivaD">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#ivaC" class="summary-sig-name">ivaC</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El iva en cordobas</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.ivaC">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#totalCostD" class="summary-sig-name">totalCostD</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El costo total del documento, en dolares</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.totalCostD">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#totalCostC" class="summary-sig-name">totalCostC</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El costo en cordobas del documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.totalCostC">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.devolucion.devolucionmodel.DevolucionModel-class.html#validLines" class="summary-sig-name">validLines</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      la cantidad de lineas validas que hay en el documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.validLines">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="rowCount"></a><span class="summary-sig-name">rowCount</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.rowCount">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="columnCount"></a><span class="summary-sig-name">columnCount</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.columnCount">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="data"></a><span class="summary-sig-name">data</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span><br />
+      darle formato a los campos de la tabla</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.data">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="flags"></a><span class="summary-sig-name">flags</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.flags">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setData"></a><span class="summary-sig-name">setData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.EditRole</span>)</span><br />
+      modificar los datos del modelo, este metodo se comunica con el 
+      delegate</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.setData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="insertRows"></a><span class="summary-sig-name">insertRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.insertRows">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="removeRows"></a><span class="summary-sig-name">removeRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.removeRows">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="headerData"></a><span class="summary-sig-name">headerData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">section</span>,
+        <span class="summary-sig-arg">orientation</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.headerData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="save"></a><span class="summary-sig-name">save</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Este metodo guarda el documento actual en la base de datos</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.save">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE CLASE ==================== -->
+<a name="section-VariablesdeClase"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Clase</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeClase"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="__documentType"></a><span class="summary-name">__documentType</span> = <code title="10">10</code><br />
+      El id del tipo de documento
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE INSTANCIA ==================== -->
+<a name="section-VariablesdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="observations"></a><span class="summary-name">observations</span><br />
+      Las observaciones del documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">LineaDevolucion[]</span>
+    </td><td class="summary">
+        <a name="lines"></a><span class="summary-name">lines</span><br />
+      Las lineas en esta devolucion
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="printedDocumentNumber"></a><span class="summary-name">printedDocumentNumber</span><br />
+      El numero de esta devoluci&#243;n
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="clientId"></a><span class="summary-name">clientId</span><br />
+      El id del cliente de esta devoluci&#243;n
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="invoiceId"></a><span class="summary-name">invoiceId</span><br />
+      El  id de la factura para la cual se realiza esta devoluci&#243;n
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="billPrinted"></a><span class="summary-name">billPrinted</span><br />
+      El numero impreso de la factura
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="datetime"></a><span class="summary-name">datetime</span><br />
+      La hora y fecha del documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="uid"></a><span class="summary-name">uid</span><br />
+      El id del usuario que realiza esta devluci&#243;n
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="clientName"></a><span class="summary-name">clientName</span><br />
+      El nombre del cliente que realiza esta devoluci&#243;n
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="ivaRate"></a><span class="summary-name">ivaRate</span><br />
+      El porcentaje de IVA en esta devolucion, es el de la factura
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="ivaRateId"></a><span class="summary-name">ivaRateId</span><br />
+      El id de este porcentaje IVA
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="applyIva"></a><span class="summary-name">applyIva</span><br />
+      Si se aplica o no IVA en esta devoluci&#243;n type:bool
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="exchangeRateId"></a><span class="summary-name">exchangeRateId</span><br />
+      El id del tipo de cambio en esta devoluci&#243;n
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="exchangeRate"></a><span class="summary-name">exchangeRate</span><br />
+      EL tipo de cambio de esta devoluci&#243;n
+    </td>
+  </tr>
+</table>
+<!-- ==================== DETALLE DE LOS METODOS ==================== -->
+<a name="section-Detalledelosmetodos"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de los metodos</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelosmetodos"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="valid"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">valid</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.valid">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Un documento es valido cuando</p>
+  <dl class="fields">
+    <dt>Retorna: bool</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="totalD"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">totalD</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.totalD">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El total en dolares del documento</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="subtotalD"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">subtotalD</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.subtotalD">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El subtotal en dolares del documento</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="totalC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">totalC</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.totalC">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El total en cordobas del documento</p>
+  <dl class="fields">
+    <dt>Retorna: decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="subtotalC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">subtotalC</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.subtotalC">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El subtotal en cordobas del documento</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ivaD"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">ivaD</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.ivaD">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El iva en dolares</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ivaC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">ivaC</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.ivaC">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El iva en cordobas</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="totalCostD"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">totalCostD</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.totalCostD">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El costo total del documento, en dolares</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="totalCostC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">totalCostC</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.totalCostC">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El costo en cordobas del documento</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="validLines"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">validLines</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.devolucion.devolucionmodel-pysrc.html#DevolucionModel.validLines">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>la cantidad de lineas validas que hay en el documento</p>
+  <dl class="fields">
+    <dt>Retorna: int</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

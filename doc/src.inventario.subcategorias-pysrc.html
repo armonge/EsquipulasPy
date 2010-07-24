@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.inventario.subcategorias</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.inventario-module.html">Paquete&nbsp;inventario</a> ::
+        Modulo&nbsp;subcategorias
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.inventario.subcategorias-pysrc.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.inventario.subcategorias-module.html">Modulo src.inventario.subcategorias</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-docstring">Created on 02/06/2010</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-docstring">@author: Administrator</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtCore</tt> <tt class="py-keyword">import</tt> <tt class="py-name">SIGNAL</tt><tt class="py-op">,</tt> <tt class="py-name">SLOT</tt><tt class="py-op">,</tt> <tt class="py-name">pyqtSlot</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtGui</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QMainWindow</tt><tt class="py-op">,</tt> <tt class="py-name">QDialog</tt><tt class="py-op">,</tt> <tt class="py-name">QMessageBox</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtSql</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QSqlDatabase</tt><tt class="py-op">,</tt> <tt class="py-name">QSqlQueryModel</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Paquete src.ui=src.ui-module.html"><a title="src.ui" class="py-name" href="#" onclick="return doclink('link-0', 'ui', 'link-0');">ui</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module src.ui.Ui_catgeneric=src.ui.Ui_catgeneric-module.html"><a title="src.ui.Ui_catgeneric" class="py-name" href="#" onclick="return doclink('link-1', 'Ui_catgeneric', 'link-1');">Ui_catgeneric</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class src.ui.Ui_catgeneric.Ui_frmCatGeneric=src.ui.Ui_catgeneric.Ui_frmCatGeneric-class.html"><a title="src.ui.Ui_catgeneric.Ui_frmCatGeneric" class="py-name" href="#" onclick="return doclink('link-2', 'Ui_frmCatGeneric', 'link-2');">Ui_frmCatGeneric</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name" targets="Module src.inventario.subcategoriaNew=src.inventario.subcategoriaNew-module.html"><a title="src.inventario.subcategoriaNew" class="py-name" href="#" onclick="return doclink('link-3', 'subcategoriaNew', 'link-3');">subcategoriaNew</a></tt> <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Class src.inventario.subcategoriaNew.frmSubcategoriasNew=src.inventario.subcategoriaNew.frmSubcategoriasNew-class.html"><a title="src.inventario.subcategoriaNew.frmSubcategoriasNew" class="py-name" href="#" onclick="return doclink('link-4', 'frmSubcategoriasNew', 'link-4');">frmSubcategoriasNew</a></tt> </tt>
+<a name="frmSubcategorias"></a><div id="frmSubcategorias-def"><a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt> <a class="py-toggle" href="#" id="frmSubcategorias-toggle" onclick="return toggle('frmSubcategorias');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.inventario.subcategorias.frmSubcategorias-class.html">frmSubcategorias</a> <tt class="py-op">(</tt> <tt class="py-base-class">QMainWindow</tt><tt class="py-op">,</tt> <tt class="py-base-class">Ui_frmCatGeneric</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="frmSubcategorias-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="frmSubcategorias-expanded"><a name="frmSubcategorias.__init__"></a><div id="frmSubcategorias.__init__-def"><a name="L13"></a><tt class="py-lineno">13</tt> <a class="py-toggle" href="#" id="frmSubcategorias.__init__-toggle" onclick="return toggle('frmSubcategorias.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.inventario.subcategorias.frmSubcategorias-class.html#__init__">__init__</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">user</tt><tt class="py-op">,</tt> <tt class="py-param">parent</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="frmSubcategorias.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="frmSubcategorias.__init__-expanded"><a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">        @param user: El id del usuario que ha creado este documento </tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt> <tt id="link-5" class="py-name" targets="Class src.inventario.subcategorias.frmSubcategorias=src.inventario.subcategorias.frmSubcategorias-class.html"><a title="src.inventario.subcategorias.frmSubcategorias" class="py-name" href="#" onclick="return doclink('link-5', 'frmSubcategorias', 'link-5');">frmSubcategorias</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method src.caja.anulaciones.dlgSelectInvoice.__init__()=src.caja.anulaciones.dlgSelectInvoice-class.html#__init__,Method src.caja.anulaciones.frmAnulaciones.__init__()=src.caja.anulaciones.frmAnulaciones-class.html#__init__,Method src.caja.apertura.frmApertura.__init__()=src.caja.apertura.frmApertura-class.html#__init__,Method src.caja.arqueo.frmArqueo.__init__()=src.caja.arqueo.frmArqueo-class.html#__init__,Method src.caja.banks.frmBanks.__init__()=src.caja.banks.frmBanks-class.html#__init__,Method src.caja.cajas.frmCajas.__init__()=src.caja.cajas.frmCajas-class.html#__init__,Method src.caja.catalogos.frmCatClientes.__init__()=src.caja.catalogos.frmCatClientes-class.html#__init__,Method src.caja.cheques.frmCheques.__init__()=src.caja.cheques.frmCheques-class.html#__init__,Method src.caja.cierrecaja.frmCierreCaja.__init__()=src.caja.cierrecaja.frmCierreCaja-class.html#__init__,Method src.caja.factura.RODetailsModel.__init__()=src.caja.factura.RODetailsModel-class.html#__init__,Method src.caja.factura.frmFactura.__init__()=src.caja.factura.frmFactura-class.html#__init__,Method src.caja.mainwindow.MainWindow.__init__()=src.caja.mainwindow.MainWindow-class.html#__init__,Method src.caja.recibo.ROAbonosModel.__init__()=src.caja.recibo.ROAbonosModel-class.html#__init__,Method src.caja.recibo.RODetailsModel.__init__()=src.caja.recibo.RODetailsModel-class.html#__init__,Method src.caja.recibo.ROFacturasModel.__init__()=src.caja.recibo.ROFacturasModel-class.html#__init__,Method src.caja.recibo.frmRecibo.__init__()=src.caja.recibo.frmRecibo-class.html#__init__,Method src.contabilidad.conciliacion.DetalleTableModel.__init__()=src.contabilidad.conciliacion.DetalleTableModel-class.html#__init__,Method src.contabilidad.conciliacion.ReadOnlyTableModel.__init__()=src.contabilidad.conciliacion.ReadOnlyTableModel-class.html#__init__,Method src.contabilidad.conciliacion.dlgSelectCuenta.__init__()=src.contabilidad.conciliacion.dlgSelectCuenta-class.html#__init__,Method src.contabilidad.conciliacion.frmConciliacion.__init__()=src.contabilidad.conciliacion.frmConciliacion-class.html#__init__,Method src.contabilidad.cuentas.Account.__init__()=src.contabilidad.cuentas.Account-class.html#__init__,Method src.contabilidad.cuentas.AccountsModel.__init__()=src.contabilidad.cuentas.AccountsModel-class.html#__init__,Method src.contabilidad.cuentas.dlgAccountMod.__init__()=src.contabilidad.cuentas.dlgAccountMod-class.html#__init__,Method src.contabilidad.cuentas.frmAccounts.__init__()=src.contabilidad.cuentas.frmAccounts-class.html#__init__,Method src.contabilidad.mainwindow.MainWindow.__init__()=src.contabilidad.mainwindow.MainWindow-class.html#__init__,Method src.contabilidad.notascd.dlgNotasCD.__init__()=src.contabilidad.notascd.dlgNotasCD-class.html#__init__,Method src.contabilidad.operations.frmOperations.__init__()=src.contabilidad.operations.frmOperations-class.html#__init__,Method src.document.arqueo.arqueodelegate.ArqueoDelegate.__init__()=src.document.arqueo.arqueodelegate.ArqueoDelegate-class.html#__init__,Method src.document.arqueo.arqueomodel.ArqueoModel.__init__()=src.document.arqueo.arqueomodel.ArqueoModel-class.html#__init__,Method src.document.arqueo.lineaarqueo.LineaArqueo.__init__()=src.document.arqueo.lineaarqueo.LineaArqueo-class.html#__init__,Method src.document.conciliacion.conciliacionmodel.ConciliacionModel.__init__()=src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#__init__,Method src.document.conciliacion.lineaconciliacion.LineaConciliacion.__init__()=src.document.conciliacion.lineaconciliacion.LineaConciliacion-class.html#__init__,Method src.document.devolucion.devolucionmodel.DevolucionModel.__init__()=src.document.devolucion.devolucionmodel.DevolucionModel-class.html#__init__,Method src.document.devolucion.lineadevolucion.LineaDevolucion.__init__()=src.document.devolucion.lineadevolucion.LineaDevolucion-class.html#__init__,Method src.document.document.Document.__init__()=src.document.document.Document-class.html#__init__,Method src.document.entradacompra.entradacompramodel.EntradaCompraModel.__init__()=src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#__init__,Method src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.__init__()=src.document.entradacompra.lineaentradacompra.LineaEntradaCompra-class.html#__init__,Method src.document.factura.facturadelegate.FacturaDelegate.__init__()=src.document.factura.facturadelegate.FacturaDelegate-class.html#__init__,Method src.document.factura.facturadelegate.SingleSelectionModel.__init__()=src.document.factura.facturadelegate.SingleSelectionModel-class.html#__init__,Method src.document.factura.facturamodel.FacturaModel.__init__()=src.document.factura.facturamodel.FacturaModel-class.html#__init__,Method src.document.factura.lineafactura.LineaFactura.__init__()=src.document.factura.lineafactura.LineaFactura-class.html#__init__,Method src.document.liquidacion.linealiquidacion.LineaLiquidacion.__init__()=src.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#__init__,Method src.document.liquidacion.liquidaciondelegate.ArticlesModel.__init__()=src.document.liquidacion.liquidaciondelegate.ArticlesModel-class.html#__init__,Method src.document.liquidacion.liquidaciondelegate.LiquidacionDelegate.__init__()=src.document.liquidacion.liquidaciondelegate.LiquidacionDelegate-class.html#__init__,Method src.document.liquidacion.liquidacionmodel.LiquidacionModel.__init__()=src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#__init__,Method src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.__init__()=src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel-class.html#__init__,Method src.document.recibo.abonodelegate.AbonoDelegate.__init__()=src.document.recibo.abonodelegate.AbonoDelegate-class.html#__init__,Method src.document.recibo.abonomodel.AbonoModel.__init__()=src.document.recibo.abonomodel.AbonoModel-class.html#__init__,Method src.document.recibo.lineaabono.LineaAbono.__init__()=src.document.recibo.lineaabono.LineaAbono-class.html#__init__,Method src.document.recibo.linearecibo.LineaRecibo.__init__()=src.document.recibo.linearecibo.LineaRecibo-class.html#__init__,Method src.document.recibo.recibodelegate.ReciboDelegate.__init__()=src.document.recibo.recibodelegate.ReciboDelegate-class.html#__init__,Method src.document.recibo.recibomodel.ReciboModel.__init__()=src.document.recibo.recibomodel.ReciboModel-class.html#__init__,Method src.inventario.articuloNew.frmArticuloNew.__init__()=src.inventario.articuloNew.frmArticuloNew-class.html#__init__,Method src.inventario.articulos.ArticlesModel.__init__()=src.inventario.articulos.ArticlesModel-class.html#__init__,Method src.inventario.articulos.frmArticulos.__init__()=src.inventario.articulos.frmArticulos-class.html#__init__,Method src.inventario.catalogos.PeopleDelegate.__init__()=src.inventario.catalogos.PeopleDelegate-class.html#__init__,Method src.inventario.catalogos.ProvidersModel.__init__()=src.inventario.catalogos.ProvidersModel-class.html#__init__,Method src.inventario.catalogos.frmCatBodegas.__init__()=src.inventario.catalogos.frmCatBodegas-class.html#__init__,Method src.inventario.catalogos.frmCatCategorias.__init__()=src.inventario.catalogos.frmCatCategorias-class.html#__init__,Method src.inventario.catalogos.frmCatMarcas.__init__()=src.inventario.catalogos.frmCatMarcas-class.html#__init__,Method src.inventario.catalogos.frmCatProveedores.__init__()=src.inventario.catalogos.frmCatProveedores-class.html#__init__,Method src.inventario.devolucion.ReadOnlyTableModel.__init__()=src.inventario.devolucion.ReadOnlyTableModel-class.html#__init__,Method src.inventario.devolucion.dlgSelectBill.__init__()=src.inventario.devolucion.dlgSelectBill-class.html#__init__,Method src.inventario.devolucion.frmDevolucion.__init__()=src.inventario.devolucion.frmDevolucion-class.html#__init__,Method src.inventario.entradacompra.frmEntradaCompra.__init__()=src.inventario.entradacompra.frmEntradaCompra-class.html#__init__,Method src.inventario.liquidacion.ROAccountsModel.__init__()=src.inventario.liquidacion.ROAccountsModel-class.html#__init__,Method src.inventario.liquidacion.RODetailsModel.__init__()=src.inventario.liquidacion.RODetailsModel-class.html#__init__,Method src.inventario.liquidacion.frmLiquidacion.__init__()=src.inventario.liquidacion.frmLiquidacion-class.html#__init__,Method src.inventario.mainwindow.MainWindow.__init__()=src.inventario.mainwindow.MainWindow-class.html#__init__,Method src.inventario.subcategoriaNew.frmSubcategoriasNew.__init__()=src.inventario.subcategoriaNew.frmSubcategoriasNew-class.html#__init__,Method src.inventario.subcategorias.frmSubcategorias.__init__()=src.inventario.subcategorias.frmSubcategorias-class.html#__init__,Method src.utility.accountselector.AccountsSelectorDelegate.__init__()=src.utility.accountselector.AccountsSelectorDelegate-class.html#__init__,Method src.utility.accountselector.AccountsSelectorLine.__init__()=src.utility.accountselector.AccountsSelectorLine-class.html#__init__,Method src.utility.accountselector.AccountsSelectorModel.__init__()=src.utility.accountselector.AccountsSelectorModel-class.html#__init__,Method src.utility.base.Base.__init__()=src.utility.base.Base-class.html#__init__,Method src.utility.catgeneric.CatalogModel.__init__()=src.utility.catgeneric.CatalogModel-class.html#__init__,Method src.utility.catgeneric.PeopleDelegate.__init__()=src.utility.catgeneric.PeopleDelegate-class.html#__init__,Method src.utility.catgeneric.frmCatGeneric.__init__()=src.utility.catgeneric.frmCatGeneric-class.html#__init__,Method src.utility.database.dlgDatabaseConfig.__init__()=src.utility.database.dlgDatabaseConfig-class.html#__init__,Method src.utility.mainwindowbase.MainWindowBase.__init__()=src.utility.mainwindowbase.MainWindowBase-class.html#__init__,Method src.utility.reports.frmReportes.__init__()=src.utility.reports.frmReportes-class.html#__init__,Method src.utility.singleselectionmodel.SingleSelectionModel.__init__()=src.utility.singleselectionmodel.SingleSelectionModel-class.html#__init__,Method src.utility.user.User.__init__()=src.utility.user.User-class.html#__init__,Method src.utility.user.dlgUserLogin.__init__()=src.utility.user.dlgUserLogin-class.html#__init__,Method src.utility.widgets.searchpanel.SearchPanel.__init__()=src.utility.widgets.searchpanel.SearchPanel-class.html#__init__,Method src.utility.widgets.searchpanel.SearchPanelView.__init__()=src.utility.widgets.searchpanel.SearchPanelView-class.html#__init__,Method src.utility.widgets.xdockwidget.XDockMainWidgetWrapper.__init__()=src.utility.widgets.xdockwidget.XDockMainWidgetWrapper-class.html#__init__,Method src.utility.widgets.xdockwidget.XDockWidget.__init__()=src.utility.widgets.xdockwidget.XDockWidget-class.html#__init__,Method src.utility.widgets.xdockwidget.XDockWidgetTitleBar.__init__()=src.utility.widgets.xdockwidget.XDockWidgetTitleBar-class.html#__init__,Method src.utility.widgets.xdockwidget.XDockWidgetTitleBarButton.__init__()=src.utility.widgets.xdockwidget.XDockWidgetTitleBarButton-class.html#__init__"><a title="src.caja.anulaciones.dlgSelectInvoice.__init__
+src.caja.anulaciones.frmAnulaciones.__init__
+src.caja.apertura.frmApertura.__init__
+src.caja.arqueo.frmArqueo.__init__
+src.caja.banks.frmBanks.__init__
+src.caja.cajas.frmCajas.__init__
+src.caja.catalogos.frmCatClientes.__init__
+src.caja.cheques.frmCheques.__init__
+src.caja.cierrecaja.frmCierreCaja.__init__
+src.caja.factura.RODetailsModel.__init__
+src.caja.factura.frmFactura.__init__
+src.caja.mainwindow.MainWindow.__init__
+src.caja.recibo.ROAbonosModel.__init__
+src.caja.recibo.RODetailsModel.__init__
+src.caja.recibo.ROFacturasModel.__init__
+src.caja.recibo.frmRecibo.__init__
+src.contabilidad.conciliacion.DetalleTableModel.__init__
+src.contabilidad.conciliacion.ReadOnlyTableModel.__init__
+src.contabilidad.conciliacion.dlgSelectCuenta.__init__
+src.contabilidad.conciliacion.frmConciliacion.__init__
+src.contabilidad.cuentas.Account.__init__
+src.contabilidad.cuentas.AccountsModel.__init__
+src.contabilidad.cuentas.dlgAccountMod.__init__
+src.contabilidad.cuentas.frmAccounts.__init__
+src.contabilidad.mainwindow.MainWindow.__init__
+src.contabilidad.notascd.dlgNotasCD.__init__
+src.contabilidad.operations.frmOperations.__init__
+src.document.arqueo.arqueodelegate.ArqueoDelegate.__init__
+src.document.arqueo.arqueomodel.ArqueoModel.__init__
+src.document.arqueo.lineaarqueo.LineaArqueo.__init__
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.__init__
+src.document.conciliacion.lineaconciliacion.LineaConciliacion.__init__
+src.document.devolucion.devolucionmodel.DevolucionModel.__init__
+src.document.devolucion.lineadevolucion.LineaDevolucion.__init__
+src.document.document.Document.__init__
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.__init__
+src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.__init__
+src.document.factura.facturadelegate.FacturaDelegate.__init__
+src.document.factura.facturadelegate.SingleSelectionModel.__init__
+src.document.factura.facturamodel.FacturaModel.__init__
+src.document.factura.lineafactura.LineaFactura.__init__
+src.document.liquidacion.linealiquidacion.LineaLiquidacion.__init__
+src.document.liquidacion.liquidaciondelegate.ArticlesModel.__init__
+src.document.liquidacion.liquidaciondelegate.LiquidacionDelegate.__init__
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.__init__
+src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.__init__
+src.document.recibo.abonodelegate.AbonoDelegate.__init__
+src.document.recibo.abonomodel.AbonoModel.__init__
+src.document.recibo.lineaabono.LineaAbono.__init__
+src.document.recibo.linearecibo.LineaRecibo.__init__
+src.document.recibo.recibodelegate.ReciboDelegate.__init__
+src.document.recibo.recibomodel.ReciboModel.__init__
+src.inventario.articuloNew.frmArticuloNew.__init__
+src.inventario.articulos.ArticlesModel.__init__
+src.inventario.articulos.frmArticulos.__init__
+src.inventario.catalogos.PeopleDelegate.__init__
+src.inventario.catalogos.ProvidersModel.__init__
+src.inventario.catalogos.frmCatBodegas.__init__
+src.inventario.catalogos.frmCatCategorias.__init__
+src.inventario.catalogos.frmCatMarcas.__init__
+src.inventario.catalogos.frmCatProveedores.__init__
+src.inventario.devolucion.ReadOnlyTableModel.__init__
+src.inventario.devolucion.dlgSelectBill.__init__
+src.inventario.devolucion.frmDevolucion.__init__
+src.inventario.entradacompra.frmEntradaCompra.__init__
+src.inventario.liquidacion.ROAccountsModel.__init__
+src.inventario.liquidacion.RODetailsModel.__init__
+src.inventario.liquidacion.frmLiquidacion.__init__
+src.inventario.mainwindow.MainWindow.__init__
+src.inventario.subcategoriaNew.frmSubcategoriasNew.__init__
+src.inventario.subcategorias.frmSubcategorias.__init__
+src.utility.accountselector.AccountsSelectorDelegate.__init__
+src.utility.accountselector.AccountsSelectorLine.__init__
+src.utility.accountselector.AccountsSelectorModel.__init__
+src.utility.base.Base.__init__
+src.utility.catgeneric.CatalogModel.__init__
+src.utility.catgeneric.PeopleDelegate.__init__
+src.utility.catgeneric.frmCatGeneric.__init__
+src.utility.database.dlgDatabaseConfig.__init__
+src.utility.mainwindowbase.MainWindowBase.__init__
+src.utility.reports.frmReportes.__init__
+src.utility.singleselectionmodel.SingleSelectionModel.__init__
+src.utility.user.User.__init__
+src.utility.user.dlgUserLogin.__init__
+src.utility.widgets.searchpanel.SearchPanel.__init__
+src.utility.widgets.searchpanel.SearchPanelView.__init__
+src.utility.widgets.xdockwidget.XDockMainWidgetWrapper.__init__
+src.utility.widgets.xdockwidget.XDockWidget.__init__
+src.utility.widgets.xdockwidget.XDockWidgetTitleBar.__init__
+src.utility.widgets.xdockwidget.XDockWidgetTitleBarButton.__init__" class="py-name" href="#" onclick="return doclink('link-6', '__init__', 'link-6');">__init__</a></tt><tt class="py-op">(</tt> <tt id="link-7" class="py-name" targets="Method src.contabilidad.cuentas.Account.parent()=src.contabilidad.cuentas.Account-class.html#parent,Method src.contabilidad.cuentas.AccountsModel.parent()=src.contabilidad.cuentas.AccountsModel-class.html#parent"><a title="src.contabilidad.cuentas.Account.parent
+src.contabilidad.cuentas.AccountsModel.parent" class="py-name" href="#" onclick="return doclink('link-7', 'parent', 'link-7');">parent</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method src.contabilidad.cuentas.dlgAccountMod.setupUi()=src.contabilidad.cuentas.dlgAccountMod-class.html#setupUi,Method src.ui.Ui_arqueo.Ui_frmArqueo.setupUi()=src.ui.Ui_arqueo.Ui_frmArqueo-class.html#setupUi,Method src.ui.Ui_articulos.Ui_frmArticulos.setupUi()=src.ui.Ui_articulos.Ui_frmArticulos-class.html#setupUi,Method src.ui.Ui_catcategorias.Ui_frmCatCategorias.setupUi()=src.ui.Ui_catcategorias.Ui_frmCatCategorias-class.html#setupUi,Method src.ui.Ui_catgeneric.Ui_frmCatGeneric.setupUi()=src.ui.Ui_catgeneric.Ui_frmCatGeneric-class.html#setupUi,Method src.ui.Ui_cheques.Ui_frmCheques.setupUi()=src.ui.Ui_cheques.Ui_frmCheques-class.html#setupUi,Method src.ui.Ui_conciliacion.Ui_frmConciliacion.setupUi()=src.ui.Ui_conciliacion.Ui_frmConciliacion-class.html#setupUi,Method src.ui.Ui_cuentas.Ui_frmAccounts.setupUi()=src.ui.Ui_cuentas.Ui_frmAccounts-class.html#setupUi,Method src.ui.Ui_devolucion.Ui_frmDevoluciones.setupUi()=src.ui.Ui_devolucion.Ui_frmDevoluciones-class.html#setupUi,Method src.ui.Ui_entradacompra.Ui_frmEntradaCompra.setupUi()=src.ui.Ui_entradacompra.Ui_frmEntradaCompra-class.html#setupUi,Method src.ui.Ui_factura.Ui_frmFactura.setupUi()=src.ui.Ui_factura.Ui_frmFactura-class.html#setupUi,Method src.ui.Ui_frmApertura.Ui_frmApertura.setupUi()=src.ui.Ui_frmApertura.Ui_frmApertura-class.html#setupUi,Method src.ui.Ui_liquidacion.Ui_frmLiquidacion.setupUi()=src.ui.Ui_liquidacion.Ui_frmLiquidacion-class.html#setupUi,Method src.ui.Ui_mainwindowcaja.Ui_MainWindow.setupUi()=src.ui.Ui_mainwindowcaja.Ui_MainWindow-class.html#setupUi,Method src.ui.Ui_mainwindowcontabilidad.Ui_MainWindow.setupUi()=src.ui.Ui_mainwindowcontabilidad.Ui_MainWindow-class.html#setupUi,Method src.ui.Ui_mainwindowinventario.Ui_MainWindow.setupUi()=src.ui.Ui_mainwindowinventario.Ui_MainWindow-class.html#setupUi,Method src.ui.Ui_notascd.Ui_dlgNotasCD.setupUi()=src.ui.Ui_notascd.Ui_dlgNotasCD-class.html#setupUi,Method src.ui.Ui_operations.Ui_frmOperations.setupUi()=src.ui.Ui_operations.Ui_frmOperations-class.html#setupUi,Method src.ui.Ui_recibo.Ui_frmRecibo.setupUi()=src.ui.Ui_recibo.Ui_frmRecibo-class.html#setupUi,Method src.ui.Ui_subcategorias.Ui_frmSubcategorias.setupUi()=src.ui.Ui_subcategorias.Ui_frmSubcategorias-class.html#setupUi,Method src.utility.Ui_reports.Ui_frmReportes.setupUi()=src.utility.Ui_reports.Ui_frmReportes-class.html#setupUi"><a title="src.contabilidad.cuentas.dlgAccountMod.setupUi
+src.ui.Ui_arqueo.Ui_frmArqueo.setupUi
+src.ui.Ui_articulos.Ui_frmArticulos.setupUi
+src.ui.Ui_catcategorias.Ui_frmCatCategorias.setupUi
+src.ui.Ui_catgeneric.Ui_frmCatGeneric.setupUi
+src.ui.Ui_cheques.Ui_frmCheques.setupUi
+src.ui.Ui_conciliacion.Ui_frmConciliacion.setupUi
+src.ui.Ui_cuentas.Ui_frmAccounts.setupUi
+src.ui.Ui_devolucion.Ui_frmDevoluciones.setupUi
+src.ui.Ui_entradacompra.Ui_frmEntradaCompra.setupUi
+src.ui.Ui_factura.Ui_frmFactura.setupUi
+src.ui.Ui_frmApertura.Ui_frmApertura.setupUi
+src.ui.Ui_liquidacion.Ui_frmLiquidacion.setupUi
+src.ui.Ui_mainwindowcaja.Ui_MainWindow.setupUi
+src.ui.Ui_mainwindowcontabilidad.Ui_MainWindow.setupUi
+src.ui.Ui_mainwindowinventario.Ui_MainWindow.setupUi
+src.ui.Ui_notascd.Ui_dlgNotasCD.setupUi
+src.ui.Ui_operations.Ui_frmOperations.setupUi
+src.ui.Ui_recibo.Ui_frmRecibo.setupUi
+src.ui.Ui_subcategorias.Ui_frmSubcategorias.setupUi
+src.utility.Ui_reports.Ui_frmReportes.setupUi" class="py-name" href="#" onclick="return doclink('link-8', 'setupUi', 'link-8');">setupUi</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Module src.utility.database=src.utility.database-module.html"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-9', 'database', 'link-9');">database</a></tt> <tt class="py-op">=</tt> <tt class="py-name">QSqlDatabase</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-10', 'database', 'link-9');">database</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Module src.utility.user=src.utility.user-module.html,Variable src.utility.user.User.user=src.utility.user.User-class.html#user"><a title="src.utility.user
+src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-11', 'user', 'link-11');">user</a></tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name"><a title="src.utility.user
+src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-12', 'user', 'link-11');">user</a></tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">tableview</tt><tt class="py-op">.</tt><tt class="py-name">addActions</tt><tt class="py-op">(</tt> <tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">actionEdit</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">actionNew</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">backmodel</tt> <tt class="py-op">=</tt> <tt class="py-name">QSqlQueryModel</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">backmodel</tt><tt class="py-op">.</tt><tt class="py-name">setQuery</tt><tt class="py-op">(</tt> <tt class="py-string">"""SELECT nombre FROM categorias c where padre is not null"""</tt> <tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">tableview</tt><tt class="py-op">.</tt><tt class="py-name">setModel</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">backmodel</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt> </tt>
+<a name="frmSubcategorias.on_actionNew_triggered"></a><div id="frmSubcategorias.on_actionNew_triggered-def"><a name="L27"></a><tt class="py-lineno">27</tt> <a class="py-toggle" href="#" id="frmSubcategorias.on_actionNew_triggered-toggle" onclick="return toggle('frmSubcategorias.on_actionNew_triggered');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.inventario.subcategorias.frmSubcategorias-class.html#on_actionNew_triggered">on_actionNew_triggered</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="frmSubcategorias.on_actionNew_triggered-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="frmSubcategorias.on_actionNew_triggered-expanded"><a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-docstring">        Llama al Dialog para insertar un nuevo articulo</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nuevasubcategoria</tt> <tt class="py-op">=</tt> <tt id="link-13" class="py-name"><a title="src.inventario.subcategoriaNew.frmSubcategoriasNew" class="py-name" href="#" onclick="return doclink('link-13', 'frmSubcategoriasNew', 'link-4');">frmSubcategoriasNew</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="src.utility.user
+src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-14', 'user', 'link-11');">user</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nuevasubcategoria</tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">nuevasubcategoria</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method src.contabilidad.conciliacion.dlgSelectCuenta.exec_()=src.contabilidad.conciliacion.dlgSelectCuenta-class.html#exec_,Method src.inventario.devolucion.dlgSelectBill.exec_()=src.inventario.devolucion.dlgSelectBill-class.html#exec_"><a title="src.contabilidad.conciliacion.dlgSelectCuenta.exec_
+src.inventario.devolucion.dlgSelectBill.exec_" class="py-name" href="#" onclick="return doclink('link-15', 'exec_', 'link-15');">exec_</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-name">QDialog</tt><tt class="py-op">.</tt><tt class="py-name">Accepted</tt><tt class="py-op">:</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Method src.caja.arqueo.frmArqueo.updateModels()=src.caja.arqueo.frmArqueo-class.html#updateModels,Method src.caja.banks.frmBanks.updateModels()=src.caja.banks.frmBanks-class.html#updateModels,Method src.caja.cajas.frmCajas.updateModels()=src.caja.cajas.frmCajas-class.html#updateModels,Method src.caja.catalogos.frmCatClientes.updateModels()=src.caja.catalogos.frmCatClientes-class.html#updateModels,Method src.caja.cheques.frmCheques.updateModels()=src.caja.cheques.frmCheques-class.html#updateModels,Method src.caja.factura.frmFactura.updateModels()=src.caja.factura.frmFactura-class.html#updateModels,Method src.caja.recibo.frmRecibo.updateModels()=src.caja.recibo.frmRecibo-class.html#updateModels,Method src.contabilidad.conciliacion.frmConciliacion.updateModels()=src.contabilidad.conciliacion.frmConciliacion-class.html#updateModels,Method src.contabilidad.operations.frmOperations.updateModels()=src.contabilidad.operations.frmOperations-class.html#updateModels,Method src.inventario.articulos.frmArticulos.updateModels()=src.inventario.articulos.frmArticulos-class.html#updateModels,Method src.inventario.catalogos.frmCatBodegas.updateModels()=src.inventario.catalogos.frmCatBodegas-class.html#updateModels,Method src.inventario.catalogos.frmCatCategorias.updateModels()=src.inventario.catalogos.frmCatCategorias-class.html#updateModels,Method src.inventario.catalogos.frmCatMarcas.updateModels()=src.inventario.catalogos.frmCatMarcas-class.html#updateModels,Method src.inventario.catalogos.frmCatProveedores.updateModels()=src.inventario.catalogos.frmCatProveedores-class.html#updateModels,Method src.inventario.devolucion.frmDevolucion.updateModels()=src.inventario.devolucion.frmDevolucion-class.html#updateModels,Method src.inventario.entradacompra.frmEntradaCompra.updateModels()=src.inventario.entradacompra.frmEntradaCompra-class.html#updateModels,Method src.inventario.liquidacion.frmLiquidacion.updateModels()=src.inventario.liquidacion.frmLiquidacion-class.html#updateModels,Method src.inventario.subcategorias.frmSubcategorias.updateModels()=src.inventario.subcategorias.frmSubcategorias-class.html#updateModels,Method src.utility.catgeneric.frmCatGeneric.updateModels()=src.utility.catgeneric.frmCatGeneric-class.html#updateModels"><a title="src.caja.arqueo.frmArqueo.updateModels
+src.caja.banks.frmBanks.updateModels
+src.caja.cajas.frmCajas.updateModels
+src.caja.catalogos.frmCatClientes.updateModels
+src.caja.cheques.frmCheques.updateModels
+src.caja.factura.frmFactura.updateModels
+src.caja.recibo.frmRecibo.updateModels
+src.contabilidad.conciliacion.frmConciliacion.updateModels
+src.contabilidad.operations.frmOperations.updateModels
+src.inventario.articulos.frmArticulos.updateModels
+src.inventario.catalogos.frmCatBodegas.updateModels
+src.inventario.catalogos.frmCatCategorias.updateModels
+src.inventario.catalogos.frmCatMarcas.updateModels
+src.inventario.catalogos.frmCatProveedores.updateModels
+src.inventario.devolucion.frmDevolucion.updateModels
+src.inventario.entradacompra.frmEntradaCompra.updateModels
+src.inventario.liquidacion.frmLiquidacion.updateModels
+src.inventario.subcategorias.frmSubcategorias.updateModels
+src.utility.catgeneric.frmCatGeneric.updateModels" class="py-name" href="#" onclick="return doclink('link-16', 'updateModels', 'link-16');">updateModels</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">            <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">information</tt><tt class="py-op">(</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-string">"Llanteras de Esquipulas"</tt><tt class="py-op">,</tt> <tt class="py-string">"Subcategoria Guardada"</tt><tt class="py-op">,</tt> <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="frmSubcategorias.updateModels"></a><div id="frmSubcategorias.updateModels-def"><a name="L37"></a><tt class="py-lineno">37</tt> <a class="py-toggle" href="#" id="frmSubcategorias.updateModels-toggle" onclick="return toggle('frmSubcategorias.updateModels');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.inventario.subcategorias.frmSubcategorias-class.html#updateModels">updateModels</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="frmSubcategorias.updateModels-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="frmSubcategorias.updateModels-expanded"><a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-17', 'database', 'link-9');">database</a></tt> <tt class="py-op">=</tt> <tt class="py-name">QSqlDatabase</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-18', 'database', 'link-9');">database</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">backmodel</tt> <tt class="py-op">=</tt> <tt class="py-name">QSqlQueryModel</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">backmodel</tt><tt class="py-op">.</tt><tt class="py-name">setQuery</tt><tt class="py-op">(</tt> <tt class="py-string">"""SELECT nombre FROM categorias c where padre is not null"""</tt> <tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">tableview</tt><tt class="py-op">.</tt><tt class="py-name">setModel</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">backmodel</tt> <tt class="py-op">)</tt> </tt>
+</div></div><a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

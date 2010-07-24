@@ -1,0 +1,50 @@
+RECOMIENDO QUE
+vayan corrigiendo los errores, y los borren de aqui para que este sea nuestra lista de errores actuales,
+y como esta en el repositorio podemos ver los avances
+
+GENERAL
+todos los modulos deberian permitir cambiar usuarios sin tener que cerrarlo y volverlo a abrir.
+A la mayoria de los metodos les falta documentación, deberia de ser por lo menos como en LineaLiquidacion
+
+El sistema debe permitir al usuario que cambie su contraseña.(si es que lo vamos a permitir)
+
+ERROR EN CATALOGO PROVEEDORES
+
+La columna Activo deberia tener por defecto el ckeckbox seleccionado. Porque no me permite guardar. si no lo selecciono.
+
+EN FACTURA
+
+
+EN ENTRADA COMPRA
+
+4- No se habilitan lo radio button al querer crear una nueva entrada
+
+5- Los tipos de cambio deberian ser mostrados. Propongo que se muestren en una barra de estado o algo que este siempre visible.
+
+6- Los movimientos contables estan malos, el iva va positivo a la cuenta con id 34, subtotal va a inventario y total a proveedores.
+
+EN EL CATALOGO ARTICULO AL AGREGAR UN ARTICULO.
+
+1- se mira mal el % despues de la cantidad de comision, parace que la comision fuera en porcentaje
+
+2 - La label dice categoria pero lo que muesta son las subcategorias. Lo correcto es que primero seleccione la categoria del producto y hasta despues permita seleccionar la subcategoria ya filtrada por la categoria seleccionado.
+
+3- El widget que utilizaron no es el indicado ya que no me permite escribir, ni tampoco buscar, deberia por lo menos ser un combobox con autocompletado, o un SearchPanel.
+
+4- No deberia de permitir guardar el producto con una ganancia de 0. y la ganancia deberia de tener un valor por defecto (20)
+
+5- La ganacia deberia ser mostrada en la tabla de navegacion
+
+
+CATALOGO SUBCATEGORIA
+Se debe poder seleccionar la categoria de la sub categoria. aunque sea en una columna mas.
+
+LIQUIDACION
+El costo de compra puede ser menor a un dolar y no se puede poner.
+no estan validados los errores si no existen impuestos.
+
+RECIBOS
+NO se muestran los clientes morosos
+
+EN MODULO CAJA
+Cualquier usuario puede autorizar una apertura de caja

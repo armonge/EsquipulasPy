@@ -1,0 +1,96 @@
+Entrevista
+¿Cuál es el proceso básico de la empresa?
+El proceso principal es la venta de llantas a cooperativas de transportistas, pero también se venden repuestos para vehículos.
+
+¿Qué datos utiliza o produce este proceso?
+Se necesita saber la  existencia en inventario de los artículos así como sus costo de compra y precios de venta. También se toma en cuenta si  el cliente es una cooperativa ya que ellos están exonerados del IVA. El precio de venta de los artículos puede variar dependiendo del cliente y si paga al crédito o al contado. 
+
+La venta genera movimientos en las cuentas contables, salida de artículos de bodega, si el cliente no existía pasa a formar parte de la base de datos. Si es una venta al contado se le debe hacer un recibo y de aplicarse retención se deberá hacer una constancia. Si la venta es al crédito el cliente debe firmar un pagaré y proporcionar información adicional acerca de él.
+
+¿Que información adicional debe proporcionar el cliente cuando es una venta al crédito?
+Los clientes deben proporcionar su número de cédula, su dirección, número de teléfono y deben firmar un pagaré.
+
+¿Cuál es la finalidad de la actividad dentro de la empresa?
+ Generar riquezas.
+
+¿Cuáles son los pasos que siguen para realizar las ventas?
+ Básicamente, el cliente llega y un vendedor lo atiende, le ofrece los productos, si el cliente esta interesado, el vendedor acuerda los precios de venta  y la forma de pago con él. Si el cliente solicita crédito se le transfiere con el gerente para que éste analice la situación y apruebe o rechace  la venta al crédito, si fue aprobado el crédito se le hace firmar al cliente un pagaré y después se le hace la factura. Si la venta es al contado el proveedor transfiere al cliente con la cajera que elabora la factura con su respectiva constancia de retención 
+
+¿Dónde se realizan estos pasos?
+
+¿Quiénes los realizan?
+
+¿Cuánto tiempo tardan en efectuarlos?
+
+¿Con cuánta frecuencia lo hacen?
+
+¿Quiénes emplean la información resultante?
+¿Cuántos empleados laboran para la organización en el área(s) que se pretende desarrollar el sistema; o sea, cuántos tienen relación directa con el proyecto que se está investigando. ?
+ 
+¿Cuáles son las personas claves en el sistema? ¿Por qué son importantes?
+ 
+¿Existen obstáculos o influencias de tipo político que afectan la eficiencia del sistema?
+ 
+¿Existen manuales de procedimientos, políticas o lineamientos de desempeño documentados oficial o no oficialmente?. Si los hay, ¿Se cumplen en forma cabal en el 100% de las ocasiones?, es decir, ¿se respetan dichos procedimientos? 
+
+¿Existen métodos para evadir el sistema?, ¿Por qué se presentan? 
+
+¿Qué áreas necesitan un control específico? 
+
+¿Qué criterios se emplean para medir y evaluar el desempeño? 
+ 
+¿Existen actividades que considere podrían mejorarse?, ¿De qué manera? 
+
+¿Tiene alguna idea de actividades que podrían implementarse para mejorar el rendimiento del sistema en general? 
+ 
+¿Cuáles son las principales actividades que se realizan en la organización y que tienen relación con el proceso que se está modelando? 
+ 
+¿Qué es lo que da inicio a la actividad? 
+
+¿Cuál es el objetivo de la misma? 
+
+¿Cuánto tiempo se tarda en realizarla? 
+
+¿Qué retrasos ocurren o pueden ocurrir? 
+
+¿Qué métodos se emplean para medir y evaluar el desempeño de esta actividad? 
+
+¿Se toman precauciones específicas de seguridad para la protección contra alguna actividad impropia que se pudiera presentar? 
+
+¿Qué tan frecuente es el ciclo con el que se desarrolla dicha actividad? 
+
+¿Cuál es el volumen de información que aquí se procesa? 
+
+¿Qué pasos, sub-procesos, o funciones constituyen la actividad? (describir la actividad paso a paso) 
+
+¿Existe algún tipo de control desarrollado en el proceso en cuestión? 
+
+¿De dónde proviene la información que se utiliza en esta actividad? (fuentes) 
+
+¿Cuáles son específicamente los datos que recibe esta actividad? (dts de flujos) 
+
+¿De qué manera ingresan a este proceso? (flujos) 
+
+¿Qué tablas de referencia y diagramas u otros datos intervienen en la actividad? (documentación involucrada) 
+
+¿Qué información se genera en esta actividad? ¿Hacia qué o quién van dirigidos?
+
+¿Con qué finalidad la utilizan? 
+
+¿Cuáles datos se conservan o almacenan en este proceso? Y ¿en qué forma quedan almacenados? 
+
+¿Existe información que se genera pero que no es utilizada nunca por nadie? 
+ 
+¿Qué formato posee cada dato que interviene en esta actividad? 
+¿Para qué es usado? 
+¿Se interpone algún tipo de seguridad para la verificación de la veracidad del dato en mención? 
+¿Qué tan importante es dicho dato? 
+¿Por cuánto tiempo es importante mantener el dato en el sistema? 
+
+¿Qué información se usa para tomar la decisión? 
+
+¿Cuál es la fuente de esa información? ¿Qué sistemas transnacionales producen los datos utilizados en el proceso de decisión? ¿Qué otros datos son necesarios y no es posible obtener del procesamiento de transacciones? ¿Qué datos se originan en fuentes externas a la organización? 
+
+¿Cómo se deben procesar los datos para producir la información necesaria? 
+
+¿Cómo debe presentarse la información. 

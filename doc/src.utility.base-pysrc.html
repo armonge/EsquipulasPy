@@ -1,0 +1,670 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.utility.base</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.utility-module.html">Paquete&nbsp;utility</a> ::
+        Modulo&nbsp;base
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.utility.base-pysrc.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.utility.base-module.html">Modulo src.utility.base</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtCore</tt> <tt class="py-keyword">import</tt>  <tt class="py-name">pyqtSlot</tt><tt class="py-op">,</tt> <tt class="py-name">SIGNAL</tt><tt class="py-op">,</tt> <tt class="py-name">QSettings</tt><tt class="py-op">,</tt> <tt class="py-name">QDateTime</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtSql</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QSqlDatabase</tt><tt class="py-op">,</tt> <tt class="py-name">QSqlQuery</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtGui</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QMessageBox</tt><tt class="py-op">,</tt> <tt class="py-name">QDataWidgetMapper</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">decimal</tt> <tt class="py-keyword">import</tt>  <tt class="py-name">Decimal</tt> </tt>
+<a name="Base"></a><div id="Base-def"><a name="L6"></a><tt class="py-lineno">  6</tt> <a class="py-toggle" href="#" id="Base-toggle" onclick="return toggle('Base');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.utility.base.Base-class.html">Base</a><tt class="py-op">(</tt> <tt class="py-base-class">object</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Base-expanded"><a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-docstring">    Esta clase sirve de base para muchos  formularios de inventario</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="Base.__init__"></a><div id="Base.__init__-def"><a name="L10"></a><tt class="py-lineno"> 10</tt> <a class="py-toggle" href="#" id="Base.__init__-toggle" onclick="return toggle('Base.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#__init__">__init__</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.__init__-expanded"><a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt> <tt class="py-op">=</tt> <tt class="py-name">QDataWidgetMapper</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line">        <tt class="py-string">u"""</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-string">        @type: QDataWidgetMapper</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-string">        @ivar: El mapper que se encarga de asignar los datos del modelo de navegaci&#243;n a los distintos widgets</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module src.utility.database=src.utility.database-module.html"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-0', 'database', 'link-0');">database</a></tt> <tt class="py-op">=</tt> <tt class="py-name">QSqlDatabase</tt><tt class="py-op">.</tt><tt id="link-1" class="py-name"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-1', 'database', 'link-0');">database</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-string">        @type: QSqlDatabase</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-string">        @ivar: La base de datos a la cual se conecta el sistema</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">        <tt class="py-name">settings</tt> <tt class="py-op">=</tt> <tt class="py-name">QSettings</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">restoreGeometry</tt><tt class="py-op">(</tt> <tt class="py-name">settings</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">windowTitle</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">"/Geometry"</tt> <tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">toByteArray</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">restoreState</tt><tt class="py-op">(</tt> <tt class="py-name">settings</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">windowTitle</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">"/State"</tt> <tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">toByteArray</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">parentWindow</tt><tt class="py-op">.</tt><tt class="py-name">addToolBar</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">toolBar</tt> <tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-string">        @ivar: El MainWindow al que pertenece este widget</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">connect</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">,</tt> <tt class="py-name">SIGNAL</tt><tt class="py-op">(</tt> <tt class="py-string">"currentIndexChanged(int)"</tt> <tt class="py-op">)</tt> <tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Method src.caja.arqueo.frmArqueo.updateDetailFilter()=src.caja.arqueo.frmArqueo-class.html#updateDetailFilter,Method src.caja.factura.frmFactura.updateDetailFilter()=src.caja.factura.frmFactura-class.html#updateDetailFilter,Method src.caja.recibo.frmRecibo.updateDetailFilter()=src.caja.recibo.frmRecibo-class.html#updateDetailFilter,Method src.contabilidad.conciliacion.frmConciliacion.updateDetailFilter()=src.contabilidad.conciliacion.frmConciliacion-class.html#updateDetailFilter,Method src.inventario.devolucion.frmDevolucion.updateDetailFilter()=src.inventario.devolucion.frmDevolucion-class.html#updateDetailFilter,Method src.inventario.entradacompra.frmEntradaCompra.updateDetailFilter()=src.inventario.entradacompra.frmEntradaCompra-class.html#updateDetailFilter,Method src.inventario.kardex.frmKardex.updateDetailFilter()=src.inventario.kardex.frmKardex-class.html#updateDetailFilter,Method src.inventario.liquidacion.frmLiquidacion.updateDetailFilter()=src.inventario.liquidacion.frmLiquidacion-class.html#updateDetailFilter,Method src.utility.base.Base.updateDetailFilter()=src.utility.base.Base-class.html#updateDetailFilter"><a title="src.caja.arqueo.frmArqueo.updateDetailFilter
+src.caja.factura.frmFactura.updateDetailFilter
+src.caja.recibo.frmRecibo.updateDetailFilter
+src.contabilidad.conciliacion.frmConciliacion.updateDetailFilter
+src.inventario.devolucion.frmDevolucion.updateDetailFilter
+src.inventario.entradacompra.frmEntradaCompra.updateDetailFilter
+src.inventario.kardex.frmKardex.updateDetailFilter
+src.inventario.liquidacion.frmLiquidacion.updateDetailFilter
+src.utility.base.Base.updateDetailFilter" class="py-name" href="#" onclick="return doclink('link-2', 'updateDetailFilter', 'link-2');">updateDetailFilter</a></tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"> </tt>
+<a name="Base.closeEvent"></a><div id="Base.closeEvent-def"><a name="L33"></a><tt class="py-lineno"> 33</tt> <a class="py-toggle" href="#" id="Base.closeEvent-toggle" onclick="return toggle('Base.closeEvent');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#closeEvent">closeEvent</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.closeEvent-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.closeEvent-expanded"><a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-docstring">u"""</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-docstring">        Guardar el tama&#241;o, la posici&#243;n en la pantalla y la posici&#243;n de la barra de tareas</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-name">settings</tt> <tt class="py-op">=</tt> <tt class="py-name">QSettings</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-name">settings</tt><tt class="py-op">.</tt><tt class="py-name">setValue</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">windowTitle</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">"/Geometry"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">saveGeometry</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">settings</tt><tt class="py-op">.</tt><tt class="py-name">setValue</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">windowTitle</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">"/State"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">saveState</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">parentWindow</tt><tt class="py-op">.</tt><tt class="py-name">removeToolBar</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">toolBar</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"> </tt>
+<a name="Base.hideEvent"></a><div id="Base.hideEvent-def"><a name="L44"></a><tt class="py-lineno"> 44</tt> <a class="py-toggle" href="#" id="Base.hideEvent-toggle" onclick="return toggle('Base.hideEvent');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#hideEvent">hideEvent</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.hideEvent-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.hideEvent-expanded"><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"><tt class="py-docstring">        Ocultar la barra de tareas cuando se oculta el widget</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">event</tt><tt class="py-op">.</tt><tt class="py-name">spontaneous</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">toolBar</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">False</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="Base.showEvent"></a><div id="Base.showEvent-def"><a name="L51"></a><tt class="py-lineno"> 51</tt> <a class="py-toggle" href="#" id="Base.showEvent-toggle" onclick="return toggle('Base.showEvent');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#showEvent">showEvent</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.showEvent-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.showEvent-expanded"><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">event</tt><tt class="py-op">.</tt><tt class="py-name">spontaneous</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">toolBar</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">True</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"> </tt>
+<a name="Base.editCell"></a><div id="Base.editCell-def"><a name="L55"></a><tt class="py-lineno"> 55</tt> <a class="py-toggle" href="#" id="Base.editCell-toggle" onclick="return toggle('Base.editCell');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#editCell">editCell</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.editCell-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.editCell-expanded"><a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt class="py-docstring">        Editar la celda actualmente seleccionada de self.tableedit</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">tabledetails</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Method src.inventario.catalogos.frmCatProveedores.edit()=src.inventario.catalogos.frmCatProveedores-class.html#edit,Method src.utility.catgeneric.frmCatGeneric.edit()=src.utility.catgeneric.frmCatGeneric-class.html#edit"><a title="src.inventario.catalogos.frmCatProveedores.edit
+src.utility.catgeneric.frmCatGeneric.edit" class="py-name" href="#" onclick="return doclink('link-3', 'edit', 'link-3');">edit</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">tabledetails</tt><tt class="py-op">.</tt><tt class="py-name">selectionModel</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">currentIndex</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">"QDateTime"</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_dtPicker_dateTimeChanged"></a><div id="Base.on_dtPicker_dateTimeChanged-def"><a name="L62"></a><tt class="py-lineno"> 62</tt> <a class="py-toggle" href="#" id="Base.on_dtPicker_dateTimeChanged-toggle" onclick="return toggle('Base.on_dtPicker_dateTimeChanged');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_dtPicker_dateTimeChanged">on_dtPicker_dateTimeChanged</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">datetime</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_dtPicker_dateTimeChanged-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_dtPicker_dateTimeChanged-expanded"><a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"><tt class="py-docstring">        Cambiar el tipo de cambio del modelo de edici&#243;n si cambia la fecha</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"><tt class="py-docstring">        @param datetime: La fecha contenida en self.dtPicker</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt class="py-docstring">        @type datetime: QDateTime</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-4', 'database', 'link-0');">database</a></tt><tt class="py-op">.</tt><tt class="py-name">isOpen</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-5', 'database', 'link-0');">database</a></tt><tt class="py-op">.</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">                        <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt> <tt class="py-string">"No se pudo conectar a la base de datos para recuperar los tipos de cambio"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">                <tt class="py-name">query</tt> <tt class="py-op">=</tt> <tt class="py-name">QSqlQuery</tt><tt class="py-op">(</tt> <tt class="py-string">"SELECT idtc, tasa FROM tiposcambio WHERE fecha = "</tt> <tt class="py-op">+</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt class="py-name">toString</tt><tt class="py-op">(</tt> <tt class="py-string">"yyyyMMdd"</tt> <tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">" LIMIT 1"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method src.contabilidad.conciliacion.dlgSelectCuenta.exec_()=src.contabilidad.conciliacion.dlgSelectCuenta-class.html#exec_"><a title="src.contabilidad.conciliacion.dlgSelectCuenta.exec_" class="py-name" href="#" onclick="return doclink('link-6', 'exec_', 'link-6');">exec_</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                    <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt> <tt class="py-string">"No se pudieron recuperar los tipos de cambio"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">first</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">                    <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt> <tt class="py-string">u"La consulta para el tipo de cambio no devolvio ningun valor"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt class="py-name">datetime</tt> <tt class="py-op">=</tt> <tt class="py-name">datetime</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt class="py-name">exchangeRateId</tt> <tt class="py-op">=</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">(</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">toInt</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt class="py-name">exchangeRate</tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">(</tt> <tt class="py-number">1</tt> <tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">toString</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method src.caja.banks.frmBanks.setData()=src.caja.banks.frmBanks-class.html#setData,Method src.caja.cajas.frmCajas.setData()=src.caja.cajas.frmCajas-class.html#setData,Method src.contabilidad.cuentas.Account.setData()=src.contabilidad.cuentas.Account-class.html#setData,Method src.contabilidad.cuentas.AccountsModel.setData()=src.contabilidad.cuentas.AccountsModel-class.html#setData,Method src.document.arqueo.arqueomodel.ArqueoModel.setData()=src.document.arqueo.arqueomodel.ArqueoModel-class.html#setData,Method src.document.conciliacion.conciliacionmodel.ConciliacionModel.setData()=src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#setData,Method src.document.devolucion.devolucionmodel.DevolucionModel.setData()=src.document.devolucion.devolucionmodel.DevolucionModel-class.html#setData,Method src.document.entradacompra.entradacompramodel.EntradaCompraModel.setData()=src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#setData,Method src.document.factura.facturamodel.FacturaModel.setData()=src.document.factura.facturamodel.FacturaModel-class.html#setData,Method src.document.liquidacion.liquidacionmodel.LiquidacionModel.setData()=src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#setData,Method src.document.recibo.abonomodel.AbonoModel.setData()=src.document.recibo.abonomodel.AbonoModel-class.html#setData,Method src.document.recibo.recibomodel.ReciboModel.setData()=src.document.recibo.recibomodel.ReciboModel-class.html#setData,Method src.inventario.articulos.ArticlesModel.setData()=src.inventario.articulos.ArticlesModel-class.html#setData,Method src.inventario.catalogos.ProvidersModel.setData()=src.inventario.catalogos.ProvidersModel-class.html#setData,Method src.inventario.categorias.CategoriesModel.setData()=src.inventario.categorias.CategoriesModel-class.html#setData,Method src.inventario.categorias.CategoryItem.setData()=src.inventario.categorias.CategoryItem-class.html#setData,Method src.test.CategoriesModel.setData()=src.test.CategoriesModel-class.html#setData,Method src.test.CategoryItem.setData()=src.test.CategoryItem-class.html#setData,Method src.utility.accountselector.AccountsSelectorModel.setData()=src.utility.accountselector.AccountsSelectorModel-class.html#setData,Method src.utility.catgeneric.CatalogModel.setData()=src.utility.catgeneric.CatalogModel-class.html#setData"><a title="src.caja.banks.frmBanks.setData
+src.caja.cajas.frmCajas.setData
+src.contabilidad.cuentas.Account.setData
+src.contabilidad.cuentas.AccountsModel.setData
+src.document.arqueo.arqueomodel.ArqueoModel.setData
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.setData
+src.document.devolucion.devolucionmodel.DevolucionModel.setData
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.setData
+src.document.factura.facturamodel.FacturaModel.setData
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.setData
+src.document.recibo.abonomodel.AbonoModel.setData
+src.document.recibo.recibomodel.ReciboModel.setData
+src.inventario.articulos.ArticlesModel.setData
+src.inventario.catalogos.ProvidersModel.setData
+src.inventario.categorias.CategoriesModel.setData
+src.inventario.categorias.CategoryItem.setData
+src.test.CategoriesModel.setData
+src.test.CategoryItem.setData
+src.utility.accountselector.AccountsSelectorModel.setData
+src.utility.catgeneric.CatalogModel.setData" class="py-name" href="#" onclick="return doclink('link-7', 'setData', 'link-7');">setData</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method src.contabilidad.cuentas.AccountsModel.index()=src.contabilidad.cuentas.AccountsModel-class.html#index,Method src.inventario.categorias.CategoriesModel.index()=src.inventario.categorias.CategoriesModel-class.html#index,Method src.test.CategoriesModel.index()=src.test.CategoriesModel-class.html#index,Method src.utility.widgets.searchpanel.SearchPanel.index()=src.utility.widgets.searchpanel.SearchPanel-class.html#index"><a title="src.contabilidad.cuentas.AccountsModel.index
+src.inventario.categorias.CategoriesModel.index
+src.test.CategoriesModel.index
+src.utility.widgets.searchpanel.SearchPanel.index" class="py-name" href="#" onclick="return doclink('link-8', 'index', 'link-8');">index</a></tt><tt class="py-op">(</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name"><a title="src.contabilidad.cuentas.AccountsModel.index
+src.inventario.categorias.CategoriesModel.index
+src.test.CategoriesModel.index
+src.utility.widgets.searchpanel.SearchPanel.index" class="py-name" href="#" onclick="return doclink('link-9', 'index', 'link-8');">index</a></tt><tt class="py-op">(</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method src.caja.cheques.RONavigationModel.data()=src.caja.cheques.RONavigationModel-class.html#data,Method src.caja.factura.RODetailsModel.data()=src.caja.factura.RODetailsModel-class.html#data,Method src.caja.factura.RONavigationModel.data()=src.caja.factura.RONavigationModel-class.html#data,Method src.caja.recibo.ROAbonosModel.data()=src.caja.recibo.ROAbonosModel-class.html#data,Method src.caja.recibo.RODetailsModel.data()=src.caja.recibo.RODetailsModel-class.html#data,Method src.caja.recibo.ROFacturasModel.data()=src.caja.recibo.ROFacturasModel-class.html#data,Method src.caja.recibo.RONavigationModel.data()=src.caja.recibo.RONavigationModel-class.html#data,Method src.contabilidad.conciliacion.DetalleTableModel.data()=src.contabilidad.conciliacion.DetalleTableModel-class.html#data,Method src.contabilidad.conciliacion.RONavigationModel.data()=src.contabilidad.conciliacion.RONavigationModel-class.html#data,Method src.contabilidad.conciliacion.ReadOnlyTableModel.data()=src.contabilidad.conciliacion.ReadOnlyTableModel-class.html#data,Method src.contabilidad.cuentas.Account.data()=src.contabilidad.cuentas.Account-class.html#data,Method src.contabilidad.cuentas.AccountsModel.data()=src.contabilidad.cuentas.AccountsModel-class.html#data,Method src.document.arqueo.arqueomodel.ArqueoModel.data()=src.document.arqueo.arqueomodel.ArqueoModel-class.html#data,Method src.document.conciliacion.conciliacionmodel.ConciliacionModel.data()=src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#data,Method src.document.devolucion.devolucionmodel.DevolucionModel.data()=src.document.devolucion.devolucionmodel.DevolucionModel-class.html#data,Method src.document.entradacompra.entradacompramodel.EntradaCompraModel.data()=src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#data,Method src.document.factura.facturadelegate.SingleSelectionModel.data()=src.document.factura.facturadelegate.SingleSelectionModel-class.html#data,Method src.document.factura.facturamodel.FacturaModel.data()=src.document.factura.facturamodel.FacturaModel-class.html#data,Method src.document.liquidacion.liquidaciondelegate.ArticlesModel.data()=src.document.liquidacion.liquidaciondelegate.ArticlesModel-class.html#data,Method src.document.liquidacion.liquidacionmodel.LiquidacionModel.data()=src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#data,Method src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.data()=src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel-class.html#data,Method src.document.recibo.abonomodel.AbonoModel.data()=src.document.recibo.abonomodel.AbonoModel-class.html#data,Method src.document.recibo.recibomodel.ReciboModel.data()=src.document.recibo.recibomodel.ReciboModel-class.html#data,Method src.inventario.articulos.ArticlesModel.data()=src.inventario.articulos.ArticlesModel-class.html#data,Method src.inventario.catalogos.ProvidersModel.data()=src.inventario.catalogos.ProvidersModel-class.html#data,Method src.inventario.categorias.CategoriesModel.data()=src.inventario.categorias.CategoriesModel-class.html#data,Method src.inventario.categorias.CategoryItem.data()=src.inventario.categorias.CategoryItem-class.html#data,Method src.inventario.devolucion.RONavigationModel.data()=src.inventario.devolucion.RONavigationModel-class.html#data,Method src.inventario.devolucion.ReadOnlyTableModel.data()=src.inventario.devolucion.ReadOnlyTableModel-class.html#data,Method src.inventario.entradacompra.RONavigationModel.data()=src.inventario.entradacompra.RONavigationModel-class.html#data,Method src.inventario.liquidacion.ROAccountsModel.data()=src.inventario.liquidacion.ROAccountsModel-class.html#data,Method src.inventario.liquidacion.RODetailsModel.data()=src.inventario.liquidacion.RODetailsModel-class.html#data,Method src.test.CategoriesModel.data()=src.test.CategoriesModel-class.html#data,Method src.test.CategoryItem.data()=src.test.CategoryItem-class.html#data,Method src.utility.accountselector.AccountsSelectorModel.data()=src.utility.accountselector.AccountsSelectorModel-class.html#data,Method src.utility.singleselectionmodel.SingleSelectionModel.data()=src.utility.singleselectionmodel.SingleSelectionModel-class.html#data,Method src.utility.widgets.searchpanel.SearchPanel.data()=src.utility.widgets.searchpanel.SearchPanel-class.html#data"><a title="src.caja.cheques.RONavigationModel.data
+src.caja.factura.RODetailsModel.data
+src.caja.factura.RONavigationModel.data
+src.caja.recibo.ROAbonosModel.data
+src.caja.recibo.RODetailsModel.data
+src.caja.recibo.ROFacturasModel.data
+src.caja.recibo.RONavigationModel.data
+src.contabilidad.conciliacion.DetalleTableModel.data
+src.contabilidad.conciliacion.RONavigationModel.data
+src.contabilidad.conciliacion.ReadOnlyTableModel.data
+src.contabilidad.cuentas.Account.data
+src.contabilidad.cuentas.AccountsModel.data
+src.document.arqueo.arqueomodel.ArqueoModel.data
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.data
+src.document.devolucion.devolucionmodel.DevolucionModel.data
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.data
+src.document.factura.facturadelegate.SingleSelectionModel.data
+src.document.factura.facturamodel.FacturaModel.data
+src.document.liquidacion.liquidaciondelegate.ArticlesModel.data
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.data
+src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.data
+src.document.recibo.abonomodel.AbonoModel.data
+src.document.recibo.recibomodel.ReciboModel.data
+src.inventario.articulos.ArticlesModel.data
+src.inventario.catalogos.ProvidersModel.data
+src.inventario.categorias.CategoriesModel.data
+src.inventario.categorias.CategoryItem.data
+src.inventario.devolucion.RONavigationModel.data
+src.inventario.devolucion.ReadOnlyTableModel.data
+src.inventario.entradacompra.RONavigationModel.data
+src.inventario.liquidacion.ROAccountsModel.data
+src.inventario.liquidacion.RODetailsModel.data
+src.test.CategoriesModel.data
+src.test.CategoryItem.data
+src.utility.accountselector.AccountsSelectorModel.data
+src.utility.singleselectionmodel.SingleSelectionModel.data
+src.utility.widgets.searchpanel.SearchPanel.data" class="py-name" href="#" onclick="return doclink('link-10', 'data', 'link-10');">data</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt class="py-name">Exception</tt><tt class="py-op">,</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">                <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">critical</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-string">"Llantera Esquipulas"</tt><tt class="py-op">,</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt> <tt class="py-name">e</tt> <tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt> <tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dtPicker</tt><tt class="py-op">.</tt><tt class="py-name">setDateTime</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt class="py-name">datetime</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="Base.navigate"></a><div id="Base.navigate-def"><a name="L89"></a><tt class="py-lineno"> 89</tt> <a class="py-toggle" href="#" id="Base.navigate-toggle" onclick="return toggle('Base.navigate');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#navigate">navigate</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">to</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.navigate-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.navigate-expanded"><a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"><tt class="py-docstring">        Esta funcion se encarga de navegar entro los distintos documentos</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"><tt class="py-docstring">        @param to: es una string que puede tomar los valores 'next' 'previous' 'first' 'last'</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">currentIndex</tt> <tt class="py-op">!=</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">            <tt id="link-11" class="py-name" targets="Method src.contabilidad.cuentas.Account.row()=src.contabilidad.cuentas.Account-class.html#row"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-11', 'row', 'link-11');">row</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">currentIndex</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">to</tt> <tt class="py-op">==</tt> <tt class="py-string">"next"</tt><tt class="py-op">:</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">                <tt id="link-12" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-12', 'row', 'link-11');">row</a></tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt id="link-13" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-13', 'row', 'link-11');">row</a></tt> <tt class="py-op">&gt;=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">navproxymodel</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method src.contabilidad.conciliacion.DetalleTableModel.rowCount()=src.contabilidad.conciliacion.DetalleTableModel-class.html#rowCount,Method src.contabilidad.cuentas.AccountsModel.rowCount()=src.contabilidad.cuentas.AccountsModel-class.html#rowCount,Method src.document.arqueo.arqueomodel.ArqueoModel.rowCount()=src.document.arqueo.arqueomodel.ArqueoModel-class.html#rowCount,Method src.document.conciliacion.conciliacionmodel.ConciliacionModel.rowCount()=src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#rowCount,Method src.document.devolucion.devolucionmodel.DevolucionModel.rowCount()=src.document.devolucion.devolucionmodel.DevolucionModel-class.html#rowCount,Method src.document.entradacompra.entradacompramodel.EntradaCompraModel.rowCount()=src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#rowCount,Method src.document.factura.facturadelegate.SingleSelectionModel.rowCount()=src.document.factura.facturadelegate.SingleSelectionModel-class.html#rowCount,Method src.document.factura.facturamodel.FacturaModel.rowCount()=src.document.factura.facturamodel.FacturaModel-class.html#rowCount,Method src.document.liquidacion.liquidaciondelegate.ArticlesModel.rowCount()=src.document.liquidacion.liquidaciondelegate.ArticlesModel-class.html#rowCount,Method src.document.liquidacion.liquidacionmodel.LiquidacionModel.rowCount()=src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#rowCount,Method src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.rowCount()=src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel-class.html#rowCount,Method src.document.recibo.abonomodel.AbonoModel.rowCount()=src.document.recibo.abonomodel.AbonoModel-class.html#rowCount,Method src.document.recibo.recibomodel.ReciboModel.rowCount()=src.document.recibo.recibomodel.ReciboModel-class.html#rowCount,Method src.inventario.categorias.CategoriesModel.rowCount()=src.inventario.categorias.CategoriesModel-class.html#rowCount,Method src.test.CategoriesModel.rowCount()=src.test.CategoriesModel-class.html#rowCount,Method src.utility.accountselector.AccountsSelectorModel.rowCount()=src.utility.accountselector.AccountsSelectorModel-class.html#rowCount,Method src.utility.singleselectionmodel.SingleSelectionModel.rowCount()=src.utility.singleselectionmodel.SingleSelectionModel-class.html#rowCount"><a title="src.contabilidad.conciliacion.DetalleTableModel.rowCount
+src.contabilidad.cuentas.AccountsModel.rowCount
+src.document.arqueo.arqueomodel.ArqueoModel.rowCount
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.rowCount
+src.document.devolucion.devolucionmodel.DevolucionModel.rowCount
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.rowCount
+src.document.factura.facturadelegate.SingleSelectionModel.rowCount
+src.document.factura.facturamodel.FacturaModel.rowCount
+src.document.liquidacion.liquidaciondelegate.ArticlesModel.rowCount
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.rowCount
+src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.rowCount
+src.document.recibo.abonomodel.AbonoModel.rowCount
+src.document.recibo.recibomodel.ReciboModel.rowCount
+src.inventario.categorias.CategoriesModel.rowCount
+src.test.CategoriesModel.rowCount
+src.utility.accountselector.AccountsSelectorModel.rowCount
+src.utility.singleselectionmodel.SingleSelectionModel.rowCount" class="py-name" href="#" onclick="return doclink('link-14', 'rowCount', 'link-14');">rowCount</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">                    <tt id="link-15" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-15', 'row', 'link-11');">row</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">navproxymodel</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="src.contabilidad.conciliacion.DetalleTableModel.rowCount
+src.contabilidad.cuentas.AccountsModel.rowCount
+src.document.arqueo.arqueomodel.ArqueoModel.rowCount
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.rowCount
+src.document.devolucion.devolucionmodel.DevolucionModel.rowCount
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.rowCount
+src.document.factura.facturadelegate.SingleSelectionModel.rowCount
+src.document.factura.facturamodel.FacturaModel.rowCount
+src.document.liquidacion.liquidaciondelegate.ArticlesModel.rowCount
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.rowCount
+src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.rowCount
+src.document.recibo.abonomodel.AbonoModel.rowCount
+src.document.recibo.recibomodel.ReciboModel.rowCount
+src.inventario.categorias.CategoriesModel.rowCount
+src.test.CategoriesModel.rowCount
+src.utility.accountselector.AccountsSelectorModel.rowCount
+src.utility.singleselectionmodel.SingleSelectionModel.rowCount" class="py-name" href="#" onclick="return doclink('link-16', 'rowCount', 'link-14');">rowCount</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">-</tt> <tt class="py-number">1</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">setCurrentIndex</tt><tt class="py-op">(</tt> <tt id="link-17" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-17', 'row', 'link-11');">row</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">to</tt> <tt class="py-op">==</tt> <tt class="py-string">"previous"</tt><tt class="py-op">:</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt id="link-18" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-18', 'row', 'link-11');">row</a></tt> <tt class="py-op">&lt;=</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt> <tt id="link-19" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-19', 'row', 'link-11');">row</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">                <tt class="py-keyword">else</tt><tt class="py-op">:</tt> <tt id="link-20" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-20', 'row', 'link-11');">row</a></tt> <tt class="py-op">=</tt> <tt id="link-21" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-21', 'row', 'link-11');">row</a></tt> <tt class="py-op">-</tt> <tt class="py-number">1</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">setCurrentIndex</tt><tt class="py-op">(</tt> <tt id="link-22" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-22', 'row', 'link-11');">row</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">to</tt> <tt class="py-op">==</tt> <tt class="py-string">"first"</tt><tt class="py-op">:</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">toFirst</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">to</tt> <tt class="py-op">==</tt> <tt class="py-string">"last"</tt><tt class="py-op">:</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">toLast</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">toLast</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">tabledetails</tt><tt class="py-op">.</tt><tt class="py-name">resizeColumnsToContents</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">tablenavigation</tt><tt class="py-op">.</tt><tt class="py-name">selectRow</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">currentIndex</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"> </tt>
+<a name="Base.updateDetailFilter"></a><div id="Base.updateDetailFilter-def"><a name="L116"></a><tt class="py-lineno">116</tt> <a class="py-toggle" href="#" id="Base.updateDetailFilter-toggle" onclick="return toggle('Base.updateDetailFilter');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#updateDetailFilter">updateDetailFilter</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">index</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.updateDetailFilter-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.updateDetailFilter-expanded"><a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"><tt class="py-docstring">        Esta funci&#243;n se debe implementar en los formularios para que al navegar se actualize</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"><tt class="py-docstring">        el filtro de la tabla detalles</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"><tt class="py-docstring">        @param index: Este es el indice del mapper en el que actualmente se encuentra navegando</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"><tt class="py-docstring">        @type index: int </tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"> </tt>
+<a name="Base.loadModels"></a><div id="Base.loadModels-def"><a name="L125"></a><tt class="py-lineno">125</tt> <a class="py-toggle" href="#" id="Base.loadModels-toggle" onclick="return toggle('Base.loadModels');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#loadModels">loadModels</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.loadModels-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.loadModels-expanded"><a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line"><tt class="py-docstring">        Esta funci&#243;n se ejecuta en el constructor del formulario mediante un QTimer,</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line"><tt class="py-docstring">        carga los formularios por primera vez</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method src.caja.arqueo.frmArqueo.updateModels()=src.caja.arqueo.frmArqueo-class.html#updateModels,Method src.caja.banks.frmBanks.updateModels()=src.caja.banks.frmBanks-class.html#updateModels,Method src.caja.cajas.frmCajas.updateModels()=src.caja.cajas.frmCajas-class.html#updateModels,Method src.caja.catalogos.frmCatClientes.updateModels()=src.caja.catalogos.frmCatClientes-class.html#updateModels,Method src.caja.cheques.frmCheques.updateModels()=src.caja.cheques.frmCheques-class.html#updateModels,Method src.caja.factura.frmFactura.updateModels()=src.caja.factura.frmFactura-class.html#updateModels,Method src.caja.recibo.frmRecibo.updateModels()=src.caja.recibo.frmRecibo-class.html#updateModels,Method src.contabilidad.conciliacion.frmConciliacion.updateModels()=src.contabilidad.conciliacion.frmConciliacion-class.html#updateModels,Method src.contabilidad.operations.frmOperations.updateModels()=src.contabilidad.operations.frmOperations-class.html#updateModels,Method src.inventario.articulos.frmArticulos.updateModels()=src.inventario.articulos.frmArticulos-class.html#updateModels,Method src.inventario.catalogos.frmCatBodegas.updateModels()=src.inventario.catalogos.frmCatBodegas-class.html#updateModels,Method src.inventario.catalogos.frmCatCategorias.updateModels()=src.inventario.catalogos.frmCatCategorias-class.html#updateModels,Method src.inventario.catalogos.frmCatConceptos.updateModels()=src.inventario.catalogos.frmCatConceptos-class.html#updateModels,Method src.inventario.catalogos.frmCatMarcas.updateModels()=src.inventario.catalogos.frmCatMarcas-class.html#updateModels,Method src.inventario.catalogos.frmCatProveedores.updateModels()=src.inventario.catalogos.frmCatProveedores-class.html#updateModels,Method src.inventario.devolucion.frmDevolucion.updateModels()=src.inventario.devolucion.frmDevolucion-class.html#updateModels,Method src.inventario.entradacompra.frmEntradaCompra.updateModels()=src.inventario.entradacompra.frmEntradaCompra-class.html#updateModels,Method src.inventario.kardex.frmKardex.updateModels()=src.inventario.kardex.frmKardex-class.html#updateModels,Method src.inventario.liquidacion.frmLiquidacion.updateModels()=src.inventario.liquidacion.frmLiquidacion-class.html#updateModels,Method src.utility.catgeneric.frmCatGeneric.updateModels()=src.utility.catgeneric.frmCatGeneric-class.html#updateModels"><a title="src.caja.arqueo.frmArqueo.updateModels
+src.caja.banks.frmBanks.updateModels
+src.caja.cajas.frmCajas.updateModels
+src.caja.catalogos.frmCatClientes.updateModels
+src.caja.cheques.frmCheques.updateModels
+src.caja.factura.frmFactura.updateModels
+src.caja.recibo.frmRecibo.updateModels
+src.contabilidad.conciliacion.frmConciliacion.updateModels
+src.contabilidad.operations.frmOperations.updateModels
+src.inventario.articulos.frmArticulos.updateModels
+src.inventario.catalogos.frmCatBodegas.updateModels
+src.inventario.catalogos.frmCatCategorias.updateModels
+src.inventario.catalogos.frmCatConceptos.updateModels
+src.inventario.catalogos.frmCatMarcas.updateModels
+src.inventario.catalogos.frmCatProveedores.updateModels
+src.inventario.devolucion.frmDevolucion.updateModels
+src.inventario.entradacompra.frmEntradaCompra.updateModels
+src.inventario.kardex.frmKardex.updateModels
+src.inventario.liquidacion.frmLiquidacion.updateModels
+src.utility.catgeneric.frmCatGeneric.updateModels" class="py-name" href="#" onclick="return doclink('link-23', 'updateModels', 'link-23');">updateModels</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Method src.utility.base.Base.navigate()=src.utility.base.Base-class.html#navigate"><a title="src.utility.base.Base.navigate" class="py-name" href="#" onclick="return doclink('link-24', 'navigate', 'link-24');">navigate</a></tt><tt class="py-op">(</tt> <tt class="py-string">'last'</tt> <tt class="py-op">)</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name" targets="Variable src.contabilidad.operations.frmOperations.status=src.contabilidad.operations.frmOperations-class.html#status,Variable src.utility.base.Base.status=src.utility.base.Base-class.html#status,Variable src.utility.catgeneric.frmCatGeneric.status=src.utility.catgeneric.frmCatGeneric-class.html#status,Variable src.utility.mainwindowbase.MainWindowBase.status=src.utility.mainwindowbase.MainWindowBase-class.html#status"><a title="src.contabilidad.operations.frmOperations.status
+src.utility.base.Base.status
+src.utility.catgeneric.frmCatGeneric.status
+src.utility.mainwindowbase.MainWindowBase.status" class="py-name" href="#" onclick="return doclink('link-25', 'status', 'link-25');">status</a></tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+</div><a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line"> </tt>
+<a name="Base.setStatus"></a><div id="Base.setStatus-def"><a name="L134"></a><tt class="py-lineno">134</tt> <a class="py-toggle" href="#" id="Base.setStatus-toggle" onclick="return toggle('Base.setStatus');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#setStatus">setStatus</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">stat</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.setStatus-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.setStatus-expanded"><a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line"><tt class="py-docstring">        @param stat:  False = editando, True = navegando</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line"><tt class="py-docstring">        @type stat: bool</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__status</tt> <tt class="py-op">=</tt> <tt class="py-name">stat</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Method src.caja.arqueo.frmArqueo.setControls()=src.caja.arqueo.frmArqueo-class.html#setControls,Method src.caja.cheques.frmCheques.setControls()=src.caja.cheques.frmCheques-class.html#setControls,Method src.caja.factura.frmFactura.setControls()=src.caja.factura.frmFactura-class.html#setControls,Method src.caja.mainwindow.MainWindow.setControls()=src.caja.mainwindow.MainWindow-class.html#setControls,Method src.caja.recibo.frmRecibo.setControls()=src.caja.recibo.frmRecibo-class.html#setControls,Method src.contabilidad.conciliacion.frmConciliacion.setControls()=src.contabilidad.conciliacion.frmConciliacion-class.html#setControls,Method src.contabilidad.mainwindow.MainWindow.setControls()=src.contabilidad.mainwindow.MainWindow-class.html#setControls,Method src.inventario.devolucion.frmDevolucion.setControls()=src.inventario.devolucion.frmDevolucion-class.html#setControls,Method src.inventario.entradacompra.frmEntradaCompra.setControls()=src.inventario.entradacompra.frmEntradaCompra-class.html#setControls,Method src.inventario.kardex.frmKardex.setControls()=src.inventario.kardex.frmKardex-class.html#setControls,Method src.inventario.liquidacion.frmLiquidacion.setControls()=src.inventario.liquidacion.frmLiquidacion-class.html#setControls,Method src.inventario.mainwindow.MainWindow.setControls()=src.inventario.mainwindow.MainWindow-class.html#setControls,Method src.utility.base.Base.setControls()=src.utility.base.Base-class.html#setControls,Method src.utility.mainwindowbase.MainWindowBase.setControls()=src.utility.mainwindowbase.MainWindowBase-class.html#setControls"><a title="src.caja.arqueo.frmArqueo.setControls
+src.caja.cheques.frmCheques.setControls
+src.caja.factura.frmFactura.setControls
+src.caja.mainwindow.MainWindow.setControls
+src.caja.recibo.frmRecibo.setControls
+src.contabilidad.conciliacion.frmConciliacion.setControls
+src.contabilidad.mainwindow.MainWindow.setControls
+src.inventario.devolucion.frmDevolucion.setControls
+src.inventario.entradacompra.frmEntradaCompra.setControls
+src.inventario.kardex.frmKardex.setControls
+src.inventario.liquidacion.frmLiquidacion.setControls
+src.inventario.mainwindow.MainWindow.setControls
+src.utility.base.Base.setControls
+src.utility.mainwindowbase.MainWindowBase.setControls" class="py-name" href="#" onclick="return doclink('link-26', 'setControls', 'link-26');">setControls</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__status</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="Base.getStatus"></a><div id="Base.getStatus-def"><a name="L141"></a><tt class="py-lineno">141</tt> <a class="py-toggle" href="#" id="Base.getStatus-toggle" onclick="return toggle('Base.getStatus');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#getStatus">getStatus</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.getStatus-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.getStatus-expanded"><a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line"><tt class="py-docstring">        esta propiedad cambia entre navegar y editar</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__status</tt> </tt>
+</div><a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">    <tt id="link-27" class="py-name"><a title="src.contabilidad.operations.frmOperations.status
+src.utility.base.Base.status
+src.utility.catgeneric.frmCatGeneric.status
+src.utility.mainwindowbase.MainWindowBase.status" class="py-name" href="#" onclick="return doclink('link-27', 'status', 'link-25');">status</a></tt> <tt class="py-op">=</tt> <tt class="py-name">property</tt><tt class="py-op">(</tt> <tt id="link-28" class="py-name" targets="Method src.contabilidad.operations.frmOperations.getStatus()=src.contabilidad.operations.frmOperations-class.html#getStatus,Method src.utility.base.Base.getStatus()=src.utility.base.Base-class.html#getStatus,Method src.utility.catgeneric.frmCatGeneric.getStatus()=src.utility.catgeneric.frmCatGeneric-class.html#getStatus,Method src.utility.mainwindowbase.MainWindowBase.getStatus()=src.utility.mainwindowbase.MainWindowBase-class.html#getStatus"><a title="src.contabilidad.operations.frmOperations.getStatus
+src.utility.base.Base.getStatus
+src.utility.catgeneric.frmCatGeneric.getStatus
+src.utility.mainwindowbase.MainWindowBase.getStatus" class="py-name" href="#" onclick="return doclink('link-28', 'getStatus', 'link-28');">getStatus</a></tt><tt class="py-op">,</tt> <tt id="link-29" class="py-name" targets="Method src.contabilidad.operations.frmOperations.setStatus()=src.contabilidad.operations.frmOperations-class.html#setStatus,Method src.utility.base.Base.setStatus()=src.utility.base.Base-class.html#setStatus,Method src.utility.catgeneric.frmCatGeneric.setStatus()=src.utility.catgeneric.frmCatGeneric-class.html#setStatus,Method src.utility.mainwindowbase.MainWindowBase.setStatus()=src.utility.mainwindowbase.MainWindowBase-class.html#setStatus"><a title="src.contabilidad.operations.frmOperations.setStatus
+src.utility.base.Base.setStatus
+src.utility.catgeneric.frmCatGeneric.setStatus
+src.utility.mainwindowbase.MainWindowBase.setStatus" class="py-name" href="#" onclick="return doclink('link-29', 'setStatus', 'link-29');">setStatus</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line"> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">"QString"</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_txtSearch_textChanged"></a><div id="Base.on_txtSearch_textChanged-def"><a name="L150"></a><tt class="py-lineno">150</tt> <a class="py-toggle" href="#" id="Base.on_txtSearch_textChanged-toggle" onclick="return toggle('Base.on_txtSearch_textChanged');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_txtSearch_textChanged">on_txtSearch_textChanged</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">searchstring</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_txtSearch_textChanged-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_txtSearch_textChanged-expanded"><a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line"><tt class="py-docstring">        Cambiar el filtro para el navigation model</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"><tt class="py-docstring">        @param searchstring: Es el contenido por el cual se va a filtrar el modelo de navegaci&#243;n</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line"><tt class="py-docstring">        @type searchstring: string</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">navproxymodel</tt><tt class="py-op">.</tt><tt class="py-name">setFilterFixedString</tt><tt class="py-op">(</tt> <tt class="py-name">searchstring</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line"> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">"QModelIndex"</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_tablenavigation_doubleClicked"></a><div id="Base.on_tablenavigation_doubleClicked-def"><a name="L159"></a><tt class="py-lineno">159</tt> <a class="py-toggle" href="#" id="Base.on_tablenavigation_doubleClicked-toggle" onclick="return toggle('Base.on_tablenavigation_doubleClicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_tablenavigation_doubleClicked">on_tablenavigation_doubleClicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">index</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_tablenavigation_doubleClicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_tablenavigation_doubleClicked-expanded"><a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line"><tt class="py-docstring">        Al hacer doble click en la tabla de navegaci&#243;n el se cambia a la pesta&#241;a detalles </tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line"><tt class="py-docstring">        mostrando el documento seleccionado</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line"><tt class="py-docstring">        @param index: El indice de la tabla en la que se dio doble click</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line"><tt class="py-docstring">        @type index: QModelIndex </tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">setCurrentIndex</tt><tt class="py-op">(</tt> <tt id="link-30" class="py-name"><a title="src.contabilidad.cuentas.AccountsModel.index
+src.inventario.categorias.CategoriesModel.index
+src.test.CategoriesModel.index
+src.utility.widgets.searchpanel.SearchPanel.index" class="py-name" href="#" onclick="return doclink('link-30', 'index', 'link-8');">index</a></tt><tt class="py-op">.</tt><tt id="link-31" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-31', 'row', 'link-11');">row</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">tabWidget</tt><tt class="py-op">.</tt><tt class="py-name">setCurrentIndex</tt><tt class="py-op">(</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line"> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">"QModelIndex"</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_tablenavigation_clicked"></a><div id="Base.on_tablenavigation_clicked-def"><a name="L170"></a><tt class="py-lineno">170</tt> <a class="py-toggle" href="#" id="Base.on_tablenavigation_clicked-toggle" onclick="return toggle('Base.on_tablenavigation_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_tablenavigation_clicked">on_tablenavigation_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">index</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_tablenavigation_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_tablenavigation_clicked-expanded"><a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">setCurrentIndex</tt><tt class="py-op">(</tt> <tt id="link-32" class="py-name"><a title="src.contabilidad.cuentas.AccountsModel.index
+src.inventario.categorias.CategoriesModel.index
+src.test.CategoriesModel.index
+src.utility.widgets.searchpanel.SearchPanel.index" class="py-name" href="#" onclick="return doclink('link-32', 'index', 'link-8');">index</a></tt><tt class="py-op">.</tt><tt id="link-33" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-33', 'row', 'link-11');">row</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line"> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line"> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_actionSave_activated"></a><div id="Base.on_actionSave_activated-def"><a name="L175"></a><tt class="py-lineno">175</tt> <a class="py-toggle" href="#" id="Base.on_actionSave_activated-toggle" onclick="return toggle('Base.on_actionSave_activated');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_actionSave_activated">on_actionSave_activated</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_actionSave_activated-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_actionSave_activated-expanded"><a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line"><tt class="py-docstring">        Guardar el documento actual</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt id="link-34" class="py-name" targets="Method src.contabilidad.conciliacion.frmConciliacion.valid()=src.contabilidad.conciliacion.frmConciliacion-class.html#valid,Method src.contabilidad.notascd.DatosDoc.valid()=src.contabilidad.notascd.DatosDoc-class.html#valid,Method src.contabilidad.notascd.dlgNotasCD.valid()=src.contabilidad.notascd.dlgNotasCD-class.html#valid,Method src.document.arqueo.arqueomodel.ArqueoModel.valid()=src.document.arqueo.arqueomodel.ArqueoModel-class.html#valid,Variable src.document.arqueo.lineaarqueo.LineaArqueo.valid=src.document.arqueo.lineaarqueo.LineaArqueo-class.html#valid,Method src.document.conciliacion.conciliacionmodel.ConciliacionModel.valid()=src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#valid,Variable src.document.conciliacion.lineaconciliacion.LineaConciliacion.valid=src.document.conciliacion.lineaconciliacion.LineaConciliacion-class.html#valid,Method src.document.devolucion.devolucionmodel.DevolucionModel.valid()=src.document.devolucion.devolucionmodel.DevolucionModel-class.html#valid,Variable src.document.devolucion.lineadevolucion.LineaDevolucion.valid=src.document.devolucion.lineadevolucion.LineaDevolucion-class.html#valid,Method src.document.entradacompra.entradacompramodel.EntradaCompraModel.valid()=src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#valid,Variable src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid=src.document.entradacompra.lineaentradacompra.LineaEntradaCompra-class.html#valid,Method src.document.factura.facturamodel.FacturaModel.valid()=src.document.factura.facturamodel.FacturaModel-class.html#valid,Variable src.document.factura.lineafactura.LineaFactura.valid=src.document.factura.lineafactura.LineaFactura-class.html#valid,Variable src.document.liquidacion.linealiquidacion.LineaLiquidacion.valid=src.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#valid,Method src.document.liquidacion.liquidacionmodel.LiquidacionModel.valid()=src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#valid,Variable src.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid=src.document.movimientosbancarios.datosdocmodel.DatosDocModel-class.html#valid,Method src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid()=src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel-class.html#valid,Method src.document.recibo.abonomodel.AbonoModel.valid()=src.document.recibo.abonomodel.AbonoModel-class.html#valid,Variable src.document.recibo.lineaabono.LineaAbono.valid=src.document.recibo.lineaabono.LineaAbono-class.html#valid,Variable src.document.recibo.linearecibo.LineaRecibo.valid=src.document.recibo.linearecibo.LineaRecibo-class.html#valid,Method src.document.recibo.recibomodel.ReciboModel.valid()=src.document.recibo.recibomodel.ReciboModel-class.html#valid,Method src.utility.accountselector.AccountsSelectorLine.valid()=src.utility.accountselector.AccountsSelectorLine-class.html#valid,Method src.utility.accountselector.AccountsSelectorModel.valid()=src.utility.accountselector.AccountsSelectorModel-class.html#valid,Method src.utility.user.User.valid()=src.utility.user.User-class.html#valid"><a title="src.contabilidad.conciliacion.frmConciliacion.valid
+src.contabilidad.notascd.DatosDoc.valid
+src.contabilidad.notascd.dlgNotasCD.valid
+src.document.arqueo.arqueomodel.ArqueoModel.valid
+src.document.arqueo.lineaarqueo.LineaArqueo.valid
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.valid
+src.document.conciliacion.lineaconciliacion.LineaConciliacion.valid
+src.document.devolucion.devolucionmodel.DevolucionModel.valid
+src.document.devolucion.lineadevolucion.LineaDevolucion.valid
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.valid
+src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid
+src.document.factura.facturamodel.FacturaModel.valid
+src.document.factura.lineafactura.LineaFactura.valid
+src.document.liquidacion.linealiquidacion.LineaLiquidacion.valid
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.valid
+src.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid
+src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid
+src.document.recibo.abonomodel.AbonoModel.valid
+src.document.recibo.lineaabono.LineaAbono.valid
+src.document.recibo.linearecibo.LineaRecibo.valid
+src.document.recibo.recibomodel.ReciboModel.valid
+src.utility.accountselector.AccountsSelectorLine.valid
+src.utility.accountselector.AccountsSelectorModel.valid
+src.utility.user.User.valid" class="py-name" href="#" onclick="return doclink('link-34', 'valid', 'link-34');">valid</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">QSqlDatabase</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-35', 'database', 'link-0');">database</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">isOpen</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line">                <tt class="py-name">QSqlDatabase</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-36', 'database', 'link-0');">database</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line"> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name" targets="Method src.contabilidad.notascd.DatosDoc.save()=src.contabilidad.notascd.DatosDoc-class.html#save,Method src.contabilidad.notascd.dlgNotasCD.save()=src.contabilidad.notascd.dlgNotasCD-class.html#save,Method src.contabilidad.operations.frmOperations.save()=src.contabilidad.operations.frmOperations-class.html#save,Method src.document.arqueo.arqueomodel.ArqueoModel.save()=src.document.arqueo.arqueomodel.ArqueoModel-class.html#save,Method src.document.arqueo.lineaarqueo.LineaArqueo.save()=src.document.arqueo.lineaarqueo.LineaArqueo-class.html#save,Method src.document.conciliacion.conciliacionmodel.ConciliacionModel.save()=src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#save,Method src.document.conciliacion.lineaconciliacion.LineaConciliacion.save()=src.document.conciliacion.lineaconciliacion.LineaConciliacion-class.html#save,Method src.document.devolucion.devolucionmodel.DevolucionModel.save()=src.document.devolucion.devolucionmodel.DevolucionModel-class.html#save,Method src.document.devolucion.lineadevolucion.LineaDevolucion.save()=src.document.devolucion.lineadevolucion.LineaDevolucion-class.html#save,Method src.document.entradacompra.entradacompramodel.EntradaCompraModel.save()=src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#save,Method src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.save()=src.document.entradacompra.lineaentradacompra.LineaEntradaCompra-class.html#save,Method src.document.factura.facturamodel.FacturaModel.save()=src.document.factura.facturamodel.FacturaModel-class.html#save,Method src.document.factura.lineafactura.LineaFactura.save()=src.document.factura.lineafactura.LineaFactura-class.html#save,Method src.document.liquidacion.linealiquidacion.LineaLiquidacion.save()=src.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#save,Method src.document.liquidacion.liquidacionmodel.LiquidacionModel.save()=src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#save,Method src.document.movimientosbancarios.datosdocmodel.DatosDocModel.save()=src.document.movimientosbancarios.datosdocmodel.DatosDocModel-class.html#save,Method src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.save()=src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel-class.html#save,Method src.document.recibo.lineaabono.LineaAbono.save()=src.document.recibo.lineaabono.LineaAbono-class.html#save,Method src.document.recibo.linearecibo.LineaRecibo.save()=src.document.recibo.linearecibo.LineaRecibo-class.html#save,Method src.document.recibo.recibomodel.ReciboModel.save()=src.document.recibo.recibomodel.ReciboModel-class.html#save,Method src.utility.accountselector.AccountsSelectorLine.save()=src.utility.accountselector.AccountsSelectorLine-class.html#save"><a title="src.contabilidad.notascd.DatosDoc.save
+src.contabilidad.notascd.dlgNotasCD.save
+src.contabilidad.operations.frmOperations.save
+src.document.arqueo.arqueomodel.ArqueoModel.save
+src.document.arqueo.lineaarqueo.LineaArqueo.save
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.save
+src.document.conciliacion.lineaconciliacion.LineaConciliacion.save
+src.document.devolucion.devolucionmodel.DevolucionModel.save
+src.document.devolucion.lineadevolucion.LineaDevolucion.save
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.save
+src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.save
+src.document.factura.facturamodel.FacturaModel.save
+src.document.factura.lineafactura.LineaFactura.save
+src.document.liquidacion.linealiquidacion.LineaLiquidacion.save
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.save
+src.document.movimientosbancarios.datosdocmodel.DatosDocModel.save
+src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.save
+src.document.recibo.lineaabono.LineaAbono.save
+src.document.recibo.linearecibo.LineaRecibo.save
+src.document.recibo.recibomodel.ReciboModel.save
+src.utility.accountselector.AccountsSelectorLine.save" class="py-name" href="#" onclick="return doclink('link-37', 'save', 'link-37');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line">                <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">information</tt><tt class="py-op">(</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">                    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">trUtf8</tt><tt class="py-op">(</tt> <tt class="py-string">"Llantera Esquipulas"</tt> <tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line">                    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">trUtf8</tt><tt class="py-op">(</tt> <tt class="py-string">"""El documento se ha guardado con exito"""</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name"><a title="src.caja.arqueo.frmArqueo.updateModels
+src.caja.banks.frmBanks.updateModels
+src.caja.cajas.frmCajas.updateModels
+src.caja.catalogos.frmCatClientes.updateModels
+src.caja.cheques.frmCheques.updateModels
+src.caja.factura.frmFactura.updateModels
+src.caja.recibo.frmRecibo.updateModels
+src.contabilidad.conciliacion.frmConciliacion.updateModels
+src.contabilidad.operations.frmOperations.updateModels
+src.inventario.articulos.frmArticulos.updateModels
+src.inventario.catalogos.frmCatBodegas.updateModels
+src.inventario.catalogos.frmCatCategorias.updateModels
+src.inventario.catalogos.frmCatConceptos.updateModels
+src.inventario.catalogos.frmCatMarcas.updateModels
+src.inventario.catalogos.frmCatProveedores.updateModels
+src.inventario.devolucion.frmDevolucion.updateModels
+src.inventario.entradacompra.frmEntradaCompra.updateModels
+src.inventario.kardex.frmKardex.updateModels
+src.inventario.liquidacion.frmLiquidacion.updateModels
+src.utility.catgeneric.frmCatGeneric.updateModels" class="py-name" href="#" onclick="return doclink('link-38', 'updateModels', 'link-23');">updateModels</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="src.utility.base.Base.navigate" class="py-name" href="#" onclick="return doclink('link-39', 'navigate', 'link-24');">navigate</a></tt><tt class="py-op">(</tt> <tt class="py-string">'last'</tt> <tt class="py-op">)</tt> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="src.contabilidad.operations.frmOperations.status
+src.utility.base.Base.status
+src.utility.catgeneric.frmCatGeneric.status
+src.utility.mainwindowbase.MainWindowBase.status" class="py-name" href="#" onclick="return doclink('link-40', 'status', 'link-25');">status</a></tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line">                <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">critical</tt><tt class="py-op">(</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line">                    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">trUtf8</tt><tt class="py-op">(</tt> <tt class="py-string">"Llantera Esquipulas"</tt> <tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line">                    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">trUtf8</tt><tt class="py-op">(</tt> <tt class="py-string">"""Ha ocurrido un error al guardar el documento"""</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line"> </tt>
+<a name="L196"></a><tt class="py-lineno">196</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">QSqlDatabase</tt><tt class="py-op">.</tt><tt id="link-41" class="py-name"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-41', 'database', 'link-0');">database</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">isOpen</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L197"></a><tt class="py-lineno">197</tt>  <tt class="py-line">                <tt class="py-name">QSqlDatabase</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name"><a title="src.utility.database" class="py-name" href="#" onclick="return doclink('link-42', 'database', 'link-0');">database</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">close</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line"> </tt>
+<a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L200"></a><tt class="py-lineno">200</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line">                <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">warning</tt><tt class="py-op">(</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L202"></a><tt class="py-lineno">202</tt>  <tt class="py-line">                    <tt class="py-string">"Llantera Esquipulas"</tt> <tt class="py-op">,</tt> </tt>
+<a name="L203"></a><tt class="py-lineno">203</tt>  <tt class="py-line">                    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt class="py-name">validError</tt><tt class="py-op">,</tt> </tt>
+<a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">                    <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">StandardButtons</tt><tt class="py-op">(</tt> \ </tt>
+<a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line">                        <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt> <tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L206"></a><tt class="py-lineno">206</tt>  <tt class="py-line">                    <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt> <tt class="py-op">)</tt> </tt>
+<a name="L207"></a><tt class="py-lineno">207</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt class="py-name">NameError</tt><tt class="py-op">:</tt> </tt>
+<a name="L208"></a><tt class="py-lineno">208</tt>  <tt class="py-line">                <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">warning</tt><tt class="py-op">(</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L209"></a><tt class="py-lineno">209</tt>  <tt class="py-line">                    <tt class="py-string">"Llantera Esquipulas"</tt> <tt class="py-op">,</tt> </tt>
+<a name="L210"></a><tt class="py-lineno">210</tt>  <tt class="py-line">                    <tt class="py-string">"""El documento no puede guardarse ya que la informaci&#243;n no esta completa"""</tt><tt class="py-op">,</tt> </tt>
+<a name="L211"></a><tt class="py-lineno">211</tt>  <tt class="py-line">                    <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">StandardButtons</tt><tt class="py-op">(</tt> \ </tt>
+<a name="L212"></a><tt class="py-lineno">212</tt>  <tt class="py-line">                        <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt> <tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L213"></a><tt class="py-lineno">213</tt>  <tt class="py-line">                    <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L214"></a><tt class="py-lineno">214</tt>  <tt class="py-line"> </tt>
+<a name="Base.setControls"></a><div id="Base.setControls-def"><a name="L215"></a><tt class="py-lineno">215</tt> <a class="py-toggle" href="#" id="Base.setControls-toggle" onclick="return toggle('Base.setControls');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#setControls">setControls</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.setControls-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.setControls-expanded"><a name="L216"></a><tt class="py-lineno">216</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L217"></a><tt class="py-lineno">217</tt>  <tt class="py-line"><tt class="py-docstring">        Habilitar o deshabilitar los controles seg&#250;n status</tt> </tt>
+<a name="L218"></a><tt class="py-lineno">218</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L219"></a><tt class="py-lineno">219</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L220"></a><tt class="py-lineno">220</tt>  <tt class="py-line"> </tt>
+<a name="Base.addLine"></a><div id="Base.addLine-def"><a name="L221"></a><tt class="py-lineno">221</tt> <a class="py-toggle" href="#" id="Base.addLine-toggle" onclick="return toggle('Base.addLine');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#addLine">addLine</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.addLine-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.addLine-expanded"><a name="L222"></a><tt class="py-lineno">222</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L223"></a><tt class="py-lineno">223</tt>  <tt class="py-line"><tt class="py-docstring">        a&#241;adir una linea a table edit, solo se llama directamente en una ocasion, al</tt> </tt>
+<a name="L224"></a><tt class="py-lineno">224</tt>  <tt class="py-line"><tt class="py-docstring">        comenzar la edicion de un documento</tt> </tt>
+<a name="L225"></a><tt class="py-lineno">225</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L226"></a><tt class="py-lineno">226</tt>  <tt class="py-line">        <tt id="link-43" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-43', 'row', 'link-11');">row</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt id="link-44" class="py-name"><a title="src.contabilidad.conciliacion.DetalleTableModel.rowCount
+src.contabilidad.cuentas.AccountsModel.rowCount
+src.document.arqueo.arqueomodel.ArqueoModel.rowCount
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.rowCount
+src.document.devolucion.devolucionmodel.DevolucionModel.rowCount
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.rowCount
+src.document.factura.facturadelegate.SingleSelectionModel.rowCount
+src.document.factura.facturamodel.FacturaModel.rowCount
+src.document.liquidacion.liquidaciondelegate.ArticlesModel.rowCount
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.rowCount
+src.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.rowCount
+src.document.recibo.abonomodel.AbonoModel.rowCount
+src.document.recibo.recibomodel.ReciboModel.rowCount
+src.inventario.categorias.CategoriesModel.rowCount
+src.test.CategoriesModel.rowCount
+src.utility.accountselector.AccountsSelectorModel.rowCount
+src.utility.singleselectionmodel.SingleSelectionModel.rowCount" class="py-name" href="#" onclick="return doclink('link-44', 'rowCount', 'link-14');">rowCount</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L227"></a><tt class="py-lineno">227</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt id="link-45" class="py-name" targets="Method src.contabilidad.cuentas.AccountsModel.insertRows()=src.contabilidad.cuentas.AccountsModel-class.html#insertRows,Method src.document.arqueo.arqueomodel.ArqueoModel.insertRows()=src.document.arqueo.arqueomodel.ArqueoModel-class.html#insertRows,Method src.document.conciliacion.conciliacionmodel.ConciliacionModel.insertRows()=src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#insertRows,Method src.document.devolucion.devolucionmodel.DevolucionModel.insertRows()=src.document.devolucion.devolucionmodel.DevolucionModel-class.html#insertRows,Method src.document.entradacompra.entradacompramodel.EntradaCompraModel.insertRows()=src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#insertRows,Method src.document.factura.facturamodel.FacturaModel.insertRows()=src.document.factura.facturamodel.FacturaModel-class.html#insertRows,Method src.document.liquidacion.liquidacionmodel.LiquidacionModel.insertRows()=src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#insertRows,Method src.document.recibo.abonomodel.AbonoModel.insertRows()=src.document.recibo.abonomodel.AbonoModel-class.html#insertRows,Method src.document.recibo.recibomodel.ReciboModel.insertRows()=src.document.recibo.recibomodel.ReciboModel-class.html#insertRows,Method src.inventario.categorias.CategoriesModel.insertRows()=src.inventario.categorias.CategoriesModel-class.html#insertRows,Method src.test.CategoriesModel.insertRows()=src.test.CategoriesModel-class.html#insertRows,Method src.utility.accountselector.AccountsSelectorModel.insertRows()=src.utility.accountselector.AccountsSelectorModel-class.html#insertRows"><a title="src.contabilidad.cuentas.AccountsModel.insertRows
+src.document.arqueo.arqueomodel.ArqueoModel.insertRows
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.insertRows
+src.document.devolucion.devolucionmodel.DevolucionModel.insertRows
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.insertRows
+src.document.factura.facturamodel.FacturaModel.insertRows
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.insertRows
+src.document.recibo.abonomodel.AbonoModel.insertRows
+src.document.recibo.recibomodel.ReciboModel.insertRows
+src.inventario.categorias.CategoriesModel.insertRows
+src.test.CategoriesModel.insertRows
+src.utility.accountselector.AccountsSelectorModel.insertRows" class="py-name" href="#" onclick="return doclink('link-45', 'insertRows', 'link-45');">insertRows</a></tt><tt class="py-op">(</tt> <tt id="link-46" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-46', 'row', 'link-11');">row</a></tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L228"></a><tt class="py-lineno">228</tt>  <tt class="py-line"> </tt>
+<a name="L229"></a><tt class="py-lineno">229</tt>  <tt class="py-line"> </tt>
+<a name="L230"></a><tt class="py-lineno">230</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_actionPreview_activated"></a><div id="Base.on_actionPreview_activated-def"><a name="L231"></a><tt class="py-lineno">231</tt> <a class="py-toggle" href="#" id="Base.on_actionPreview_activated-toggle" onclick="return toggle('Base.on_actionPreview_activated');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_actionPreview_activated">on_actionPreview_activated</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_actionPreview_activated-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_actionPreview_activated-expanded"><a name="L232"></a><tt class="py-lineno">232</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L233"></a><tt class="py-lineno">233</tt>  <tt class="py-line"><tt class="py-docstring">        Funcion usada para mostrar los reportes</tt> </tt>
+<a name="L234"></a><tt class="py-lineno">234</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L235"></a><tt class="py-lineno">235</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L236"></a><tt class="py-lineno">236</tt>  <tt class="py-line"> </tt>
+<a name="L237"></a><tt class="py-lineno">237</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_actionNew_activated"></a><div id="Base.on_actionNew_activated-def"><a name="L238"></a><tt class="py-lineno">238</tt> <a class="py-toggle" href="#" id="Base.on_actionNew_activated-toggle" onclick="return toggle('Base.on_actionNew_activated');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_actionNew_activated">on_actionNew_activated</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_actionNew_activated-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_actionNew_activated-expanded"><a name="L239"></a><tt class="py-lineno">239</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L240"></a><tt class="py-lineno">240</tt>  <tt class="py-line"><tt class="py-docstring">        Realizar todo el procesamiento necesario para crear un nuevo documento, crear y llenar los</tt> </tt>
+<a name="L241"></a><tt class="py-lineno">241</tt>  <tt class="py-line"><tt class="py-docstring">        modelos necesarios, etc.</tt> </tt>
+<a name="L242"></a><tt class="py-lineno">242</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L243"></a><tt class="py-lineno">243</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L244"></a><tt class="py-lineno">244</tt>  <tt class="py-line"> </tt>
+<a name="L245"></a><tt class="py-lineno">245</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_actionCancel_activated"></a><div id="Base.on_actionCancel_activated-def"><a name="L246"></a><tt class="py-lineno">246</tt> <a class="py-toggle" href="#" id="Base.on_actionCancel_activated-toggle" onclick="return toggle('Base.on_actionCancel_activated');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_actionCancel_activated">on_actionCancel_activated</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_actionCancel_activated-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_actionCancel_activated-expanded"><a name="L247"></a><tt class="py-lineno">247</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L248"></a><tt class="py-lineno">248</tt>  <tt class="py-line"><tt class="py-docstring">        Borrar todos los modelos que se hallan creado para el modo edici&#243;n, asignar los modelos de navegaci&#243;n a las </tt> </tt>
+<a name="L249"></a><tt class="py-lineno">249</tt>  <tt class="py-line"><tt class="py-docstring">        vistas</tt> </tt>
+<a name="L250"></a><tt class="py-lineno">250</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L251"></a><tt class="py-lineno">251</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L252"></a><tt class="py-lineno">252</tt>  <tt class="py-line"> </tt>
+<a name="L253"></a><tt class="py-lineno">253</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_actionRefresh_activated"></a><div id="Base.on_actionRefresh_activated-def"><a name="L254"></a><tt class="py-lineno">254</tt> <a class="py-toggle" href="#" id="Base.on_actionRefresh_activated-toggle" onclick="return toggle('Base.on_actionRefresh_activated');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_actionRefresh_activated">on_actionRefresh_activated</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_actionRefresh_activated-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_actionRefresh_activated-expanded"><a name="L255"></a><tt class="py-lineno">255</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L256"></a><tt class="py-lineno">256</tt>  <tt class="py-line"><tt class="py-docstring">        Actualizar los modelos de edici&#243;n</tt> </tt>
+<a name="L257"></a><tt class="py-lineno">257</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L258"></a><tt class="py-lineno">258</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-47" class="py-name" targets="Method src.inventario.entradacompra.frmEntradaCompra.updateEditModels()=src.inventario.entradacompra.frmEntradaCompra-class.html#updateEditModels"><a title="src.inventario.entradacompra.frmEntradaCompra.updateEditModels" class="py-name" href="#" onclick="return doclink('link-47', 'updateEditModels', 'link-47');">updateEditModels</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L259"></a><tt class="py-lineno">259</tt>  <tt class="py-line"> </tt>
+<a name="L260"></a><tt class="py-lineno">260</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_actionDeleteRow_activated"></a><div id="Base.on_actionDeleteRow_activated-def"><a name="L261"></a><tt class="py-lineno">261</tt> <a class="py-toggle" href="#" id="Base.on_actionDeleteRow_activated-toggle" onclick="return toggle('Base.on_actionDeleteRow_activated');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_actionDeleteRow_activated">on_actionDeleteRow_activated</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_actionDeleteRow_activated-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_actionDeleteRow_activated-expanded"><a name="L262"></a><tt class="py-lineno">262</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L263"></a><tt class="py-lineno">263</tt>  <tt class="py-line"><tt class="py-docstring">        Funcion usada para borrar lineas de la tabla</tt> </tt>
+<a name="L264"></a><tt class="py-lineno">264</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L265"></a><tt class="py-lineno">265</tt>  <tt class="py-line">        <tt id="link-48" class="py-name"><a title="src.contabilidad.cuentas.AccountsModel.index
+src.inventario.categorias.CategoriesModel.index
+src.test.CategoriesModel.index
+src.utility.widgets.searchpanel.SearchPanel.index" class="py-name" href="#" onclick="return doclink('link-48', 'index', 'link-8');">index</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">tabledetails</tt><tt class="py-op">.</tt><tt class="py-name">currentIndex</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L266"></a><tt class="py-lineno">266</tt>  <tt class="py-line"> </tt>
+<a name="L267"></a><tt class="py-lineno">267</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt id="link-49" class="py-name"><a title="src.contabilidad.cuentas.AccountsModel.index
+src.inventario.categorias.CategoriesModel.index
+src.test.CategoriesModel.index
+src.utility.widgets.searchpanel.SearchPanel.index" class="py-name" href="#" onclick="return doclink('link-49', 'index', 'link-8');">index</a></tt><tt class="py-op">.</tt><tt class="py-name">isValid</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L268"></a><tt class="py-lineno">268</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L269"></a><tt class="py-lineno">269</tt>  <tt class="py-line">        <tt id="link-50" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-50', 'row', 'link-11');">row</a></tt> <tt class="py-op">=</tt> <tt id="link-51" class="py-name"><a title="src.contabilidad.cuentas.AccountsModel.index
+src.inventario.categorias.CategoriesModel.index
+src.test.CategoriesModel.index
+src.utility.widgets.searchpanel.SearchPanel.index" class="py-name" href="#" onclick="return doclink('link-51', 'index', 'link-8');">index</a></tt><tt class="py-op">.</tt><tt id="link-52" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-52', 'row', 'link-11');">row</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L270"></a><tt class="py-lineno">270</tt>  <tt class="py-line"> </tt>
+<a name="L271"></a><tt class="py-lineno">271</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt id="link-53" class="py-name" targets="Method src.document.arqueo.arqueomodel.ArqueoModel.removeRows()=src.document.arqueo.arqueomodel.ArqueoModel-class.html#removeRows,Method src.document.conciliacion.conciliacionmodel.ConciliacionModel.removeRows()=src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#removeRows,Method src.document.devolucion.devolucionmodel.DevolucionModel.removeRows()=src.document.devolucion.devolucionmodel.DevolucionModel-class.html#removeRows,Method src.document.entradacompra.entradacompramodel.EntradaCompraModel.removeRows()=src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#removeRows,Method src.document.factura.facturamodel.FacturaModel.removeRows()=src.document.factura.facturamodel.FacturaModel-class.html#removeRows,Method src.document.liquidacion.liquidacionmodel.LiquidacionModel.removeRows()=src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#removeRows,Method src.document.recibo.abonomodel.AbonoModel.removeRows()=src.document.recibo.abonomodel.AbonoModel-class.html#removeRows,Method src.document.recibo.recibomodel.ReciboModel.removeRows()=src.document.recibo.recibomodel.ReciboModel-class.html#removeRows,Method src.inventario.categorias.CategoriesModel.removeRows()=src.inventario.categorias.CategoriesModel-class.html#removeRows,Method src.test.CategoriesModel.removeRows()=src.test.CategoriesModel-class.html#removeRows,Method src.utility.accountselector.AccountsSelectorModel.removeRows()=src.utility.accountselector.AccountsSelectorModel-class.html#removeRows"><a title="src.document.arqueo.arqueomodel.ArqueoModel.removeRows
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.removeRows
+src.document.devolucion.devolucionmodel.DevolucionModel.removeRows
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.removeRows
+src.document.factura.facturamodel.FacturaModel.removeRows
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.removeRows
+src.document.recibo.abonomodel.AbonoModel.removeRows
+src.document.recibo.recibomodel.ReciboModel.removeRows
+src.inventario.categorias.CategoriesModel.removeRows
+src.test.CategoriesModel.removeRows
+src.utility.accountselector.AccountsSelectorModel.removeRows" class="py-name" href="#" onclick="return doclink('link-53', 'removeRows', 'link-53');">removeRows</a></tt><tt class="py-op">(</tt> <tt id="link-54" class="py-name"><a title="src.contabilidad.cuentas.Account.row" class="py-name" href="#" onclick="return doclink('link-54', 'row', 'link-11');">row</a></tt><tt class="py-op">,</tt> <tt class="py-number">1</tt> <tt class="py-op">)</tt> </tt>
+<a name="L272"></a><tt class="py-lineno">272</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-55" class="py-name" targets="Method src.caja.arqueo.frmArqueo.updateLabels()=src.caja.arqueo.frmArqueo-class.html#updateLabels,Method src.caja.factura.frmFactura.updateLabels()=src.caja.factura.frmFactura-class.html#updateLabels,Method src.caja.recibo.frmRecibo.updateLabels()=src.caja.recibo.frmRecibo-class.html#updateLabels,Method src.contabilidad.conciliacion.frmConciliacion.updateLabels()=src.contabilidad.conciliacion.frmConciliacion-class.html#updateLabels,Method src.inventario.devolucion.frmDevolucion.updateLabels()=src.inventario.devolucion.frmDevolucion-class.html#updateLabels,Method src.inventario.entradacompra.frmEntradaCompra.updateLabels()=src.inventario.entradacompra.frmEntradaCompra-class.html#updateLabels"><a title="src.caja.arqueo.frmArqueo.updateLabels
+src.caja.factura.frmFactura.updateLabels
+src.caja.recibo.frmRecibo.updateLabels
+src.contabilidad.conciliacion.frmConciliacion.updateLabels
+src.inventario.devolucion.frmDevolucion.updateLabels
+src.inventario.entradacompra.frmEntradaCompra.updateLabels" class="py-name" href="#" onclick="return doclink('link-55', 'updateLabels', 'link-55');">updateLabels</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L273"></a><tt class="py-lineno">273</tt>  <tt class="py-line"> </tt>
+<a name="L274"></a><tt class="py-lineno">274</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt> </tt>
+<a name="Base.on_txtObservations_textChanged"></a><div id="Base.on_txtObservations_textChanged-def"><a name="L275"></a><tt class="py-lineno">275</tt> <a class="py-toggle" href="#" id="Base.on_txtObservations_textChanged-toggle" onclick="return toggle('Base.on_txtObservations_textChanged');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.base.Base-class.html#on_txtObservations_textChanged">on_txtObservations_textChanged</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Base.on_txtObservations_textChanged-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Base.on_txtObservations_textChanged-expanded"><a name="L276"></a><tt class="py-lineno">276</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L277"></a><tt class="py-lineno">277</tt>  <tt class="py-line"><tt class="py-docstring">        Asignar las observaciones al editmodel</tt> </tt>
+<a name="L278"></a><tt class="py-lineno">278</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L279"></a><tt class="py-lineno">279</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L280"></a><tt class="py-lineno">280</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">editmodel</tt><tt class="py-op">.</tt><tt class="py-name">observations</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">txtObservations</tt><tt class="py-op">.</tt><tt class="py-name">toPlainText</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L281"></a><tt class="py-lineno">281</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

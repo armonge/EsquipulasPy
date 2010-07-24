@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.inventario.articulos.ArticlesModel</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.inventario-module.html">Paquete&nbsp;inventario</a> ::
+        <a href="src.inventario.articulos-module.html">Modulo&nbsp;articulos</a> ::
+        Clase&nbsp;ArticlesModel
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.inventario.articulos.ArticlesModel-class.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS Descripci&#243;n ==================== -->
+<h1 class="epydoc">Class ArticlesModel</h1><p class="nomargin-top"><span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel">Codigo&nbsp;fuente</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_src_inve_2" name="uml_class_diagram_for_src_inve_2">
+<area shape="rect" id="node248" href="src.inventario.articulos.ArticlesModel-class.html#__init__" title="Constructor de la clase para editar articulos en el tableview" alt="" coords="17,39,277,57"/>
+<area shape="rect" id="node248" href="src.inventario.articulos.ArticlesModel-class.html#setData" title="Guarda los datos editados en el modelo del tableview" alt="" coords="17,57,277,76"/>
+<area shape="rect" id="node248" href="src.inventario.articulos.ArticlesModel-class.html#setACTIVO" title="Actualiza el estado de un articulo" alt="" coords="17,76,277,95"/>
+<area shape="rect" id="node248" href="src.inventario.articulos.ArticlesModel-class.html#setDAI" title="Actualiza el costo agregado DAI de un articulo" alt="" coords="17,95,277,113"/>
+<area shape="rect" id="node248" href="src.inventario.articulos.ArticlesModel-class.html#setISC" title="Actualiza el costo agregado ISC de un articulo" alt="" coords="17,113,277,132"/>
+<area shape="rect" id="node248" href="src.inventario.articulos.ArticlesModel-class.html#setCOMISION" title="Actualiza el costo agregado COMISION de un articulo" alt="" coords="17,132,277,151"/>
+<area shape="rect" id="node248" href="src.inventario.articulos.ArticlesModel-class.html#setGANANCIA" title="Actualiza el costo agregado GANANCIA de un articulo" alt="" coords="17,151,277,169"/>
+<area shape="rect" id="node248" href="src.inventario.articulos.ArticlesModel-class.html#refresh" title="Refresca los datos mostrados en el TableView" alt="" coords="17,169,277,188"/>
+<area shape="rect" id="node248" href="src.inventario.articulos.ArticlesModel-class.html#flags" title="Establece banderas para determinar el estado de edicion" alt="" coords="17,188,277,207"/>
+<area shape="rect" id="node248" href="src.inventario.articulos.ArticlesModel-class.html#data" title="src.inventario.articulos.ArticlesModel.data" alt="" coords="17,207,277,225"/>
+<area shape="rect" id="node1" href="src.inventario.articulos.ArticlesModel-class.html" title="src.inventario.articulos.ArticlesModel" alt="" coords="5,6,288,231"/>
+</map>
+  <img src="uml_class_diagram_for_src_inve_2.gif" alt='' usemap="#uml_class_diagram_for_src_inve_2" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== METODOS DE INSTANCIA ==================== -->
+<a name="section-MetodosdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Metodos de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MetodosdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parent</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Constructor de la clase para editar articulos en el tableview</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.inventario.articulos.ArticlesModel-class.html#setData" class="summary-sig-name">setData</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.EditRole</span>)</span><br />
+      Guarda los datos editados en el modelo del tableview</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.inventario.articulos.ArticlesModel-class.html#setACTIVO" class="summary-sig-name">setACTIVO</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">id</span>)</span><br />
+      Actualiza el estado de un articulo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setACTIVO">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.inventario.articulos.ArticlesModel-class.html#setDAI" class="summary-sig-name">setDAI</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">id</span>)</span><br />
+      Actualiza el costo agregado DAI de un articulo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setDAI">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.inventario.articulos.ArticlesModel-class.html#setISC" class="summary-sig-name">setISC</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">id</span>)</span><br />
+      Actualiza el costo agregado ISC de un articulo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setISC">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.inventario.articulos.ArticlesModel-class.html#setCOMISION" class="summary-sig-name">setCOMISION</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">id</span>)</span><br />
+      Actualiza el costo agregado COMISION de un articulo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setCOMISION">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.inventario.articulos.ArticlesModel-class.html#setGANANCIA" class="summary-sig-name">setGANANCIA</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">id</span>)</span><br />
+      Actualiza el costo agregado GANANCIA de un articulo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setGANANCIA">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="refresh"></a><span class="summary-sig-name">refresh</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Refresca los datos mostrados en el TableView</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.refresh">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="flags"></a><span class="summary-sig-name">flags</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      Establece banderas para determinar el estado de edicion</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.flags">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="data"></a><span class="summary-sig-name">data</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.data">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== DETALLE DE LOS METODOS ==================== -->
+<a name="section-Detalledelosmetodos"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de los metodos</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelosmetodos"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="setData"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setData</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">role</span>=<span class="sig-default">Qt.EditRole</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setData">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Guarda los datos editados en el modelo del tableview</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>index</code></strong> - El Index del record del tableView</li>
+        <li><strong class="pname"><code>value</code></strong> - El Valor a guardar en el record del Index</li>
+        <li><strong class="pname"><code>role</code></strong> - El role para establecer la edicion</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="setACTIVO"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setACTIVO</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">id</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setACTIVO">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Actualiza el estado de un articulo</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>id</code></strong> - EL index del record del tableview</li>
+        <li><strong class="pname"><code>value</code></strong> - El valor a guardar en el record del index</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="setDAI"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setDAI</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">id</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setDAI">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Actualiza el costo agregado DAI de un articulo</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>id</code></strong> - El Index del record del tableView</li>
+        <li><strong class="pname"><code>value</code></strong> - El Valor a guardar en el record del Index</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="setISC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setISC</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">id</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setISC">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Actualiza el costo agregado ISC de un articulo</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>id</code></strong> - El Index del record del tableView</li>
+        <li><strong class="pname"><code>value</code></strong> - El Valor a guardar en el record del Index</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="setCOMISION"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setCOMISION</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">id</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setCOMISION">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Actualiza el costo agregado COMISION de un articulo</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>id</code></strong> - El Index del record del tableView</li>
+        <li><strong class="pname"><code>value</code></strong> - El Valor a guardar en el record del Index</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="setGANANCIA"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setGANANCIA</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">id</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.inventario.articulos-pysrc.html#ArticlesModel.setGANANCIA">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Actualiza el costo agregado GANANCIA de un articulo</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>id</code></strong> - El Index del record del tableView</li>
+        <li><strong class="pname"><code>value</code></strong> - El Valor a guardar en el record del Index</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

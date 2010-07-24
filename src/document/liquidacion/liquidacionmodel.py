@@ -1,0 +1,889 @@
+# -*- coding: utf-8 -*-
+'''
+Created on 21/05/2010
+
+@author: armonge
+'''
+#import math
+from decimal import Decimal, ROUND_CEILING
+from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt, SIGNAL
+from PyQt4.QtSql import QSqlQuery, QSqlDatabase
+from document.liquidacion.linealiquidacion import LineaLiquidacion
+from utility.moneyfmt import moneyfmt
+from utility.accountselector import AccountsSelectorModel
+
+
+IDARTICULO, ARTICULO, CANTIDAD, COSTOUNIT, FOB, FLETE, SEGURO, OTROS, CIF, IMPUESTOS, COMISION, AGENCIA, ALMACEN, PAPELERIA, TRANSPORTE, TCOSTOD, COSTOD, TCOSTOC, COSTOC = range( 19 )
+class LiquidacionModel( QAbstractTableModel ):
+    """
+    Este modelo es el que se utiliza para realizar todos los calculos relacionados a una liquidacion,
+    tambien se encarga de guardarla en la base de datos y darle formato
+    """
+    __documentType = 7
+    """
+    @cvar:EL id del tipo de documento
+    @type:int 
+    """
+
+    def __init__( self, uid ):
+        """
+        @param uid: El id del usuario que ha creado este documento 
+        """
+        super( LiquidacionModel, self ).__init__()
+        self.lines = []
+        """
+        @ivar:La lista de lineas en el documento
+        @type:LineaLiquidacion[]
+        """
+        self.uid = uid
+        """
+        @ivar:El id del usuario
+        @type:int
+        """
+        self.printedDocumentNumber = ""
+        """
+        @ivar:El numero de documento impreso del documento
+        @type:string
+        """
+        self.providerId = 0
+        """
+        @ivar:El id del proveedor
+        @type:int
+        """
+        self.warehouseId = 0
+        """
+        @ivar:El id de la bodega
+        @type:int
+        """
+
+
+        self.datetime = QDateTime.currentDateTime()
+        u"""
+        @ivar:La fecha de la liquidación
+        @type:string
+        """
+        self.origin = ""
+        u"""
+        @ivar:El país de origen de la liquidación
+        @type:string
+        """
+
+        self.exchangeRateId = 0
+        u"""
+        @ivar:El id del tipo de cambio utilizado en la liquidación
+        @type:int
+        """
+        self.exchangeRate = Decimal( 0 )
+        u"""
+        @ivar:El tipo de cambio utilizado en la liquidación
+        @type:Decimal
+        """
+
+
+        self.agencyTotal = Decimal( 0 )
+        u"""
+        @ivar:El total de agencia en la liquidación
+        @type:Decimal
+        """
+        self.storeTotal = Decimal( 0 )
+        u"""
+        @ivar:El total de almacén en la liquidación
+        @type:Decimal
+        """
+
+
+        self.weight = Decimal( 0 )
+        u"""
+        @ivar:El peso total usado en la liquidación
+        @type:Decimal
+        """
+        self.weightFactor = 0
+        u"""
+        @ivar:El factor peso usado en la liquidación
+        @type:int
+        """
+
+        self.freightTotal = Decimal( 0 )
+        u"""
+        @ivar:El total de flete en la liquidación
+        @type:Decimal
+        """
+        self.insuranceTotal = Decimal( 0 )
+        u"""
+        @ivar:El total de seguro en la liquidación
+        @type:Decimal
+        """
+        self.otherTotal = Decimal( 0 )
+        u"""
+        @ivar:El total de otros gastos en la liquidación
+        @type:Decimal
+        """
+
+        self.speId = 0
+        """
+        @ivar:El id del SPE usado en la liquidación
+        @type:int
+        """
+        self.speTotal = 0
+        u"""
+        @ivar:El SPE usado en la liquidación
+        @type:int
+        """
+
+
+        self.tsimId = 0
+        u"""
+        @ivar:El id del TSIM usado en la liquidación
+        @type:int
+        """
+        self.tsimRate = Decimal( 0 )
+        """
+        @ivar:El TSIM usado en la liquidación
+        @type:Decimal
+        """
+
+        self.ivaId = 0
+        u"""
+        @ivar:El id del IVA usado en la liquidación
+        @type:int
+        """
+        self.__ivaRate = Decimal( 0 )
+        """
+        @ivar:El IVA usado en la liquidación cuando self.applyIVA = True
+        @type:Decimal
+        """
+        self.applyIVA = True
+        """
+        @ivar:Si a esta liquidación se le aplica IVA o no
+        @type:bool
+        """
+
+        self.isoId = 0
+        u"""
+        @ivar:El id del ISO usado en la liquidación
+        @type:int
+        """
+        self.__isoRate = Decimal( 0 )
+        """
+        @ivar:El ISO usado en la liquidación cuando self.applyISO = True
+        @type:Decimal
+        """
+        self.applyISO = True
+        """
+        @ivar:Si a esta liquidación se le aplica ISO o no
+        @type:bool
+        """
+
+        self.paperworkRate = Decimal( 0 )
+        """
+        @ivar:El porcentaje de papeleria de esta liquidación
+        @type:Decimal
+        """
+        self.transportRate = Decimal( 0 )
+        """
+        @ivar:El porcentaje de transporte de esta liquidación
+        @type:Decimal
+        """
+        self.fobTotal = Decimal( 0 )
+        """
+        @ivar: El FOB total de esta liquidación
+        @type:Decimal
+        """
+        self.observations = ""
+        """
+        @ivar:Las observaciones de este documento
+        @type:string
+        """
+
+
+        self.accountsModel = LiquidacionAccountsModel()
+        """
+        @ivar:El modelo con las cuentas contables de este documento
+        @type:AccountsSelectorModel
+        """
+        self.totalsModel = LiquidacionTotalsModel( self )
+        """
+        @ivar:El modelo con los totales
+        @type:LiquidacionTotalsModel
+        """
+
+
+
+
+    def setIvaRate( self, ivarate ):
+        self.__ivaRate = ivarate
+    def getIvaRate( self ):
+        """
+        El porcentaje IVA usado en esta liquidacion
+        @rtype: Decimal
+        """
+        return self.__ivaRate if self.applyIVA else Decimal( 0 )
+    ivaRate = property( getIvaRate, setIvaRate )
+
+
+    @property
+    def valid( self ):
+        """
+        Una liquidación es valida cuando:
+        =================================
+            self.printedDocumentNumber != ""
+            
+            self.providerId > 0
+            
+            self.warehouseId > 0
+            
+            self.exchangeRateId > 0
+            
+            self.validLines > 0
+            
+            self.origin != ""
+            
+            self.tsimId   > 0
+            
+            self.accountsmodel.valid
+        @rtype: bool
+        """
+        if not self.printedDocumentNumber.strip() != "":
+            self.validError = "No ha introducido un numero de Poliza"
+            return False 
+        elif not int( self.providerId ) > 0:
+            self.validError = "No ha seleccionado un proveedor"
+            return False
+        elif not  int( self.warehouseId ) > 0:
+            self.validError = "No ha seleccionado una bodega"
+            return False
+        elif not int( self.exchangeRateId ) > 0:
+            self.validError = "No existe un tipo de cambio para esta fecha"
+            return False
+        elif not  int( self.validLines ) > 0:
+            self.validError = u"No existe ninguna linea valida en la liquidación"
+            return False
+        elif not self.origin.strip() != "":
+            self.validError = "No ha escrito la procedencia"
+            return False
+        elif not int( self.tsimId ) > 0:
+            self.validError = "No existe un valor TSIM"
+            return False
+        elif not int( self.speId ) > 0:
+            self.validError = "No existe un valor SPE"
+            return False
+        elif not self.accountsModel.valid:
+            self.validError = "Existe un error  con sus cuentas contables"
+            return False
+        
+        return True
+            
+
+    def getISORate( self ):
+        """
+        El porcentaje ISO usado en esta liqudiacion
+        @rtype: Decimal
+        """
+        return self.__isoRate if self.applyISO else Decimal( 0 )
+    def setISORate( self, iso ):
+        self.__isoRate = iso
+    isoRate = property( getISORate, setISORate )
+
+
+    def updateFob( self ):
+        """
+        Esta función se ejecuta cuando se cambia el costo o la cantidad de un articulo  
+        """
+        fob = sum( [linea.fobParcial for linea in self.lines if linea.valid ] )
+        self.fobTotal = fob if fob > 0 else Decimal( 0 )
+
+    @property
+    def cifTotal( self ):
+        """
+        El CIF total del documento
+        
+        M{CIFTOTAL = FOBTOTAL + FLETETOTAL + SEGUROTOTAL + OTROSGASTOSTOTAL }
+        @rtype: Decimal
+        """
+        return self.fobTotal + self.freightTotal + self.insuranceTotal + self.otherTotal
+
+    @property
+    def iscTotal( self ):
+        """
+        El ISC total del documento
+        
+        M{ISCTOTAL = S{sum}ISCPARCIAL}
+        @rtype: Decimal
+        """
+        isc = sum( [ linea.fobParcial for linea in self.lines if linea.valid ] )
+        return isc if isc > 0 else Decimal( 0 )
+
+    @property
+    def isoTotal( self ):
+        """
+        El ISO Total del documento
+        
+        M{ISOTOTAL = CIFTOTAL * PORCENTAJEISO}
+        @rtype: Decimal
+        """
+        return self.cifTotal * ( self.isoRate / Decimal( 100 ) )
+
+    @property
+    def taxesTotal( self ):
+        """
+        El total de impuestos del documento
+        
+        M{IMPUESTOSTOTAL = DAITOTAL + ISCTOTAL + IVATOTAL}
+        @rtype: Decimal
+        """
+        return self.daiTotal + self.iscTotal + self.ivaTotal
+
+    @property
+    def ivaTotal( self ):
+        """
+        El iva total del documento
+        
+        M{IVATOTAL = TOTALDOLARES * PORCENTAJEIVA}
+        @rtype: Decimal
+        """
+        return self.totalD * ( 100 / self.ivaRate ) if self.applyIVA else Decimal( 0 )
+
+    @property
+    def daiTotal( self ):
+        """
+        La sumatoria de los dai parcial
+        
+        M{DAITOTAL = S{sum}DAIPARCIAL }
+        @rtype: Decimal
+        """
+        dai = sum( [ line.daiParcial for line in self.lines if line.valid] )
+        return dai if dai != 0 else Decimal( 0 )
+
+    @property
+    def tsimTotal( self ):
+        """
+        El TSIM total del documento
+        
+        M{TSIMTOTAL = ( PESO / FACTORPESO )S{uarr} * PORCENTAJETSIM}
+        @rtype: Decimal
+        """
+        return ( self.weight / self.weightFactor ).to_integral_exact( rounding = ROUND_CEILING ) * self.tsimRate
+
+
+    @property
+    def validLines( self ):
+        """
+        El total de lineas con la propiedad valid = True
+        @rtype: int
+        """
+        return len( [line for line in self.lines if line.valid] )
+
+    @property
+    def totalD( self ):
+        """
+        La sumatoria de todos los totales parciales
+        
+        M{TOTALDOLARES = S{sum}COSTODOLARPARCIAL}
+        @rtype: Decimal
+        """
+        totalD = sum( [ line.costoDolarT for line in self.lines if line.valid ] )
+        return totalD if totalD > 0 else Decimal( 0 )
+
+    @property
+    def totalC( self ):
+        """
+        El total en cordobas del documento
+        
+        M{TOTALCORDOBAS = TOTALDOLARES * TIPOCAMBIO }        
+        @rtype: Decimal
+        """
+        return self.totalD * self.exchangeRate
+
+    @property
+    def accountsTotal( self ):
+        """
+        El total que deberia de haber en los movimientos contables
+        
+        M{TOTALCUENTAS = TOTALCORDOBAS }
+        @rtype: Decimal
+        """
+        return self.totalC
+
+    def removeRows( self, position, rows = 1, index = QModelIndex ):
+        """
+        Borrar filas del modelo
+        @rtype: bool
+        @return: si se pudo o no borrar la fila
+        """
+        if len( self.lines ) > 1 and self.lines[position].valid and len( self.lines ):
+            self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
+            for n in range( rows ):
+                try:
+                    del self.lines[position + n]
+                except IndexError:
+                    pass
+            self.endRemoveRows()
+            self.dirty = True
+            self.accountsModel.setData( self.accountsModel.index( 0, 3 ), self.totalC )
+            self.updateFob()
+            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), QModelIndex(), QModelIndex() )
+            return True
+        else:
+            return False
+
+    def save( self ):
+        """
+        Este metodo guarda el documento actual en la base de datos
+        @rtype: bool
+        @return: Si el documento se pudo guardar o no 
+        """
+        if not self.valid:
+            raise Exception ( "El documento a salvar no es valido" )
+        query = QSqlQuery()
+        try:
+            if not QSqlDatabase.database().transaction():
+                raise Exception( u"No se pudo comenzar la transacción" )
+
+
+            #insertar el documento
+            if not query.prepare( """
+            INSERT INTO documentos(ndocimpreso, fechacreacion, idtipodoc,anulado,  observacion, idtipocambio, total, idbodega)
+            VALUES( :ndocimpreso, :fechacreacion, :idtipodoc, :anulado, :observacion, :tipocambio, :total, :idbodega)
+            """ ):
+                raise Exception( "No se pudo preparar la consulta para ingresar el documento" )
+
+            query.bindValue( ":ndocimpreso", self.printedDocumentNumber.strip() )
+            query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
+            query.bindValue( ":idtipodoc", self.__documentType )
+            query.bindValue( ":anulado", 0 )
+            query.bindValue( ":observacion", self.observations )
+            query.bindValue( ":tipocambio", self.exchangeRateId )
+            query.bindValue( "total", self.totalD.to_eng_string() )
+            query.bindValue( ":idbodega", self.warehouseId )
+
+            if not query.exec_():
+                raise Exception( "No se pudo insertar el documento" )
+
+
+            insertedId = query.lastInsertId() #el id del documento que se acaba de insertar
+
+            #insertar el usuario
+            if not query.prepare( """
+            INSERT INTO personasxdocumento (idpersona, iddocumento) 
+            VALUE (:idusuario, :iddocumento)
+            """ ):
+                raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
+            query.bindValue( ":idusuario", self.uid )
+            query.bindValue( ":iddocumento", insertedId )
+
+            if not query.exec_():
+                raise Exception( "No se pudo insertar  el usuario" )
+
+            #insertar el proveedor
+            if not query.prepare( """
+            INSERT INTO personasxdocumento (idpersona, iddocumento) 
+            VALUE (:idproveedor, :iddocumento)
+            """ ):
+                raise Exception( "No se pudo preparar la consulta para ingresar proveedor" )
+            query.bindValue( ":idproveedor", self.providerId )
+            query.bindValue( ":iddocumento", insertedId )
+
+            if not query.exec_():
+                raise Exception( "No se pudo insertar el proveedor" )
+
+
+
+            #insertar la liquidacion
+            if not query.prepare( """
+            INSERT INTO liquidaciones (iddocumento, procedencia, totalagencia, totalalmacen, porcentajepapeleria, porcentajetransporte, peso, fletetotal, segurototal, otrosgastos)
+            VALUES(:iddoc,:procedencia,:agencia,:almacen,:papeleria,:transporte,:peso,:flete,:seguro,:gastos)
+            """ ):
+                raise Exception( "No se pudo preparar la liquidacion" )
+
+            query.bindValue( ":iddoc", insertedId )
+            query.bindValue( ":procedencia", self.origin.strip() )
+            query.bindValue( ":agencia", self.agencyTotal.to_eng_string() )
+            query.bindValue( ":almacen", self.storeTotal.to_eng_string() )
+            query.bindValue( ":papeleria", self.paperworkRate.to_eng_string() )
+            query.bindValue( ":transporte", self.transportRate.to_eng_string() )
+            query.bindValue( ":peso", self.weight.to_eng_string() )
+            query.bindValue( ":flete", self.freightTotal.to_eng_string() )
+            query.bindValue( ":seguro", self.insuranceTotal.to_eng_string() )
+            query.bindValue( ":gastos", self.otherTotal.to_eng_string() )
+
+            if not query.exec_():
+                raise Exception( "No se pudieron insertar los datos de la liquidacion" )
+
+            #insertar el tsim
+            if not query.prepare( """
+            INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) VALUES ( :iddocumento, :idcostoagregado)
+            """ ):
+                raise Exception( "No se pudo preparar la consulta para insertar el tsim" )
+            query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":idcostoagregado", self.tsimId )
+
+            if not query.exec_():
+                raise Exception( "No se pudo insertar el tsim" )
+
+            #insertar el spe
+            if not query.prepare( """
+            INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) VALUES (:iddocumento, :idcostoagregado )
+            """ ):
+                raise Exception( "No se pudo preparar la consulta para insertar el spe" )
+            query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":idcostoagregado", self.speId )
+
+            if not query.exec_():
+                raise Exception( "No se pudo insertar el spe" )
+
+            #insertar el iva si aplica
+            if self.applyIVA:
+                if not query.prepare( """
+                INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) VALUES (:iddocumento, :idcostoagregado )
+                """ ):
+                    raise Exception( "No se pudo preparar la consulta para insertar el iva" )
+                query.bindValue( ":iddocumento", insertedId )
+                query.bindValue( ":idcostoagregado", self.ivaId )
+
+                if not query.exec_():
+                    raise Exception( "No se pudo insertar el iva" )
+
+            #insertar el iso si aplica
+            if self.applyISO:
+                if not query.prepare( """
+                INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) VALUES (:iddocumento, :idcostoagregado )
+                """ ):
+                    raise Exception( "No se pudo preparar la consulta para insertar el iso" )
+                query.bindValue( ":iddocumento", insertedId )
+                query.bindValue( ":idcostoagregado", self.isoId )
+
+                if not query.exec_():
+                    raise Exception( "No se pudo insertar el iso" )
+
+
+
+
+            for line in self.lines:
+                if line.valid:
+                    line.save( insertedId )
+
+
+            for lineid, line in enumerate( self.accountsModel.lines ):
+                if line.valid:
+                    line.save( insertedId, lineid + 1 )
+
+
+            if not QSqlDatabase.database().commit():
+                raise Exception( "No se pudo hacer commit" )
+
+        except Exception as inst:
+            print query.lastError().text()
+            print inst
+            QSqlDatabase.database().rollback()
+
+            return False
+
+        return True
+
+    def columnCount( self, index = QModelIndex() ):
+        """
+        El numero de columnas del modelo
+        @rtype: int
+        """
+        return 19
+
+    def rowCount( self, index = QModelIndex() ):
+        """
+        EL numero de filas del modelo
+        @rtype: int
+        """
+        return len( self.lines )
+
+    def flags( self, index ):
+        """
+        Las flags para las celdas del modelo
+        @rtype: Qt.ItemFlags
+        """
+        if not index.isValid():
+            return Qt.ItemIsEnabled
+        if index.column() in ( ARTICULO, CANTIDAD, COSTOUNIT ):
+            return Qt.ItemIsEnabled | Qt.ItemIsEditable | Qt.ItemIsSelectable
+        return Qt.ItemIsEnabled | Qt.ItemIsSelectable
+
+    def headerData( self, section, orientation, role = Qt.DisplayRole ):
+        """
+        El texto en las cabeceras del modelo
+        """
+        if role == Qt.TextAlignmentRole:
+            if orientation == Qt.Horizontal:
+                return Qt.AlignLeft | Qt.AlignVCenter
+            return Qt.AlignRight | Qt.AlignVCenter
+
+        if role != Qt.DisplayRole:
+            return None
+
+        if orientation == Qt.Horizontal:
+            if section == IDARTICULO:
+                return "Id"
+            elif section == ARTICULO:
+                return u"Descripción"
+            elif section == CANTIDAD:
+                return "Cantidad"
+            elif section == COSTOUNIT:
+                return "Costo Compra US$"
+            elif section == FOB:
+                return "FOB US$"
+            elif section == FLETE:
+                return "Flete US$"
+            elif section == SEGURO:
+                return "Seguro US$"
+            elif section == OTROS:
+                return "Otros Gastos US$"
+            elif section == CIF:
+                return "CIF US$"
+            elif section == IMPUESTOS:
+                return "Impuestos US$"
+            elif section == COMISION:
+                return "Comision US$"
+            elif section == AGENCIA:
+                return "Agencia US$"
+            elif section == ALMACEN:
+                return "Almacen US$"
+            elif section == PAPELERIA:
+                return "Papeleria US$"
+            elif section == TRANSPORTE:
+                return "Transporte US$"
+            elif section == COSTOC:
+                return "Costo Unitario C$"
+            elif section == TCOSTOC:
+                return "Total Costo C$"
+            elif section == TCOSTOD:
+                return "Total Costo US$"
+            elif section == COSTOD:
+                return "Costo Unitario US$"
+
+        return int( section + 1 )
+
+    def insertRows( self, position, rows = 1, index = QModelIndex() ):
+        """
+        Insertar filas en el modelo
+        @rtype: bool
+        @return: Si se pudo insertar la fila en el modelo
+        """
+        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
+        for row in range( rows ):
+            self.lines.insert( position + row, LineaLiquidacion( self ) )
+
+        self.endInsertRows()
+        self.dirty = True
+
+        return True
+
+    def data( self, index, role = Qt.DisplayRole ):
+        """
+        darle formato a los campos de la tabla
+        """
+        if not index.isValid() or not ( 0 <= index.row() < len( self.lines ) ):
+            return None
+
+        line = self.lines[index.row()]
+        column = index.column()
+
+        if role == Qt.DisplayRole:
+            if column == IDARTICULO:
+                return line.itemId if line.itemId != 0 else ""
+            elif column == ARTICULO:
+                return line.itemDescription
+            elif column == CANTIDAD:
+                return line.quantity if line.quantity > 0 else ""
+            elif column == COSTOUNIT:
+                return moneyfmt( line.itemCost, 4, "US$" ) if line.itemCost > Decimal( 0 ) else ""
+            elif column == FOB:
+                return moneyfmt( line.fobParcial, 4, "US$" ) if line.valid else ""
+            elif column == FLETE:
+                return moneyfmt( line.fleteParcial, 4, "US$" ) if line.valid else ""
+            elif column == SEGURO:
+                return moneyfmt( line.seguroParcial, 4, "US$" ) if line.valid else ""
+            elif column == OTROS:
+                return moneyfmt( line.otrosParcial, 4, "US$" ) if line.valid else ""
+            elif column == CIF:
+                return moneyfmt( line.cifParcial, 4, "US$" ) if line.valid else ""
+            elif column == IMPUESTOS:
+                return moneyfmt( line.impuestosParcial, 4, "US$" ) if line.valid else ""
+            elif column == COMISION:
+                return moneyfmt( line.comisionParcial, 4, "US$" ) if line.valid else ""
+            elif column == AGENCIA:
+                return moneyfmt( line.agenciaParcial, 4, "US$" ) if line.valid else ""
+            elif column == ALMACEN:
+                return moneyfmt( line.almacenParcial, 4, "US$" ) if line.valid else ""
+            elif column == PAPELERIA:
+                return moneyfmt( line.papeleriaParcial, 4, "US$" ) if line.valid else ""
+            elif column == TRANSPORTE:
+                return moneyfmt( line.transporteParcial, 4, "US$" ) if line.valid else ""
+            elif column == TCOSTOD:
+                return moneyfmt( line.costoDolarT, 4, "US$" ) if line.valid else ""
+            elif column == COSTOD:
+                return moneyfmt( line.costoDolar, 4, "US$" ) if line.valid else ""
+            elif column == COSTOC:
+                return moneyfmt( line.costoCordoba, 4, "C$" ) if line.valid else ""
+            elif column == TCOSTOC:
+                return moneyfmt( line.costoCordobaT, 4, "C$" ) if line.valid else ""
+        elif role == Qt.EditRole:
+            if column == COSTOUNIT:
+                return line.itemCost
+        elif role == Qt.ToolTipRole:
+            if column == CIF:
+                return "CIF Total = " + moneyfmt( self.cifTotal, 4, "US$" ) + " <br /> FOB Total = " \
+            + moneyfmt( self.fobTotal, 4, "US$" ) + "<br /> FOB Parcial" + moneyfmt( line.fobParcial, 4, "US$" )
+
+            elif column == IMPUESTOS:
+                return "DAI Parcial = " + moneyfmt( line.daiParcial, 4, "US$" ) + " <br /> ISC Parcial = " \
+            + moneyfmt( line.iscParcial, 4, "US$" ) + "<br />IVA Parcial = " + moneyfmt( line.ivaParcial, 4, "US$" ) \
+            + "<br /> TSIM Parcial = " + moneyfmt( line.tsimParcial, 4, "US$" ) + "<br /> SPE Parcial = " \
+            + moneyfmt( line.speParcial, 4, "US$" ) + "<br /> ISO Parcial = " + moneyfmt( line.isoParcial, 4, "US$" )
+
+            elif column == FOB:
+                return "Fob Total = " + moneyfmt( self.fobTotal, 4, "US$" )
+
+            elif column == TCOSTOD:
+                return "CIF Parcial = " + moneyfmt( line.cifParcial, 4, "US$" ) + "<br /> Comision Parcial = "\
+                + moneyfmt( line.comisionParcial, 4, "US$" ) + "<br /> Agencia Parcial = " + moneyfmt( line.agenciaParcial, 4, "US$" ) \
+                + "<br /> Almacen Parcial = " + moneyfmt( line.almacenParcial, 4, "US$" ) + "<br /> Papeleria Parcial = " \
+                + moneyfmt( line.papeleriaParcial, 4, "US$" ) + "<br /> Transporte Parcial = " + moneyfmt( line.transporteParcial, 4, "US$" ) \
+                + "<br /> Impuestos Parcial = " + moneyfmt( line.impuestosParcial, 4, "US$" )
+
+
+    def setData( self, index, value, role = Qt.EditRole ):
+        """
+        Modificar los datos del modelo
+        @param index: El indice en el que se van cambiar los datos
+        @type index: QModelIndex
+        
+        @param value: El nuevo valor para el elemento del modelo
+        @type value: Variant
+        
+        @param role: El rol al que se le van a cambiar los datos
+        @type role: ItemDataRole
+        
+        @rtype: bool
+        @return: Si se pudo o no cambiar el valor del modelo
+        """
+        if index.isValid() and 0 <= index.row() < len( self.lines ):
+            line = self.lines[index.row()]
+            column = index.column()
+            if column == ARTICULO:
+                line.itemId = value[0]
+                line.itemDescription = value[1]
+                line.rateDAI = value[2]
+                line.rateISC = value[3]
+                line.comisionValue = value[4]
+
+
+            elif column == CANTIDAD:
+                line.quantity = value.toInt()[0]
+            elif column == COSTOUNIT:
+                line.itemCost = Decimal( value.toString() )
+
+
+
+            self.dirty = True
+
+
+            if column  in ( CANTIDAD, COSTOUNIT ):
+                self.updateFob()
+
+            if index.row() == len( self.lines ) - 1 and line.valid:
+                self.insertRow( len( self.lines ) )
+
+            self.accountsModel.setData( self.accountsModel.index( 0, 3 ), self.totalC )
+
+            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+
+            return True
+        return False
+
+
+
+FOBTOTAL, CIFTOTAL, IMPUESTOSTOTAL, COSTODTOTAL, COSTOCTOTAL = range( 5 )
+class LiquidacionTotalsModel( QAbstractTableModel ):
+    """
+    Este modelo maneja la vista de los totales en el formulario de liquidación
+    """
+    def __init__( self, parent ):
+        """
+        @param parent: Este es el modelo LiquidacionModel del cual se manejan los totales 
+        @type parent: LiquidacionModel
+        """
+        QAbstractTableModel.__init__( self )
+        self.parent = parent
+
+        self.connect( self.parent, SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.fn )
+
+    def fn( self, index1, index2 ):
+        """
+        actualizar los totales cuando cambien los datos en el modelo Liquidacion
+        """
+        self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.index( 0, 0 ), self.index( 0, self.columnCount( QModelIndex() ) ) )
+
+
+    def columnCount( self, index = QModelIndex() ):
+        """
+        El numero de columnas del modelo
+        @rtype: int
+        """
+        return 5
+
+    def rowCount ( self, index = QModelIndex ):
+        """
+        El numero de filas del modelo
+        @rtype: int
+        """
+        return 1
+
+    def headerData( self, section, orientation, role = Qt.DisplayRole ):
+        """
+        El contenido que aparece en las cabeceras del modelo
+        """
+        if role == Qt.TextAlignmentRole:
+            if orientation == Qt.Horizontal:
+                return Qt.AlignLeft | Qt.AlignVCenter
+            return Qt.AlignRight | Qt.AlignVCenter
+
+        if role != Qt.DisplayRole:
+            return None
+
+        if orientation == Qt.Horizontal:
+            if section == FOBTOTAL:
+                return "FOB US$"
+            elif section == COSTOCTOTAL:
+                return "Total C$"
+            elif section == COSTODTOTAL:
+                return "Total US"
+            elif section == CIFTOTAL:
+                return "CIF US$"
+            elif section == IMPUESTOSTOTAL:
+                return "Impuestos US$"
+        return int( section + 1 )
+
+    def data( self, index, role = Qt.DisplayRole ):
+        """
+        El contenido del modelo
+        """
+        if not index.isValid():
+            return None
+
+        if role == Qt.DisplayRole:
+            if index.column() == FOBTOTAL:
+                return moneyfmt( self.parent.fobTotal, 4, "US$" )
+            elif index.column() == CIFTOTAL:
+                return moneyfmt( self.parent.cifTotal, 4, "US$" )
+            elif index.column() == IMPUESTOSTOTAL:
+                return moneyfmt( self.parent.taxesTotal, 4, "US$" )
+            elif index.column() == COSTOCTOTAL:
+                return moneyfmt( self.parent.totalC, 4, "C$" )
+            elif index.column() == COSTODTOTAL:
+                return moneyfmt( self.parent.totalD, 4, "US$" )
+
+class LiquidacionAccountsModel( AccountsSelectorModel ):
+    def flags( self, index ):
+        if not index.isValid():
+            return Qt.ItemIsEnabled
+        elif index.row() != 0:
+            return Qt.ItemIsEnabled | Qt.ItemIsEditable
+        else:
+            return Qt.ItemIsEnabled

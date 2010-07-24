@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.document.arqueo.arqueomodel.ArqueoModel</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.document-module.html">Paquete&nbsp;document</a> ::
+        <a href="src.document.arqueo-module.html">Paquete&nbsp;arqueo</a> ::
+        <a href="src.document.arqueo.arqueomodel-module.html">Modulo&nbsp;arqueomodel</a> ::
+        Clase&nbsp;ArqueoModel
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.document.arqueo.arqueomodel.ArqueoModel-class.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS Descripci&#243;n ==================== -->
+<h1 class="epydoc">Class ArqueoModel</h1><p class="nomargin-top"><span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel">Codigo&nbsp;fuente</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_src_docu_2" name="uml_class_diagram_for_src_docu_2">
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#database" title="La base de datos que se ocupa en el sistema" alt="" coords="17,31,361,49"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#datetime" title="La fecha del arqueo" alt="" coords="17,49,361,68"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#lines" title="Las lineas de este arqueo" alt="" coords="17,68,361,87"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#exchangeRate" title="El tipo de cambio para el dia" alt="" coords="17,87,361,105"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#exchangeRateId" title="El id del tipo de cambio" alt="" coords="17,105,361,124"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#expectedTotal" title="El total que se espera tenga el arqueo" alt="" coords="17,124,361,143"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#printedDocumentNumber" title="El numero impreso del documento" alt="" coords="17,143,361,161"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#observations" title="Las observaciones del documento" alt="" coords="17,161,361,180"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#__init__" title="src.document.arqueo.arqueomodel.ArqueoModel.__init__" alt="" coords="17,183,361,201"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#total" title="El total en el modelo" alt="" coords="17,201,361,220"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#validLines" title="El numero de lineas validas en el modelo" alt="" coords="17,220,361,239"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#valid" title="Si un documento es valido" alt="" coords="17,239,361,257"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#data" title="Retornar los datos del modelo" alt="" coords="17,257,361,276"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#setData" title="Cambiar un dato en el modelo" alt="" coords="17,276,361,295"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#headerData" title="El texto de los headers en el modelo" alt="" coords="17,295,361,313"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#rowCount" title="El numero de filas en el modelo" alt="" coords="17,313,361,332"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#columnCount" title="El numero de columnas en el modelo" alt="" coords="17,332,361,351"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#save" title="Guardar el documento" alt="" coords="17,351,361,369"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#insertRows" title="src.document.arqueo.arqueomodel.ArqueoModel.insertRows" alt="" coords="17,369,361,388"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#removeRows" title="src.document.arqueo.arqueomodel.ArqueoModel.removeRows" alt="" coords="17,388,361,407"/>
+<area shape="rect" id="node206" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#flags" title="src.document.arqueo.arqueomodel.ArqueoModel.flags" alt="" coords="17,407,361,425"/>
+<area shape="rect" id="node1" href="src.document.arqueo.arqueomodel.ArqueoModel-class.html" title="Esta clase es el modelo utilizado para crear nuevos arqueos" alt="" coords="5,6,373,431"/>
+</map>
+  <img src="uml_class_diagram_for_src_docu_2.gif" alt='' usemap="#uml_class_diagram_for_src_docu_2" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Esta clase es el modelo utilizado para crear nuevos arqueos</p>
+
+<!-- ==================== METODOS DE INSTANCIA ==================== -->
+<a name="section-MetodosdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Metodos de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MetodosdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#total" class="summary-sig-name">total</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El total en el modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.total">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#validLines" class="summary-sig-name">validLines</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El numero de lineas validas en el modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.validLines">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#valid" class="summary-sig-name">valid</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Si un documento es valido</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.valid">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="data"></a><span class="summary-sig-name">data</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span><br />
+      Retornar los datos del modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.data">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#setData" class="summary-sig-name">setData</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.EditRole</span>)</span><br />
+      Cambiar un dato en el modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.setData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="headerData"></a><span class="summary-sig-name">headerData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">section</span>,
+        <span class="summary-sig-arg">orientation</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span><br />
+      El texto de los headers en el modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.headerData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="rowCount"></a><span class="summary-sig-name">rowCount</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span><br />
+      El numero de filas en el modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.rowCount">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="columnCount"></a><span class="summary-sig-name">columnCount</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span><br />
+      El numero de columnas en el modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.columnCount">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.arqueo.arqueomodel.ArqueoModel-class.html#save" class="summary-sig-name">save</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Guardar el documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.save">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="insertRows"></a><span class="summary-sig-name">insertRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.insertRows">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="removeRows"></a><span class="summary-sig-name">removeRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.removeRows">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Qt.ItemFlags</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="flags"></a><span class="summary-sig-name">flags</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.flags">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE CLASE ==================== -->
+<a name="section-VariablesdeClase"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Clase</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeClase"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="__documentType"></a><span class="summary-name">__documentType</span> = <code title="23">23</code><br />
+      El tipo de documento de arqueo
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE INSTANCIA ==================== -->
+<a name="section-VariablesdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">QSqlDatabase</span>
+    </td><td class="summary">
+        <a name="database"></a><span class="summary-name">database</span><br />
+      La base de datos que se ocupa en el sistema
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="datetime"></a><span class="summary-name">datetime</span><br />
+      La fecha del arqueo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">LineaArqueo[]</span>
+    </td><td class="summary">
+        <a name="lines"></a><span class="summary-name">lines</span><br />
+      Las lineas de este arqueo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="exchangeRate"></a><span class="summary-name">exchangeRate</span><br />
+      El tipo de cambio para el dia
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="exchangeRateId"></a><span class="summary-name">exchangeRateId</span><br />
+      El id del tipo de cambio
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="expectedTotal"></a><span class="summary-name">expectedTotal</span><br />
+      El total que se espera tenga el arqueo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="printedDocumentNumber"></a><span class="summary-name">printedDocumentNumber</span><br />
+      El numero impreso del documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="observations"></a><span class="summary-name">observations</span><br />
+      Las observaciones del documento
+    </td>
+  </tr>
+</table>
+<!-- ==================== DETALLE DE LOS METODOS ==================== -->
+<a name="section-Detalledelosmetodos"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de los metodos</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelosmetodos"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="total"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">total</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.total">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El total en el modelo</p>
+  <p><i class="math">TOTAL = &sum;TOTALLINEA, LINEA.VALID = True</i></p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="validLines"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">validLines</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.validLines">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El numero de lineas validas en el modelo</p>
+  <dl class="fields">
+    <dt>Retorna: int</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="valid"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">valid</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.valid">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Si un documento es valido</p>
+  <dl class="fields">
+    <dt>Retorna: bool</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="setData"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setData</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>,
+        <span class="sig-arg">value</span>,
+        <span class="sig-arg">role</span>=<span class="sig-default">Qt.EditRole</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.setData">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Cambiar un dato en el modelo</p>
+  <dl class="fields">
+    <dt>Retorna: bool</dt>
+        <dd>Si se pudo cambiar el dato</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="save"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">save</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.arqueo.arqueomodel-pysrc.html#ArqueoModel.save">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Guardar el documento</p>
+  <dl class="fields">
+    <dt>Retorna: bool</dt>
+        <dd>Si se pudo o no guardar el documento</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

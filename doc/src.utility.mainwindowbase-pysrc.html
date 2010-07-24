@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.utility.mainwindowbase</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.utility-module.html">Paquete&nbsp;utility</a> ::
+        Modulo&nbsp;mainwindowbase
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.utility.mainwindowbase-pysrc.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="src.utility.mainwindowbase-module.html">Modulo src.utility.mainwindowbase</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: UTF-8 -*-</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-docstring">Created on 11/06/2010</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-docstring">@author: armonge</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtCore</tt> <tt class="py-keyword">import</tt> <tt class="py-name">SIGNAL</tt><tt class="py-op">,</tt> <tt class="py-name">QSettings</tt><tt class="py-op">,</tt> <tt class="py-name">pyqtSlot</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtGui</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QDialog</tt><tt class="py-op">,</tt> <tt class="py-name">QMessageBox</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Paquete src.utility=src.utility-module.html"><a title="src.utility" class="py-name" href="#" onclick="return doclink('link-0', 'utility', 'link-0');">utility</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module src.utility.user=src.utility.user-module.html,Method src.utility.user.User.user()=src.utility.user.User-class.html#user"><a title="src.utility.user
+src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-1', 'user', 'link-1');">user</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class src.utility.user.dlgUserLogin=src.utility.user.dlgUserLogin-class.html"><a title="src.utility.user.dlgUserLogin" class="py-name" href="#" onclick="return doclink('link-2', 'dlgUserLogin', 'link-2');">dlgUserLogin</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Class src.utility.user.User=src.utility.user.User-class.html"><a title="src.utility.user.User" class="py-name" href="#" onclick="return doclink('link-3', 'User', 'link-3');">User</a></tt> </tt>
+<a name="MainWindowBase"></a><div id="MainWindowBase-def"><a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt> <a class="py-toggle" href="#" id="MainWindowBase-toggle" onclick="return toggle('MainWindowBase');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="src.utility.mainwindowbase.MainWindowBase-class.html">MainWindowBase</a><tt class="py-op">(</tt> <tt class="py-base-class">object</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindowBase-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="MainWindowBase-expanded"><a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">    <tt class="py-docstring">'''</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring">    classdocs</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="MainWindowBase.__init__"></a><div id="MainWindowBase.__init__-def"><a name="L15"></a><tt class="py-lineno">15</tt> <a class="py-toggle" href="#" id="MainWindowBase.__init__-toggle" onclick="return toggle('MainWindowBase.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.mainwindowbase.MainWindowBase-class.html#__init__">__init__</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindowBase.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="MainWindowBase.__init__-expanded"><a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">        <tt class="py-docstring">'''</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">        Constructor</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-name">settings</tt> <tt class="py-op">=</tt> <tt class="py-name">QSettings</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">restoreGeometry</tt><tt class="py-op">(</tt> <tt class="py-name">settings</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">(</tt> <tt class="py-string">"MainWindow/Geometry"</tt> <tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">toByteArray</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">connect</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">,</tt> <tt class="py-name">SIGNAL</tt><tt class="py-op">(</tt> <tt class="py-string">"subWindowActivated(QMdiSubWindow *)"</tt> <tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method src.utility.mainwindowbase.MainWindowBase.showtoolbar()=src.utility.mainwindowbase.MainWindowBase-class.html#showtoolbar"><a title="src.utility.mainwindowbase.MainWindowBase.showtoolbar" class="py-name" href="#" onclick="return doclink('link-4', 'showtoolbar', 'link-4');">showtoolbar</a></tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"> </tt>
+<a name="MainWindowBase.showtoolbar"></a><div id="MainWindowBase.showtoolbar-def"><a name="L23"></a><tt class="py-lineno">23</tt> <a class="py-toggle" href="#" id="MainWindowBase.showtoolbar-toggle" onclick="return toggle('MainWindowBase.showtoolbar');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.mainwindowbase.MainWindowBase-class.html#showtoolbar">showtoolbar</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindowBase.showtoolbar-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="MainWindowBase.showtoolbar-expanded"><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-docstring">        mostrar la toolbar de la ventana que se acaba de mostrar</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">window</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">subWindowList</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">            <tt class="py-name">window</tt><tt class="py-op">.</tt><tt class="py-name">widget</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">toolBar</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">False</tt> <tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">window</tt> <tt class="py-keyword">in</tt> <tt class="py-name">args</tt><tt class="py-op">:</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">window</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">                <tt class="py-name">window</tt><tt class="py-op">.</tt><tt class="py-name">widget</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">toolBar</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">True</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"> </tt>
+<a name="MainWindowBase.setStatus"></a><div id="MainWindowBase.setStatus-def"><a name="L33"></a><tt class="py-lineno">33</tt> <a class="py-toggle" href="#" id="MainWindowBase.setStatus-toggle" onclick="return toggle('MainWindowBase.setStatus');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.mainwindowbase.MainWindowBase-class.html#setStatus">setStatus</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">status</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindowBase.setStatus-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="MainWindowBase.setStatus-expanded"><a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__status</tt> <tt class="py-op">=</tt> <tt id="link-5" class="py-name" targets="Variable src.contabilidad.operations.frmOperations.status=src.contabilidad.operations.frmOperations-class.html#status,Variable src.utility.base.Base.status=src.utility.base.Base-class.html#status,Variable src.utility.catgeneric.frmCatGeneric.status=src.utility.catgeneric.frmCatGeneric-class.html#status,Variable src.utility.mainwindowbase.MainWindowBase.status=src.utility.mainwindowbase.MainWindowBase-class.html#status"><a title="src.contabilidad.operations.frmOperations.status
+src.utility.base.Base.status
+src.utility.catgeneric.frmCatGeneric.status
+src.utility.mainwindowbase.MainWindowBase.status" class="py-name" href="#" onclick="return doclink('link-5', 'status', 'link-5');">status</a></tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method src.caja.arqueo.frmArqueo.setControls()=src.caja.arqueo.frmArqueo-class.html#setControls,Method src.caja.cheques.frmCheques.setControls()=src.caja.cheques.frmCheques-class.html#setControls,Method src.caja.factura.frmFactura.setControls()=src.caja.factura.frmFactura-class.html#setControls,Method src.caja.mainwindow.MainWindow.setControls()=src.caja.mainwindow.MainWindow-class.html#setControls,Method src.caja.recibo.frmRecibo.setControls()=src.caja.recibo.frmRecibo-class.html#setControls,Method src.contabilidad.conciliacion.frmConciliacion.setControls()=src.contabilidad.conciliacion.frmConciliacion-class.html#setControls,Method src.contabilidad.mainwindow.MainWindow.setControls()=src.contabilidad.mainwindow.MainWindow-class.html#setControls,Method src.inventario.devolucion.frmDevolucion.setControls()=src.inventario.devolucion.frmDevolucion-class.html#setControls,Method src.inventario.entradacompra.frmEntradaCompra.setControls()=src.inventario.entradacompra.frmEntradaCompra-class.html#setControls,Method src.inventario.kardex.frmKardex.setControls()=src.inventario.kardex.frmKardex-class.html#setControls,Method src.inventario.liquidacion.frmLiquidacion.setControls()=src.inventario.liquidacion.frmLiquidacion-class.html#setControls,Method src.inventario.mainwindow.MainWindow.setControls()=src.inventario.mainwindow.MainWindow-class.html#setControls,Method src.utility.base.Base.setControls()=src.utility.base.Base-class.html#setControls,Method src.utility.mainwindowbase.MainWindowBase.setControls()=src.utility.mainwindowbase.MainWindowBase-class.html#setControls"><a title="src.caja.arqueo.frmArqueo.setControls
+src.caja.cheques.frmCheques.setControls
+src.caja.factura.frmFactura.setControls
+src.caja.mainwindow.MainWindow.setControls
+src.caja.recibo.frmRecibo.setControls
+src.contabilidad.conciliacion.frmConciliacion.setControls
+src.contabilidad.mainwindow.MainWindow.setControls
+src.inventario.devolucion.frmDevolucion.setControls
+src.inventario.entradacompra.frmEntradaCompra.setControls
+src.inventario.kardex.frmKardex.setControls
+src.inventario.liquidacion.frmLiquidacion.setControls
+src.inventario.mainwindow.MainWindow.setControls
+src.utility.base.Base.setControls
+src.utility.mainwindowbase.MainWindowBase.setControls" class="py-name" href="#" onclick="return doclink('link-6', 'setControls', 'link-6');">setControls</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__status</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="MainWindowBase.getStatus"></a><div id="MainWindowBase.getStatus-def"><a name="L36"></a><tt class="py-lineno">36</tt> <a class="py-toggle" href="#" id="MainWindowBase.getStatus-toggle" onclick="return toggle('MainWindowBase.getStatus');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.mainwindowbase.MainWindowBase-class.html#getStatus">getStatus</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindowBase.getStatus-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="MainWindowBase.getStatus-expanded"><a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__status</tt> </tt>
+</div><a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">    <tt id="link-7" class="py-name"><a title="src.contabilidad.operations.frmOperations.status
+src.utility.base.Base.status
+src.utility.catgeneric.frmCatGeneric.status
+src.utility.mainwindowbase.MainWindowBase.status" class="py-name" href="#" onclick="return doclink('link-7', 'status', 'link-5');">status</a></tt> <tt class="py-op">=</tt> <tt class="py-name">property</tt><tt class="py-op">(</tt> <tt id="link-8" class="py-name" targets="Method src.contabilidad.operations.frmOperations.getStatus()=src.contabilidad.operations.frmOperations-class.html#getStatus,Method src.utility.base.Base.getStatus()=src.utility.base.Base-class.html#getStatus,Method src.utility.catgeneric.frmCatGeneric.getStatus()=src.utility.catgeneric.frmCatGeneric-class.html#getStatus,Method src.utility.mainwindowbase.MainWindowBase.getStatus()=src.utility.mainwindowbase.MainWindowBase-class.html#getStatus"><a title="src.contabilidad.operations.frmOperations.getStatus
+src.utility.base.Base.getStatus
+src.utility.catgeneric.frmCatGeneric.getStatus
+src.utility.mainwindowbase.MainWindowBase.getStatus" class="py-name" href="#" onclick="return doclink('link-8', 'getStatus', 'link-8');">getStatus</a></tt><tt class="py-op">,</tt> <tt id="link-9" class="py-name" targets="Method src.contabilidad.operations.frmOperations.setStatus()=src.contabilidad.operations.frmOperations-class.html#setStatus,Method src.utility.base.Base.setStatus()=src.utility.base.Base-class.html#setStatus,Method src.utility.catgeneric.frmCatGeneric.setStatus()=src.utility.catgeneric.frmCatGeneric-class.html#setStatus,Method src.utility.mainwindowbase.MainWindowBase.setStatus()=src.utility.mainwindowbase.MainWindowBase-class.html#setStatus"><a title="src.contabilidad.operations.frmOperations.setStatus
+src.utility.base.Base.setStatus
+src.utility.catgeneric.frmCatGeneric.setStatus
+src.utility.mainwindowbase.MainWindowBase.setStatus" class="py-name" href="#" onclick="return doclink('link-9', 'setStatus', 'link-9');">setStatus</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"> </tt>
+<a name="MainWindowBase.setControls"></a><div id="MainWindowBase.setControls-def"><a name="L40"></a><tt class="py-lineno">40</tt> <a class="py-toggle" href="#" id="MainWindowBase.setControls-toggle" onclick="return toggle('MainWindowBase.setControls');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.mainwindowbase.MainWindowBase-class.html#setControls">setControls</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">status</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindowBase.setControls-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="MainWindowBase.setControls-expanded"><a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt>
+<a name="MainWindowBase.closeEvent"></a><div id="MainWindowBase.closeEvent-def"><a name="L43"></a><tt class="py-lineno">43</tt> <a class="py-toggle" href="#" id="MainWindowBase.closeEvent-toggle" onclick="return toggle('MainWindowBase.closeEvent');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.mainwindowbase.MainWindowBase-class.html#closeEvent">closeEvent</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindowBase.closeEvent-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="MainWindowBase.closeEvent-expanded"><a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">        <tt class="py-name">settings</tt> <tt class="py-op">=</tt> <tt class="py-name">QSettings</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">        <tt class="py-name">settings</tt><tt class="py-op">.</tt><tt class="py-name">setValue</tt><tt class="py-op">(</tt> <tt class="py-string">"MainWindow/Geometry"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">saveGeometry</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line"> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt> </tt>
+<a name="MainWindowBase.on_actionLockSession_triggered"></a><div id="MainWindowBase.on_actionLockSession_triggered-def"><a name="L48"></a><tt class="py-lineno">48</tt> <a class="py-toggle" href="#" id="MainWindowBase.on_actionLockSession_triggered-toggle" onclick="return toggle('MainWindowBase.on_actionLockSession_triggered');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.mainwindowbase.MainWindowBase-class.html#on_actionLockSession_triggered">on_actionLockSession_triggered</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindowBase.on_actionLockSession_triggered-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="MainWindowBase.on_actionLockSession_triggered-expanded"><a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="src.contabilidad.operations.frmOperations.status
+src.utility.base.Base.status
+src.utility.catgeneric.frmCatGeneric.status
+src.utility.mainwindowbase.MainWindowBase.status" class="py-name" href="#" onclick="return doclink('link-10', 'status', 'link-5');">status</a></tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+</div><a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt> </tt>
+<a name="MainWindowBase.on_actionUnlockSession_triggered"></a><div id="MainWindowBase.on_actionUnlockSession_triggered-def"><a name="L52"></a><tt class="py-lineno">52</tt> <a class="py-toggle" href="#" id="MainWindowBase.on_actionUnlockSession_triggered-toggle" onclick="return toggle('MainWindowBase.on_actionUnlockSession_triggered');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="src.utility.mainwindowbase.MainWindowBase-class.html#on_actionUnlockSession_triggered">on_actionUnlockSession_triggered</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindowBase.on_actionUnlockSession_triggered-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="MainWindowBase.on_actionUnlockSession_triggered-expanded"><a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">        <tt class="py-name">dlg</tt> <tt class="py-op">=</tt> <tt id="link-11" class="py-name"><a title="src.utility.user.dlgUserLogin" class="py-name" href="#" onclick="return doclink('link-11', 'dlgUserLogin', 'link-2');">dlgUserLogin</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">dlg</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method src.contabilidad.conciliacion.dlgSelectCuenta.exec_()=src.contabilidad.conciliacion.dlgSelectCuenta-class.html#exec_"><a title="src.contabilidad.conciliacion.dlgSelectCuenta.exec_" class="py-name" href="#" onclick="return doclink('link-12', 'exec_', 'link-12');">exec_</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-name">QDialog</tt><tt class="py-op">.</tt><tt class="py-name">Accepted</tt><tt class="py-op">:</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">            <tt class="py-name">tmpuser</tt> <tt class="py-op">=</tt> <tt id="link-13" class="py-name"><a title="src.utility.user.User" class="py-name" href="#" onclick="return doclink('link-13', 'User', 'link-3');">User</a></tt><tt class="py-op">(</tt> <tt class="py-name">dlg</tt><tt class="py-op">.</tt><tt class="py-name">txtUser</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">dlg</tt><tt class="py-op">.</tt><tt class="py-name">txtPassword</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">tmpuser</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method src.contabilidad.conciliacion.frmConciliacion.valid()=src.contabilidad.conciliacion.frmConciliacion-class.html#valid,Method src.contabilidad.notascd.DatosDoc.valid()=src.contabilidad.notascd.DatosDoc-class.html#valid,Method src.contabilidad.notascd.dlgNotasCD.valid()=src.contabilidad.notascd.dlgNotasCD-class.html#valid,Method src.document.arqueo.arqueomodel.ArqueoModel.valid()=src.document.arqueo.arqueomodel.ArqueoModel-class.html#valid,Variable src.document.arqueo.lineaarqueo.LineaArqueo.valid=src.document.arqueo.lineaarqueo.LineaArqueo-class.html#valid,Method src.document.conciliacion.conciliacionmodel.ConciliacionModel.valid()=src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#valid,Variable src.document.conciliacion.lineaconciliacion.LineaConciliacion.valid=src.document.conciliacion.lineaconciliacion.LineaConciliacion-class.html#valid,Method src.document.devolucion.devolucionmodel.DevolucionModel.valid()=src.document.devolucion.devolucionmodel.DevolucionModel-class.html#valid,Variable src.document.devolucion.lineadevolucion.LineaDevolucion.valid=src.document.devolucion.lineadevolucion.LineaDevolucion-class.html#valid,Method src.document.entradacompra.entradacompramodel.EntradaCompraModel.valid()=src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#valid,Variable src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid=src.document.entradacompra.lineaentradacompra.LineaEntradaCompra-class.html#valid,Method src.document.factura.facturamodel.FacturaModel.valid()=src.document.factura.facturamodel.FacturaModel-class.html#valid,Variable src.document.factura.lineafactura.LineaFactura.valid=src.document.factura.lineafactura.LineaFactura-class.html#valid,Variable src.document.liquidacion.linealiquidacion.LineaLiquidacion.valid=src.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#valid,Method src.document.liquidacion.liquidacionmodel.LiquidacionModel.valid()=src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#valid,Variable src.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid=src.document.movimientosbancarios.datosdocmodel.DatosDocModel-class.html#valid,Method src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid()=src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel-class.html#valid,Method src.document.recibo.abonomodel.AbonoModel.valid()=src.document.recibo.abonomodel.AbonoModel-class.html#valid,Variable src.document.recibo.lineaabono.LineaAbono.valid=src.document.recibo.lineaabono.LineaAbono-class.html#valid,Variable src.document.recibo.linearecibo.LineaRecibo.valid=src.document.recibo.linearecibo.LineaRecibo-class.html#valid,Method src.document.recibo.recibomodel.ReciboModel.valid()=src.document.recibo.recibomodel.ReciboModel-class.html#valid,Method src.utility.accountselector.AccountsSelectorLine.valid()=src.utility.accountselector.AccountsSelectorLine-class.html#valid,Method src.utility.accountselector.AccountsSelectorModel.valid()=src.utility.accountselector.AccountsSelectorModel-class.html#valid,Method src.utility.user.User.valid()=src.utility.user.User-class.html#valid"><a title="src.contabilidad.conciliacion.frmConciliacion.valid
+src.contabilidad.notascd.DatosDoc.valid
+src.contabilidad.notascd.dlgNotasCD.valid
+src.document.arqueo.arqueomodel.ArqueoModel.valid
+src.document.arqueo.lineaarqueo.LineaArqueo.valid
+src.document.conciliacion.conciliacionmodel.ConciliacionModel.valid
+src.document.conciliacion.lineaconciliacion.LineaConciliacion.valid
+src.document.devolucion.devolucionmodel.DevolucionModel.valid
+src.document.devolucion.lineadevolucion.LineaDevolucion.valid
+src.document.entradacompra.entradacompramodel.EntradaCompraModel.valid
+src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid
+src.document.factura.facturamodel.FacturaModel.valid
+src.document.factura.lineafactura.LineaFactura.valid
+src.document.liquidacion.linealiquidacion.LineaLiquidacion.valid
+src.document.liquidacion.liquidacionmodel.LiquidacionModel.valid
+src.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid
+src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid
+src.document.recibo.abonomodel.AbonoModel.valid
+src.document.recibo.lineaabono.LineaAbono.valid
+src.document.recibo.linearecibo.LineaRecibo.valid
+src.document.recibo.recibomodel.ReciboModel.valid
+src.utility.accountselector.AccountsSelectorLine.valid
+src.utility.accountselector.AccountsSelectorModel.valid
+src.utility.user.User.valid" class="py-name" href="#" onclick="return doclink('link-14', 'valid', 'link-14');">valid</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">tmpuser</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method src.utility.user.User.uid()=src.utility.user.User-class.html#uid"><a title="src.utility.user.User.uid" class="py-name" href="#" onclick="return doclink('link-15', 'uid', 'link-15');">uid</a></tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="src.utility.user
+src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-16', 'user', 'link-1');">user</a></tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="src.utility.user.User.uid" class="py-name" href="#" onclick="return doclink('link-17', 'uid', 'link-15');">uid</a></tt> <tt class="py-keyword">or</tt> <tt class="py-name">tmpuser</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name" targets="Method src.utility.user.User.hasRole()=src.utility.user.User-class.html#hasRole"><a title="src.utility.user.User.hasRole" class="py-name" href="#" onclick="return doclink('link-18', 'hasRole', 'link-18');">hasRole</a></tt><tt class="py-op">(</tt> <tt class="py-string">'root'</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">                    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="src.contabilidad.operations.frmOperations.status
+src.utility.base.Base.status
+src.utility.catgeneric.frmCatGeneric.status
+src.utility.mainwindowbase.MainWindowBase.status" class="py-name" href="#" onclick="return doclink('link-19', 'status', 'link-5');">status</a></tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">                <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">                    <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">critical</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">                                         <tt class="py-string">"Llantera Esquipulas"</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">                                         <tt class="py-string">u"Usted esta intentando desbloquear una sesi&#243;n que no le pertenece"</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">                                         <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">                                         <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt> <tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">                <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">critical</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">                                         <tt class="py-string">"Llantera Esquipulas"</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">                                         <tt class="py-string">u"No ha sido posible autenticarle"</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">                                         <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">                                         <tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt> <tt class="py-op">)</tt> </tt>
+</div></div><a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

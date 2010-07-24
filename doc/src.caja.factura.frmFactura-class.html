@@ -1,0 +1,868 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.caja.factura.frmFactura</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.caja-module.html">Paquete&nbsp;caja</a> ::
+        <a href="src.caja.factura-module.html">Modulo&nbsp;factura</a> ::
+        Clase&nbsp;frmFactura
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.caja.factura.frmFactura-class.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS Descripci&#243;n ==================== -->
+<h1 class="epydoc">Class frmFactura</h1><p class="nomargin-top"><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura">Codigo&nbsp;fuente</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_src_caja_13" name="uml_class_diagram_for_src_caja_13">
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#__init__" title="Constructor" alt="" coords="245,428,525,447"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#updateModels" title="Recargar todos los modelos" alt="" coords="245,447,525,465"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#updateLabels" title="src.caja.factura.frmFactura.updateLabels" alt="" coords="245,465,525,484"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#removeLine" title="Funcion usada para borrar lineas de la tabla" alt="" coords="245,484,525,503"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#on_rbcontado_toggled" title="Asignar las observaciones al objeto __qdocument" alt="" coords="245,503,525,521"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#on_actionPreview_activated" title="Funcion usada para mostrar el reporte de una entrada compra" alt="" coords="245,521,525,540"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#on_actionNew_activated" title="activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla" alt="" coords="245,540,525,559"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#on_actionCancel_activated" title="Aca se cancela la edicion del documento" alt="" coords="245,559,525,577"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#updateDetailFilter" title="Esta funci&#243;n se debe implementar en los formularios para que al navegar se &#160;actualize el filtro de la tabla detalles" alt="" coords="245,577,525,596"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#setControls" title="Habilitar o deshabilitar los controles seg&#250;n status" alt="" coords="245,596,525,615"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#on_txtDocumentNumber_editingFinished" title="Asignar el contenido al objeto documeto" alt="" coords="245,615,525,633"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#on_dtPicker_dateTimeChanged" title="Asignar la fecha al objeto __document" alt="" coords="245,633,525,652"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#on_mtxtobservaciones_textChanged" title="Asignar las observaciones al objeto __document" alt="" coords="245,652,525,671"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#on_cbcliente_currentIndexChanged" title="asignar proveedor al objeto self.editmodel" alt="" coords="245,671,525,689"/>
+<area shape="rect" id="node164" href="src.caja.factura.frmFactura-class.html#on_cbbodega_currentIndexChanged" title="asignar la bodega al objeto self.editmodel" alt="" coords="245,689,525,708"/>
+<area shape="rect" id="node1" href="src.caja.factura.frmFactura-class.html" title="Implementacion de la interfaz grafica para entrada compra" alt="" coords="233,395,537,714"/>
+<area shape="rect" id="node165" href="src.ui.Ui_factura.Ui_frmFactura-class.html#setupUi" title="src.ui.Ui_factura.Ui_frmFactura.setupUi" alt="" coords="17,185,196,204"/>
+<area shape="rect" id="node165" href="src.ui.Ui_factura.Ui_frmFactura-class.html#retranslateUi" title="src.ui.Ui_factura.Ui_frmFactura.retranslateUi" alt="" coords="17,204,196,223"/>
+<area shape="rect" id="node2" href="src.ui.Ui_factura.Ui_frmFactura-class.html" title="src.ui.Ui_factura.Ui_frmFactura" alt="" coords="5,153,208,229"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#mapper" title="El mapper que se encarga de asignar los datos del modelo de navegaci&#243;n a &#160;los distintos widgets" alt="" coords="249,31,521,49"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#database" title="La base de datos a la cual se conecta el sistema" alt="" coords="249,49,521,68"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#status" title="esta propiedad cambia entre navegar y editar" alt="" coords="249,68,521,87"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#closeEvent" title="Guardar el tama&#241;o, la posici&#243;n en la pantalla y la posici&#243;n de la barra de &#160;tareas" alt="" coords="249,89,521,108"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#hideEvent" title="Ocultar la barra de tareas cuando se oculta el widget" alt="" coords="249,108,521,127"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#showEvent" title="src.utility.base.Base.showEvent" alt="" coords="249,127,521,145"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#editCell" title="Editar la celda actualmente seleccionada de self.tableedit" alt="" coords="249,145,521,164"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#navigate" title="Esta funcion se encarga de navegar entro los distintos documentos" alt="" coords="249,164,521,183"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#loadModels" title="Esta funci&#243;n se ejecuta en el constructor del formulario mediante un &#160;QTimer, carga los formularios por primera vez" alt="" coords="249,183,521,201"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#setStatus" title="src.utility.base.Base.setStatus" alt="" coords="249,201,521,220"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#getStatus" title="esta propiedad cambia entre navegar y editar" alt="" coords="249,220,521,239"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#on_txtSearch_textChanged" title="Cambiar el filtro para el navigation model" alt="" coords="249,239,521,257"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#on_tablenavigation_doubleClicked" title="Al hacer doble click en la tabla de navegaci&#243;n el se cambia a la pesta&#241;a &#160;detalles mostrando el documento seleccionado" alt="" coords="249,257,521,276"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#on_tablenavigation_clicked" title="src.utility.base.Base.on_tablenavigation_clicked" alt="" coords="249,276,521,295"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#on_actionSave_activated" title="Guardar el documento actual" alt="" coords="249,295,521,313"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#addLine" title="a&#241;adir una linea a table edit, solo se llama directamente en una ocasion, &#160;al comenzar la edicion de un documento" alt="" coords="249,313,521,332"/>
+<area shape="rect" id="node167" href="src.utility.base.Base-class.html#on_txtObservations_textChanged" title="Asignar las observaciones al editmodel" alt="" coords="249,351,521,369"/>
+<area shape="rect" id="node3" href="src.utility.base.Base-class.html" title="Esta clase sirve de base para muchos formularios de inventario" alt="" coords="237,6,533,375"/>
+<area shape="rect" id="node4" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow" alt="" coords="563,169,752,213"/>
+</map>
+  <img src="uml_class_diagram_for_src_caja_13.gif" alt='' usemap="#uml_class_diagram_for_src_caja_13" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Implementacion de la interfaz grafica para entrada compra</p>
+
+<!-- ==================== METODOS DE INSTANCIA ==================== -->
+<a name="section-MetodosdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Metodos de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MetodosdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">user</span>,
+        <span class="summary-sig-arg">parent</span>)</span><br />
+      Constructor</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="updateModels"></a><span class="summary-sig-name">updateModels</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Recargar todos los modelos</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.updateModels">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="updateLabels"></a><span class="summary-sig-name">updateLabels</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.updateLabels">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="removeLine"></a><span class="summary-sig-name">removeLine</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Funcion usada para borrar lineas de la tabla</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.removeLine">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#on_rbcontado_toggled" class="summary-sig-name">on_rbcontado_toggled</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">on</span>)</span><br />
+      Asignar las observaciones al objeto __qdocument</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_rbcontado_toggled">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#on_actionPreview_activated" class="summary-sig-name">on_actionPreview_activated</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Funcion usada para mostrar el reporte de una entrada compra</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_actionPreview_activated">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#on_actionNew_activated" class="summary-sig-name">on_actionNew_activated</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      activar todos los controles, llenar los modelos necesarios, crear el 
+      modelo EntradaCompraModel, aniadir una linea a la tabla</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_actionNew_activated">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#on_actionCancel_activated" class="summary-sig-name">on_actionCancel_activated</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Aca se cancela la edicion del documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_actionCancel_activated">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#updateDetailFilter" class="summary-sig-name">updateDetailFilter</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      Esta funci&#243;n se debe implementar en los formularios para que al 
+      navegar se actualize el filtro de la tabla detalles</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.updateDetailFilter">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#setControls" class="summary-sig-name">setControls</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">status</span>)</span><br />
+      Habilitar o deshabilitar los controles seg&#250;n status</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.setControls">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#on_txtDocumentNumber_editingFinished" class="summary-sig-name">on_txtDocumentNumber_editingFinished</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Asignar el contenido al objeto documeto</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_txtDocumentNumber_editingFinished">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#on_dtPicker_dateTimeChanged" class="summary-sig-name">on_dtPicker_dateTimeChanged</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">datetime</span>)</span><br />
+      Asignar la fecha al objeto __document</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_dtPicker_dateTimeChanged">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#on_mtxtobservaciones_textChanged" class="summary-sig-name">on_mtxtobservaciones_textChanged</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Asignar las observaciones al objeto __document</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_mtxtobservaciones_textChanged">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#on_cbcliente_currentIndexChanged" class="summary-sig-name">on_cbcliente_currentIndexChanged</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      asignar proveedor al objeto self.editmodel</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_cbcliente_currentIndexChanged">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.caja.factura.frmFactura-class.html#on_cbbodega_currentIndexChanged" class="summary-sig-name">on_cbbodega_currentIndexChanged</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      asignar la bodega al objeto self.editmodel</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_cbbodega_currentIndexChanged">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.ui.Ui_factura.Ui_frmFactura-class.html">ui.Ui_factura.Ui_frmFactura</a></code></b>:
+      <code><a href="src.ui.Ui_factura.Ui_frmFactura-class.html#retranslateUi">retranslateUi</a></code>,
+      <code><a href="src.ui.Ui_factura.Ui_frmFactura-class.html#setupUi">setupUi</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.utility.base.Base-class.html">utility.base.Base</a></code></b>:
+      <code><a href="src.utility.base.Base-class.html#addLine">addLine</a></code>,
+      <code><a href="src.utility.base.Base-class.html#closeEvent">closeEvent</a></code>,
+      <code><a href="src.utility.base.Base-class.html#editCell">editCell</a></code>,
+      <code><a href="src.utility.base.Base-class.html#getStatus">getStatus</a></code>,
+      <code><a href="src.utility.base.Base-class.html#hideEvent">hideEvent</a></code>,
+      <code><a href="src.utility.base.Base-class.html#loadModels">loadModels</a></code>,
+      <code><a href="src.utility.base.Base-class.html#navigate">navigate</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_actionDeleteRow_activated">on_actionDeleteRow_activated</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_actionRefresh_activated">on_actionRefresh_activated</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_actionSave_activated">on_actionSave_activated</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_tablenavigation_clicked">on_tablenavigation_clicked</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_tablenavigation_doubleClicked">on_tablenavigation_doubleClicked</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_txtObservations_textChanged">on_txtObservations_textChanged</a></code>,
+      <code><a href="src.utility.base.Base-class.html#on_txtSearch_textChanged">on_txtSearch_textChanged</a></code>,
+      <code><a href="src.utility.base.Base-class.html#setStatus">setStatus</a></code>,
+      <code><a href="src.utility.base.Base-class.html#showEvent">showEvent</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE INSTANCIA ==================== -->
+<a name="section-VariablesdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.utility.base.Base-class.html">utility.base.Base</a></code></b>:
+      <code><a href="src.utility.base.Base-class.html#database">database</a></code>,
+      <code><a href="src.utility.base.Base-class.html#mapper">mapper</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPIEDADES ==================== -->
+<a name="section-Propiedades"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Propiedades</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Propiedades"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.utility.base.Base-class.html">utility.base.Base</a></code></b>:
+      <code><a href="src.utility.base.Base-class.html#status">status</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== DETALLE DE LOS METODOS ==================== -->
+<a name="section-Detalledelosmetodos"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de los metodos</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelosmetodos"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">user</span>,
+        <span class="sig-arg">parent</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.__init__">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Constructor</p>
+  <dl class="fields">
+    <dt>Reemplaza:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_rbcontado_toggled"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_rbcontado_toggled</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">on</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_rbcontado_toggled">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Asignar las observaciones al objeto __qdocument</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("bool")</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_actionPreview_activated"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_actionPreview_activated</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_actionPreview_activated">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Funcion usada para mostrar el reporte de una entrada compra</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("")</code></li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#on_actionPreview_activated">utility.base.Base.on_actionPreview_activated</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_actionNew_activated"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_actionNew_activated</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_actionNew_activated">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>activar todos los controles, llenar los modelos necesarios, crear el 
+  modelo EntradaCompraModel, aniadir una linea a la tabla</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("")</code></li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#on_actionNew_activated">utility.base.Base.on_actionNew_activated</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_actionCancel_activated"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_actionCancel_activated</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_actionCancel_activated">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Aca se cancela la edicion del documento</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("")</code></li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#on_actionCancel_activated">utility.base.Base.on_actionCancel_activated</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="updateDetailFilter"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">updateDetailFilter</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.updateDetailFilter">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Esta funci&#243;n se debe implementar en los formularios para que al 
+  navegar se actualize el filtro de la tabla detalles</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>index</code></strong> - Este es el indice del mapper en el que actualmente se encuentra 
+          navegando</li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#updateDetailFilter">utility.base.Base.updateDetailFilter</a>
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="setControls"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">setControls</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">status</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.setControls">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Habilitar o deshabilitar los controles seg&#250;n status</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>status</code></strong> - false = editando        true = navegando</li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#setControls">utility.base.Base.setControls</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_txtDocumentNumber_editingFinished"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_txtDocumentNumber_editingFinished</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_txtDocumentNumber_editingFinished">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Asignar el contenido al objeto documeto</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("")</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_dtPicker_dateTimeChanged"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_dtPicker_dateTimeChanged</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">datetime</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_dtPicker_dateTimeChanged">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Asignar la fecha al objeto __document</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>datetime</code></strong> - La fecha contenida en self.dtPicker</li>
+    </ul></dd>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("QDateTime")</code></li>
+    </ul></dd>
+    <dt>Reemplaza:
+        <a href="src.utility.base.Base-class.html#on_dtPicker_dateTimeChanged">utility.base.Base.on_dtPicker_dateTimeChanged</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_mtxtobservaciones_textChanged"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_mtxtobservaciones_textChanged</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_mtxtobservaciones_textChanged">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Asignar las observaciones al objeto __document</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("")</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_cbcliente_currentIndexChanged"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_cbcliente_currentIndexChanged</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_cbcliente_currentIndexChanged">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>asignar proveedor al objeto self.editmodel</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("int")</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_cbbodega_currentIndexChanged"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_cbbodega_currentIndexChanged</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">index</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.caja.factura-pysrc.html#frmFactura.on_cbbodega_currentIndexChanged">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>asignar la bodega al objeto self.editmodel</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot("int")</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.document.recibo.recibomodel.ReciboModel</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.document-module.html">Paquete&nbsp;document</a> ::
+        <a href="src.document.recibo-module.html">Paquete&nbsp;recibo</a> ::
+        <a href="src.document.recibo.recibomodel-module.html">Modulo&nbsp;recibomodel</a> ::
+        Clase&nbsp;ReciboModel
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.document.recibo.recibomodel.ReciboModel-class.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS Descripci&#243;n ==================== -->
+<h1 class="epydoc">Class ReciboModel</h1><p class="nomargin-top"><span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel">Codigo&nbsp;fuente</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_src_docu_26" name="uml_class_diagram_for_src_docu_26">
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#__init__" title="src.document.recibo.recibomodel.ReciboModel.__init__" alt="" coords="17,39,361,57"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#valid" title="Un documento es valido cuando self.printedDocumentNumber != &quot;&quot; &#160;self.providerId !=0 self.validLines &gt;0 self.__idIVA !=0 self.uid != 0 &#160;self.warehouseId != 0" alt="" coords="17,57,361,76"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#getRetencion" title="src.document.recibo.recibomodel.ReciboModel.getRetencion" alt="" coords="17,76,361,95"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#getRateRET" title="El porcentaje de IVA que se le aplica a esta linea" alt="" coords="17,95,361,113"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#validLines" title="la cantidad de lineas validas que hay en el documento" alt="" coords="17,113,361,132"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#rowCount" title="src.document.recibo.recibomodel.ReciboModel.rowCount" alt="" coords="17,132,361,151"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#columnCount" title="src.document.recibo.recibomodel.ReciboModel.columnCount" alt="" coords="17,151,361,169"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#data" title="darle formato a los campos de la tabla" alt="" coords="17,169,361,188"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#flags" title="src.document.recibo.recibomodel.ReciboModel.flags" alt="" coords="17,188,361,207"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#setData" title="modificar los datos del modelo, este metodo se comunica con el delegate" alt="" coords="17,207,361,225"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#total" title="El total del documento, esto es el total antes de aplicarse el IVA" alt="" coords="17,225,361,244"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#insertRows" title="src.document.recibo.recibomodel.ReciboModel.insertRows" alt="" coords="17,244,361,263"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#removeRows" title="src.document.recibo.recibomodel.ReciboModel.removeRows" alt="" coords="17,263,361,281"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#headerData" title="src.document.recibo.recibomodel.ReciboModel.headerData" alt="" coords="17,281,361,300"/>
+<area shape="rect" id="node244" href="src.document.recibo.recibomodel.ReciboModel-class.html#save" title="Este metodo guarda el documento actual en la base de datos" alt="" coords="17,300,361,319"/>
+<area shape="rect" id="node1" href="src.document.recibo.recibomodel.ReciboModel-class.html" title="esta clase es el modelo utilizado en la tabla en la que se editan los documentos" alt="" coords="5,6,373,325"/>
+</map>
+  <img src="uml_class_diagram_for_src_docu_26.gif" alt='' usemap="#uml_class_diagram_for_src_docu_26" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>esta clase es el modelo utilizado en la tabla en la que se editan los 
+  documentos</p>
+
+<!-- ==================== METODOS DE INSTANCIA ==================== -->
+<a name="section-MetodosdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Metodos de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MetodosdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">sesion</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.recibo.recibomodel.ReciboModel-class.html#valid" class="summary-sig-name">valid</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Un documento es valido cuando self.printedDocumentNumber != 
+      &quot;&quot; self.providerId !=0 self.validLines &gt;0 self.__idIVA 
+      !=0 self.uid != 0 self.warehouseId != 0</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.valid">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.recibo.recibomodel.ReciboModel-class.html#getRetencion" class="summary-sig-name">getRetencion</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.getRetencion">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.recibo.recibomodel.ReciboModel-class.html#getRateRET" class="summary-sig-name">getRateRET</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El porcentaje de IVA que se le aplica a esta linea</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.getRateRET">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.recibo.recibomodel.ReciboModel-class.html#validLines" class="summary-sig-name">validLines</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      la cantidad de lineas validas que hay en el documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.validLines">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="rowCount"></a><span class="summary-sig-name">rowCount</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.rowCount">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="columnCount"></a><span class="summary-sig-name">columnCount</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.columnCount">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="data"></a><span class="summary-sig-name">data</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span><br />
+      darle formato a los campos de la tabla</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.data">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="flags"></a><span class="summary-sig-name">flags</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.flags">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setData"></a><span class="summary-sig-name">setData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.EditRole</span>)</span><br />
+      modificar los datos del modelo, este metodo se comunica con el 
+      delegate</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.setData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.recibo.recibomodel.ReciboModel-class.html#total" class="summary-sig-name">total</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El total del documento, esto es el total antes de aplicarse el IVA</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.total">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="insertRows"></a><span class="summary-sig-name">insertRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.insertRows">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="removeRows"></a><span class="summary-sig-name">removeRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.removeRows">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="headerData"></a><span class="summary-sig-name">headerData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">section</span>,
+        <span class="summary-sig-arg">orientation</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.headerData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="save"></a><span class="summary-sig-name">save</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">lineas</span>)</span><br />
+      Este metodo guarda el documento actual en la base de datos</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.save">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== DETALLE DE LOS METODOS ==================== -->
+<a name="section-Detalledelosmetodos"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de los metodos</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelosmetodos"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="valid"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">valid</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.valid">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Un documento es valido cuando self.printedDocumentNumber != 
+  &quot;&quot; self.providerId !=0 self.validLines &gt;0 self.__idIVA !=0 
+  self.uid != 0 self.warehouseId != 0</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getRetencion"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getRetencion</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.getRetencion">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getRateRET"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getRateRET</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.getRateRET">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El porcentaje de IVA que se le aplica a esta linea</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="validLines"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">validLines</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.validLines">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>la cantidad de lineas validas que hay en el documento</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="total"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">total</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.recibo.recibomodel-pysrc.html#ReciboModel.total">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El total del documento, esto es el total antes de aplicarse el IVA</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

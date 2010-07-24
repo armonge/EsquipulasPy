@@ -1,0 +1,41 @@
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS `tr_promediarcosto` $$
+
+CREATE TRIGGER tr_promediarcosto AFTER INSERT ON articulosxdocumento FOR EACH ROW
+BEGIN
+
+      DECLARE costo DECIMAL(12,4);
+      DECLARE idtc  INTEGER;
+	  DECLARE tasa DECIMAL(12,4);
+
+      IF NEW.unidades>0 THEN
+
+		SELECT idtipocambio,tc.tasa FROM documentos d
+    JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
+    WHERE iddocumento = NEW.iddocumento INTO @idtc, @tasa;
+
+
+
+      IF @tasa IS NULL THEN
+          SET NEW= NULL;
+      END IF;
+
+        SELECT SUM((unidades*costounit * @tasa))/SUM(unidades)  FROM articulosxdocumento a WHERE a.idarticulo= NEW.idarticulo INTO @costo;
+
+
+        IF @costo IS NULL THEN
+          SET @costo=NEW.costounit;
+        ELSE
+          SET @costo=@costo/@tasa;
+       END IF;
+
+
+        UPDATE costosarticulo SET activo=0 WHERE idarticulo=NEW.idarticulo AND activo=1;
+
+        INSERT INTO costosarticulo (valor,idarticulo,idtc) VALUES (@costo,NEW.idarticulo,@idtc);
+      END IF;
+
+END $$
+
+DELIMITER ;

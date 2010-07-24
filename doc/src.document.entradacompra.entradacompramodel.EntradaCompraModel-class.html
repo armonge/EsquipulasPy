@@ -1,0 +1,928 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>src.document.entradacompra.entradacompramodel.EntradaCompraModel</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="src-module.html">Paquete&nbsp;src</a> ::
+        <a href="src.document-module.html">Paquete&nbsp;document</a> ::
+        <a href="src.document.entradacompra-module.html">Paquete&nbsp;entradacompra</a> ::
+        <a href="src.document.entradacompra.entradacompramodel-module.html">Modulo&nbsp;entradacompramodel</a> ::
+        Clase&nbsp;EntradaCompraModel
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS Descripci&#243;n ==================== -->
+<h1 class="epydoc">Class EntradaCompraModel</h1><p class="nomargin-top"><span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel">Codigo&nbsp;fuente</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_src_docu_9" name="uml_class_diagram_for_src_docu_9">
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#providerId" title="El id del tipo de documento" alt="" coords="17,31,260,49"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#observations" title="Las observaciones del documento" alt="" coords="17,49,260,68"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#lines" title="Las lineas del documento" alt="" coords="17,68,260,87"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#printedDocumentNumber" title="El numero impreso del documento" alt="" coords="17,87,260,105"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#datetime" title="La fecha del documento" alt="" coords="17,105,260,124"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#uid" title="El id del usuario que guarda el documento" alt="" coords="17,124,260,143"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#saveError" title="Los mensajes de error al salvar" alt="" coords="17,143,260,161"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#validError" title="Los errores al validar un documento" alt="" coords="17,161,260,180"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#exchangeRate" title="El tipo de cambio que se utiliza en el documento" alt="" coords="17,180,260,199"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#exchangeRateId" title="El id del tipo de cambio del documento" alt="" coords="17,199,260,217"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#paytipe" title="El tipo de pago del documento" alt="" coords="17,217,260,236"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#isCheck" title="Si esta entrada de compra se paga con un cheque o no" alt="" coords="17,236,260,255"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#__init__" title="src.document.entradacompra.entradacompramodel.EntradaCompraModel.__init__" alt="" coords="17,257,260,276"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#valid" title="Un documento es valido cuando self.printedDocumentNumber != &quot;&quot; &#160;self.providerId !=0 self.validLines &gt;0 self.__idIVA !=0 self.uid != 0 &#160;self.exchangerateid != 0 Es valido el documento" alt="" coords="17,276,260,295"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#subtotalC" title="El subtotal del documento, esto es el total antes de aplicarse el IVA" alt="" coords="17,295,260,313"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#totalC" title="El total neto del documento, despues de haber aplicado IVA" alt="" coords="17,313,260,332"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#totalD" title="El total en dolares del documento" alt="" coords="17,332,260,351"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#IVAC" title="El IVA total del documento, se calcula en base a subtotal y rateIVA, en &#160;cordobas" alt="" coords="17,351,260,369"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#IVAD" title="El IVA total del documento, se calcula en base a subtotal y rateIVA, en &#160;dolares" alt="" coords="17,369,260,388"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#getRateIVA" title="El porcentaje de IVA que se le aplica a esta linea" alt="" coords="17,388,260,407"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#validLines" title="La cantidad de lineas validas que hay en el documento" alt="" coords="17,407,260,425"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#rowCount" title="El numero de filas del documento, es igual a la cantidad de lineas en &#160;self.lines" alt="" coords="17,425,260,444"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#columnCount" title="El numero de columnas del modelo" alt="" coords="17,444,260,463"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#data" title="Los datos que muestran las vistas asignadas a este modelo" alt="" coords="17,463,260,481"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#flags" title="Las flags de las celdas de este modelo, es editable para todas menos para &#160;TOTALC y TOTALD" alt="" coords="17,481,260,500"/>
+<area shape="rect" id="node223" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#save" title="Este metodo guarda el documento actual en la base de datos" alt="" coords="17,519,260,537"/>
+<area shape="rect" id="node1" href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html" title="esta clase es el modelo utilizado en la tabla en la que se editan los documentos" alt="" coords="5,6,272,543"/>
+</map>
+  <img src="uml_class_diagram_for_src_docu_9.gif" alt='' usemap="#uml_class_diagram_for_src_docu_9" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>esta clase es el modelo utilizado en la tabla en la que se editan los 
+  documentos</p>
+
+<!-- ==================== METODOS DE INSTANCIA ==================== -->
+<a name="section-MetodosdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Metodos de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MetodosdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#valid" class="summary-sig-name">valid</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Un documento es valido cuando self.printedDocumentNumber != 
+      &quot;&quot; self.providerId !=0 self.validLines &gt;0 self.__idIVA 
+      !=0 self.uid != 0 self.exchangerateid != 0 Es valido el documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.valid">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#subtotalC" class="summary-sig-name">subtotalC</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El subtotal del documento, esto es el total antes de aplicarse el IVA</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.subtotalC">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#totalC" class="summary-sig-name">totalC</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El total neto del documento, despues de haber aplicado IVA</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.totalC">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#totalD" class="summary-sig-name">totalD</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El total en dolares del documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.totalD">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#IVAC" class="summary-sig-name">IVAC</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El IVA total del documento, se calcula en base a subtotal y rateIVA, 
+      en cordobas</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.IVAC">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#IVAD" class="summary-sig-name">IVAD</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El IVA total del documento, se calcula en base a subtotal y rateIVA, 
+      en dolares</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.IVAD">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#getRateIVA" class="summary-sig-name">getRateIVA</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      El porcentaje de IVA que se le aplica a esta linea</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.getRateIVA">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#validLines" class="summary-sig-name">validLines</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      La cantidad de lineas validas que hay en el documento</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.validLines">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="rowCount"></a><span class="summary-sig-name">rowCount</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span><br />
+      El numero de filas del documento, es igual a la cantidad de lineas en
+      self.lines</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.rowCount">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="columnCount"></a><span class="summary-sig-name">columnCount</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex()</span>)</span><br />
+      El numero de columnas del modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.columnCount">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="data"></a><span class="summary-sig-name">data</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span><br />
+      Los datos que muestran las vistas asignadas a este modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.data">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="flags"></a><span class="summary-sig-name">flags</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>)</span><br />
+      Las flags de las celdas de este modelo, es editable para todas menos 
+      para TOTALC y TOTALD</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.flags">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setData"></a><span class="summary-sig-name">setData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">index</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.EditRole</span>)</span><br />
+      modificar los datos del modelo, este metodo se comunica con el 
+      delegate</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.setData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="insertRows"></a><span class="summary-sig-name">insertRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex</span>)</span><br />
+      Insertar filas en el modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.insertRows">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="removeRows"></a><span class="summary-sig-name">removeRows</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">position</span>,
+        <span class="summary-sig-arg">rows</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">index</span>=<span class="summary-sig-default">QModelIndex</span>)</span><br />
+      Borrar filas del modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.removeRows">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="headerData"></a><span class="summary-sig-name">headerData</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">section</span>,
+        <span class="summary-sig-arg">orientation</span>,
+        <span class="summary-sig-arg">role</span>=<span class="summary-sig-default">Qt.DisplayRole</span>)</span><br />
+      Lo que se muestra en los headers del modelo</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.headerData">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#save" class="summary-sig-name">save</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Este metodo guarda el documento actual en la base de datos</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.save">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE CLASE ==================== -->
+<a name="section-VariablesdeClase"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Clase</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeClase"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="__documentType"></a><span class="summary-name">__documentType</span> = <code title="21">21</code><br />
+      El id del tipo de documento de un Objeto EntradaCompra
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE INSTANCIA ==================== -->
+<a name="section-VariablesdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="providerId"></a><span class="summary-name">providerId</span><br />
+      El id del tipo de documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="observations"></a><span class="summary-name">observations</span><br />
+      Las observaciones del documento
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="__rIVA"></a><span class="summary-name">__rIVA</span><br />
+      El porcentaje de IVA del documento
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="__idIVA"></a><span class="summary-name">__idIVA</span><br />
+      El id del IVA del documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">LineaEntradaCompra[]</span>
+    </td><td class="summary">
+        <a name="lines"></a><span class="summary-name">lines</span><br />
+      Las lineas del documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="printedDocumentNumber"></a><span class="summary-name">printedDocumentNumber</span><br />
+      El numero impreso del documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">QDateTime</span>
+    </td><td class="summary">
+        <a name="datetime"></a><span class="summary-name">datetime</span><br />
+      La fecha del documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="uid"></a><span class="summary-name">uid</span><br />
+      El id del usuario que guarda el documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="saveError"></a><span class="summary-name">saveError</span><br />
+      Los mensajes de error al salvar
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="validError"></a><span class="summary-name">validError</span><br />
+      Los errores al validar un documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="exchangeRate"></a><span class="summary-name">exchangeRate</span><br />
+      El tipo de cambio que se utiliza en el documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="exchangeRateId"></a><span class="summary-name">exchangeRateId</span><br />
+      El id del tipo de cambio del documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a href="src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#paytipe" class="summary-name">paytipe</a><br />
+      El tipo de pago del documento
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+        <a name="isCheck"></a><span class="summary-name">isCheck</span><br />
+      Si esta entrada de compra se paga con un cheque o no
+    </td>
+  </tr>
+</table>
+<!-- ==================== DETALLE DE LOS METODOS ==================== -->
+<a name="section-Detalledelosmetodos"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de los metodos</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelosmetodos"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="valid"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">valid</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.valid">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Un documento es valido cuando self.printedDocumentNumber != 
+  &quot;&quot; self.providerId !=0 self.validLines &gt;0 self.__idIVA !=0 
+  self.uid != 0 self.exchangerateid != 0 Es valido el documento</p>
+  <dl class="fields">
+    <dt>Retorna: bool</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="subtotalC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">subtotalC</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.subtotalC">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El subtotal del documento, esto es el total antes de aplicarse el 
+  IVA</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="totalC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">totalC</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.totalC">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El total neto del documento, despues de haber aplicado IVA</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="totalD"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">totalD</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.totalD">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El total en dolares del documento</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="IVAC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">IVAC</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.IVAC">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El IVA total del documento, se calcula en base a subtotal y rateIVA, 
+  en cordobas</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="IVAD"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">IVAD</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.IVAD">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El IVA total del documento, se calcula en base a subtotal y rateIVA, 
+  en dolares</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="getRateIVA"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getRateIVA</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.getRateIVA">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>El porcentaje de IVA que se le aplica a esta linea</p>
+  <dl class="fields">
+    <dt>Retorna: Decimal</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="validLines"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">validLines</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.validLines">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>La cantidad de lineas validas que hay en el documento</p>
+  <dl class="fields">
+    <dt>Retorna: int</dt>
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="save"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">save</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.document.entradacompra.entradacompramodel-pysrc.html#EntradaCompraModel.save">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Este metodo guarda el documento actual en la base de datos</p>
+  <dl class="fields">
+    <dt>Retorna: bool</dt>
+        <dd>Si se pudo o no guardar el documento</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== DETALLE DE LAS VARIABLES DE INSTANCIA ==================== -->
+<a name="section-Detalledelasvariablesdeinstancia"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de las variables de instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelasvariablesdeinstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="paytipe"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">paytipe</h3>
+  El tipo de pago del documento
+  <p>0 = Credito</p>
+  <p>1 = Contado</p>
+  <dl class="fields">
+    <dt>Tipo:</dt>
+      <dd>int</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="src.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
