@@ -14,7 +14,7 @@
    <string>Elaboración de Cheques</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_4">
+   <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="autoFillBackground">
@@ -34,7 +34,7 @@
        <attribute name="title">
         <string notr="true"/>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_6">
+       <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
@@ -357,37 +357,7 @@
           </item>
          </layout>
         </item>
-        <item row="3" column="0">
-         <widget class="XDockWidget" name="xdockWidget">
-          <property name="allowedAreas">
-           <set>Qt::BottomDockWidgetArea|Qt::TopDockWidgetArea</set>
-          </property>
-          <property name="windowTitle">
-           <string>Movimientos Contables</string>
-          </property>
-          <widget class="QWidget" name="dockWidgetContents">
-           <layout class="QGridLayout" name="gridLayout_7">
-            <item row="0" column="0">
-             <widget class="QTableView" name="tabledetails">
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <attribute name="verticalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="verticalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </widget>
-        </item>
-        <item row="4" column="0">
+        <item row="1" column="0">
          <widget class="QFrame" name="frame_2">
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
@@ -396,7 +366,17 @@
            <enum>QFrame::Raised</enum>
           </property>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="1" column="0" rowspan="4">
+           <item row="0" column="0" colspan="3">
+            <widget class="QTableView" name="tabledetails"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_15">
+             <property name="text">
+              <string>Observaciones</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" rowspan="4">
             <widget class="QPlainTextEdit" name="txtobservaciones">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -415,14 +395,14 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
+           <item row="2" column="1">
             <widget class="QLabel" name="label_13">
              <property name="text">
               <string>Subtotal Factura</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="2">
+           <item row="2" column="2">
             <widget class="QDoubleSpinBox" name="subtotal">
              <property name="readOnly">
               <bool>false</bool>
@@ -435,14 +415,14 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="3" column="1">
             <widget class="QLabel" name="label_14">
              <property name="text">
               <string>IVA</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="2">
+           <item row="3" column="2">
             <widget class="QLabel" name="iva">
              <property name="frameShape">
               <enum>QFrame::Box</enum>
@@ -452,14 +432,14 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
+           <item row="4" column="1">
             <widget class="QLabel" name="label_2">
              <property name="text">
               <string>Retencion</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
+           <item row="4" column="2">
             <widget class="QLabel" name="retencion">
              <property name="frameShape">
               <enum>QFrame::Box</enum>
@@ -469,27 +449,20 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="1">
+           <item row="5" column="1">
             <widget class="QLabel" name="label_20">
              <property name="text">
               <string>Total</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="2">
+           <item row="5" column="2">
             <widget class="QLabel" name="total">
              <property name="frameShape">
               <enum>QFrame::Box</enum>
              </property>
              <property name="text">
               <string>0.0000</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_15">
-             <property name="text">
-              <string>Observaciones</string>
              </property>
             </widget>
            </item>
@@ -710,14 +683,6 @@
    </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>XDockWidget</class>
-   <extends>QDockWidget</extends>
-   <header>utility.widgets.xdockwidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>tablenavigation</tabstop>
   <tabstop>txtSearch</tabstop>
