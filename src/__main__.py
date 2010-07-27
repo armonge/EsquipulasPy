@@ -24,10 +24,10 @@ if __name__ == '__main__':
     translator = QtCore.QTranslator()
     locale = QtCore.QLocale()
     LOCALENAME = str(locale.system().name())
-    translator.load("qt_%s" % LOCALENAME, os.path.dirname( sys.argv[0] ))
+    translator.load("qt_%s" % LOCALENAME, os.path.dirname(os.path.abspath( sys.argv[0] )) + r"/translations/")
     app.installTranslator(translator)
 
-    #el estilo
+#    el estilo
 #    try:
 #        pathname = os.path.dirname( sys.argv[0] ) + "/ui/stylesheet.qss"
 #        p = os.path.abspath( pathname )

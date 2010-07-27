@@ -6,6 +6,7 @@ Created on 06/07/2010
 '''
 #contantes de modulos
 IDCONTABILIDAD = 3
+IDINVENTARIO = 4
 
 #conceptos
 IDCONCEPTODEPOSITO = 0

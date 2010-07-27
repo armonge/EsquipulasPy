@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/kardexother.ui'
 #
-# Created: Sat Jul 24 00:03:50 2010
+# Created: Sat Jul 24 16:14:21 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -48,13 +48,13 @@ class Ui_frmKardexOther(object):
         self.tabledetails.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.tabledetails.setObjectName("tabledetails")
         self.gridLayout.addWidget(self.tabledetails, 1, 0, 1, 5)
-        self.stackedWidget = QtGui.QStackedWidget(self.tab)
+        self.swConcept = QtGui.QStackedWidget(self.tab)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.stackedWidget.sizePolicy().hasHeightForWidth())
-        self.stackedWidget.setSizePolicy(sizePolicy)
-        self.stackedWidget.setObjectName("stackedWidget")
+        sizePolicy.setHeightForWidth(self.swConcept.sizePolicy().hasHeightForWidth())
+        self.swConcept.setSizePolicy(sizePolicy)
+        self.swConcept.setObjectName("swConcept")
         self.page_3 = QtGui.QWidget()
         self.page_3.setObjectName("page_3")
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.page_3)
@@ -63,7 +63,7 @@ class Ui_frmKardexOther(object):
         self.txtConcept.setReadOnly(True)
         self.txtConcept.setObjectName("txtConcept")
         self.horizontalLayout_2.addWidget(self.txtConcept)
-        self.stackedWidget.addWidget(self.page_3)
+        self.swConcept.addWidget(self.page_3)
         self.page_4 = QtGui.QWidget()
         self.page_4.setObjectName("page_4")
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.page_4)
@@ -72,8 +72,8 @@ class Ui_frmKardexOther(object):
         self.cbConcept.setEditable(True)
         self.cbConcept.setObjectName("cbConcept")
         self.verticalLayout_3.addWidget(self.cbConcept)
-        self.stackedWidget.addWidget(self.page_4)
-        self.gridLayout.addWidget(self.stackedWidget, 0, 3, 1, 1)
+        self.swConcept.addWidget(self.page_4)
+        self.gridLayout.addWidget(self.swConcept, 0, 3, 1, 1)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/res/document-edit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.tab, icon, "")
@@ -195,7 +195,7 @@ class Ui_frmKardexOther(object):
 
         self.retranslateUi(frmKardexOther)
         self.tabWidget.setCurrentIndex(1)
-        self.stackedWidget.setCurrentIndex(0)
+        self.swConcept.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(frmKardexOther)
 
     def retranslateUi(self, frmKardexOther):

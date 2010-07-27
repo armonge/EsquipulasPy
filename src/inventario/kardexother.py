@@ -6,9 +6,11 @@ Created on 23/07/2010
 '''
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
-from PyQt4.QtCore import QTimer
+from PyQt4.QtCore import QTimer,pyqtSlot, QDateTime
 from utility.base import Base
 from ui.Ui_kardexother import Ui_frmKardexOther
+
+import utility.constantes
 class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
     '''
     classdocs
@@ -56,6 +58,9 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         self.actionCancel.setVisible(not status)
         self.actionSave.setVisible(not status)
         
+        self.swConcept.setCurrentIndex(0 if status else 1)
+        if not status:
+            self.tabWidget.setCurrentIndex(0)
         
     def updateModels(self):
         try:
@@ -73,9 +78,39 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             FROM documentos d 
             JOIN bodegas b ON b.idbodega = d.idbodega
             LEFT JOIN docpadrehijos dph ON dph.idhijo = d.iddocumento
-            WHERE d.idtipodoc = 27 AND dph.idhijo IS NULL
-            """)
+            WHERE d.idtipodoc = %d AND dph.idhijo IS NULL
+            """ % utility.constantes.IDKARDEX)
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
         except Exception as inst:
             print inst
+    @pyqtSlot()
+    def on_actionNew_activated(self):
+        try:
+            if not QSqlDatabase.database().isOpen():
+                if not QSqlDatabase.database().open:
+                    raise UserWarning("No se pudo conectar con la base de datos")
+
+            conceptosmodel = QSqlQueryModel()
+            conceptosmodel.setQuery("""
+            SELECT
+            	c.idconcepto,
+            	c.descripcion
+            FROM conceptos c
+            WHERE c.modulo = %d
+            """ % utility.constantes.IDINVENTARIO)
+
+            self.cbConcept.setModel(conceptosmodel)
+            self.cbConcept.setModelColumn(1)
+
+            self.dtPicker.setDateTime(QDateTime.currentDateTime())
+
+            self.status = False
+        except UserWarning as inst:
+            QMessageBox.critical(self,"Llantera Esquipulas", str(inst))
+            self.status = True
+        except Exception as inst:
+            self.status = True
+            print inst
+        
+        
