@@ -266,6 +266,13 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
         self.setupUi(self)
         self.catmodel = CategoriesModel()
         
+        self.catproxymodel = QSortFilterProxyModel()
+        self.catproxymodel.setSourceModel(self.catmodel)
+        self.catproxymodel.setFilterKeyColumn(0)
+        self.catproxymodel.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        
+        
+        
         self.catvalid = False
         self.catId = 0
         self.brandId = 0
@@ -275,7 +282,7 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
         self.profit = 0
         
         
-        self.categoriesview.setModel(self.catmodel)
+        self.categoriesview.setModel(self.catproxymodel)
         self.categoriesview.setColumnHidden(1,True)
         self.categoriesview.resizeColumnToContents(0)
         
@@ -284,9 +291,14 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
                 raise Exception("No se pudo abrir la base de datos")
         self.brandsmodel = QSqlQueryModel()
         self.brandsmodel.setQuery("""
-        SELECT idmarca, nombre FROM marcas
+        SELECT idmarca, nombre 
+        FROM marcas
         """)
-        self.brandsview.setModel(self.brandsmodel)
+        self.brandsproxymodel = QSortFilterProxyModel()
+        self.brandsproxymodel.setSourceModel(self.brandsmodel)
+        self.brandsproxymodel.setFilterKeyColumn(1)
+        self.brandsproxymodel.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        self.brandsview.setModel(self.brandsproxymodel)
         self.brandsview.setModelColumn(1)
         
         self.validator = QDoubleValidator(0, 500,4,self)
@@ -337,7 +349,13 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
             print query.lastError().text()
             print inst
             return False
-    
+    @pyqtSlot("QString")
+    def on_txtCategorySearch_textChanged(self, text):
+        self.catproxymodel.setFilterFixedString(text)
+    @pyqtSlot("QString")
+    def on_txtBrandSearch_textChanged(self,text):
+        self.brandsproxymodel.setFilterFixedString(text)
+            
     @property
     def valid(self):
         return self.catvalid and self.brandId != 0
@@ -380,5 +398,4 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
         row = selected.indexes()[0].row()
         parent = selected.indexes()[0].parent()
         self.catvalid = parent.data().toString() != ""
-            
-        self.catId =  self.catmodel.data(self.catmodel.index(row, 1, parent), Qt.DisplayRole)
+        self.catId =  self.catproxymodel.data(self.catproxymodel.index(row, 1, parent), Qt.DisplayRole)
