@@ -352,6 +352,7 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
     @pyqtSlot("QString")
     def on_txtCategorySearch_textChanged(self, text):
         self.catproxymodel.setFilterFixedString(text)
+        
     @pyqtSlot("QString")
     def on_txtBrandSearch_textChanged(self,text):
         self.brandsproxymodel.setFilterFixedString(text)
