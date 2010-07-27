@@ -45,14 +45,10 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.parentWindow = parent
         Base.__init__( self )
 
-        self.datos = None
-        self.datos.userId = user
-        self.datos.sesionId = parent.sesion 
-        self.sesion
-
         self.__status = True
 
 #       las acciones deberian de estar ocultas
+        self.frbotones.setVisible( False )
         self.actionSave.setVisible( False )
         self.actionCancel.setVisible( False )
 
@@ -81,6 +77,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
         #inicializando el documento
         self.editmodel = None
+        self.datosRecibo=None
 
 
 
@@ -116,18 +113,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
     @pyqtSignature( "bool" )
     def on_ckretener_toggled( self, on ):
         """
-        Asignar las observaciones al objeto __qdocument
         """
-        self.mtxtobservaciones.setVisible( on )
-        self.lbltotalreten.setVisible( on )
-        self.lblnreten.setVisible( on )
-        self.label_7.setVisible( on )
-        self.label_19.setVisible( on )
-        self.label_20.setVisible( on )
-
-        if not self.editmodel is None:
-            self.editmodel.aplicarRet = on
-            print( on )
+        self.datosRecibo.retencionAplicada(self,on)
 
     @pyqtSignature( "" )
     def on_mtxtobservaciones_textChanged( self ):
@@ -135,7 +122,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         Asignar las observaciones al objeto __document
         """
         if not self.editmodel is None:
-            self.editmodel.observationsRET = self.mtxtobservaciones.toPlainText()
+            self.editmodel.observacionesRet = self.mtxtobservaciones.toPlainText()
 
 
 
@@ -302,7 +289,6 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
 
     def updateLabels( self ):
-#        self.lbltotal.setText( moneyfmt( self.editmodel.total, 4, "US$" ) )
         self.lbltotal.setText( moneyfmt( self.abonoeditmodel.total, 4, "US$" ) )
         self.lbltotalreten.setText( moneyfmt( self.editmodel.getRetencion, 4, "US$" ) )
         self.tabledetails.resizeColumnsToContents()
@@ -361,7 +347,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         Funcion usada para mostrar el reporte de una entrada compra
         """
 
-        report = frmReportes( "entradaslocales.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.datos.userId, self )
+        report = frmReportes( "entradaslocales.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.datosRecibo.userId, self )
 
         report.show()
 
@@ -401,6 +387,16 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 QMessageBox.information( None, "Recibo", "No existen clientes morosos" )
                 return ""
 
+#            Rellenar el combobox de las CONCEPTOS
+            self.conceptosModel = QSqlQueryModel()
+            self.conceptosModel.setQuery( """
+               SELECT idconcepto, descripcion FROM conceptos c;
+            """ )
+            if self.conceptosModel.rowCount() == 0:
+                QMessageBox.information( None, "Recibo", "No existen conceptos para los recibos, por favor cree uno" )
+                return ""
+            
+
             self.cbcliente.setModel( self.clientesModel )
             self.cbcliente.setCurrentIndex( -1 )
             self.cbcliente.setModelColumn( 1 )
@@ -409,31 +405,26 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             completer.setModel( self.clientesModel )
             completer.setCompletionColumn( 1 )
 
-# Asigno el modelo del recibo
-
-            self.editmodel = ReciboModel()
-            self.abonoeditmodel = AbonoModel()
             
-            self.datosRecibo = DatosRecibo(self.parentWindow.datosSesion)
-            
-            self.status = False
-            self.frbotones.setVisible( True )
-
-#            Rellenar el combobox de las CONCEPTOS
-            self.conceptosModel = QSqlQueryModel()
-            self.conceptosModel.setQuery( """
-               SELECT idconcepto, descripcion FROM conceptos c;
-            """ )
-
             self.cbconcepto.setModel( self.conceptosModel )
             self.cbconcepto.setModelColumn( 1 )
-
             completerconcepto = QCompleter()
             completerconcepto.setCaseSensitivity( Qt.CaseInsensitive )
             completerconcepto.setModel( self.conceptosModel )
             completerconcepto.setCompletionColumn( 1 )
 
+            
+            self.datosRecibo = DatosRecibo(self.parentWindow.datosSesion)
             self.datosRecibo.cargarRetenciones(self.cbtasaret)
+            if self.datosRecibo.retencionModel.rowCount()==0:
+                QMessageBox.warning( None, "Recibo", u"No existe ninguna tasa de retención. Por favor contacte al administrador del sistema" )
+                return ""
+            
+
+# Asigno el modelo del recibo
+
+            self.editmodel = ReciboModel()
+            self.abonoeditmodel = AbonoModel()
             self.datosRecibo.cargarNumeros(self.lblnrec,self.lblnreten)
             
             self.tabledetails.setModel( self.editmodel )
@@ -445,13 +436,15 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 # ASIGNO EL DELEGADO A LA TABLA DE LOS ABONOS
             delegado = AbonoDelegate()
             self.tableabonos.setItemDelegate( delegado )
-            
             self.addLine()
             
 #            self.abonoeditmodel.insertRows(1)
             self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
             self.connect( self.abonoeditmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
             
+            
+            self.status = False
+            self.frbotones.setVisible( True )
             self.updateFacturasFilter()
 
         if QSqlDatabase.database().isOpen():
@@ -519,7 +512,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.tabWidget.setCurrentIndex( 0 )
             self.lblnrec.setText( "" )
             self.txtpersona.setText( "" )
-            self.dtPicker.setDate( self.parentWindow.date )
+            self.dtPicker.setDate( self.parentWindow.datosSesion.fecha )
 
             self.swcliente.setCurrentIndex( 0 )
             self.swconcepto.setCurrentIndex( 0 )
@@ -532,15 +525,6 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.tableabonos.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
-
-
-    @pyqtSlot(  )
-    def on_txtDocumentNumber_editingFinished( self ):
-        """
-        Asignar el contenido al objeto documeto
-        """
-        if not self.editmodel is None:
-            self.editmodel.printedDocumentNumber = self.txtDocumentNumber.text()
 
     @pyqtSlot( "bool" )
     def on_btnadd_clicked( self, on ):
@@ -601,8 +585,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
     @pyqtSlot(  )
     def on_txtpersona_editingFinished( self ):
-        if not self.editmodel is None:
-            self.datos.observations = self.txtpersona.text()
+        if not  self.readOnly:
+            self.datos.observaciones = self.txtpersona.text()
 
 
     @pyqtSlot( "int" )
@@ -612,12 +596,11 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
         if not self.editmodel is None:
 
-            self.editmodel.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0] if index != -1 else - 1
+            self.datos.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0] if index != -1 else - 1
             self.tableabonos.setEnabled( index != -1 )
             self.frbotones.setEnabled( index != -1 )
             self.abonoeditmodel.removeRows( 0, self.tablefacturas, self.abonoeditmodel.rowCount() )
             self.abonoeditmodel.idcliente = self.editmodel.clienteId
-
             self.updateFacturasFilter()
             self.updateLabels()
 
@@ -627,25 +610,23 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         asignar la concepto al objeto self.editmodel
         """
         if not self.editmodel is None:
-            self.editmodel.conceptoId = self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
+            self.datos.conceptoId = self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
 
     @pyqtSlot( "int" )
     def on_cbtasaret_currentIndexChanged( self, index ):
         """
         asignar la retencion al objeto self.editmodel
         """
-        if not self.editmodel is None:
-            self.editmodel.retencionId = self.retencionModel.record( index ).value( "idcostoagregado" ).toInt()[0]
-            self.editmodel.retencionTasa = Decimal( self.retencionModel.record( index ).value( "tasa" ).toString() )
-            self.updateLabels()
+        self.datos.tasaRetencionCambio()
 
 class dlgRecibo(Ui_dlgRecibo,QDialog):
     def __init__( self,padre):
         super( dlgRecibo, self ).__init__( padre )
+        self.editModel=None
         self.setupUi( self )
-        self.datos = DatosRecibo(1)
-        self.editModel = ReciboModel()
+        self.readOnly=False
         self.setControls(False)
+                    
 #        self.setWindowFlags(Qt.WindowTitleHint | Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)
         
     def setControls( self, status ):
@@ -653,31 +634,67 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         @param status false = editando        true = navegando
         """
         self.txtpersona.setReadOnly( status )
-        self.ckretener.setEnabled( ( not status ) )
+        self.ckretener.setEnabled(not status)
         self.mtxtobservaciones.setReadOnly( status )
+        self.readOnly=status
         
         if status:
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
-            self.lblnrec.setText( "" )
+#            self.lblnrec.setText( "" )
+            self.editModel = ReciboModel()
+            
+            if not QSqlDatabase.database().isOpen():
+                if not QSqlDatabase.database().open():
+                    raise Exception( u"No se pudo establecer la conexión con la base de datos" )
+    
+                QMessageBox.warning( None,
+                "Llantera Esquipulas",
+                """Hubo un error al conectarse con la base de datos""",
+                QMessageBox.StandardButtons( \
+                    QMessageBox.Ok ),
+                QMessageBox.Ok )
+            else:        
+                self.datos = DatosRecibo(1)
+                self.datos.cargarNumeros(self.lblnrec, self.lblnreten)
+                self.datos.cargarRetenciones(self.cbtasaret)    
+                
+            if QSqlDatabase.database().isOpen():
+                QSqlDatabase.database().close()
+
+            
             self.txtpersona.setText( "" )
             self.swtasaret.setCurrentIndex( 0 )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
      
     
-    @pyqtSlot(  )
-    def on_txtpersona_editingFinished( self ):
-        if not self.editmodel is None:
-            self.datos.observations = self.txtpersona.text()        
+    @pyqtSlot("")
+    def on_txtpersona_editingFinished( self ):    
+        if not  self.readOnly:
+            self.datos.observaciones = self.txtpersona.text()
+            
+# MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
+    @pyqtSignature( "bool" )
+    def on_ckretener_toggled( self, on ):
+        """
+        """
+        self.datos.retencionAplicada(self,on)
+  
         
+    @pyqtSlot( "int" )
+    def on_cbtasaret_currentIndexChanged( self, index ):
+        """
+        asignar la retencion al objeto self.editmodel
+        """
+        self.datos.tasaRetencionCambio()
 class DatosRecibo(object):
     def __init__(self,datosSesion):
         object.__init__(self)
     
         self.__documentType = 18
         self.clienteId = 0
-        self.observations = ""
-        self.observationsRET = ""
+        self.observaciones = ""
+        self.observacionesRet = ""
         self.aplicarRet = True
         
         self.lines = None
@@ -767,7 +784,7 @@ class DatosRecibo(object):
             query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":anulado", 0 )
             query.bindValue( ":idpersona", self.clienteId )
-            query.bindValue( ":observacion", self.observations )
+            query.bindValue( ":observacion", self.observaciones )
             query.bindValue( ":total", self.total.to_eng_string() )
             query.bindValue( ":escontado", self.escontado )
             query.bindValue( ":idtc", self.idtc )
@@ -820,7 +837,7 @@ class DatosRecibo(object):
                 query.bindValue( ":idusuario", self.uid )
                 query.bindValue( ":anulado", 0 )
                 query.bindValue( ":idpersona", self.clienteId )
-                query.bindValue( ":observacion", self.observationsRET )
+                query.bindValue( ":observacion", self.observacionesRet )
                 query.bindValue( ":total", self.getRetencion.to_eng_string() )
                 query.bindValue( ":escontado", self.escontado )
                 query.bindValue( ":idtc", self.idtc )
@@ -888,9 +905,12 @@ class DatosRecibo(object):
 
     def cargarNumeros(self,lblnrec,lblnreten):
 #            Cargar el numero de el Recibo actual
+        idrec= str(IDRECIBO)
+        idret = str(IDRETENCION)
         query = QSqlQuery( "SELECT " + 
-                           "MAX(IF(idtipodoc=" + IDRECIBO + ",CAST(ndocimpreso AS SIGNED),0))+1 as reciboNumber," +
-                           "MAX(IF(idtipodoc=" + IDRETENCION + ",CAST(ndocimpreso AS SIGNED),0))+1 as retencionNumber FROM documentos d WHERE idtipodoc IN (" + IDRECIBO + "," + IDRETENCION + ");" )
+                           " MAX(IF(idtipodoc=" + idrec + ",CAST(ndocimpreso AS SIGNED),0))+1 as reciboNumber," +
+                           " MAX(IF(idtipodoc=" + idret + ",CAST(ndocimpreso AS SIGNED),0))+1 as retencionNumber FROM documentos d" + 
+                           " WHERE idtipodoc IN (" + idrec + "," + idret + ");" )
         if not query.exec_():
             print( query.lastError().text() )
         query.first()
@@ -907,7 +927,24 @@ class DatosRecibo(object):
         self.retencionNumeroImpreso = n
         
 
-
+    def tasaRetencionCambio(self,index,recibo):
+        self.retencionId = self.retencionModel.record(index).value( "idcostoagregado" ).toInt()[0]    
+        self.retencionTasa = Decimal( self.retencionModel.record( index ).value( "tasa" ).toString() )
+        recibo.updateLabels()
+        
+    def retencionAplicada(self,recibo,on):
+        recibo.mtxtobservaciones.setEnabled( on )
+#        self.lbltotalreten.setVisible( on )
+#        self.lblnreten.setVisible( on )
+#        self.label_7.setVisible( on )
+#        self.label_19.setVisible( on )
+#        self.label_20.setVisible( on )
+        recibo.cbtasaret.setCurrentIndex(-1)
+        recibo.mtxtobservaciones.setPlainText("")
+        recibo.cbtasaret.setEnabled(on)
+        self.aplicarRet = on    
+            
+        
 class RONavigationModel( QSortFilterProxyModel ):
     """
     basicamente le da formato a la salida de mapper

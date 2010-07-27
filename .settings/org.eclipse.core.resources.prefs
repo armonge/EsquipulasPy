@@ -1,4 +1,4 @@
-#Fri Jul 23 23:53:02 CST 2010
+#Mon Jul 26 20:49:40 CST 2010
 eclipse.preferences.version=1
 encoding//src/__main__.py=utf-8
 encoding//src/caja/apertura.py=utf-8
@@ -20,6 +20,7 @@ encoding//src/document/devolucion/devolucionmodel.py=utf-8
 encoding//src/document/devolucion/lineadevolucion.py=utf-8
 encoding//src/document/entradacompra/entradacompradelegate.py=utf-8
 encoding//src/document/entradacompra/entradacompramodel.py=utf-8
+encoding//src/document/factura/facturadelegate.py=utf-8
 encoding//src/document/factura/facturamodel.py=utf-8
 encoding//src/document/kardex/kardexdelegate.py=utf-8
 encoding//src/document/kardex/kardexmodel.py=utf-8
@@ -27,6 +28,7 @@ encoding//src/document/kardex/lineakardex.py=utf-8
 encoding//src/document/liquidacion/linealiquidacion.py=utf-8
 encoding//src/document/liquidacion/liquidaciondelegate.py=utf-8
 encoding//src/document/liquidacion/liquidacionmodel.py=utf-8
+encoding//src/document/recibo/recibomodel.py=utf-8
 encoding//src/inventario/articulos.py=utf-8
 encoding//src/inventario/catalogos.py=utf-8
 encoding//src/inventario/categorias.py=utf-8
@@ -37,6 +39,7 @@ encoding//src/inventario/kardex.py=utf-8
 encoding//src/inventario/kardexother.py=utf-8
 encoding//src/inventario/liquidacion.py=utf-8
 encoding//src/inventario/mainwindow.py=utf-8
+encoding//src/ui/Ui_recibo.py=utf-8
 encoding//src/utility/accountselector.py=utf-8
 encoding//src/utility/base.py=utf-8
 encoding//src/utility/constantes.py=utf-8
