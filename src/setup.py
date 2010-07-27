@@ -6,10 +6,12 @@ Modulo que se encarga de compilar el codigo en un solo ejecutable
 Utiliza py2exe para crear un ejecutable y una serie de dlls en Windows
 """
 from distutils.core import setup
-import py2exe
-import os 
+import platform
+import os
 
-Mydata_files = [
+if platform.system() == 'Windows':
+    import py2exe
+    Mydata_files = [
             ( 'sqldrivers', [
                 'C:\Python26\Lib\site-packages\PyQt4\plugins\sqldrivers\qsqlmysql4.dll'
                 ] ),
@@ -17,7 +19,14 @@ Mydata_files = [
                 os.getcwd() + r'\translations\qt_es.qm'
             ] ),
             
-]
+    ]
+else:
+    Mydata_files = [
+                ( 'translations', [
+                    os.getcwd() + r'/translations/qt_es.qm'
+                ] ),
+                
+    ]
 
 setup( 
 	name = 'Esquipulas',

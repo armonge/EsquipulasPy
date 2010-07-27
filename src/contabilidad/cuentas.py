@@ -7,9 +7,10 @@ Created on 03/07/2010
 from decimal import Decimal
 
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSlot, SIGNAL, SLOT
+from PyQt4.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSlot, SIGNAL, SLOT, QRegExp
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDialog, QLineEdit, \
-QVBoxLayout, QFormLayout, QDialogButtonBox, QCheckBox
+QVBoxLayout, QHBoxLayout, QDialogButtonBox, QCheckBox, QLabel, QRegExpValidator, QValidator, \
+QMessageBox
 from ui.Ui_cuentas import Ui_frmAccounts
 from utility.moneyfmt import moneyfmt
 
@@ -43,10 +44,12 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
         self.accountsTree.setColumnWidth( DESCRIPCION, 240 )
         self.accountsTree.expandAll()
 
-
     @pyqtSlot(  )
     def on_btnAdd_clicked( self ):
-        index = self.accountsTree.model().mapToSource( self.accountsTree.currentIndex() )
+        proxyindex = self.accountsTree.currentIndex()
+        row  = proxyindex.row()
+        index = self.accountsTree.model().mapToSource(self.accountsTree.model().index(row, CODIGO, proxyindex.parent())) 
+        
 
         dlg = dlgAccountMod( self )
         if dlg.exec_() == QDialog.Accepted:
@@ -54,7 +57,7 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
                                                  index.row(),
                                                  1,
                                                  index,
-                                                 dlg.txtCode.text(),
+                                                 " ".join([txt.text() for txt in dlg.txtCodes ]),
                                                  dlg.txtDescription.text(),
                                                  1 if dlg.cbEsdebe.checkState() == Qt.CheckState else 0
                                                    )
@@ -64,12 +67,22 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
         index = self.accountsTree.currentIndex()
         dlg = dlgAccountMod( self )
         row = index.row()
-        dlg.txtCode.setText( self.accountsTree.model().index( row, CODIGO, index.parent() ).data().toString() )
+        codes = self.accountsTree.model().index( row, CODIGO, index.parent()).data().toString()
+        codes = codes.split( ' ')
+        for id, code in enumerate(codes):
+            dlg.txtCodes[id].setText(code)
+        
+        
+        
+        
+        
+        
+        
         dlg.txtDescription.setText( self.accountsTree.model().index( row, DESCRIPCION, index.parent() ).data().toString() )
         dlg.cbEsdebe.setCheckState( Qt.Checked if self.accountsTree.model().index( row, ESDEBE, index.parent() ).data().toInt()[0] else Qt.Unchecked )
         if dlg.exec_() == QDialog.Accepted:
             self.accountsTree.model().setData( self.accountsTree.model().index( row, DESCRIPCION, index.parent() ), dlg.txtDescription.text() )
-            self.accountsTree.model().setData( self.accountsTree.model().index( row, CODIGO, index.parent() ), dlg.txtCode.text() )
+            self.accountsTree.model().setData( self.accountsTree.model().index( row, CODIGO, index.parent() ), " ".join([txt.text() for txt in dlg.txtCodes ]) )
             self.accountsTree.model().setData( self.accountsTree.model().index( row, ESDEBE, index.parent() ), 1 if dlg.cbEsdebe.checkState() == Qt.Checked else 0 )
 
 
@@ -90,7 +103,8 @@ class AccountsModel( QAbstractItemModel ):
                 cc.esdebe,
                 COUNT(ch.idcuenta) nhijos,
                 SUM(IFNULL(monto,0)) monto,
-                cc.padre,cc.idcuenta
+                cc.padre,
+                cc.idcuenta
             FROM cuentascontables cc
             LEFT JOIN cuentascontables ch ON cc.idcuenta = ch.padre
             LEFT JOIN cuentasxdocumento cxd ON cc.idcuenta = cxd.idcuenta
@@ -421,17 +435,37 @@ class dlgAccountMod( QDialog ):
 
     def setupUi( self ):
         self.setWindowTitle( "Modificar Cuenta" )
-        self.txtCode = QLineEdit()
+        
+        regexp = QRegExp(r"\d{3}")
+        
+        self.validators = [QRegExpValidator(self),QRegExpValidator(self), QRegExpValidator(self),QRegExpValidator(self),QRegExpValidator(self)]
+        for validator in self.validators:
+            validator.setRegExp(regexp)
+            
+        self.txtCodes = [QLineEdit(),QLineEdit(),QLineEdit(),QLineEdit(),QLineEdit()]
+        for index, txtCode in enumerate(self.txtCodes):
+            txtCode.setValidator(self.validators[index])
+        
+        
         self.txtDescription = QLineEdit()
         self.cbEsdebe = QCheckBox( "Es Debe" )
         self.buttonbox = QDialogButtonBox( QDialogButtonBox.Ok | QDialogButtonBox.Cancel )
-
-        formlayout = QFormLayout()
-        formlayout.addRow( "Codigo", self.txtCode )
-        formlayout.addRow( u"Descripción", self.txtDescription )
+        
+        
+        labelcode = QLabel("Codigo")
+        horizontal1 = QHBoxLayout()
+        horizontal1.addWidget(labelcode)
+        for txtCode in self.txtCodes:
+            horizontal1.addWidget(txtCode)
+        
+        horizontal2 = QHBoxLayout()
+        horizontal2.addWidget(QLabel( u"Descripción"))
+        horizontal2.addWidget(self.txtDescription)
+                              
 
         verticallayout = QVBoxLayout()
-        verticallayout.addLayout( formlayout )
+        verticallayout.addLayout( horizontal1 )
+        verticallayout.addLayout( horizontal2 )
         verticallayout.addWidget( self.cbEsdebe )
         verticallayout.addWidget( self.buttonbox )
 
@@ -440,3 +474,17 @@ class dlgAccountMod( QDialog ):
         self.connect( self.buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
         self.connect( self.buttonbox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) )
 
+    def accept(self):
+        result = True
+        if self.txtDescription.text().strip() == '':
+            QMessageBox.warning(self, "Llantera Esquipulas", u"Verifique la descripción de la cuenta")
+            result = False
+        if result:
+            for index, validator in enumerate(self.validators):
+                if validator.validate(self.txtCodes[index].text(),3)[0] != QValidator.Acceptable:
+                    QMessageBox.warning(self, "Llantera Esquipulas", "Verifique el codigo de la cuenta")
+                    result = False
+                    break   
+        if result:
+            super(dlgAccountMod, self).accept()
+    
