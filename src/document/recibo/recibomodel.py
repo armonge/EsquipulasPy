@@ -11,19 +11,19 @@ from linearecibo import LineaRecibo
 from decimal import  Decimal
 from PyQt4.QtCore import QAbstractTableModel, Qt,SIGNAL
 
-IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, MONEDA = range( 5 )
+IDPAGO, DESCRIPCION, REFERENCIA, MONTO, IDMONEDA = range( 5 )
 class ReciboModel( AccountsSelectorModel ):
+    
     def columnCount( self, index = QModelIndex() ):
         return 5
-
-    def insertRows( self, position, rows = 1, index = QModelIndex ):
-        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
-        for row in range( rows ):
-            self.lines.insert( position + row, LineaRecibo() )
-            self.lines[-1].amount = self.currentSum * -1
-        self.endInsertRows()
-        self.dirty = True
-        return True
+#    def insertRows( self, position, rows = 1, index = QModelIndex ):
+#        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
+#        for row in range( rows ):
+#            self.lines.insert( position + row, LineaRecibo() )
+#            self.lines[-1].amount = self.currentSum * -1
+#        self.endInsertRows()
+#        self.dirty = True
+#        return True
 
     def data( self, index, role = Qt.DisplayRole ):
         """
@@ -40,8 +40,8 @@ class ReciboModel( AccountsSelectorModel ):
                 return line.nref
             elif column == MONTO:
                 return moneyfmt( Decimal( line.monto ), 4, "US$" ) if line.monto != 0 else ""
-            elif column == MONEDA:
-                return line.itemDescription
+#            elif column == MONEDA:
+#                return line.itemDescription
         elif role == Qt.EditRole:
 #            Esto es lo que recibe el delegate cuando va a mostrar la el widget 
             if column == MONTO:
@@ -51,12 +51,13 @@ class ReciboModel( AccountsSelectorModel ):
         if index.isValid() and 0 <= index.row() < len( self.lines ):
             line = self.lines[index.row()]
             column = index.column()
-            if column in ( NCUENTA, CODCUENTA ):
-                line.itemId = value[0]
-                line.code = value[1]
-                line.name = value[2]
+#            if column in ( NCUENTA, CODCUENTA ):
+#                line.itemId = value[0]
+#                line.code = value[1]
+#                line.name = value[2]
             if column == MONTO:
-                line.amount = Decimal( value.toString() ) if type( value ) != Decimal else value
+                valor = value.toString()
+                line.monto = Decimal( valor if valor!="" else 0 )
 
 
             if not self.valid and self.lines[-1].valid:
@@ -71,6 +72,22 @@ class ReciboModel( AccountsSelectorModel ):
             
             return True
         return False
+
+    def headerData( self, section, orientation, role = Qt.DisplayRole ):
+        if role == Qt.TextAlignmentRole:
+            if orientation == Qt.Horizontal:
+                return Qt.AlignLeft | Qt.AlignVCenter
+            return Qt.AlignRight | Qt.AlignVCenter
+        if role != Qt.DisplayRole:
+            return None
+        if orientation == Qt.Horizontal:
+            if  section == DESCRIPCION:
+                return u"Descripción"
+            elif section == MONTO:
+                return "MONTO"
+            elif section == REFERENCIA:
+                return "REFERENCIA"
+        return int( section + 1 )
 
 
 #from PyQt4 import QtGui
@@ -248,13 +265,13 @@ class ReciboModel( AccountsSelectorModel ):
 ##        tmpsubtotal = sum( [linea.monto for linea in self.lines if linea.valid] )
 ##        return tmpsubtotal if tmpsubtotal > 0 else Decimal( 0 )
 #
-#    def insertRows( self, position, rows = 1, index = QModelIndex ):
-#        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
-#        for row in range( rows ):
-#            self.lines.insert( position + row, LineaRecibo( self ) )
-#        self.endInsertRows()
-#        self.dirty = True
-#        return True
+    def insertRows( self, position, rows = 1, index = QModelIndex ):
+        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
+        for row in range( rows ):
+            self.lines.insert( position + row, LineaRecibo( self ) )
+        self.endInsertRows()
+        self.dirty = True
+        return True
 #
 #    def removeRows( self, position, rows = 1, index = QModelIndex ):
 #        if len( self.lines ) > 0:

@@ -194,7 +194,6 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
 
         report = frmReportes( "facturas.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.parentWindow.user, self )
-
         report.show()
 
 
@@ -404,7 +403,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.dtPicker.setDate(QDate.fromString(self.navmodel.record( index ).value( "Fecha" ).toString(),"dd/MM/yyyy"))
         
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        print self.navmodel.record( index ).value( "iddocumento" ).toString() 
+#        print self.navmodel.record( index ).value( "iddocumento" ).toString() 
         self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
         
@@ -523,7 +522,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.uid != 0
         self.warehouseId != 0
         """
-        if int( self.editmodel.userId ) == 0: 
+        if int( self.editmodel.datosSesion.userId ) == 0: 
             raise Exception("No existe el usuario")
         elif int( self.editmodel.clienteId ) == 0:
             QMessageBox.warning(None,"Factura Incompleta","Por favor elija el cliente")
@@ -546,13 +545,13 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         Guardar el documento actual
         """
-        dialog = dlgRecibo(self)
-        if dialog.exec_():
-            print "OK"
-        else:
-            print "Cancel"
-        
-        return ""
+#        dialog = dlgRecibo(self)
+#        if dialog.exec_():
+#            print "OK"
+#        else:
+#            print "Cancel"
+#        
+#        return ""
         if self.valid:
             if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
 #                dialog = dlgRecibo(self)
@@ -566,7 +565,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     QSqlDatabase.database().open()
                 
                 datetime =QDateTime.currentDateTime()
-                datetime.setDate(self.editmodel.datetime)
+                datetime.setDate(self.editmodel.datosSesion.fecha)
                 self.editmodel.datetime=datetime
                 
                 if self.editmodel.save():

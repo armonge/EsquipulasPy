@@ -226,7 +226,7 @@ class FacturaModel( QAbstractTableModel ):
             query.bindValue( ":total", self.total.to_eng_string() )
             query.bindValue( ":bodega", self.bodegaId )
             query.bindValue( ":escontado", self.escontado )
-            query.bindValue( ":idtc", self.tipoCambioId )
+            query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
@@ -239,7 +239,7 @@ class FacturaModel( QAbstractTableModel ):
                 VALUES (:idsesion,:idfac)
                 """ )
 
-            query.bindValue( ":idsesion", self.sesionId )
+            query.bindValue( ":idsesion", self.datosSesion.sesionId )
             query.bindValue( ":idfac", insertedId )
 
             if not query.exec_():
@@ -253,7 +253,7 @@ class FacturaModel( QAbstractTableModel ):
                 "(" + insertedId + ",:idvendedor)" 
                 )
 
-            query.bindValue( ":iduser", self.userId )
+            query.bindValue( ":iduser", self.datosSesion.userId )
             query.bindValue( ":idcliente", self.clienteId )
             query.bindValue( ":idvendedor", self.vendedorId )
 
@@ -281,7 +281,7 @@ class FacturaModel( QAbstractTableModel ):
 
             #manejar las cuentas contables en Cordobas
             # el costo no se multiplica porque ya esta en cordobas
-            movFacturaCredito( insertedId, self.subtotal * self.tipoCambioOficial, self.IVA * self.tipoCambioOficial, self.costototal )
+            movFacturaCredito( insertedId, self.subtotal * self.datosSesion.tipoCambioOficial , self.IVA * self.datosSesion.tipoCambioOficial, self.costototal )
 
 
             if not QSqlDatabase.database().commit():

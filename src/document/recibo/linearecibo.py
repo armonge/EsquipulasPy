@@ -12,7 +12,7 @@ class LineaRecibo:
         self.pagoDescripcion = ""
         self.nref = ""
         self.monto = Decimal( 0 )
-        self.tasa = Decimal( 0 )
+#        self.tasa = Decimal( 0 )
 
 
     def getPrice( self ):

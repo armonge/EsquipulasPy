@@ -28,7 +28,9 @@ from utility.constantes import IDRECIBO,IDRETENCION
 IDDOCUMENTO, NDOCIMPRESO, OBSERVACION, TOTAL, FECHA, CONCEPTO, CLIENTE, NRETENCION, TASARETENCION, TOTALRETENCION, OBSERVACIONRET, CONRETENCION = range( 12 )
 
 #table
-IDDOCUMENTOT, DESCRIPCION, REFERENCIA, MONTO, IDPAGO, IDMONEDA = range( 6 )
+IDDOCUMENTOT, DESCRIPCION, REFERENCIA, MONTO = range( 4 )
+IDPAGO=0
+IDMONEDA=4
 IDRECIBODOC, NFAC, ABONO = range( 3 )
 class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
     """
@@ -629,8 +631,9 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         self.readOnly=readOnly
         
         self.lbltotal.setText(factura.lblsubtotal.text())
-        self.totalFactura = factura.editmodel.total
-        self.txtpersona.setText(factura.cbcliente.currentText())
+        if not readOnly:
+            self.totalFactura = factura.editmodel.total
+            self.txtpersona.setText(factura.cbcliente.currentText())
         self.setControls(False)
                     
 #        self.setWindowFlags(Qt.WindowTitleHint | Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)
@@ -663,7 +666,8 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             else:        
                 self.datosRecibo = DatosRecibo(1)
                 self.datosRecibo.cargarNumeros(self.lblnrec, self.lblnreten)
-                self.datosRecibo.cargarRetenciones(self.cbtasaret)    
+                self.datosRecibo.cargarRetenciones(self.cbtasaret)
+                delegado = ReciboDelegate()    
                 
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
@@ -671,14 +675,17 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             self.editModel = ReciboModel()
             self.editModel.insertRow(0)
             linea = self.editModel.lines[0]
-            linea.pagoId = 1
-            linea.monedaId = 2
-            linea.pagoDescripcion = "EFECTIVO EN DÓLARES"
+            linea.pagoId = 0
+            linea.monedaId = 0
+            linea.pagoDescripcion = ""
             linea.nref = ""
             linea.monto = self.totalFactura
-            linea.tasa = Decimal( 0 )
             
             self.tabledetails.setModel(self.editModel)
+            self.tabledetails.setColumnHidden(IDPAGO,True)
+            self.tabledetails.setColumnHidden(IDMONEDA,True)
+            
+            self.tabledetails.setItemDelegate(delegado)
             self.txtpersona.setText( "" )
             self.swtasaret.setCurrentIndex( 0 )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
