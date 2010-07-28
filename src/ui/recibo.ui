@@ -25,7 +25,7 @@
       </property>
       <widget class="QWidget" name="tabdetails">
        <attribute name="icon">
-        <iconset resource="res.qrc">
+        <iconset>
          <normaloff>:/icons/res/document-edit.png</normaloff>:/icons/res/document-edit.png</iconset>
        </attribute>
        <attribute name="title">
@@ -824,7 +824,7 @@
       </widget>
       <widget class="QWidget" name="tabnavigation">
        <attribute name="icon">
-        <iconset resource="res.qrc">
+        <iconset>
          <normaloff>:/icons/res/table.png</normaloff>:/icons/res/table.png</iconset>
        </attribute>
        <attribute name="title">
@@ -906,7 +906,7 @@
   </widget>
   <action name="actionNew">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/document-new.png</normaloff>:/icons/res/document-new.png</iconset>
    </property>
    <property name="text">
@@ -918,7 +918,7 @@
   </action>
   <action name="actionPreview">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/document-preview.png</normaloff>:/icons/res/document-preview.png</iconset>
    </property>
    <property name="text">
@@ -927,7 +927,7 @@
   </action>
   <action name="actionGoFirst">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/go-first.png</normaloff>:/icons/res/go-first.png</iconset>
    </property>
    <property name="text">
@@ -936,7 +936,7 @@
   </action>
   <action name="actionGoPrevious">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/go-previous.png</normaloff>:/icons/res/go-previous.png</iconset>
    </property>
    <property name="text">
@@ -945,7 +945,7 @@
   </action>
   <action name="actionGoNext">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/go-next.png</normaloff>:/icons/res/go-next.png</iconset>
    </property>
    <property name="text">
@@ -954,7 +954,7 @@
   </action>
   <action name="actionGoLast">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/go-last.png</normaloff>:/icons/res/go-last.png</iconset>
    </property>
    <property name="text">
@@ -963,7 +963,7 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/document-save.png</normaloff>:/icons/res/document-save.png</iconset>
    </property>
    <property name="text">
@@ -972,7 +972,7 @@
   </action>
   <action name="actionCancel">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/dialog-cancel.png</normaloff>:/icons/res/dialog-cancel.png</iconset>
    </property>
    <property name="text">
@@ -981,7 +981,7 @@
   </action>
   <action name="actionEditCell">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/document-edit.png</normaloff>:/icons/res/document-edit.png</iconset>
    </property>
    <property name="text">
@@ -993,7 +993,7 @@
   </action>
   <action name="actionDeleteRow">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/edit-delete.png</normaloff>:/icons/res/edit-delete.png</iconset>
    </property>
    <property name="text">
@@ -1002,7 +1002,7 @@
   </action>
   <action name="actionCopy">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/edit-copy.png</normaloff>:/icons/res/edit-copy.png</iconset>
    </property>
    <property name="text">
@@ -1014,7 +1014,7 @@
   </action>
   <action name="actionCut">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/edit-cut.png</normaloff>:/icons/res/edit-cut.png</iconset>
    </property>
    <property name="text">
@@ -1026,7 +1026,7 @@
   </action>
   <action name="actionPaste">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/edit-paste.png</normaloff>:/icons/res/edit-paste.png</iconset>
    </property>
    <property name="text">

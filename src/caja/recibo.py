@@ -290,7 +290,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
     def updateLabels( self ):
         self.lbltotal.setText( moneyfmt( self.abonoeditmodel.total, 4, "US$" ) )
-        self.lbltotalreten.setText( moneyfmt( self.editmodel.getRetencion, 4, "US$" ) )
+        self.lbltotalreten.setText( moneyfmt( self.datosRecibo.getRetencion, 4, "US$" ) )
         self.tabledetails.resizeColumnsToContents()
 
     def removeLine( self ):
@@ -413,6 +413,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             completerconcepto.setModel( self.conceptosModel )
             completerconcepto.setCompletionColumn( 1 )
 
+            self.editmodel = ReciboModel()
+            self.abonoeditmodel = AbonoModel()
             
             self.datosRecibo = DatosRecibo(self.parentWindow.datosSesion)
             self.datosRecibo.cargarRetenciones(self.cbtasaret)
@@ -423,8 +425,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
 # Asigno el modelo del recibo
 
-            self.editmodel = ReciboModel()
-            self.abonoeditmodel = AbonoModel()
+
             self.datosRecibo.cargarNumeros(self.lblnrec,self.lblnreten)
             
             self.tabledetails.setModel( self.editmodel )
@@ -480,7 +481,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
     def updateFacturasFilter( self ):
         self.facturasproxymodel.setFilterKeyColumn( 3 )
-        self.facturasproxymodel.setFilterRegExp( str( self.editmodel.clienteId ) )
+        self.facturasproxymodel.setFilterRegExp( str( self.datosRecibo.clienteId ) )
 
 
 
@@ -585,7 +586,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
     @pyqtSlot(  )
     def on_txtpersona_editingFinished( self ):
-        if not  self.readOnly:
+        if not  self.__status:
             self.datos.observaciones = self.txtpersona.text()
 
 
@@ -617,14 +618,19 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
         asignar la retencion al objeto self.editmodel
         """
-        self.datos.tasaRetencionCambio()
+        if index>-1:
+            self.datosRecibo.tasaRetencionCambio(self,index)
 
 class dlgRecibo(Ui_dlgRecibo,QDialog):
-    def __init__( self,padre):
-        super( dlgRecibo, self ).__init__( padre )
+    def __init__( self,factura,readOnly=False):
+        super( dlgRecibo, self ).__init__( factura )
         self.editModel=None
         self.setupUi( self )
-        self.readOnly=False
+        self.readOnly=readOnly
+        
+        self.lbltotal.setText(factura.lblsubtotal.text())
+        self.totalFactura = factura.editmodel.total
+        self.txtpersona.setText(factura.cbcliente.currentText())
         self.setControls(False)
                     
 #        self.setWindowFlags(Qt.WindowTitleHint | Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)
@@ -655,14 +661,24 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
                     QMessageBox.Ok ),
                 QMessageBox.Ok )
             else:        
-                self.datos = DatosRecibo(1)
-                self.datos.cargarNumeros(self.lblnrec, self.lblnreten)
-                self.datos.cargarRetenciones(self.cbtasaret)    
+                self.datosRecibo = DatosRecibo(1)
+                self.datosRecibo.cargarNumeros(self.lblnrec, self.lblnreten)
+                self.datosRecibo.cargarRetenciones(self.cbtasaret)    
                 
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
 
+            self.editModel = ReciboModel()
+            self.editModel.insertRow(0)
+            linea = self.editModel.lines[0]
+            linea.pagoId = 1
+            linea.monedaId = 2
+            linea.pagoDescripcion = "EFECTIVO EN DÓLARES"
+            linea.nref = ""
+            linea.monto = self.totalFactura
+            linea.tasa = Decimal( 0 )
             
+            self.tabledetails.setModel(self.editModel)
             self.txtpersona.setText( "" )
             self.swtasaret.setCurrentIndex( 0 )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
@@ -671,14 +687,14 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
     @pyqtSlot("")
     def on_txtpersona_editingFinished( self ):    
         if not  self.readOnly:
-            self.datos.observaciones = self.txtpersona.text()
+            self.datosRecibo.observaciones = self.txtpersona.text()
             
 # MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
     @pyqtSignature( "bool" )
     def on_ckretener_toggled( self, on ):
         """
         """
-        self.datos.retencionAplicada(self,on)
+        self.datosRecibo.retencionAplicada(self,on)
   
         
     @pyqtSlot( "int" )
@@ -686,7 +702,14 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         """
         asignar la retencion al objeto self.editmodel
         """
-        self.datos.tasaRetencionCambio()
+        self.datosRecibo.tasaRetencionCambio(self,index)
+        
+    def updateLabels( self ):
+        if not self.readOnly:
+            self.lbltotalreten.setText( moneyfmt( self.datosRecibo.getRetencion, 4, "US$" ) )
+            self.lbltotalrecibo.setText(moneyfmt(self.datosRecibo.totalPagado))
+            self.tabledetails.resizeColumnsToContents()
+        
 class DatosRecibo(object):
     def __init__(self,datosSesion):
         object.__init__(self)
@@ -697,7 +720,7 @@ class DatosRecibo(object):
         self.observacionesRet = ""
         self.aplicarRet = True
         
-        self.lines = None
+        self.lines = []
         self.lineasAbonos = None
         self.numeroImpreso = ''
         
@@ -711,10 +734,19 @@ class DatosRecibo(object):
     @property
     def total( self ):
         """
-        El total del documento, esto es el total antes de aplicarse el IVA
         """
         tmpsubtotal = sum( [linea.monto for linea in self.lines if linea.valid] )
         return tmpsubtotal if tmpsubtotal > 0 else Decimal( 0 )
+    
+    @property
+    def totalPagado( self ):
+        """
+    
+        """
+        total = self.total
+        return total * (1- (( self.retencionTasa / Decimal( 100 ) )  if self.aplicarRet else 0))
+    
+    
         
     @property
     def valid( self ):
@@ -747,7 +779,9 @@ class DatosRecibo(object):
 
     @property
     def getRetencion( self ):
-        return ( self.total * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else 0
+        print self.retencionTasa
+        print self.aplicarRet
+        return ( self.total * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else Decimal(0)
     
     @property
     def validLines( self ):
@@ -895,7 +929,7 @@ class DatosRecibo(object):
                         FORMAT(valorcosto,0) as tasa 
                     FROM costosagregados 
                     WHERE 
-                    (idtipocosto=10 OR idtipocosto = 11) AND 
+                    (idtipocosto=10 OR idtipocosto = 8) AND 
                     activo=1 
                     ORDER BY valorcosto desc; 
                     """ )
@@ -927,9 +961,10 @@ class DatosRecibo(object):
         self.retencionNumeroImpreso = n
         
 
-    def tasaRetencionCambio(self,index,recibo):
+    def tasaRetencionCambio(self,recibo,index):
         self.retencionId = self.retencionModel.record(index).value( "idcostoagregado" ).toInt()[0]    
-        self.retencionTasa = Decimal( self.retencionModel.record( index ).value( "tasa" ).toString() )
+        value =self.retencionModel.record( index ).value( "tasa" ).toString()
+        self.retencionTasa = Decimal( value if value!="" else 0 )
         recibo.updateLabels()
         
     def retencionAplicada(self,recibo,on):
@@ -943,6 +978,7 @@ class DatosRecibo(object):
         recibo.mtxtobservaciones.setPlainText("")
         recibo.cbtasaret.setEnabled(on)
         self.aplicarRet = on    
+        recibo.updateLabels()
             
         
 class RONavigationModel( QSortFilterProxyModel ):

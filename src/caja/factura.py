@@ -58,7 +58,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         #inicializando el documento
         self.editmodel = None
         self.lblanulado.setHidden(True)
-
+        
         QTimer.singleShot( 0, self.loadModels )
 
 

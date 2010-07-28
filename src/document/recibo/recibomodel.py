@@ -2,117 +2,28 @@
 '''
 Created on 18/05/2010
 
-@author: armonge
+@author: Luis Carlos Mejia Garcia
 '''
-from PyQt4 import QtGui
-from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
 
-from linearecibo import LineaRecibo
-
-from decimal import Decimal
+from utility.accountselector import AccountsSelectorModel,QModelIndex
 from utility.moneyfmt import moneyfmt
-#from utility.movimientos import movAbonoDeCliente
+from linearecibo import LineaRecibo
+from decimal import  Decimal
+from PyQt4.QtCore import QAbstractTableModel, Qt,SIGNAL
 
-IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, TOTALPROD, MONEDA = range( 6 )
-class ReciboModel( QAbstractTableModel ):
-    """
-    esta clase es el modelo utilizado en la tabla en la que se editan los documentos
-    """
-    def __init__( self ):
-        super( ReciboModel, self ).__init__()
-
-#        self.sesion = sesion
-
-        self.dirty = False
-#        self.__documentType = 18
-#        self.clienteId = 0
-#        self.observations = ""
-#        self.observationsRET = ""
-
-#        self.aplicarRet = True
-
-        self.lines = []
-
-
-#        self.printedDocumentNumber = ""
-#        self.datetime = QDateTime.currentDateTime()
-#        self.uid = 0
-#        self.idtc = 0
-#        self.tc = Decimal( 0 )
-#        self.tasabanco = Decimal( 0 )
-#        self.escontado = 1
-#        self.conceptoId = 0
-
-#        self.retencionId = 0
-#        self.retencionTasa = Decimal( 0 )
-#        self.retencionNumero = 0
-
-
-#    @property
-#    def valid( self ):
-#        """
-#        Un documento es valido cuando 
-#        self.printedDocumentNumber != ""
-#        self.providerId !=0
-#        self.validLines >0
-#        self.__idIVA !=0
-#        self.uid != 0
-#        self.warehouseId != 0 
-#        """
-#        if  self.printedDocumentNumber == "":
-#            print( "No existe numero de doc impreso" )
-#            return False
-#        elif int( self.clienteId ) == 0:
-#            print( "No existe un cliente seleccionado" )
-#            return False
-#        elif int( self.validLines ) < 1:
-#            print( "No Hay ninguna linea no valida" )
-#            return False
-#        elif int( self.retencionId ) == 0:
-#            print( "No hay tasa de retencion" )
-#            return False
-#        elif int( self.uid ) == 0:
-#            print( "No hay un usuario" )
-#            return False
-#        elif int( self.conceptoId ) == 0:
-#            print( "No hay un concepto" )
-#            return False
-#        elif self.idtc == 0:
-#            print( "no hay un tipo de cambio para la fecha" + self.datetime )
-#            return False
-#        else:
-#            return True
-
-#
-#    @property
-#    def getRetencion( self ):
-##        return ( self.total * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else 0
-#
-#    @property
-#    def getRateRET( self ):
-#        """
-#        El porcentaje de IVA que se le aplica a esta linea
-#        """
-#        return self.retencionTasa
-
-#    @property
-#    def validLines( self ):
-#        """
-#        la cantidad de lineas validas que hay en el documento
-#        """
-#        foo = 0
-#        for line in self.lines:
-#            if line.valid:foo += 1
-#        return foo
-
-
-    #Clases especificas del modelo
-    def rowCount( self, index = QModelIndex ):
-        return len( self.lines )
-
-    def columnCount( self, index = QModelIndex ):
+IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, MONEDA = range( 5 )
+class ReciboModel( AccountsSelectorModel ):
+    def columnCount( self, index = QModelIndex() ):
         return 5
+
+    def insertRows( self, position, rows = 1, index = QModelIndex ):
+        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
+        for row in range( rows ):
+            self.lines.insert( position + row, LineaRecibo() )
+            self.lines[-1].amount = self.currentSum * -1
+        self.endInsertRows()
+        self.dirty = True
+        return True
 
     def data( self, index, role = Qt.DisplayRole ):
         """
@@ -129,8 +40,6 @@ class ReciboModel( QAbstractTableModel ):
                 return line.nref
             elif column == MONTO:
                 return moneyfmt( Decimal( line.monto ), 4, "US$" ) if line.monto != 0 else ""
-            elif column == TOTALPROD:
-                return moneyfmt( line.total , 4, "US$" )
             elif column == MONEDA:
                 return line.itemDescription
         elif role == Qt.EditRole:
@@ -138,92 +47,250 @@ class ReciboModel( QAbstractTableModel ):
             if column == MONTO:
                 return line.monto
 
-    def flags( self, index ):
-        if not index.isValid():
-            return Qt.ItemIsEnabled
-        return Qt.ItemFlags( QAbstractTableModel.flags( self, index ) | Qt.ItemIsEditable )
-
     def setData( self, index, value, role = Qt.EditRole ):
-        """
-        modificar los datos del modelo, este metodo se comunica con el delegate
-        """
-        if index.isValid() and 0 <= index.row() < len( self.lines ) :
+        if index.isValid() and 0 <= index.row() < len( self.lines ):
             line = self.lines[index.row()]
             column = index.column()
-            if column == DESCRIPCION:
-                line.pagoId = value[0]
-                line.pagoDescripcion = value[1]
-                line.monedaId = value[2]
-            elif column == REFERENCIA:
-                line.nref = value
-            elif column == MONTO:
-                line.monto = Decimal( value.toString() )
+            if column in ( NCUENTA, CODCUENTA ):
+                line.itemId = value[0]
+                line.code = value[1]
+                line.name = value[2]
+            if column == MONTO:
+                line.amount = Decimal( value.toString() ) if type( value ) != Decimal else value
 
 
-            self.dirty = True
-
-
+            if not self.valid and self.lines[-1].valid:
+                self.insertRow( len( self.lines ) )
+            elif not self.valid and not self.lines[-1].valid:
+                self.lines[-1].amount = self.currentSum * -1
+            elif self.valid and not self.lines[-1].valid:
+                if len( self.lines ) > 1:
+                    self.removeRows( len( self.lines ) - 1, 1 )
 
             self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
-            #si la linea es valida y es la ultima entonces aniadir una nueva
-            if  index.row() == len( self.lines ) - 1 and line.valid:
-                self.insertRows( len( self.lines ) )
-
+            
             return True
         return False
 
-#    @property
-#    def total( self ):
+
+#from PyQt4 import QtGui
+#from PyQt4.QtSql import QSqlDatabase, QSqlQuery
+#from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
+#
+#from linearecibo import LineaRecibo
+#
+#from decimal import Decimal
+#from utility.moneyfmt import moneyfmt
+#from utility.movimientos import movAbonoDeCliente
+#
+#IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, TOTALPROD, MONEDA = range( 6 )
+#class ReciboModel( QAbstractTableModel ):
+#    """
+#    esta clase es el modelo utilizado en la tabla en la que se editan los documentos
+#    """
+#    def __init__( self ):
+#        super( ReciboModel, self ).__init__()
+#
+##        self.sesion = sesion
+#
+#        self.dirty = False
+##        self.__documentType = 18
+##        self.clienteId = 0
+##        self.observations = ""
+##        self.observationsRET = ""
+#
+##        self.aplicarRet = True
+#
+#        self.lines = []
+#        
+##        self.printedDocumentNumber = ""
+##        self.datetime = QDateTime.currentDateTime()
+##        self.uid = 0
+##        self.idtc = 0
+##        self.tc = Decimal( 0 )
+##        self.tasabanco = Decimal( 0 )
+##        self.escontado = 1
+##        self.conceptoId = 0
+#
+##        self.retencionId = 0
+##        self.retencionTasa = Decimal( 0 )
+##        self.retencionNumero = 0
+#
+#
+##    @property
+##    def valid( self ):
+##        """
+##        Un documento es valido cuando 
+##        self.printedDocumentNumber != ""
+##        self.providerId !=0
+##        self.validLines >0
+##        self.__idIVA !=0
+##        self.uid != 0
+##        self.warehouseId != 0 
+##        """
+##        if  self.printedDocumentNumber == "":
+##            print( "No existe numero de doc impreso" )
+##            return False
+##        elif int( self.clienteId ) == 0:
+##            print( "No existe un cliente seleccionado" )
+##            return False
+##        elif int( self.validLines ) < 1:
+##            print( "No Hay ninguna linea no valida" )
+##            return False
+##        elif int( self.retencionId ) == 0:
+##            print( "No hay tasa de retencion" )
+##            return False
+##        elif int( self.uid ) == 0:
+##            print( "No hay un usuario" )
+##            return False
+##        elif int( self.conceptoId ) == 0:
+##            print( "No hay un concepto" )
+##            return False
+##        elif self.idtc == 0:
+##            print( "no hay un tipo de cambio para la fecha" + self.datetime )
+##            return False
+##        else:
+##            return True
+#
+##
+##    @property
+##    def getRetencion( self ):
+###        return ( self.total * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else 0
+##
+##    @property
+##    def getRateRET( self ):
+##        """
+##        El porcentaje de IVA que se le aplica a esta linea
+##        """
+##        return self.retencionTasa
+#
+##    @property
+##    def validLines( self ):
+##        """
+##        la cantidad de lineas validas que hay en el documento
+##        """
+##        foo = 0
+##        for line in self.lines:
+##            if line.valid:foo += 1
+##        return foo
+#
+#
+#    #Clases especificas del modelo
+#    def rowCount( self, index = QModelIndex ):
+#        return len( self.lines )
+#
+#    def columnCount( self, index = QModelIndex ):
+#        return 5
+#
+#    def data( self, index, role = Qt.DisplayRole ):
 #        """
-#        El total del documento, esto es el total antes de aplicarse el IVA
+#        darle formato a los campos de la tabla
 #        """
-#        tmpsubtotal = sum( [linea.monto for linea in self.lines if linea.valid] )
-#        return tmpsubtotal if tmpsubtotal > 0 else Decimal( 0 )
-
-    def insertRows( self, position, rows = 1, index = QModelIndex ):
-        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
-        for row in range( rows ):
-            self.lines.insert( position + row, LineaRecibo( self ) )
-        self.endInsertRows()
-        self.dirty = True
-        return True
-
-    def removeRows( self, position, rows = 1, index = QModelIndex ):
-        if len( self.lines ) > 0:
-            self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
-            n = position + rows - 1
-# borrar el rango de lineas indicado de la ascendente para que no halla problema con el indice de las lineas 
-# muestro la fila de la tabla facturas que esta relacionada a la linea que borre
-            while n >= position:
-                    del self.lines[n]
-                    n = n - 1
-
-            self.endRemoveRows()
-            self.dirty = True
-            return True
-        else:
-            return False
-
-    def headerData( self, section, orientation, role = Qt.DisplayRole ):
-        if role == Qt.TextAlignmentRole:
-            if orientation == Qt.Horizontal:
-                return Qt.AlignLeft | Qt.AlignVCenter
-            return Qt.AlignRight | Qt.AlignVCenter
-        if role != Qt.DisplayRole:
-            return None
-        if orientation == Qt.Horizontal:
-            if  section == DESCRIPCION:
-                return u"Descripción"
-            elif section == MONTO:
-                return "MONTO"
-            elif section == TOTALPROD:
-                return "TOTAL"
-            elif section == REFERENCIA:
-                return "REFERENCIA"
-            elif section == MONEDA:
-                return "MONEDA"
-        return int( section + 1 )
-
+#        if not index.isValid() or not ( 0 <= index.row() < len( self.lines ) ):
+#            return ""
+#        line = self.lines[index.row()]
+#        column = index.column()
+#        if role == Qt.DisplayRole:
+#            if column == DESCRIPCION:
+#                return line.pagoDescripcion
+#            elif column == REFERENCIA:
+#                return line.nref
+#            elif column == MONTO:
+#                return moneyfmt( Decimal( line.monto ), 4, "US$" ) if line.monto != 0 else ""
+#            elif column == TOTALPROD:
+#                return moneyfmt( line.total , 4, "US$" )
+#            elif column == MONEDA:
+#                return line.itemDescription
+#        elif role == Qt.EditRole:
+##            Esto es lo que recibe el delegate cuando va a mostrar la el widget 
+#            if column == MONTO:
+#                return line.monto
+#
+#    def flags( self, index ):
+#        if not index.isValid():
+#            return Qt.ItemIsEnabled
+#        return Qt.ItemFlags( QAbstractTableModel.flags( self, index ) | Qt.ItemIsEditable )
+#
+#    def setData( self, index, value, role = Qt.EditRole ):
+#        """
+#        modificar los datos del modelo, este metodo se comunica con el delegate
+#        """
+#        if index.isValid() and 0 <= index.row() < len( self.lines ) :
+#            line = self.lines[index.row()]
+#            column = index.column()
+#            if column == DESCRIPCION:
+#                line.pagoId = value[0]
+#                line.pagoDescripcion = value[1]
+#                line.monedaId = value[2]
+#            elif column == REFERENCIA:
+#                line.nref = value
+#            elif column == MONTO:
+#                line.monto = Decimal( value.toString() )
+#
+#
+#            self.dirty = True
+#
+#
+#
+#            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+#            #si la linea es valida y es la ultima entonces aniadir una nueva
+#            if  index.row() == len( self.lines ) - 1 and line.valid:
+#                self.insertRows( len( self.lines ) )
+#
+#            return True
+#        return False
+#
+##    @property
+##    def total( self ):
+##        """
+##        El total del documento, esto es el total antes de aplicarse el IVA
+##        """
+##        tmpsubtotal = sum( [linea.monto for linea in self.lines if linea.valid] )
+##        return tmpsubtotal if tmpsubtotal > 0 else Decimal( 0 )
+#
+#    def insertRows( self, position, rows = 1, index = QModelIndex ):
+#        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
+#        for row in range( rows ):
+#            self.lines.insert( position + row, LineaRecibo( self ) )
+#        self.endInsertRows()
+#        self.dirty = True
+#        return True
+#
+#    def removeRows( self, position, rows = 1, index = QModelIndex ):
+#        if len( self.lines ) > 0:
+#            self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
+#            n = position + rows - 1
+## borrar el rango de lineas indicado de la ascendente para que no halla problema con el indice de las lineas 
+## muestro la fila de la tabla facturas que esta relacionada a la linea que borre
+#            while n >= position:
+#                    del self.lines[n]
+#                    n = n - 1
+#
+#            self.endRemoveRows()
+#            self.dirty = True
+#            return True
+#        else:
+#            return False
+#
+#    def headerData( self, section, orientation, role = Qt.DisplayRole ):
+#        if role == Qt.TextAlignmentRole:
+#            if orientation == Qt.Horizontal:
+#                return Qt.AlignLeft | Qt.AlignVCenter
+#            return Qt.AlignRight | Qt.AlignVCenter
+#        if role != Qt.DisplayRole:
+#            return None
+#        if orientation == Qt.Horizontal:
+#            if  section == DESCRIPCION:
+#                return u"Descripción"
+#            elif section == MONTO:
+#                return "MONTO"
+#            elif section == TOTALPROD:
+#                return "TOTAL"
+#            elif section == REFERENCIA:
+#                return "REFERENCIA"
+#            elif section == MONEDA:
+#                return "MONEDA"
+#        return int( section + 1 )
 #    def save( self, lineas ):
 #        """
 #        Este metodo guarda el documento actual en la base de datos

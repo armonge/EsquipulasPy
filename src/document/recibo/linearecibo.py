@@ -22,15 +22,11 @@ class LineaRecibo:
         return self.price
     def setPrice( self, price ):
         self.price = Decimal( price )
-
+        
     itemPrice = property( getPrice, setPrice )
 
-    @property
-    def total( self ):
-        """
-        el total de esta linea
-        """
-        return Decimal( self.quantity * self.itemPrice ) if self.valid else Decimal( 0 )
+
+
 
     @property
     def valid( self ):
