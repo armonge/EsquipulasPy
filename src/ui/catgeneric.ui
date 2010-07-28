@@ -98,7 +98,7 @@
     <string>Ctrl+S</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionEdit">
@@ -127,7 +127,7 @@
   </action>
   <action name="actionCancel">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="res.qrc">
@@ -137,7 +137,7 @@
     <string>Cancelar</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
  </widget>

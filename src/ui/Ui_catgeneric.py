@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/catgeneric.ui'
 #
-# Created: Wed Jul 28 00:02:42 2010
+# Created: Wed Jul 28 00:27:02 2010
 #      by: PyQt4 UI code generator 4.7.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -48,7 +48,7 @@ class Ui_frmCatGeneric(object):
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/icons/res/document-save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionSave.setIcon(icon1)
-        self.actionSave.setVisible(False)
+        self.actionSave.setVisible(True)
         self.actionSave.setObjectName("actionSave")
         self.actionEdit = QtGui.QAction(frmCatGeneric)
         icon2 = QtGui.QIcon()
@@ -62,11 +62,11 @@ class Ui_frmCatGeneric(object):
         self.actionDelete.setIcon(icon3)
         self.actionDelete.setObjectName("actionDelete")
         self.actionCancel = QtGui.QAction(frmCatGeneric)
-        self.actionCancel.setEnabled(False)
+        self.actionCancel.setEnabled(True)
         icon4 = QtGui.QIcon()
         icon4.addPixmap(QtGui.QPixmap(":/icons/res/dialog-cancel.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionCancel.setIcon(icon4)
-        self.actionCancel.setVisible(False)
+        self.actionCancel.setVisible(True)
         self.actionCancel.setObjectName("actionCancel")
         self.toolBar.addAction(self.actionNew)
         self.toolBar.addAction(self.actionSave)
