@@ -5,6 +5,7 @@
 
 from PyQt4.QtCore import Qt, QSize, SIGNAL, pyqtProperty, QPoint, QRect, pyqtSlot, pyqtSignature
 from PyQt4.QtGui import QAbstractButton, QStyleOptionToolButton, QStyle, QPainter, QWidget, QIcon, QStylePainter, QDockWidget, QStyleOptionDockWidgetV2, QHBoxLayout
+import functools
 
 
 def hasFeature( dockwidget, feature ):
@@ -259,9 +260,13 @@ class XDockWidget( QDockWidget ):
         self.titleBar = XDockWidgetTitleBar( self )
         self.setTitleBarWidget( self.titleBar )
         self.mainWidget = None
+        
+        self.topLevelChanged[bool].connect(self.changeStatus)
 
-
-
+    def changeStatus(self, status):
+        if status == True:
+            self.collapsed =False
+            
     def setWidget( self, widget ):
         self.mainWidget = XDockMainWidgetWrapper( self )
         self.mainWidget.setWidget( widget )

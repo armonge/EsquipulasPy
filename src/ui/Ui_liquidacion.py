@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/armonge/workspace/EsquipulasPy/src/ui/liquidacion.ui'
+# Form implementation generated from reading ui file 'src/ui/liquidacion.ui'
 #
-# Created: Mon Jun 21 20:19:49 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Wed Jul 28 16:39:45 2010
+#      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -25,6 +25,11 @@ class Ui_frmLiquidacion(object):
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
         self.tabWidget = QtGui.QTabWidget(self.centralwidget)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
+        self.tabWidget.setSizePolicy(sizePolicy)
         self.tabWidget.setTabPosition(QtGui.QTabWidget.West)
         self.tabWidget.setObjectName("tabWidget")
         self.tabdetails = QtGui.QWidget()
@@ -329,6 +334,11 @@ class Ui_frmLiquidacion(object):
         self.toolBar.setObjectName("toolBar")
         frmLiquidacion.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.xdockWidget = XDockWidget(frmLiquidacion)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(1)
+        sizePolicy.setHeightForWidth(self.xdockWidget.sizePolicy().hasHeightForWidth())
+        self.xdockWidget.setSizePolicy(sizePolicy)
         self.xdockWidget.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.xdockWidget.setAllowedAreas(QtCore.Qt.BottomDockWidgetArea|QtCore.Qt.TopDockWidgetArea)
         self.xdockWidget.setObjectName("xdockWidget")
@@ -426,14 +436,7 @@ class Ui_frmLiquidacion(object):
         icon13.addPixmap(QtGui.QPixmap(":/icons/res/edit-paste.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionPaste.setIcon(icon13)
         self.actionPaste.setObjectName("actionPaste")
-        self.actionRefresh = QtGui.QAction(frmLiquidacion)
-        icon14 = QtGui.QIcon()
-        icon14.addPixmap(QtGui.QPixmap(":/icons/res/view-refresh.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionRefresh.setIcon(icon14)
-        self.actionRefresh.setVisible(False)
-        self.actionRefresh.setObjectName("actionRefresh")
         self.toolBar.addAction(self.actionNew)
-        self.toolBar.addAction(self.actionRefresh)
         self.toolBar.addAction(self.actionSave)
         self.toolBar.addAction(self.actionCancel)
         self.toolBar.addAction(self.actionPreview)
@@ -534,7 +537,16 @@ class Ui_frmLiquidacion(object):
         self.actionCut.setText(QtGui.QApplication.translate("frmLiquidacion", "Cortar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCut.setShortcut(QtGui.QApplication.translate("frmLiquidacion", "Ctrl+X", None, QtGui.QApplication.UnicodeUTF8))
         self.actionPaste.setText(QtGui.QApplication.translate("frmLiquidacion", "Pegar", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionRefresh.setText(QtGui.QApplication.translate("frmLiquidacion", "Actualizar", None, QtGui.QApplication.UnicodeUTF8))
 
 from utility.widgets.xdockwidget import XDockWidget
 import res_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    frmLiquidacion = QtGui.QMainWindow()
+    ui = Ui_frmLiquidacion()
+    ui.setupUi(frmLiquidacion)
+    frmLiquidacion.show()
+    sys.exit(app.exec_())
+

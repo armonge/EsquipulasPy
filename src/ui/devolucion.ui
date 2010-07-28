@@ -242,6 +242,9 @@
              <property name="text">
               <string>Subtotal: </string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -261,6 +264,9 @@
              </property>
              <property name="text">
               <string>Impuesto: </string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -295,6 +301,9 @@
              <property name="text">
               <string>Costo Total: </string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
             </widget>
            </item>
            <item row="2" column="1">
@@ -327,6 +336,9 @@
              </property>
              <property name="text">
               <string>Total Devolución: </string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>

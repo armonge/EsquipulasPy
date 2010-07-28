@@ -10,13 +10,14 @@ from document.arqueo.lineaarqueo import LineaArqueo
 
 from utility.moneyfmt import moneyfmt
 from decimal import Decimal
+from  utility import constantes
 
 CANTIDAD, DENOMINACION, TOTAL = range( 3 )
 class ArqueoModel( QAbstractTableModel ):
     """
     Esta clase es el modelo utilizado para crear nuevos arqueos
     """
-    __documentType = 23
+    __documentType = constantes.IDARQUEO
     """
     @cvar: El tipo de documento de arqueo
     @type: int 

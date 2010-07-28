@@ -2,7 +2,7 @@
 from decimal import  Decimal
 import functools
 
-from PyQt4.QtCore import  pyqtSlot, SIGNAL, QSettings
+from PyQt4.QtCore import  pyqtSlot,  QSettings
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtGui import QMessageBox, QDataWidgetMapper
 
@@ -31,11 +31,11 @@ class Base( object ):
         """
         @ivar: El MainWindow al que pertenece este widget
         """
-        self.connect( self.mapper, SIGNAL( "currentIndexChanged(int)" ) , self.updateDetailFilter )
-        self.connect( self.actionGoFirst, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'first' ) )
-        self.connect( self.actionGoPrevious, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'previous' ) )
-        self.connect( self.actionGoNext, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'next' ) )
-        self.connect( self.actionGoLast, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'last' ) )
+        self.mapper.currentIndexChanged[int].connect(self.updateDetailFilter)
+        self.actionGoFirst.triggered.connect(functools.partial(self.navigate, 'first'))
+        self.actionGoPrevious.triggered.connect(functools.partial(self.navigate, 'previous'))
+        self.actionGoNext.triggered.connect(functools.partial(self.navigate, 'next'))
+        self.actionGoLast.triggered.connect(functools.partial(self.navigate, 'last'))
 
     def closeEvent( self, event ):
         u"""

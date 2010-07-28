@@ -6,7 +6,7 @@ Created on 07/06/2010
 '''
 from decimal import  Decimal
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper
-from PyQt4.QtCore import pyqtSlot, SIGNAL, QDateTime, QTimer
+from PyQt4.QtCore import pyqtSlot, SIGNAL, QDateTime, QTimer, QModelIndex
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 from ui.Ui_arqueo import Ui_frmArqueo
 from utility.base import Base
@@ -15,6 +15,7 @@ from utility.singleselectionmodel import  SingleSelectionModel
 from document.arqueo.arqueomodel import ArqueoModel
 from document.arqueo.arqueodelegate import ArqueoDelegate
 
+from utility import constantes
 #navmodel
 IDDOCUMMENTO, NDOCIMPRESO, FECHA, NOMBRE, TOTAL = range( 5 )
 #detailsmodel
@@ -67,8 +68,8 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             FROM documentos d  
             JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
             JOIN usuarios u ON u.idusuario = d.idusuario
-            WHERE d.idtipodoc = 23
-            """ )
+            WHERE d.idtipodoc = %d
+            """ % constantes.IDARQUEO)
             self.detailsModel.setQuery( """
             SELECT 
                 l.cantidad as 'Cantidad', 
@@ -164,18 +165,14 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             query.first()
             self.editmodel.expectedTotal = Decimal( query.value( 0 ).toString() )
 
-            self.editmodel.exchangeRateId = self.parent.datosSesion.tiposCambioId
-            self.editmodel.exchangeRate = self.parent.datosSesion.tiposCambioOficial
+            self.editmodel.exchangeRateId = self.parent.datosSesion.tipoCambioId
+            self.editmodel.exchangeRate = self.parent.datosSesion.tipoCambioOficial
             
             self.editmodel.datetime = self.parent.datosSesion.fecha
             
             query = QSqlQuery( """
-            SELECT
-            MAX(CAST(ndocimpreso AS SIGNED))+1
-            FROM documentos d
-            WHERE idtipodoc=23
-            ;
-            """ )
+            CALL spConsecutivo(%d,NULL);
+            """ % constantes.IDARQUEO )
             if not query.exec_():
                 raise UserWarning( "No se pudo calcular el numero del arqueo" )
             query.first()
@@ -213,7 +210,8 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.dtPicker.setDateTime( QDateTime.currentDateTime() )
 
             self.lblUserName.setText( self.user.fullname )
-            self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.updateLabels )
+            self.editmodel.dataChanged[QModelIndex,QModelIndex].connect(self.updateLabels)
+#            self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.updateLabels )
             self.status = False
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", str(inst))

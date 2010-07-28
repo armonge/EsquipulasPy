@@ -128,7 +128,6 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.cbWarehouse.setEnabled( not status )
 
         self.actionCancel.setVisible( not status )
-        self.actionRefresh.setVisible( not status )
         self.actionSave.setVisible( not status )
         self.actionPreview.setVisible( status )
         self.actionNew.setVisible( status )

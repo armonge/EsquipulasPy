@@ -17,8 +17,7 @@ from document.devolucion.devolucionmodel import DevolucionModel
 from document.devolucion.lineadevolucion import LineaDevolucion
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
-import functools
-
+from utility import constantes
 
 
 
@@ -340,7 +339,6 @@ class dlgSelectBill( QDialog ):
         super( dlgSelectBill, self ).__init__( parent )
         self.billsmodel = QSqlQueryModel()
         self.billsmodel.setQuery( """
-        SELECT * FROM (
         SELECT 
             d.iddocumento, 
             d.ndocimpreso, 
@@ -357,13 +355,13 @@ class dlgSelectBill( QDialog ):
         LEFT JOIN documentos devs ON dpd.idhijo = devs.iddocumento
         LEFT JOIN costosxdocumento cxd ON cxd.iddocumento = d.iddocumento
         LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado
-        JOIN personas p ON d.idpersona = p.idpersona
+       JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
+        JOIN personas p ON pxd.idpersona = p.idpersona
         JOIN articulosxdocumento axd ON (axd.iddocumento = d.iddocumento OR axd.iddocumento = devs.iddocumento)
-        WHERE d.idtipodoc IN (5,6)
+        WHERE d.idtipodoc =%d
         GROUP BY d.iddocumento
-        ) as c
-        WHERE unittotal > 0   
-        """ )
+        HAVING unittotal > 0   
+        """ % (constantes.IDFACTURA) )
 
 
 

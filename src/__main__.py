@@ -25,6 +25,7 @@ if __name__ == '__main__':
     locale = QtCore.QLocale()
     LOCALENAME = str(locale.system().name())
     translator.load("qt_%s" % LOCALENAME, os.path.dirname(os.path.abspath( sys.argv[0] )) + r"/translations/")
+    
     app.installTranslator(translator)
 
 #    el estilo
