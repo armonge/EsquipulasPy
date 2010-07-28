@@ -85,10 +85,10 @@ class ChequeModel( AccountsSelectorModel ):
 
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
-#            
-    
-                     
-                            
+#           
+            print self.total
+            print self.retencionNumero
+            
             #INSERTAR CHEQUE
             query.prepare( """
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado, observacion,total,idtipocambio,idconcepto) 
@@ -99,7 +99,7 @@ class ChequeModel( AccountsSelectorModel ):
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":anulado", 0 )
             query.bindValue( ":observacion", self.observations )
-            query.bindValue( ":total", self.total)
+            query.bindValue( ":total", self.total.to_eng_string())
             query.bindValue( ":idtc", self.exchangeRateId )
             query.bindValue( ":concepto", self.conceptoId )
             
@@ -121,7 +121,6 @@ class ChequeModel( AccountsSelectorModel ):
                 raise Exception( "No se pudo insertar el beneficiario" )
             
 
-            
             #INSERTAR EL DOCUMENTO RETENCION            
             query.prepare( """
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado, observacion,total,escontado,idtipocambio,idconcepto) 
@@ -132,14 +131,13 @@ class ChequeModel( AccountsSelectorModel ):
             query.bindValue( ":idtipodoc", 19 )
             query.bindValue( ":anulado", 0 )
             query.bindValue( ":observacion", self.observations )
-            query.bindValue( ":total", self.retencionNumero )
+            query.bindValue( ":total", self.retencionNumero.to_eng_string())
             query.bindValue( ":escontado", 1 )
             query.bindValue( ":idtc", self.exchangeRateId )
             query.bindValue( ":concepto", self.conceptoId )
             if not query.exec_():
                 raise Exception( "No se Inserto la retencion" )
             idret = query.lastInsertId().toInt()[0]
-            print str(idret)+"IDRET"
             
             #INSERTAR EL BENEFICIARIO Y USUARIO DE LA RETENCION
             query.prepare("INSERT INTO personasxdocumento(iddocumento,idpersona) VALUES(:iddocumento,:idusuario)")
@@ -168,7 +166,6 @@ class ChequeModel( AccountsSelectorModel ):
                 print( idret )
                 raise Exception( "No se Inserto la relacion entre la retencion y el Cheque" )
     
-            print str(self.retencionId)+"RetencionId"
     
     # INSERTAR EL ID DEL COSTO RETENCION                
             query.prepare( """
@@ -179,12 +176,11 @@ class ChequeModel( AccountsSelectorModel ):
             if not query.exec_():
                 raise Exception( "el costo Retencion  NO SE INSERTO" )
     
-            print "here"
+    
     #INSERTAR LAS CUENTAS CONTABLES
             for lineid, line in enumerate( self.lines ):
-                print line
+    
                 if line.valid:
-                    print "here"
                     line.save( insertedId, lineid + 1 )
     
             if not QSqlDatabase.database().commit():

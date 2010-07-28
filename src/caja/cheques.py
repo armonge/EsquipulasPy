@@ -33,9 +33,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
-        
-        
-        self.xdockWidget.setCollapsed( True )
         self.user = user
         self.sesion = parent.sesion
         
@@ -73,7 +70,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     def updateDetailFilter( self, index ):
         self.accountsProxyModel.setFilterKeyColumn( IDDOCUMENTO )
         self.accountsProxyModel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
-
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
     def updateModels(self):
@@ -92,10 +88,11 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         padre.observacion as 'Recibimos de',
         IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
         CONCAT(valorcosto,'%') as 'Retencion',
-          IF(hijo.total IS NULL, '-' ,hijo.total)   as 'Total Ret C$',
+        IF(hijo.total IS NULL, '-' ,hijo.total)   as 'Total Ret C$',
         tc.tasa as TipoCambio,
         IF(hijo.total='-',@subtotal:=padre.total/1.15,@subtotal:=(padre.total+hijo.total)/1.15) as 'subtotal',
-        padre.total+hijo.total- @subtotal as IVA    
+        padre.total+hijo.total- @subtotal as IVA,
+        cb.descripcion as 'Cuenta Bancaria'    
         FROM documentos padre
         JOIN tiposcambio tc on padre.idtipocambio=tc.idtc
         JOIN personasxdocumento pd ON padre.iddocumento=pd.iddocumento
@@ -106,16 +103,17 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
         LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
         LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
-        LEFT JOIN cuentasxdocumento cuentasdoc on cuentasdoc.iddocumento=padre.iddocumento
-            
+        JOIN cuentasxdocumento cuentasdoc on cuentasdoc.iddocumento=padre.iddocumento
+        JOIN cuentascontables cb ON cb.idcuenta=cuentasdoc.idcuenta
+        JOIN cuentasbancarias cbank on cb.idcuenta=cbank.idcuentacontable
+
         WHERE padre.idtipodoc=12 AND p.tipopersona = 2
         GROUP BY padre.iddocumento
         ORDER BY CAST(padre.ndocimpreso AS SIGNED);
 
         """)
 #        El modelo que filtra a self.navmodel
-        
-        
+                
         
         self.tablenavigation.resizeColumnsToContents()
         
@@ -184,18 +182,13 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     @pyqtSignature( "int" )
     def on_cbocuenta_currentIndexChanged( self, index ):
         if not self.editmodel is None:
-#            line = AccountsSelectorLine()
-#            line.itemId = self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0]
-#            line.code = self.cuentabancaria.record( index ).value( "codigo" ).toString()
-#            line.name = self.cuentabancaria.record( index ).value( "descripcion" ).toString()      
-#        
             self.editmodel.setData(self.editmodel.index(0,2),
                                     [self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0],
                                      self.cuentabancaria.record( index ).value( "codigo" ).toString(),
                                      self.cuentabancaria.record( index ).value( "descripcion" ).toString()])
             self.accountseditdelegate.accounts.setFilterRegExp("[^%d]"%self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0])
 
-#            self.editmodel.lines[0]=line
+
             
             
     @pyqtSignature( "int" )
@@ -214,7 +207,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         if not self.editmodel is None:
             self.iva.setText(str(self.subtotal.value()*0.15))
             self.editmodel.iva=self.iva.text()
-        
             self.total.setText(str(self.subtotal.value()+self.subtotal.value()*0.15))                   
             
             if self.subtotal.value()>1000:
@@ -222,9 +214,9 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                 self.total.setText( str( Decimal(self.subtotal.text())+Decimal(self.subtotal.text())*Decimal("0.15") - Decimal(self.retencion.text())) )
             else:            
                 self.retencion.setText("0.0000")
-                
+            
             self.editmodel.total=Decimal(self.total.text())
-            self.editmodel.retencionNumero=self.retencion.text()
+            self.editmodel.retencionNumero=Decimal(self.retencion.text())
             
             self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.total)    
     @pyqtSignature( "" )
@@ -415,53 +407,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         if self.editmodel is not None:
             super(frmCheques, self).on_dtPicker_dateTimeChanged(datetime)
             self.lbltipocambio.setText(str(self.editmodel.exchangeRate))
-    
-#    @pyqtSlot(  )
-#    def on_actionSave_activated( self ):
-#        """
-#        Slot documentation goes here.
-#        """
-#        if self.editmodel.valid:
-#            if not QSqlDatabase.database().isOpen():
-#                QSqlDatabase.database().open()
-#            self.editmodel.observations=self.txtobservaciones.toPlainText()
-#            if self.editmodel.save():
-#                QMessageBox.information( None,
-#                    self.trUtf8( "Llantera Esquipulas" ),
-#                    self.trUtf8( """El documento se ha guardado con exito""" ) )
-#                self.editmodel = None
-#                self.updateModels()
-#                self.navigate( 'last' )
-#                self.actionSave.setVisible( False )
-#                self.actionCancel.setVisible( False )
-#                self.editmodel = None
-#                self.tablenavigation.setModel( self.navproxymodel )
-#                          
-#                self.subtotal.clear()
-#                self.total.setText("")
-#                self.iva.setText("")
-#                self.retencion.setText("")
-#                self.conceptowidget.setCurrentIndex(1)
-#                self.retencionwidget.setCurrentIndex(1)
-#                self.beneficiariowidget.setCurrentIndex(1)
-#                self.cuentawidget.setCurrentIndex(1)
-#                
-#                self.status = True
-#            else:
-#                QMessageBox.critical( None,
-#                    self.trUtf8( "Llantera Esquipulas" ),
-#                    self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
-#
-#            if QSqlDatabase.database().isOpen():
-#                QSqlDatabase.database().close()
-#
-#        else:
-#            QMessageBox.warning( None,
-#                self.trUtf8( "Llantera Esquipulas" ),
-#                self.trUtf8( """El documento no puede guardarse ya que la información no esta completa""" ),
-#                QMessageBox.StandardButtons( \
-#                    QMessageBox.Ok ),
-#                QMessageBox.Ok )
 
 class RONavigationModel( QSortFilterProxyModel ):
     """
@@ -488,7 +433,7 @@ class ROAccountsModel( QSortFilterProxyModel ):
         if value.isValid() and role == Qt.DisplayRole:
             if index.column() == MONTO:
                 try:
-                    return moneyfmt( Decimal( str(value) ), 2, "C$" )
+                    return moneyfmt( Decimal( value.toString() ), 2, "C$" )
                 except InvalidOperation:
                     return Decimal(0)
         return value
