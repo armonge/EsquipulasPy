@@ -42,7 +42,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         
         self.datosSesion = DatosSesion(1,1,12,Decimal('21.4138'),Decimal('21.50'),QDate.currentDate()) 
         
-<<<<<<< .mine
+
 #        self.date =None
 #        self.sesion = 0
 #        self.exchangeRateId = 0
@@ -54,8 +54,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.exchangeRate = Decimal("21.3537")
         self.date =QDate.currentDate()
     
-=======
->>>>>>> .r37
         self.status = True
         
         
