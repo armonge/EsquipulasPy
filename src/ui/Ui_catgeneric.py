@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/armonge/workspace/EsquipulasPy/src/ui/catgeneric.ui'
+# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/catgeneric.ui'
 #
-# Created: Mon Jun 21 20:19:36 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Wed Jul 28 00:02:42 2010
+#      by: PyQt4 UI code generator 4.7.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -62,15 +62,16 @@ class Ui_frmCatGeneric(object):
         self.actionDelete.setIcon(icon3)
         self.actionDelete.setObjectName("actionDelete")
         self.actionCancel = QtGui.QAction(frmCatGeneric)
+        self.actionCancel.setEnabled(False)
         icon4 = QtGui.QIcon()
         icon4.addPixmap(QtGui.QPixmap(":/icons/res/dialog-cancel.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionCancel.setIcon(icon4)
         self.actionCancel.setVisible(False)
         self.actionCancel.setObjectName("actionCancel")
         self.toolBar.addAction(self.actionNew)
-        self.toolBar.addAction(self.actionCancel)
         self.toolBar.addAction(self.actionSave)
         self.toolBar.addAction(self.actionEdit)
+        self.toolBar.addAction(self.actionCancel)
         self.label.setBuddy(self.txtSearch)
 
         self.retranslateUi(frmCatGeneric)
@@ -90,3 +91,13 @@ class Ui_frmCatGeneric(object):
         self.actionCancel.setText(QtGui.QApplication.translate("frmCatGeneric", "Cancelar", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    frmCatGeneric = QtGui.QMainWindow()
+    ui = Ui_frmCatGeneric()
+    ui.setupUi(frmCatGeneric)
+    frmCatGeneric.show()
+    sys.exit(app.exec_())
+

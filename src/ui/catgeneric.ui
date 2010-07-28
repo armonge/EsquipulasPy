@@ -70,9 +70,9 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionNew"/>
-   <addaction name="actionCancel"/>
    <addaction name="actionSave"/>
    <addaction name="actionEdit"/>
+   <addaction name="actionCancel"/>
   </widget>
   <action name="actionNew">
    <property name="icon">
@@ -126,6 +126,9 @@
    </property>
   </action>
   <action name="actionCancel">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="res.qrc">
      <normaloff>:/icons/res/dialog-cancel.png</normaloff>:/icons/res/dialog-cancel.png</iconset>
