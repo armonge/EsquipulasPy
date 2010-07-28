@@ -34,7 +34,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.parentWindow = parent
         Base.__init__( self )
         self.user = user
-        self.sesion = parent.sesion
         
         self.navmodel = QSqlQueryModel( self )
         self.navproxymodel = RONavigationModel( self )
@@ -52,6 +51,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         
         self.editmodel = None    
         
+        self.exchangeRate=Decimal(0)
+        self.exchangeRateId=0
         self.status = True
         
         #las acciones deberian de estar ocultas
@@ -105,8 +106,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
         JOIN cuentasxdocumento cuentasdoc on cuentasdoc.iddocumento=padre.iddocumento
         JOIN cuentascontables cb ON cb.idcuenta=cuentasdoc.idcuenta
-        JOIN cuentasbancarias cbank on cb.idcuenta=cbank.idcuentacontable
-
+        JOIN cuentasbancarias cbank on cb.idcuenta=cbank.idcuentacontable 
         WHERE padre.idtipodoc=12 AND p.tipopersona = 2
         GROUP BY padre.iddocumento
         ORDER BY CAST(padre.ndocimpreso AS SIGNED);
@@ -259,7 +259,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             self.actionCancel.setVisible( True )
             
             
-            self.editmodel = ChequeModel( self.sesion )
+            self.editmodel = ChequeModel()
     #        Crea un edit delegate para las cuentas
             self.accountseditdelegate=ChequesFiltroDelegate(QSqlQuery("SELECT idcuenta, codigo, descripcion FROM cuentascontables c WHERE idcuenta!=1 and codigo!=''"))    
             self.tabledetails.setItemDelegate( self.accountseditdelegate )
@@ -375,12 +375,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     
             self.editmodel.printedDocumentNumber = n
             self.txtobservaciones.setPlainText( "" )
-            self.editmodel.uid = self.user.uid    
-            self.dtPicker.setDateTime(QDateTime.currentDateTime())
-    
-            
-            
-               
+            self.editmodel.uid = self.user.uid 
+                        
             self.conceptowidget.setCurrentIndex(1)
             self.retencionwidget.setCurrentIndex(1)
             self.beneficiariowidget.setCurrentIndex(1)
@@ -390,6 +386,10 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             self.subtotal.setValue(0)
             self.iva.setText("")
             self.retencion.setText("")
+            
+            self.dtPicker.setDateTime(QDateTime.currentDateTime())
+            self.lbltipocambio.setText(str(self.editmodel.exchangeRate))
+            
         except:
             self.status = True
             print query.lastError().text()
@@ -407,7 +407,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         if self.editmodel is not None:
             super(frmCheques, self).on_dtPicker_dateTimeChanged(datetime)
             self.lbltipocambio.setText(str(self.editmodel.exchangeRate))
-
+            
 class RONavigationModel( QSortFilterProxyModel ):
     """
     basicamente le da formato a la salida de mapper

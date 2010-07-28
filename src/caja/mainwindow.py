@@ -20,7 +20,6 @@ from cajas import frmCajas
 from catalogos import frmCatClientes
 from anulaciones import frmAnulaciones 
 from arqueo import frmArqueo
-from cheques import frmCheques
 from cierrecaja import frmCierreCaja
 from decimal import Decimal
 from collections import namedtuple
@@ -43,6 +42,20 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         
         self.datosSesion = DatosSesion(1,1,12,Decimal('21.4138'),Decimal('21.50'),QDate.currentDate()) 
         
+<<<<<<< .mine
+#        self.date =None
+#        self.sesion = 0
+#        self.exchangeRateId = 0
+#        self.exchangeRate = 0
+#        self.bankExchangeRate = 0
+        
+        self.sesion = 1
+        self.exchangeRateId = 213
+        self.exchangeRate = Decimal("21.3537")
+        self.date =QDate.currentDate()
+    
+=======
+>>>>>>> .r37
         self.status = True
         
         
@@ -55,8 +68,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
             self.btnApertura.setEnabled( state )
             self.actionUnlockSession.setVisible( not state )
 
-
-        self.btnCheques.setVisible(state)
         self.btnArqueo.setEnabled( state )
         self.btnBanks.setEnabled( state )
         self.btnpos.setEnabled( state )
@@ -96,13 +107,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow(conceptos)
         conceptos.show()
         
-
-    @pyqtSlot(  )
-    def on_btnCheques_clicked( self ):
-        cheques=frmCheques(self.user,self)
-        self.mdiArea.addSubWindow(cheques)
-        cheques.show()
-
 
     @pyqtSlot(  )
     def on_btnArqueo_clicked( self ):

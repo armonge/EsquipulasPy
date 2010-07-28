@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\mainwindowcaja.ui'
+# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/mainwindowcaja.ui'
 #
-# Created: Thu Jul 22 21:05:00 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Tue Jul 27 21:24:10 2010
+#      by: PyQt4 UI code generator 4.7.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -51,7 +51,7 @@ class Ui_MainWindow(object):
         self.toolBox.setObjectName("toolBox")
         self.page = QtGui.QWidget()
         self.page.setEnabled(True)
-        self.page.setGeometry(QtCore.QRect(0, 0, 230, 574))
+        self.page.setGeometry(QtCore.QRect(0, 0, 176, 316))
         self.page.setObjectName("page")
         self.gridLayout = QtGui.QGridLayout(self.page)
         self.gridLayout.setObjectName("gridLayout")
@@ -120,7 +120,7 @@ class Ui_MainWindow(object):
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtGui.QWidget()
         self.page_2.setEnabled(True)
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 574))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 555))
         self.page_2.setObjectName("page_2")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page_2)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -189,22 +189,6 @@ class Ui_MainWindow(object):
         self.btnrecibo.setFlat(False)
         self.btnrecibo.setObjectName("btnrecibo")
         self.verticalLayout_2.addWidget(self.btnrecibo)
-        self.btnCheques = QtGui.QPushButton(self.page_2)
-        self.btnCheques.setEnabled(True)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btnCheques.sizePolicy().hasHeightForWidth())
-        self.btnCheques.setSizePolicy(sizePolicy)
-        self.btnCheques.setMinimumSize(QtCore.QSize(0, 70))
-        font = QtGui.QFont()
-        font.setWeight(75)
-        font.setBold(True)
-        self.btnCheques.setFont(font)
-        self.btnCheques.setIconSize(QtCore.QSize(32, 32))
-        self.btnCheques.setFlat(False)
-        self.btnCheques.setObjectName("btnCheques")
-        self.verticalLayout_2.addWidget(self.btnCheques)
         self.btnArqueo = QtGui.QPushButton(self.page_2)
         self.btnArqueo.setEnabled(False)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
@@ -261,7 +245,6 @@ class Ui_MainWindow(object):
         self.btnAnnulments.setText(QtGui.QApplication.translate("MainWindow", "Anulaciones \n"
 "de Factura", None, QtGui.QApplication.UnicodeUTF8))
         self.btnrecibo.setText(QtGui.QApplication.translate("MainWindow", "Recibos", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnCheques.setText(QtGui.QApplication.translate("MainWindow", "Cheques", None, QtGui.QApplication.UnicodeUTF8))
         self.btnArqueo.setText(QtGui.QApplication.translate("MainWindow", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), QtGui.QApplication.translate("MainWindow", "Movimientos", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
@@ -269,3 +252,13 @@ class Ui_MainWindow(object):
         self.actionUnlockSession.setText(QtGui.QApplication.translate("MainWindow", "Desbloquear Sesión", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    MainWindow = QtGui.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+

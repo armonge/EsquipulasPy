@@ -16,10 +16,9 @@ class ChequeModel( AccountsSelectorModel ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
-    def __init__( self , sesion ):
+    def __init__( self  ):
         super( ChequeModel, self ).__init__()
 
-        self.sesion = sesion
         self.__documentType = 12
         self.proveedorId = 0
         self.observations = ""
@@ -35,6 +34,7 @@ class ChequeModel( AccountsSelectorModel ):
         self.iva=Decimal(0)
         
         self.exchangeRateId=0
+        self.exchangeRate=0
         self.validError = ""
     @property
     def valid( self ):
@@ -86,9 +86,6 @@ class ChequeModel( AccountsSelectorModel ):
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
 #           
-            print self.total
-            print self.retencionNumero
-            
             #INSERTAR CHEQUE
             query.prepare( """
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado, observacion,total,idtipocambio,idconcepto) 

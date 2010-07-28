@@ -17,7 +17,7 @@ from contabilidad.cuentas import frmAccounts
 from estadoresultado import frmEstadoResultado
 from movimientosbancarios import frmMovimientosBancarios
 from balancegeneral import frmBalanceGeneral
-
+from cheques import frmCheques
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     def __init__( self, user, parent = None ):
         """
@@ -44,7 +44,14 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow(conceptos)
         conceptos.show()
         
-    
+    @pyqtSlot(  )
+    def on_btnCheques_clicked( self ):
+        cheques=frmCheques(self.user,self)
+        self.mdiArea.addSubWindow(cheques)
+        cheques.show()
+
+
+
     
     @pyqtSlot(  )
     def on_btnConciliacion_clicked( self ):
