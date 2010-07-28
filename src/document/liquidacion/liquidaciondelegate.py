@@ -72,7 +72,7 @@ class LiquidacionDelegate( QStyledItemDelegate ):
                                          index.model().lines[index.row()].rateISC,
                                          index.model().lines[index.row()].comisionValue
                                          ] )
-            sp = SearchPanel( self.prods, parent )
+            sp = SearchPanel( self.prods, parent,True )
 
             return sp
 

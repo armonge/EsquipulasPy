@@ -135,9 +135,9 @@ class AccountsSelectorModel( QAbstractTableModel ):
 
 
 class AccountsSelectorDelegate( QStyledItemDelegate ):
-    def __init__( self, query ):
+    def __init__( self, query,showTable=False ):
         QStyledItemDelegate.__init__( self )
-
+        self.showTable=showTable
         query.exec_()
         if not query.size() > 0:
             raise UserWarning("No hay cuentas contables en el modelo")
@@ -161,7 +161,7 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
                                          index.model().lines[index.row()].code,
                                          index.model().lines[index.row()].name
                                          ] )
-            sp = SearchPanel( self.accounts, parent )
+            sp = SearchPanel( self.accounts, parent,self.showTable )
             sp.setColumn( index.column() )
             return sp
         elif index.column() == MONTO:

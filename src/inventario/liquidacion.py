@@ -117,7 +117,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.txtStore.setReadOnly( status )
         self.txtTransportation.setReadOnly( status )
         self.ckISO.setEnabled( not status )
-
+        self.tablenavigation.setEnabled(status)
 
 
         self.swProvider.setCurrentIndex( 0 if status else 1 )
@@ -191,10 +191,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 if not QSqlDatabase.database().open():
                     raise UserWarning( "No se pudo conectar con la base de datos para recuperar los documentos" )
     #FIXME:el valor ISO retorna NULL
-            self.navmodel.setQuery( """
+            self.navmodel.setQuery( u"""
                 SELECT 
                     d.iddocumento as iddocumento, 
-                    d.ndocimpreso as 'Numero de Liquidación', 
+                    d.ndocimpreso as 'Número de Liquidación', 
                     DATE(d.fechacreacion) as 'Fecha', 
                     l.procedencia as 'Procedencia',
                     l.totalagencia as 'Agencia',
@@ -203,7 +203,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                     l.segurototal as 'Seguro',
                     l.otrosgastos as 'Otros Gastos',
                     l.porcentajetransporte as 'Transporte',
-                    l.porcentajepapeleria as 'Papeleria',
+                    l.porcentajepapeleria as 'Papelería',
                     l.peso as 'Peso',
                     p.nombre as 'Proveedor', 
                     b.nombrebodega as 'Bodega',
@@ -282,6 +282,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.mapper.addMapping( self.txtExchangeRate, TCAMBIO )
     
             self.tablenavigation.setModel( self.navproxymodel )
+            self.tablenavigation.resizeColumnsToContents()
             self.tabledetails.setModel( self.detailsproxymodel )
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
@@ -320,6 +321,11 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             if not QSqlDatabase.database().isOpen:
                 if not QSqlDatabase.database().open():
                     raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
+            
+            query = QSqlQuery( "SELECT idtc, tasa FROM tiposcambio LIMIT 1" )
+            
+            if not query.first():
+                raise UserWarning( u"No existen tipos de cambio en la base de datos" )
 
             self.editmodel = LiquidacionModel( self.user.uid )
             self.addLine()
@@ -358,7 +364,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             SELECT idpersona, nombre FROM personas p WHERE tipopersona = 2 AND activo = 1
             """ )
             if not providersModel.rowCount() > 0:
-                raise UserWarning("No existe proveedores en el sistema")
+                raise UserWarning("No existen proveedores en el sistema")
             self.cbProvider.setModel( providersModel )
             self.cbProvider.setModelColumn( 1 )
 
@@ -371,15 +377,17 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.cbWarehouse.setModel( warehouseModel )
             self.cbWarehouse.setModelColumn( 1 )
 
-
-
+            delegate = LiquidacionDelegate()
+            if delegate.prods.rowCount()==0:
+                raise UserWarning("No hay articulos en existencia")
+                
 
 
             self.status = False
             self.tabnavigation.setEnabled( False )
             self.tabWidget.setCurrentIndex( 0 )
             self.tabledetails.setModel( self.editmodel )
-            delegate = LiquidacionDelegate()
+            
             self.tabledetails.setItemDelegate( delegate )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
 
@@ -391,7 +399,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             FROM cuentascontables c 
             JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
             WHERE c.padre != 1 AND c.idcuenta != 22
-            """ ) )
+            """ ),True )
             self.tableaccounts.setItemDelegate( self.accountseditdelegate )
             self.tableaccounts.setModel( self.editmodel.accountsModel )
             
@@ -410,7 +418,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabledetails.setColumnHidden( IDDOCUMENTOT, False )
         except UserWarning as inst:
             self.status = True
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.warning(self, "Llantera Esquipulas", str(inst))
         except Exception as inst:
             self.status = True
             print inst
