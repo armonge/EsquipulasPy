@@ -35,11 +35,13 @@ class frmReportes( QMainWindow, Ui_frmReportes ):
         Imprimir el reporte
         """
         printer = QPrinter( QPrinter.HighResolution )
+        printer.setPaperSize(QPrinter.Letter)
+        printer.setPageMargins(0,0,0,0, QPrinter.Point)
         printdialog = QPrintDialog( printer, self )
         printdialog.setWindowTitle( "Imprimir" )
         if printdialog.exec_() != QDialog.Accepted:
             return
-
+        
         printer.setDocName( "Reporte" )
         self.webView.print_( printer )
 

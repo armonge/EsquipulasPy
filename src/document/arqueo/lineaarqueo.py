@@ -5,7 +5,7 @@ Created on 07/06/2010
 @author: armonge
 '''
 from PyQt4.QtSql import QSqlQuery
-from decimal import Decimal
+from decimal import Decimal, DivisionByZero, InvalidOperation
 
 class LineaArqueo( object ):
     def __init__( self , parent ):
@@ -19,7 +19,12 @@ class LineaArqueo( object ):
 
     @property
     def total( self ):
-        return self.value * self.quantity / self.parent.exchangeRate if self.currencyId == 1 else self.value * self.quantity
+        try:
+            return self.value * self.quantity / self.parent.exchangeRate if self.currencyId == 1 else self.value * self.quantity
+        except DivisionByZero:
+            return Decimal(0)
+        except InvalidOperation:
+            return Decimal(0)
 
     @property
     def valid( self ):

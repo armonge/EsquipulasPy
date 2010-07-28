@@ -88,13 +88,13 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
                 axd.idarticulo, 
                 ad.descripcion as 'Articulo', 
                 axd.unidades as 'Unidades',
-                IF(akx.unidades > 0, CONCAT('+',akx.unidades), akx.unidades) as 'Ajuste', 
+                IF(akx.unidades > 0, CONCAT('+',akx.unidades), IFNULL(akx.unidades,0)) as 'Ajuste', 
                 axd.iddocumento
             FROM articulosxdocumento axd
             JOIN vw_articulosdescritos ad ON ad.idarticulo = axd.idarticulo
             JOIN documentos d ON axd.iddocumento = d.iddocumento AND d.idtipodoc IN (%s)
             JOIN docpadrehijos dph ON axd.iddocumento = dph.idpadre
-            JOIN articulosxdocumento akx ON akx.iddocumento = dph.idhijo
+            LEFT JOIN articulosxdocumento akx ON akx.iddocumento = dph.idhijo
             GROUP BY dph.idpadre, axd.idarticulo
             """ % self.tiposdoc)
             
@@ -278,7 +278,7 @@ class dlgSelectDoc( QDialog ):
         WHERE d.idtipodoc IN (%s) AND h.iddocumento IS NULL
         GROUP BY d.iddocumento
         """ % ( utility.constantes.IDKARDEX, tiposdoc))
-
+        
         
 
         self.setWindowTitle( "Seleccione el documento para bodega" )
@@ -328,5 +328,5 @@ class dlgSelectDoc( QDialog ):
         self.setMinimumWidth( 450 )
         
     def updateFilter( self, str ):
-
         self.filtermodel.setFilterWildcard( str )
+        

@@ -171,6 +171,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.txtPaperWork.setText("15")
             self.txtStore.setText("0")
             self.txtWeight.setText("0")
+            self.txtPolicy.setText('')
+            self.txtSource.setText('')
             
         else:
             self.tableaccounts.setEditTriggers( QTableView.NoEditTriggers )
@@ -190,7 +192,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
                     raise UserWarning( "No se pudo conectar con la base de datos para recuperar los documentos" )
-    #FIXME:el valor ISO retorna NULL
+
             self.navmodel.setQuery( u"""
                 SELECT 
                     d.iddocumento as iddocumento, 
@@ -225,7 +227,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 a.idarticulo as 'Id',
                 descripcion as 'Descripción', 
                 unidades as 'Cantidad', 
-                CONCAT('U$', FORMAT(costocompra,4)) as 'Costo Unitario US$', 
+                CONCAT('U$', FORMAT(costocompra,4)) as 'Costo Compra US$', 
                 CONCAT('U$', FORMAT(fob,4)) as 'FOB US$', 
                 CONCAT('U$', FORMAT(flete,4)) as 'Flete US$', 
                 CONCAT('U$', FORMAT(seguro,4)) as 'Seguro US$', 
@@ -252,7 +254,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             FROM cuentasxdocumento c 
             JOIN documentos d ON c.iddocumento = d.iddocumento
             JOIN cuentascontables cc ON cc.idcuenta = c.idcuenta
-            LEFT JOIN liquidaciones l ON l.iddocumento = d.iddocumento 
+            JOIN liquidaciones l ON l.iddocumento = d.iddocumento 
             WHERE l.iddocumento IS NOT NULL
             ORDER BY nlinea
             """ )

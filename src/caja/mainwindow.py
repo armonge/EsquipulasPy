@@ -40,7 +40,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         
         DatosSesion = namedtuple('DatosSesion','userId sesionId tipoCambioId tipoCambioOficial tiposCambioBanco fecha')
         
-        self.datosSesion = DatosSesion(1,1,12,Decimal('21.4138'),Decimal('21.50'),QDate.currentDate()) 
+        self.datosSesion = DatosSesion(1,1,213,Decimal('21.4138'),Decimal('21.50'),QDate.currentDate()) 
         
 
 #        self.date =None

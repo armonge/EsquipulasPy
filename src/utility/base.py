@@ -40,7 +40,11 @@ class Base( object ):
     def closeEvent( self, event ):
         u"""
         Guardar el tamaño, la posición en la pantalla y la posición de la barra de tareas
+        Preguntar si realmente se desea cerrar la pestaña cuando se esta en modo edición
         """
+        if not self.status:
+            if not QMessageBox.question(self, "Llantera Esquipulas", u"¿Está seguro que desea salir?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+                event.ignore()
         settings = QSettings()
         settings.setValue( self.windowTitle() + "/Geometry", self.saveGeometry() )
         settings.setValue( self.windowTitle() + "/State", self.saveState() )
@@ -80,17 +84,21 @@ class Base( object ):
 
                 query = QSqlQuery( "SELECT idtc, tasa FROM tiposcambio WHERE fecha = " + datetime.toString( "yyyyMMdd" ) + " LIMIT 1" )
                 if not query.exec_():
-                    raise Exception( "No se pudieron recuperar los tipos de cambio" )
+                    raise UserWarning( "No se pudieron recuperar los tipos de cambio" )
                 if not query.first():
-                    raise Exception( u"La consulta para el tipo de cambio no devolvio ningun valor" )
-                self.editmodel.datetime = datetime
+                    raise UserWarning( u"La consulta para el tipo de cambio no devolvio ningun valor" )
+                
                 self.editmodel.exchangeRateId = query.value( 0 ).toInt()[0]
                 self.editmodel.exchangeRate = Decimal( query.value( 1 ).toString() )
                 self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.index( 0, 0 ).data() )
-                
-            except Exception, e:
-                QMessageBox.critical( self, "Llantera Esquipulas", str( e ), QMessageBox.Ok )
+                self.editmodel.datetime = datetime
+            except UserWarning  as inst :
+                QMessageBox.critical( self, "Llantera Esquipulas", str( inst ), QMessageBox.Ok )
                 self.dtPicker.setDateTime( self.editmodel.datetime )
+            except Exception as inst:
+                print inst
+                self.dtPicker.setDateTime( self.editmodel.datetime )
+
 
 
     def navigate( self, to ):
@@ -288,3 +296,4 @@ class Base( object ):
         """
         if not self.editmodel is None:
             self.editmodel.observations = self.txtObservations.toPlainText()
+

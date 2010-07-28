@@ -10,6 +10,7 @@ from PyQt4.QtCore import pyqtSlot, QDateTime, SIGNAL, QTimer, QModelIndex
 
 from ui.Ui_operations import Ui_frmOperations
 from utility.accountselector import AccountsSelectorModel, AccountsSelectorDelegate
+import utility
 
 IDDOCUMENTO, NDOCIMPRESO, FECHACREACION, CONCEPTO = range( 4 )
 
@@ -65,9 +66,9 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
                 c.descripcion as 'Concepto'
             FROM documentos d
             JOIN conceptos c ON c.idconcepto = d.idconcepto
-            WHERE d.idtipodoc = 24
+            WHERE d.idtipodoc = %d
             ORDER BY d.iddocumento DESC
-            """ )
+            """ % utility.constantes.IDAJUSTECONTABLE )
             self.detailsmodel.setQuery( """
             SELECT 
                 cxd.idcuenta,  
@@ -78,9 +79,9 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             FROM cuentasxdocumento cxd 
             JOIN cuentascontables cc ON cxd.idcuenta = cc.idcuenta
             JOIN documentos d ON d.iddocumento = cxd.iddocumento 
-            WHERE d.idtipodoc = 24
+            WHERE d.idtipodoc = %d
             ORDER BY nlinea 
-            """ )
+            """ % utility.constantes.IDAJUSTECONTABLE )
 
             self.mapper.addMapping( self.dtPicker, FECHACREACION )
             self.mapper.addMapping( self.txtConcept, CONCEPTO )
@@ -150,7 +151,10 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             self.editModel.insertRow( 1 )
             
             delegate = AccountsSelectorDelegate( QSqlQuery( """
-            SELECT c.idcuenta, c.codigo, c.descripcion 
+            SELECT 
+                c.idcuenta, 
+                c.codigo, 
+                c.descripcion 
             FROM cuentascontables c 
             JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
             """ ) )
@@ -159,8 +163,12 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
     
             self.conceptsmodel = QSqlQueryModel()
             self.conceptsmodel.setQuery( """
-            SELECT idconcepto, descripcion 
-            FROM conceptos WHERE modulo = 3 """ )
+            SELECT 
+                idconcepto, 
+                descripcion 
+            FROM conceptos 
+            WHERE idtipodoc = %d
+             """ % utility.constantes.IDAJUSTECONTABLE )
             self.cbConcepts.setModel( self.conceptsmodel )
             self.cbConcepts.setModelColumn( 1 )
             self.tableDetails.setModel( self.editModel )
@@ -217,8 +225,8 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
 
             if not query.prepare( """
             INSERT INTO documentos (ndocimpreso, fechacreacion, idconcepto, escontado, anulado, idtipodoc) 
-            VALUES (:ndocimpreso, :fechacreacion, :idconcepto, 0,0, 24)
-            """ ):
+            VALUES (:ndocimpreso, :fechacreacion, :idconcepto, 0,0, %d)
+            """ % utility.constantes.IDAJUSTECONTABLE ):
                 raise Exception( "No se pudo preparar la consulta para guardar el documento" )
             query.bindValue( ":ndocimpreso", n )
             query.bindValue( ":fechacreacion", self.dtPicker.dateTime().toString( "yyyyMMddhhmmss" ) )

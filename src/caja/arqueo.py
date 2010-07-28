@@ -4,10 +4,6 @@ Created on 07/06/2010
 
 @author: armonge
 '''
-if __name__ == "__main__":
-    import sip
-    sip.setapi( "QString", 2 )
-
 from decimal import  Decimal
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper
 from PyQt4.QtCore import pyqtSlot, SIGNAL, QDateTime, QTimer
@@ -15,7 +11,7 @@ from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 from ui.Ui_arqueo import Ui_frmArqueo
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
-
+from utility.singleselectionmodel import  SingleSelectionModel
 from document.arqueo.arqueomodel import ArqueoModel
 from document.arqueo.arqueodelegate import ArqueoDelegate
 
@@ -60,7 +56,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise Exception( "No se pudo abrir la base de datos" )
+                    raise UserWarning( "No se pudo abrir la base de datos" )
             self.navmodel.setQuery( """
             SELECT
                 d.iddocumento, 
@@ -76,7 +72,8 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.detailsModel.setQuery( """
             SELECT 
                 l.cantidad as 'Cantidad', 
-                CONCAT(IF(l.idtipomoneda = 1, "C$", "US$") ,l.denominacion) as 'Denominacion',
+                CONCAT(IF(l.idtipomoneda = 1, "C$", "US$") ,
+                l.denominacion) as 'Denominacion',
                 CASE l.idtipomoneda WHEN 1 THEN 'Cordoba' WHEN 2 THEN 'Dolar' END as 'Moneda',
                 CONCAT("US$", FORMAT(l.cantidad * IF(l.idtipomoneda = 1, l.denominacion * tc.tasa, l.denominacion), 4)) as 'Total US$',
                 l.iddocumento
@@ -92,9 +89,10 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.mapper.addMapping( self.lblUserName, NOMBRE, "text" )
             self.mapper.addMapping( self.lblTotalArqueo, TOTAL, "text" )
 
-
-        except Exception, e:
-            print e
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+        except Exception as inst:
+            print inst
         finally:
             if self.database.isOpen():
                 self.database.close()
@@ -145,7 +143,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise Exception( "No se pudo conectar con la base de datos" )
+                    raise UserWarning( "No se pudo conectar con la base de datos" )
 
             query = QSqlQuery( """
             SELECT 
@@ -158,20 +156,19 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             LEFT JOIN documentos d ON dpd.idhijo = d.iddocumento
             JOIN tiposcambio tc ON tc.idtc = p.idtipocambio
             WHERE d.escontado = 1 AND p.iddocumento = %d
-            """ % self.parent.sesion )
+            """ % self.parent.datosSesion.sesionId )
 
 
-            if not query.exec_():
-                raise Exception( u"No se pudo ejecutar la consulta para obtener el total de la sesion" )
-            if not query.size() > 0:
-                raise Exception( "Error al obtener el total de la consulta" )
+            if not query.exec_() or not query.size() > 0:
+                raise UserWarning( u"Error al obtener el total de la sesión")
             query.first()
             self.editmodel.expectedTotal = Decimal( query.value( 0 ).toString() )
 
-#            self.editmodel.datetime = QDateTime( query.value( 1 ).toDateTime() )
-
-            self.editmodel.exchangeRate = Decimal( query.value( 2 ).toString() )
-            self.editmodel.exchangeRateId = query.value( 3 ).toInt()[0]
+            self.editmodel.exchangeRateId = self.parent.datosSesion.tiposCambioId
+            self.editmodel.exchangeRate = self.parent.datosSesion.tiposCambioOficial
+            
+            self.editmodel.datetime = self.parent.datosSesion.fecha
+            
             query = QSqlQuery( """
             SELECT
             MAX(CAST(ndocimpreso AS SIGNED))+1
@@ -180,15 +177,36 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             ;
             """ )
             if not query.exec_():
-                raise Exception( "No se pudo calcular el numero del arqueo" )
+                raise UserWarning( "No se pudo calcular el numero del arqueo" )
             query.first()
             self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
 
             self.lblTotalSesion.setText( moneyfmt( self.editmodel.expectedTotal, 4, "US$" ) )
             self.lblPrintedDocumentNumber.setText( self.editmodel.printedDocumentNumber )
 
+            query = QSqlQuery( """
+            SELECT 
+                d.iddenominacion, 
+                CONCAT_WS( ' ',d.valor, m.moneda), 
+                d.valor, 
+                d.idtipomoneda
+            FROM denominaciones d
+            JOIN tiposmoneda m ON d.idtipomoneda = m.idtipomoneda
+            WHERE d.activo = 1
+            ORDER BY d.idtipomoneda
+            """ )
+            if not query.exec_():
+                raise UserWarning( "No se pudo recuperar la lista de denominaciones" )
+            denominationsmodel = SingleSelectionModel()
+            while query.next():
+                denominationsmodel.items.append( [
+                                                  query.value( 0 ).toInt()[0], #el id del tipo de denominacion
+                                                  query.value( 1 ).toString(), #La descripción de la denominación
+                                                  Decimal( query.value( 2 ).toString() ), # el valor de la denominación
+                                                  query.value( 3 ).toInt()[0] #El id del tipo de moneda
+                                                  ] )
 
-            delegate = ArqueoDelegate()
+            delegate = ArqueoDelegate(denominationsmodel)
             self.tabledetails.setItemDelegate( delegate )
 
             self.addLine()
@@ -197,14 +215,20 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.lblUserName.setText( self.user.fullname )
             self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.updateLabels )
             self.status = False
-        except Exception, e:
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            self.status = True
+        except Exception  as e:
             print e
             self.status = True
         finally:
             if self.database.isOpen():
                 self.database.close()
 
-
+    @pyqtSlot( "QDateTime" )
+    def on_dtPicker_dateTimeChanged( self, datetime ):
+        if not self.editmodel is None:
+            self.editmodel.datetime = datetime
 
     @pyqtSlot(  )
     def on_actionCancel_activated( self ):
@@ -219,35 +243,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         """
         Redefiniendo el metodo save de Base para mostrar advertencias si el arqueo no concuerda
         """
-        if self.editmodel.valid:
-            if self.editmodel.total == self.editmodel.expectedTotal or QMessageBox.question( self, "Llantera Esquipulas: Caja", u"El total de la sesión no coincide con el total del arqueo\n ¿Desea continuar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
-                if not self.database.isOpen():
-                    if not self.database.open():
-                        raise Exception( "No se pudo conectar con la base de datos" )
-
-                if self.editmodel.save():
-                    QMessageBox.information( self,
-                         "Llantera Esquipulas" ,
-                         """El documento se ha guardado con exito""" )
-                    self.editmodel = None
-                    self.updateModels()
-                    self.navigate( 'last' )
-                    self.status = True
-                else:
-                    QMessageBox.critical( self,
-                         "Llantera Esquipulas" ,
-                         """Ha ocurrido un error al guardar el documento""" )
-
-                if self.database.isOpen():
-                    self.database.close()
-
-        else:
-            QMessageBox.warning( self,
-                 "Llantera Esquipulas" ,
-                u"""El documento no puede guardarse ya que la información no esta completa""" ,
-                QMessageBox.StandardButtons( \
-                    QMessageBox.Ok ),
-                QMessageBox.Ok )
-
+        if self.editmodel.total == self.editmodel.expectedTotal or QMessageBox.question( self, "Llantera Esquipulas: Caja", u"El total de la sesión no coincide con el total del arqueo\n ¿Desea continuar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+            self.editmodel.save()
 
 

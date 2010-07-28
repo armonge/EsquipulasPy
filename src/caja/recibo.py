@@ -691,7 +691,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
      
     
-    @pyqtSlot("")
+    @pyqtSlot()
     def on_txtpersona_editingFinished( self ):    
         if not  self.readOnly:
             self.datosRecibo.observaciones = self.txtpersona.text()

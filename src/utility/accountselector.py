@@ -106,8 +106,8 @@ class AccountsSelectorModel( QAbstractTableModel ):
             elif self.valid and not self.lines[-1].valid:
                 if len( self.lines ) > 1:
                     self.removeRows( len( self.lines ) - 1, 1 )
-
             self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.index(MONTO, len(self.lines) ),self.index(MONTO, len(self.lines) ))
             
             return True
         return False

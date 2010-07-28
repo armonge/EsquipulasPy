@@ -189,7 +189,10 @@ class ArqueoModel( QAbstractTableModel ):
         query = QSqlQuery()
 
         try:
-
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning(u"No se pudo abrir la base de datos")
+                
             if not self.database.transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
 
@@ -230,11 +233,19 @@ class ArqueoModel( QAbstractTableModel ):
             if not self.database.commit():
                 raise Exception( "No se pudo hacer commit" )
             return True
+        except UserWarning as inst:
+            self.saveError = str(inst)
+            print query.lastError().text()
+            self.database.rollback()
+            return False
         except Exception, e:
             print e
             print query.lastError().text()
             self.database.rollback()
             return False
+        finally:
+            if self.database.isOpen():
+                self.database.close()
 
 
 
