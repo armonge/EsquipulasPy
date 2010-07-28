@@ -18,7 +18,7 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
         super( frmCatGeneric, self ).__init__( parent )
         self.setupUi( self )
 
-        self.__status = False #: El estado del formulario true=editando
+        self.status = False #: El estado del formulario true=editando
 
         self.actionDelete.setVisible( False )
 
@@ -136,7 +136,7 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
         self.status = True
 
     def setStatus( self, status ):
-        self.__status = status
+        
         if status:
             self.tableview.setEditTriggers( QAbstractItemView.AllEditTriggers )
             self.tableview.edit( self.tableview.selectionModel().currentIndex() )
