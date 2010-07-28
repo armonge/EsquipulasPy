@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
 Created on 25/05/2010
-
 @author: Luis Carlos Mejia
 '''
 from PyQt4 import QtGui,QtCore
@@ -350,23 +349,15 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 
     #           Cargar el numero de la factura actual
                 query = QSqlQuery( """
-                SELECT
-                      MAX(CAST(ndocimpreso AS SIGNED))+1
-                FROM documentos d
-                WHERE idtipodoc=5
-                ;
+                    CALL spConsecutivo(5,NULL);
                 """ )
     
                 query.exec_()
-                query.first()
-    
+                query.first()    
                 n = query.value( 0 ).toString()
-                if n == "0" or n=="" :
-                    n = "1"
-    
+
                 self.lblnfac.setText( n )
                 self.editmodel.printedDocumentNumber = n
-    
     
                 self.tabledetails.setModel( self.editmodel )
                 self.tabledetails.setItemDelegate( delegate )
