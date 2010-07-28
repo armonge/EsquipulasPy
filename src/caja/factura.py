@@ -4,7 +4,8 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter
+from PyQt4 import QtGui,QtCore
+from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter,QDialog
 from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QModelIndex, QTimer, QDateTime,QDate
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 from decimal import Decimal
@@ -18,7 +19,8 @@ from document.factura.facturamodel import FacturaModel
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
 from recibo import dlgRecibo
-
+from utility.user import dlgUserLogin,User
+from utility.movimientos import movFacturaCredito
 #controles
 IDDOCUMENTO, NDOCIMPRESO, CLIENTE,VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, FECHA, BODEGA, TASA,TASAIVA,ANULADO = range( 13 )
 
@@ -242,7 +244,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
     
     #Crear el delegado con los articulo y verificar si existen articulos
                 query = QSqlQuery("""
-                        SELECT
+                    SELECT
             a.idarticulo,
             a.descripcion,
             c.valor*(1+a.ganancia/100) as precio,
@@ -259,7 +261,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         WHERE c.activo=1
         GROUP BY ad.idarticulo,b.idbodega
         HAVING SUM(ad.unidades) >0
-                """)             
+                """)           
                 self.accounts = QSqlQueryModel()
                 self.accounts.setQuery(query)
                 self.proxyAccounts = QSortFilterProxyModel()
@@ -448,7 +450,116 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.lbltotal.setText( "0.0000" )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.lblanulado.setHidden(True)
-
+    
+    @pyqtSlot(  )
+    def on_btnAnular_clicked( self ):
+        
+        if not QSqlDatabase.database().isOpen():
+            if not QSqlDatabase.database().open():
+                raise Exception("NO se pudo abrir la Base de datos")
+        
+        nimpreso=self.navmodel.record( self.mapper.currentIndex() ).value( "No. Factura" ).toInt()[0]
+        iddoc=self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
+                    
+        
+        query=QSqlQuery("""SELECT d.iddocumento,d.ndocimpreso,d.total,d.fechacreacion,d.observacion,d.escontado,dph.idhijo 
+                        FROM documentos d join docpadrehijos dph on d.iddocumento=dph.idpadre 
+                        join pagos p on dph.idhijo=p.recibo
+                        where d.iddocumento="""+str(iddoc))        
+        query.exec_()
+        
+        if not query.isNull(1):
+            QMessageBox.information( None, "Anulacion invalida", "Esta factura tiene un pago, por lo tanto no se puede anular" )
+            raise Exception("NO se pudo anular la factura porque tiene abonos")            
+        
+        dlguser = dlgUserLogin()
+        
+        if dlguser.exec_() == QDialog.Accepted:
+            user = User( dlguser.txtUser.text(), "cusucosoft" )
+            if user.valid:
+                if user.hasRole( 'root' ):            
+                    
+                    try:
+                        if not QSqlDatabase.database().isOpen():
+                            if not QSqlDatabase.database().open():
+                                raise Exception("NO se pudo abrir la Base de datos")
+        
+                        anulardialog=Anular(nimpreso)
+                        if anulardialog.exec_() == QDialog.Accepted:
+                            if anulardialog.cboConceptos.currentIndex()==-1 and anulardialog.txtObservaciones.toPlainText()=="":
+                                QMessageBox.critical( self, "Llantera Esquipulas", "No ingreso los datos correctos", QMessageBox.Ok )
+                            else:
+                    
+                                query = QSqlQuery()
+                                if not self.database.transaction():
+                                    raise Exception("No se pudo comenzar la transacción" )    
+                                #Cambiar estado Anulado=1 para documento
+                                query.prepare("UPDATE documentos d SET anulado=1 where iddocumento=%d LIMIT 1"%iddoc )
+                                if not query.exec_():
+                                    raise Exception("No se logro cambiar el estado a el documento")
+                                
+                                #Insertar documento anulacion
+                                if not query.prepare( """INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,anulado)
+                                VALUES(:ndocimpreso,:total,:fechacreacion,:idtipodoc,:observacion,:anulado)""" ):
+                                    raise Exception( query.lastError().text() )
+                                query.bindValue( ":ndocimpreso", nimpreso )
+                                query.bindValue(":total",self.navmodel.record( self.mapper.currentIndex() ).value( "total" ).toString())
+                                query.bindValue( ":fechacreacion", QDate.currentDate() )
+                                query.bindValue( ":idtipodoc", 2 )
+                                query.bindValue( ":observacion", anulardialog.txtObservaciones.toPlainText() )                        
+                                query.bindValue( ":anulado", 0 )
+                                
+                                if not query.exec_():
+                                    raise Exception("No se puedo insertar el documento Anulacion")
+                                
+                                
+                                #Insertar relacion Usuario-Anulacion quien creo la anulacion 
+                                iddocumento=query.lastInsertId().toInt()[0]
+                                query.prepare("Insert into personasxdocumento(idpersona, iddocumento)VALUES(:idpersona,:iddocumento)")
+                                query.bindValue( ":idpersona", 30 )
+                                query.bindValue( ":iddocumento", iddocumento)
+                                
+                                if not query.exec_():
+                                    raise Exception("No se puedo insertar la relacion UsuarioCreador-Anulacion")                   
+                                
+                                #Insertar relacion Usuario-Anulacion quien autorizo la anulacion 
+                                query.prepare("Insert into personasxdocumento(idpersona, iddocumento)VALUES(:idpersona,:iddocumento)")
+                                query.bindValue( ":idpersona", user.uid )
+                                query.bindValue( ":iddocumento", iddocumento)
+                                
+                                if not query.exec_():
+                                    raise Exception("No se puedo insertar la relacion UsuarioAutorizo-Anulacion")                   
+                                
+                                #Insertar el documento anulacion como hijo de la factura
+                                if not query.prepare( """INSERT INTO docpadrehijos(idpadre,idhijo)
+                                VALUES(:idpadre,:idhijo)""" ):
+                                    raise Exception( query.lastError().text() )
+                                query.bindValue( ":idpadre", iddoc )
+                                query.bindValue( ":idhijo", iddocumento)
+                                
+                                if not query.exec_():
+                                    raise Exception("No se puedo insertar la relacion Usuario-Anulacion")
+                                
+                                self.tipocambio=Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( "Tipo de Cambio Oficial" ).toString())                                
+                                self.subtotal=Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( "subtotal" ).toString())*Decimal(self.tipocambio)
+                                self.iva=Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( "iva" ).toString())*Decimal(self.tipocambio)
+                                self.total=Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( "total" ).toString())*Decimal(self.tipocambio)            
+                                
+                                movFacturaCredito(iddocumento, self.subtotal*Decimal("-1"),self.iva*Decimal("-1"),self.total*Decimal("-1") )                   
+                                
+                                if not self.database.commit():
+                                    raise Exception("NO se hizo el commit para la Anulacion")
+                                QMessageBox.information( self, "Llantera Esquipulas", "Factura anulada Correctamente", QMessageBox.Ok )                            
+                                self.updateModels()
+                        
+                    except Exception as inst:
+                        print inst
+                        print query.lastError().text()
+                        self.database.rollback()
+                else:
+                    anulardialog.close()
+                    print "Cancelar"   
+    
 
     @pyqtSlot(  )
     def on_txtDocumentNumber_editingFinished( self ):
@@ -554,13 +665,6 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 #        return ""
         if self.valid:
             if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-#                dialog = dlgRecibo(self)
-#                if dialog.exec_():
-#                    print "OK"
-#                else:
-#                    print "Cancel"
-#                
-#                return ""
                 if not QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().open()
                 
@@ -646,3 +750,54 @@ class RODetailsModel( QSortFilterProxyModel ):
         return value
 
 
+class Anular( QDialog ):
+    def __init__( self ,numero):
+        QDialog.__init__( self )
+        self.setObjectName("frmAnulaciones")
+        self.setWindowTitle( "Seleccione la factura a anular" )
+        self.resize(485, 300)
+        self.gridLayout = QtGui.QGridLayout(self)
+        self.gridLayout.setObjectName("gridLayout")
+        self.lblnfactura = QtGui.QLabel(self)
+        self.lblnfactura.setObjectName("lblnfactura")
+        self.lblnfactura.setText("# Factura")
+        self.gridLayout.addWidget(self.lblnfactura, 0, 0, 1, 1)
+        self.lblnfactura2 = QtGui.QLabel(self)
+        self.lblnfactura2.setFrameShape(QtGui.QFrame.Box)
+        self.lblnfactura2.setText("")
+        self.lblnfactura2.setObjectName("lblnfactura2")
+        self.lblnfactura2.setText(str(numero))
+        self.gridLayout.addWidget(self.lblnfactura2, 0, 1, 1, 1)
+        self.lblconcepto = QtGui.QLabel(self)
+        self.lblconcepto.setObjectName("lblconcepto")
+        self.lblconcepto.setText("Concepto")
+        self.gridLayout.addWidget(self.lblconcepto, 1, 0, 1, 1)
+        self.cboConceptos = QtGui.QComboBox(self)
+        self.cboConceptos.setObjectName("cboConceptos")
+        self.gridLayout.addWidget(self.cboConceptos, 1, 1, 1, 1)
+        self.lblobservaciones = QtGui.QLabel(self)
+        self.lblobservaciones.setObjectName("lblobservaciones")
+        self.lblobservaciones.setText("Observaciones")
+        self.gridLayout.addWidget(self.lblobservaciones, 2, 0, 1, 1)
+        self.txtObservaciones = QtGui.QPlainTextEdit(self)
+        self.txtObservaciones.setObjectName("txtObservaciones")
+        self.gridLayout.addWidget(self.txtObservaciones, 3, 1, 1, 1)
+        self.buttonBox = QtGui.QDialogButtonBox(self)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.gridLayout.addWidget(self.buttonBox, 4, 0, 1, 2)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.reject)
+        QtCore.QMetaObject.connectSlotsByName(self)
+        
+        self.conceptosmodel = QSqlQueryModel()
+        self.conceptosmodel.setQuery( """
+        SELECT idconcepto,descripcion FROM conceptos c;
+        """ )
+        self.cboConceptos.setModel(self.conceptosmodel)
+        self.cboConceptos.setCurrentIndex( -1 )
+        self.cboConceptos.setModelColumn( 1 )
+        self.numero=numero
+    def updateFilter( self, string ):
+        self.filtermodel.setFilterWildcard( string )
