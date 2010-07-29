@@ -109,8 +109,10 @@ class FacturaDelegate(SearchPanelDelegate):
         if index.column() == DESCRIPCION:
             return QSize( 250, fm.height() )
         
-        elif index.column() in (TOTALPROD,CANTIDAD,PRECIO):
-            return QSize( 80, fm.height() )
+        elif index.column() in (CANTIDAD,PRECIO):
+            return QSize( 100, fm.height() )
+        elif index.column() == TOTALPROD:
+            return QSize( 200, fm.height() )
         
         return QStyledItemDelegate.sizeHint( self, option, index )
 

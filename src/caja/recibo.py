@@ -18,7 +18,7 @@ from ui.Ui_dlgrecibo import Ui_dlgRecibo
 from document.recibo.recibodelegate import ReciboDelegate
 from document.recibo.abonodelegate import AbonoDelegate
 from document.recibo.recibomodel import ReciboModel
-from document.recibo.abonomodel import AbonoModel
+from document.recibo.abonomodel import AbonoModel,LineaAbono
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
 from utility.constantes import IDRECIBO,IDRETENCION
@@ -119,12 +119,12 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.datosRecibo.retencionAplicada(self,on)
 
     @pyqtSignature( "" )
-    def on_mtxtobservaciones_textChanged( self ):
+    def on_txtobservaciones_textChanged( self ):
         """
         Asignar las observaciones al objeto __document
         """
         if not self.editmodel is None:
-            self.editmodel.observacionesRet = self.mtxtobservaciones.toPlainText()
+            self.editmodel.observacionesRet = self.txtobservaciones.toPlainText()
 
 
 
@@ -236,7 +236,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.mapper.addMapping( self.lblnreten, NRETENCION , "text" )
 
             self.mapper.addMapping( self.txtpersona, OBSERVACION )
-            self.mapper.addMapping( self.mtxtobservaciones, OBSERVACIONRET )
+            self.mapper.addMapping( self.txtobservaciones, OBSERVACIONRET )
             self.mapper.addMapping( self.dtPicker, FECHA )
             self.mapper.addMapping( self.txtcliente, CLIENTE, "text" )
             self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
@@ -495,7 +495,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.dtPicker.setReadOnly( True )
         self.txtpersona.setReadOnly( status )
         self.ckretener.setEnabled( ( not status ) )
-        self.mtxtobservaciones.setReadOnly( status )
+        self.txtobservaciones.setReadOnly( status )
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
         self.tabnavigation.setEnabled( status )
@@ -520,7 +520,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.swcliente.setCurrentIndex( 0 )
             self.swconcepto.setCurrentIndex( 0 )
             self.swtasaret.setCurrentIndex( 0 )
-            self.mtxtobservaciones.setPlainText( "" )
+            self.txtobservaciones.setPlainText( "" )
             
             self.lbltotalreten.setText( "0.00" )
             self.lbltotal.setText( "$0.00" )
@@ -633,10 +633,16 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         self.lbltotal.setText(factura.lblsubtotal.text())
         if not readOnly:
             self.totalFactura = factura.editmodel.total
-            self.txtpersona.setText(factura.cbcliente.currentText())
+    
+        self.txtpersona.setText(factura.cbcliente.currentText())
         self.setControls(False)
                     
 #        self.setWindowFlags(Qt.WindowTitleHint | Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)
+    def save(self):
+        self.datosRecibo.lines = self.editModel.lines
+        linea = LineaAbono()
+        self.datosRecibo.lineasAbonos.append()
+        self.datosRecibo.save()
         
     def setControls( self, status ):
         """
@@ -644,7 +650,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         """
         self.txtpersona.setReadOnly( status )
         self.ckretener.setEnabled(not status)
-        self.mtxtobservaciones.setReadOnly( status )
+        self.txtobservaciones.setReadOnly( status )
         self.readOnly=status
         
         if status:
@@ -684,9 +690,9 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             self.tabledetails.setModel(self.editModel)
             self.tabledetails.setColumnHidden(IDPAGO,True)
             self.tabledetails.setColumnHidden(IDMONEDA,True)
+            self.tabledetails.setColumnWidth(DESCRIPCION,200)
             
             self.tabledetails.setItemDelegate(delegado)
-            self.txtpersona.setText( "" )
             self.swtasaret.setCurrentIndex( 0 )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
      
@@ -727,8 +733,8 @@ class DatosRecibo(object):
         self.observacionesRet = ""
         self.aplicarRet = True
         
-        self.lines = []
-        self.lineasAbonos = None
+        self.lineas = []
+        self.lineasAbonos = []
         self.numeroImpreso = ''
         
         self.conceptoId = 0
@@ -742,7 +748,7 @@ class DatosRecibo(object):
     def total( self ):
         """
         """
-        tmpsubtotal = sum( [linea.monto for linea in self.lines if linea.valid] )
+        tmpsubtotal = sum( [linea.monto for linea in self.lineas if linea.valid] )
         return tmpsubtotal if tmpsubtotal > 0 else Decimal( 0 )
     
     @property
@@ -796,11 +802,11 @@ class DatosRecibo(object):
         la cantidad de lineas validas que hay en el documento
         """
         foo = 0
-        for line in self.lines:
+        for line in self.lineas:
             if line.valid:foo += 1
         return foo
     
-    def save( self, lineas ):
+    def save( self ):
         """
         Este metodo guarda el documento actual en la base de datos
         """
@@ -853,13 +859,13 @@ class DatosRecibo(object):
 
 #INSERTAR LOS TIPOS DE PAGO
             i = 0
-            for linea in self.lines:
+            for linea in self.lineas:
                 if linea.valid:
                     linea.save( insertedId, i )
                     i = i + 1
 #INSERTAR los abonos
-            print( lineas )
-            for l in lineas:
+            
+            for l in self.lineasAbonos:
                 print( l.idFac )
                 if l.valid:
                     l.save( insertedId )
@@ -975,14 +981,14 @@ class DatosRecibo(object):
         recibo.updateLabels()
         
     def retencionAplicada(self,recibo,on):
-        recibo.mtxtobservaciones.setEnabled( on )
+        recibo.txtobservaciones.setEnabled( on )
 #        self.lbltotalreten.setVisible( on )
 #        self.lblnreten.setVisible( on )
 #        self.label_7.setVisible( on )
 #        self.label_19.setVisible( on )
 #        self.label_20.setVisible( on )
         recibo.cbtasaret.setCurrentIndex(-1)
-        recibo.mtxtobservaciones.setPlainText("")
+        recibo.txtobservaciones.setPlainText("")
         recibo.cbtasaret.setEnabled(on)
         self.aplicarRet = on    
         recibo.updateLabels()

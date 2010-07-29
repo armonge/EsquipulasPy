@@ -12,36 +12,53 @@ from utility.singleselectionmodel import SingleSelectionModel
 IDTIPOPAGO,DESCRIPCION,  REFERENCIA,  MONTO = range(4)
 class ReciboDelegate(QStyledItemDelegate):
     
-    def __init__( self ):
-        QStyledItemDelegate.__init__( self )
+    def __init__(self, parent=None):
+        super(ReciboDelegate, self).__init__(parent)
+        
         query = QSqlQuery("""
         SELECT 
             idtipopago,
             CONCAT(descripcion, ' ' , moneda) as tipopago,
-            idtipomoneda
-            
+            idtipomoneda        
             FROM tiposmoneda m
         JOIN tipospago p
         ;
         """) 
-        QStyledItemDelegate.__init__( self )
-        self.tiposPagoModel = QSqlQueryModel()
-        self.tiposPagoModel.setQuery(query)
-        self.proxymodel = QSortFilterProxyModel()
-        self.proxymodel.setFilterKeyColumn(0)
-        self.proxymodel.setSourceModel(self.tiposPagoModel)
-        self.filtrados =[]
+        self.prods = SingleSelectionModel()
+        query.exec_()
+        while query.next():
+            self.prods.items.append([
+                query.value(0).toInt()[0],
+                query.value(1).toString(),
+                query.value(2).toInt()[0]
+                                    ])
 
 
 
     def createEditor( self, parent, option, index ):
         if index.column() == DESCRIPCION:
-            value = index.model().index(index.row(),0).data().toString()
-            self.removeFromFilter(value)            
-            self.proxymodel.setFilterRegExp(self.filter())
-            sp = SearchPanel( self.proxymodel, parent,True )
-            sp.setColumn( index.column() )
-            return sp
+            completer = QCompleter()            
+            combo = QComboBox(parent)
+            combo.setEditable(True)
+            
+
+            combo.setModel(self.prods)
+            completer.setModel(self.prods)
+            combo.setModelColumn(1)
+            completer.setCompletionColumn(1)
+            tabla=index.model()
+            if index.data() != "":
+                self.prods.items.append([tabla.index( index.row(),0 ).data().toInt()[0]  ,
+                                        index.data().toString(),
+                                        tabla.index( index.row(),2 ).data().toInt()[0]
+                                         ])
+
+            
+                
+            completer.setCaseSensitivity(Qt.CaseInsensitive)
+            completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+            combo.setCompleter(completer)
+            return combo
         if index.column() == MONTO:
             doublespinbox = QDoubleSpinBox( parent )
             doublespinbox.setMinimum( -1000000 )
@@ -77,16 +94,16 @@ class ReciboDelegate(QStyledItemDelegate):
     def setModelData( self, editor, model, index ):
 
         if index.column()==DESCRIPCION:
-            if self.proxymodel.rowCount()>0:
-                fila = editor.currentIndex()
-                modelo = self.proxymodel
-                model.setData( index, [
-                                       modelo.index(fila , 0 ).data(),
-                                       modelo.index(fila, 1 ).data(),
-                                       modelo.index( fila, 2 ).data()
-                                       ] )
-                self.filtrados.append(modelo.index(fila , 0 ).data().toString())
-                self.proxymodel.setFilterRegExp(self.filter())
+            if self.prods.rowCount()>0:
+                try:
+                    model.setData(index,  [
+                                           self.prods.items[editor.currentIndex()][0],  
+                                           self.prods.items[editor.currentIndex()][1],
+                                           self.prods.items[editor.currentIndex()][2]
+                    ])
+                    del self.prods.items[editor.currentIndex()]
+                except IndexError as inst:
+                    print inst
         else:
             QStyledItemDelegate.setModelData( self, editor, model, index )
 

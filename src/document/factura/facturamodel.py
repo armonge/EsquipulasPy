@@ -130,9 +130,13 @@ class FacturaModel( QAbstractTableModel ):
             elif column == TOTALPROD:
                 return moneyfmt( line.total , 4, "US$" ) if line.itemId!=0 else ""
         elif role == Qt.EditRole:
-#            Esto es lo que recibe el delegate cuando va a mostrar la el widget 
             if column == PRECIO:
                 return line.itemPrice
+        elif role == Qt.TextAlignmentRole:
+#            if column==:
+#                return Qt.AlignHCenter | Qt.AlignVCenter
+            if column in (CANTIDAD,PRECIO,TOTALPROD):
+                return Qt.AlignRight | Qt.AlignVCenter
 
     def flags( self, index ):
         if not index.isValid():
@@ -267,13 +271,18 @@ class FacturaModel( QAbstractTableModel ):
                     i = i + 1
 
 #VERIFICO SI el id del iva es cero. NO SERA CERO CUANDO LA BODEGA=1 PORQUE ESTA NO ES exonerada                     
-
+            print self.bodegaId
             if self.bodegaId == 1 :
                 query.prepare( """
                 INSERT INTO costosxdocumento (iddocumento, idcostoagregado) VALUES( :iddocumento, :idcostoagregado )
                 """ )
                 query.bindValue( ":iddocumento", insertedId )
                 query.bindValue( ":idcostoagregado", self.ivaId )
+                print "Documento"
+                print insertedId
+                print "IVA"
+                print self.ivaId
+                
                 if not query.exec_():
                     print insertedId
                     print self.ivaId

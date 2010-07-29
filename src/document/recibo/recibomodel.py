@@ -16,15 +16,25 @@ class ReciboModel( AccountsSelectorModel ):
     
     def columnCount( self, index = QModelIndex() ):
         return 5
-#    def insertRows( self, position, rows = 1, index = QModelIndex ):
-#        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
-#        for row in range( rows ):
-#            self.lines.insert( position + row, LineaRecibo() )
-#            self.lines[-1].amount = self.currentSum * -1
-#        self.endInsertRows()
-#        self.dirty = True
-#        return True
 
+    def flags( self, index ):
+        if not index.isValid():
+            return Qt.ItemIsEnabled
+        
+        if self.bloqueada(index):
+            return Qt.ItemIsEnabled
+        else:
+            return Qt.ItemIsEnabled | Qt.ItemIsEditable
+    
+    def bloqueada(self,index):
+        if self.lines[index.row()].pagoId == 1:
+            if index.row() == 0:
+                return index.column() in (4)
+            else:
+                return True
+        else:
+            return index.column() in (1,2) and index.row() == 0      
+          
     def data( self, index, role = Qt.DisplayRole ):
         """
         darle formato a los campos de la tabla
@@ -51,11 +61,11 @@ class ReciboModel( AccountsSelectorModel ):
         if index.isValid() and 0 <= index.row() < len( self.lines ):
             line = self.lines[index.row()]
             column = index.column()
-#            if column in ( NCUENTA, CODCUENTA ):
-#                line.itemId = value[0]
-#                line.code = value[1]
-#                line.name = value[2]
-            if column == MONTO:
+            if column== DESCRIPCION:
+                line.pagoId = value[0]
+                line.pagoDescripcion = value[1]
+                line.monedaId = value[2]
+            elif column == MONTO:
                 valor = value.toString()
                 line.monto = Decimal( valor if valor!="" else 0 )
 

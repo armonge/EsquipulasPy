@@ -21,7 +21,7 @@ from recibo import dlgRecibo
 from utility.user import dlgUserLogin,User
 from utility.movimientos import movFacturaCredito
 #controles
-IDDOCUMENTO, NDOCIMPRESO, CLIENTE,VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, FECHA, BODEGA, TASA,TASAIVA,ANULADO = range( 13 )
+IDDOCUMENTO, NDOCIMPRESO, CLIENTE,VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, FECHA, BODEGA, TASA,TASAIVA,ANULADO,ESCONTADO = range( 14 )
 
 #table
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD, IDDOCUMENTOT = range( 6 )
@@ -94,7 +94,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     b.nombrebodega as Bodega,
                     tc.tasa as 'Tipo de Cambio Oficial',
                     valorcosto as tasaiva,
-                    d.anulado as Anulada
+                    d.anulado as Anulada,
+                    d.escontado
                 FROM documentos d
                 JOIN bodegas b ON b.idbodega=d.idbodega
                 JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
@@ -140,13 +141,14 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.tablenavigation.setModel( self.navproxymodel )
             self.tabledetails.setModel( self.detailsproxymodel )
             self.tabledetails.setColumnHidden( IDARTICULO, True )
-
+                
             self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
             self.tablenavigation.setColumnHidden( OBSERVACION, True )
             self.tablenavigation.setColumnHidden( SUBTOTAL, True )
             self.tablenavigation.setColumnHidden( IVA, True )
             self.tablenavigation.setColumnHidden( TASAIVA, True )
             self.tablenavigation.setColumnHidden( TASA, True )
+            
 #            
 #            self.navigate( 'last' )
 
@@ -284,7 +286,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 FROM bodegas b
                 JOIN documentos d ON b.idbodega=d.idbodega
         JOIN articulosxdocumento ad ON ad.iddocumento=d.iddocumento
-        GROUP BY ad.idarticulo,b.idbodega
+        GROUP BY b.idbodega
         HAVING SUM(ad.unidades)>0    
                 """ )
     
@@ -395,6 +397,13 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.lblanulado.setHidden(self.navmodel.record( index ).value( "Anulada" ).toInt()[0]==0)
         self.dtPicker.setDate(QDate.fromString(self.navmodel.record( index ).value( "Fecha" ).toString(),"dd/MM/yyyy"))
         
+        escontado = self.navmodel.record( index ).value( "escontado" ).toBool() 
+        if escontado:
+            self.rbcontado.setChecked(True)
+        else:
+            self.rbcredito.setChecked(True)
+        
+        
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
 #        print self.navmodel.record( index ).value( "iddocumento" ).toString() 
         self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
@@ -441,6 +450,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.lbltotal.setText( "0.0000" )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.lblanulado.setHidden(True)
+            self.rbcontado.setChecked(True)
+#            self.tabledetails.horizontalHeader().setStretchLastSection(True)
     
     @pyqtSlot(  )
     def on_btnAnular_clicked( self ):
@@ -647,26 +658,47 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         Guardar el documento actual
         """
-#        dialog = dlgRecibo(self)
-#        if dialog.exec_():
-#            print "OK"
-#        else:
-#            print "Cancel"
-#        
-#        return ""
         if self.valid:
             if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+                
+                if self.editmodel.escontado:
+                    dialog = dlgRecibo(self)
+                    if self.editmodel.total() > 1000:
+                        if dialog.datosRecibo.retencionModel.rowCount()==0:
+                            QMessageBox.warning( None,
+                                             "Llantera Esquipulas",
+                                             """No es posible crear un recibo porque no existen retenciones en la base de datos""",
+                                             QMessageBox.StandardButtons( \
+                                            QMessageBox.Ok ),
+                                            QMessageBox.Ok )
+                            return
+                    
+                    if dialog.exec_():
+                        print "OK"
+                    else:
+                        print "Cancel"
+                        return
+                        
                 if not QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().open()
                 
+                                  
+                    
                 datetime =QDateTime.currentDateTime()
                 datetime.setDate(self.editmodel.datosSesion.fecha)
                 self.editmodel.datetime=datetime
                 
                 if self.editmodel.save():
+                    if self.editmodel.escontado:
+                        if not dialog.save():
+                            QMessageBox.critical( None,
+                        "Llantera Esquipulas" ,
+                         """Ha ocurrido un error al guardar el recibo""" ) 
+                            return
+                        
                     QMessageBox.information( None,
                          "Llantera Esquipulas" ,
-                         """El documento se ha guardado con exito""" ) 
+                         u"""El documento se ha guardado con éxito""" ) 
                     self.editmodel = None
                     self.updateModels()
                     self.navigate( 'last' )
@@ -674,7 +706,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 else:
                     QMessageBox.critical( None,
                         "Llantera Esquipulas" ,
-                         """Ha ocurrido un error al guardar el documento""" ) 
+                         """Ha ocurrido un error al guardar la factura""" ) 
     
                 if QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().close()
@@ -792,3 +824,4 @@ class Anular( QDialog ):
         self.numero=numero
     def updateFilter( self, string ):
         self.filtermodel.setFilterWildcard( string )
+        

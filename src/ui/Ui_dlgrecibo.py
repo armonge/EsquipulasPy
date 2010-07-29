@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\dlgrecibo.ui'
 #
-# Created: Mon Jul 26 23:39:25 2010
+# Created: Thu Jul 29 00:44:30 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -201,12 +201,12 @@ class Ui_dlgRecibo(object):
         self.verticalLayout.addWidget(self.label_20)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.mtxtobservaciones = QtGui.QPlainTextEdit(dlgRecibo)
-        self.mtxtobservaciones.setEnabled(True)
-        self.mtxtobservaciones.setMaximumSize(QtCore.QSize(16777215, 50))
-        self.mtxtobservaciones.setReadOnly(True)
-        self.mtxtobservaciones.setObjectName("mtxtobservaciones")
-        self.horizontalLayout_2.addWidget(self.mtxtobservaciones)
+        self.txtobservaciones = QtGui.QPlainTextEdit(dlgRecibo)
+        self.txtobservaciones.setEnabled(True)
+        self.txtobservaciones.setMaximumSize(QtCore.QSize(16777215, 50))
+        self.txtobservaciones.setReadOnly(True)
+        self.txtobservaciones.setObjectName("txtobservaciones")
+        self.horizontalLayout_2.addWidget(self.txtobservaciones)
         self.gridLayout_2 = QtGui.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.label_3 = QtGui.QLabel(dlgRecibo)
@@ -277,7 +277,11 @@ class Ui_dlgRecibo(object):
         self.ckretener.setText(QtGui.QApplication.translate("dlgRecibo", "Retener", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_3.setTitle(QtGui.QApplication.translate("dlgRecibo", "Especifique los tipos de pagos", None, QtGui.QApplication.UnicodeUTF8))
         self.label_20.setText(QtGui.QApplication.translate("dlgRecibo", "<b>Observaciones </b>", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("dlgRecibo", "<b>Total<b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("dlgRecibo", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Total a pagar</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.lbltotal.setText(QtGui.QApplication.translate("dlgRecibo", "0.0000", None, QtGui.QApplication.UnicodeUTF8))
         self.label_19.setText(QtGui.QApplication.translate("dlgRecibo", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -289,6 +293,6 @@ class Ui_dlgRecibo(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Total a pagar</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Total Recibido</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.lbltotalrecibo.setText(QtGui.QApplication.translate("dlgRecibo", "0.0000", None, QtGui.QApplication.UnicodeUTF8))
 
