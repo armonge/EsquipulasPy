@@ -5,7 +5,7 @@ Module implementing frmLiquidacion.
 """
 from decimal import Decimal
 import functools
-from PyQt4.QtGui import QMainWindow, QAbstractItemView, QDoubleValidator, QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox
+from PyQt4.QtGui import QMainWindow, QAbstractItemView, QDoubleValidator, QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, QPrinter
 from PyQt4.QtCore import pyqtSlot, SIGNAL, QDateTime, Qt, QTimer
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from ui.Ui_liquidacion import Ui_frmLiquidacion
@@ -310,7 +310,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
     @pyqtSlot(  )
     def on_actionPreview_activated( self ):
-        report = frmReportes( "liquidaciones.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.user, self )
+        report = frmReportes( "liquidaciones.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.user, self , QPrinter.Landscape)
         report.show()
 
     @pyqtSlot(  )

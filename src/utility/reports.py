@@ -9,7 +9,7 @@ class frmReportes( QMainWindow, Ui_frmReportes ):
     """
     Este es un formulario generico que muestra los reportes web generados para las 
     """
-    def __init__( self, web, user, parent = None ):
+    def __init__( self, web, user, parent = None, orientation = QPrinter.Portrait ):
         """
         @param user: El objeto usuario asociado con esta sesión
         @param web: La dirección web a la que apunta el reporte
@@ -21,13 +21,14 @@ class frmReportes( QMainWindow, Ui_frmReportes ):
         settings = QSettings()
         base = settings.value( "Reports/base" ).toString()
 
+        self.orientation = orientation
         self.txtSearch = QLineEdit()
         action = self.toolBar.addWidget( self.txtSearch )
         action.setVisible( True )
 
 
         self.webView.load( QUrl( base + web + "&uname=" + user.user + "&hash=" + user.hash ) )
-        self.connect( self.txtSearch, SIGNAL( "textEdited(QString)" ), self.search )
+        self.txtSearch.textEdited[str].connect(self.search)
 
     @pyqtSignature( "" )
     def on_actionPrint_activated( self ):
@@ -37,6 +38,7 @@ class frmReportes( QMainWindow, Ui_frmReportes ):
         printer = QPrinter( QPrinter.HighResolution )
         printer.setPaperSize(QPrinter.Letter)
         printer.setPageMargins(0,0,0,0, QPrinter.Inch)
+        printer.setOrientation(self.orientation)
         printdialog = QPrintDialog( printer, self )
         printdialog.setWindowTitle( "Imprimir" )
         if printdialog.exec_() != QDialog.Accepted:
