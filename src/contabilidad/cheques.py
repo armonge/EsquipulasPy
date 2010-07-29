@@ -372,7 +372,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                 n = "1"
             self.lblncheque.setText( n )
             
-    
             self.editmodel.printedDocumentNumber = n
             self.txtobservaciones.setPlainText( "" )
             self.editmodel.uid = self.user.uid 

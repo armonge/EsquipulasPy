@@ -351,8 +351,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 query = QSqlQuery( """
                     CALL spConsecutivo(5,NULL);
                 """ )
-    
-                query.exec_()
+                if not query.exec_():
+                    raise Exception("No se pudo obtener el numero de la factura")
                 query.first()    
                 n = query.value( 0 ).toString()
 

@@ -91,6 +91,7 @@ class ChequeModel( AccountsSelectorModel ):
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado, observacion,total,idtipocambio,idconcepto) 
             VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total,:idtc,:concepto)
             """ )
+            
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
@@ -174,9 +175,9 @@ class ChequeModel( AccountsSelectorModel ):
                 raise Exception( "el costo Retencion  NO SE INSERTO" )
     
     
+            
     #INSERTAR LAS CUENTAS CONTABLES
             for lineid, line in enumerate( self.lines ):
-    
                 if line.valid:
                     line.save( insertedId, lineid + 1 )
     
