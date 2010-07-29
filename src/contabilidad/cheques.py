@@ -266,6 +266,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             self.tabledetails.setModel( self.editmodel )
             
     #            Rellenar el combobox de las retenciones
+#FIXME: Los tipos de costo no son los que deberian
+#FIXME: Utilizar el modulo de constantes    
             self.retencionModel = QSqlQueryModel()
             self.retencionModel.setQuery( """             
                     SELECT

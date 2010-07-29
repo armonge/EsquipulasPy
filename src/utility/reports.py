@@ -36,7 +36,7 @@ class frmReportes( QMainWindow, Ui_frmReportes ):
         """
         printer = QPrinter( QPrinter.HighResolution )
         printer.setPaperSize(QPrinter.Letter)
-        printer.setPageMargins(0,0,0,0, QPrinter.Point)
+        printer.setPageMargins(0,0,0,0, QPrinter.Inch)
         printdialog = QPrintDialog( printer, self )
         printdialog.setWindowTitle( "Imprimir" )
         if printdialog.exec_() != QDialog.Accepted:

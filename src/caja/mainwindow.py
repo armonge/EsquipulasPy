@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 # -*- coding: utf-8 -*-
 
@@ -40,7 +41,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         
         DatosSesion = namedtuple('DatosSesion','userId sesionId tipoCambioId tipoCambioOficial tiposCambioBanco fecha')
         
-        self.datosSesion = DatosSesion(1,1,28,Decimal('21.4138'),Decimal('21.50'),QDate.currentDate()) 
+        self.datosSesion = DatosSesion(1,1,243,Decimal('21.4138'),Decimal('21.50'),QDate.currentDate())
         
 
 #        self.date =None

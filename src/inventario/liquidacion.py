@@ -412,7 +412,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             line.name = "INV Inventario de Bodega"
             
             self.editmodel.accountsModel.lines[0] = line
-
+            self.dtPicker.setMaximumDateTime(QDateTime.currentDateTime())
             self.dtPicker.setDateTime(QDateTime.currentDateTime() )
 
             self.tabletotals.setModel( self.editmodel.totalsModel )
