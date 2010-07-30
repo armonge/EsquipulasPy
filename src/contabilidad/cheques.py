@@ -6,7 +6,7 @@ Created on 03/07/2010
 '''
 from utility.base import Base
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase,QSqlQuery
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, SIGNAL, QModelIndex, QTimer
+from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, SIGNAL, QModelIndex, QTimer,QSize
 from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox
 from decimal import Decimal, InvalidOperation
 import functools
@@ -17,7 +17,7 @@ from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorL
 from utility.widgets.searchpanel import SearchPanel
 IDDOCUMENTO,NCHEQUE,NOMBRE,FECHA,CONCEPTO,USUARIO,TOTAL,OBSERVACIONES,ANULADO,OBSERVACIONESRETENCION,NRETENCION,TASARETENCION,TOTALRETENCION,TIPOCAMBIO,SUBTOTAL,IVA,CUENTABANCARIA=range(17)
 #accounts model
-IDDOC, IDCUENTA,DESCRIPCION, MONTO= range( 4 )
+IDDOC, IDCUENTA,CODIGO,DESCRIPCION, MONTO= range( 5 )
 class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
@@ -63,7 +63,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.connect( self.actionGoPrevious, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'previous' ) )
         self.connect( self.actionGoNext, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'next' ) )
         self.connect( self.actionGoLast, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'last' ) )
-
+        
         QTimer.singleShot( 0, self.loadModels )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -72,6 +72,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.accountsProxyModel.setFilterKeyColumn( IDDOCUMENTO )
         self.accountsProxyModel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
+
+
 
     def updateModels(self):
     #inicializando el documento
@@ -127,8 +129,9 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         SELECT
             c.iddocumento, 
             c.idcuenta,
-            cc.descripcion,
-            c.monto
+            cc.codigo as Codigo,
+            cc.descripcion as Nombre,
+            c.monto as Monto
         FROM cuentasxdocumento c 
         JOIN documentos d ON c.iddocumento = d.iddocumento
         JOIN cuentascontables cc ON cc.idcuenta = c.idcuenta
@@ -137,9 +140,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         """ )
 
         
-        self.tabledetails.setColumnHidden( IDCUENTA, True )
-        self.tabledetails.setColumnHidden( IDDOC, True )
-
         self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
         self.mapper.setModel( self.navproxymodel )
         self.mapper.addMapping( self.lblncheque, NCHEQUE,"text" )
@@ -157,7 +157,10 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         
         self.tablenavigation.setModel(self.navproxymodel)            
         self.tabledetails.setModel( self.accountsProxyModel )
-        
+
+        self.tabledetails.setColumnHidden( IDCUENTA, True )
+        self.tabledetails.setColumnHidden( IDDOC, True )
+
         
     def setControls( self, status ):
         """
@@ -195,7 +198,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     def on_cboretencion_currentIndexChanged( self, index ):
         if not self.editmodel is None:
             self.editmodel.retencionId = self.retencionModel.record( index ).value( "idcostoagregado" ).toInt()[0]
-            
+            if index>0:self.updateTotals()
             
     @pyqtSignature( "int" )
     def on_cbobeneficiario_currentIndexChanged( self, index ):
@@ -205,29 +208,32 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     @pyqtSignature( "double" )
     def on_subtotal_valueChanged(self,index):
         if not self.editmodel is None:
-            self.iva.setText(str(self.subtotal.value()*0.15))
-            self.editmodel.iva=self.iva.text()
-            self.total.setText(str(self.subtotal.value()+self.subtotal.value()*0.15))                   
+            self.updateTotals()
             
-            if self.subtotal.value()>1000:
-                self.retencion.setText(str(Decimal(self.subtotal.text())*Decimal(self.cboretencion.currentText())/Decimal("100")))
-                self.total.setText( str( Decimal(self.subtotal.text())+Decimal(self.subtotal.text())*Decimal("0.15") - Decimal(self.retencion.text())) )
-            else:            
-                self.retencion.setText("0.0000")
-            
-            self.editmodel.total=Decimal(self.total.text())
-            self.editmodel.retencionNumero=Decimal(self.retencion.text())
-            
-            self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.total)    
+    def updateTotals(self): 
+        self.iva.setText(str(self.subtotal.value()*0.15))
+        self.editmodel.iva=self.iva.text()                   
+        if self.subtotal.value()>1000:
+            self.retencion.setText(str(Decimal(str(self.subtotal.value()))*Decimal(self.cboretencion.currentText())/Decimal("100")))
+            self.total.setText(str(Decimal(str(self.subtotal.value()))+ Decimal(str(self.subtotal.value()))*Decimal("0.15") -Decimal(self.retencion.text()) ))
+        else:            
+            self.retencion.setText("0.0000")
+            self.total.setText(str(Decimal(str(self.subtotal.value()))+Decimal(str(self.subtotal.value()))*Decimal("0.15")))
+        
+        self.editmodel.total=Decimal(self.total.text())
+        self.editmodel.retencionNumero=Decimal(self.retencion.text())        
+        self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.total)   
     @pyqtSignature( "" )
     def on_actionCancel_activated( self ):
         """
         Aca se cancela la edicion del documento
         """
         self.editmodel = None
-        self.tablenavigation.setModel( self.navproxymodel )
+        self.tablenavigation.setModel( self.navproxymodel )        
         
-        self.updateModels()
+        self.tabledetails.setModel(self.accountsProxyModel)
+        self.tabledetails.setColumnHidden(IDCUENTA,True)
+        
         self.conceptowidget.setCurrentIndex(0)
         self.retencionwidget.setCurrentIndex(0)
         self.beneficiariowidget.setCurrentIndex(0)
@@ -238,7 +244,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.retencion.setText("")
         
         self.status = True               
-
 
     def on_actionNew_activated( self ):
         """
@@ -261,9 +266,14 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             
             self.editmodel = ChequeModel()
     #        Crea un edit delegate para las cuentas
-            self.accountseditdelegate=ChequesFiltroDelegate(QSqlQuery("SELECT idcuenta, codigo, descripcion FROM cuentascontables c WHERE idcuenta!=1 and codigo!=''"))    
+            self.accountseditdelegate=ChequesFiltroDelegate(QSqlQuery("""SELECT c.idcuenta, c.codigo, c.descripcion 
+            FROM cuentascontables c 
+            JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
+            WHERE c.padre != 1 AND c.idcuenta != 22
+            """))    
             self.tabledetails.setItemDelegate( self.accountseditdelegate )
             self.tabledetails.setModel( self.editmodel )
+
             
     #            Rellenar el combobox de las retenciones
 #FIXME: Los tipos de costo no son los que deberian
@@ -274,8 +284,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                         idcostoagregado, 
                         FORMAT(valorcosto,0) as tasa 
                     FROM costosagregados 
-                    WHERE 
-                    (idtipocosto=1 OR idtipocosto = 2) AND 
+                    WHERE idtipocosto IN (8,10) AND 
                     activo=1 
                     ORDER BY valorcosto desc; 
                     """ )
@@ -451,7 +460,7 @@ class ChequesFiltroDelegate(AccountsSelectorDelegate):
     
     def setModelData( self, editor, model, index ):
 
-        if index.column() in ( DESCRIPCION, IDCUENTA ):
+        if index.column() in ( 1, 2 ):
             model.setData( index, [
                                    self.accounts.index( editor.currentIndex(), 0 ).data(),
                                    self.accounts.index( editor.currentIndex(), 1 ).data(),
@@ -467,7 +476,7 @@ class ChequesFiltroDelegate(AccountsSelectorDelegate):
 
     def createEditor( self, parent, option, index ):
         
-        if index.column() in ( IDCUENTA, DESCRIPCION ):
+        if index.column() in ( 1, 2):
             if index.data() != "":
                 self.__accounts.items.append( [
                                          index.model().lines[index.row()].itemId,
