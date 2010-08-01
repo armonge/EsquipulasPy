@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from PyQt4.QtGui import QMainWindow, QPrinter, QPrintDialog, QDialog, QLineEdit
 from PyQt4.QtWebKit import QWebPage
-from PyQt4.QtCore import pyqtSignature, QUrl, SIGNAL, QSettings
+from PyQt4.QtCore import pyqtSignature, QUrl, QSettings
 
 from Ui_reports import Ui_frmReportes
 
@@ -41,11 +41,9 @@ class frmReportes( QMainWindow, Ui_frmReportes ):
         printer.setOrientation(self.orientation)
         printdialog = QPrintDialog( printer, self )
         printdialog.setWindowTitle( "Imprimir" )
-        if printdialog.exec_() != QDialog.Accepted:
-            return
-        
-        printer.setDocName( "Reporte" )
-        self.webView.print_( printer )
+        if printdialog.exec_() == QDialog.Accepted:
+            printer.setDocName( "Reporte" )
+            self.webView.print_( printer )
 
     def search( self, text ):
         """
