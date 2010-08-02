@@ -11,13 +11,11 @@ from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from ui.Ui_liquidacion import Ui_frmLiquidacion
 
 import utility.constantes
-from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
 from utility.base import Base
 from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorLine
 from document.liquidacion.liquidacionmodel import LiquidacionModel
 from document.liquidacion.liquidaciondelegate import LiquidacionDelegate
-from caja.factura import CANTIDAD
 
 
 #navigation model
@@ -310,8 +308,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
     @pyqtSlot(  )
     def on_actionPreview_activated( self ):
+        
         report = frmReportes( "liquidaciones.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.user, self , QPrinter.Landscape)
-        report.show()
+        report.exec_()
 
     @pyqtSlot(  )
     def on_actionNew_activated( self ):
@@ -323,7 +322,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 if not QSqlDatabase.database().open():
                     raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
             
-            query = QSqlQuery( "SELECT idtc, tasa FROM tiposcambio LIMIT 1" )
+            query = QSqlQuery( "SELECT idtc FROM tiposcambio LIMIT 1" )
             
             if not query.first():
                 raise UserWarning( u"No existen tipos de cambio en la base de datos" )

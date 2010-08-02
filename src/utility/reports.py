@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtGui import QMainWindow, QPrinter, QPrintDialog, QDialog, QLineEdit
-from PyQt4.QtWebKit import QWebPage
-from PyQt4.QtCore import pyqtSignature, QUrl, QSettings
+from PyQt4.QtGui import  QPrinter, QPrintPreviewDialog,  QLineEdit, QMessageBox
+from PyQt4.QtWebKit import QWebPage, QWebView
+from PyQt4.QtCore import pyqtSlot, QUrl, QSettings, SIGNAL
 
 from Ui_reports import Ui_frmReportes
 
-class frmReportes( QMainWindow, Ui_frmReportes ):
+class frmReportes( QPrintPreviewDialog ):
     """
     Este es un formulario generico que muestra los reportes web generados para las 
     """
@@ -14,46 +14,28 @@ class frmReportes( QMainWindow, Ui_frmReportes ):
         @param user: El objeto usuario asociado con esta sesión
         @param web: La dirección web a la que apunta el reporte
         """
-        QMainWindow.__init__( self, parent )
-
-        self.setupUi( self )
+        super(frmReportes, self).__init__( parent )
+        self.webview = QWebView()
 
         settings = QSettings()
         base = settings.value( "Reports/base" ).toString()
 
         self.orientation = orientation
         self.txtSearch = QLineEdit()
-        action = self.toolBar.addWidget( self.txtSearch )
-        action.setVisible( True )
 
 
-        self.webView.load( QUrl( base + web + "&uname=" + user.user + "&hash=" + user.hash ) )
-        self.txtSearch.textEdited[str].connect(self.search)
+        self.webview.load( QUrl( base + web + "&uname=" + user.user + "&hash=" + user.hash ) )
+        
+        
+        self.paintRequested[QPrinter].connect(self.webview.print_)
+        self.webview.loadFinished[bool].connect(self.on_webview_loadFinished)
 
-    @pyqtSignature( "" )
-    def on_actionPrint_activated( self ):
-        """
-        Imprimir el reporte
-        """
-        printer = QPrinter( QPrinter.HighResolution )
-        printer.setPaperSize(QPrinter.Letter)
-        printer.setPageMargins(0,0,0,0, QPrinter.Inch)
-        printer.setOrientation(self.orientation)
-        printdialog = QPrintDialog( printer, self )
-        printdialog.setWindowTitle( "Imprimir" )
-        if printdialog.exec_() == QDialog.Accepted:
-            printer.setDocName( "Reporte" )
-            self.webView.print_( printer )
-
-    def search( self, text ):
-        """
-        Buscar en el contenido del reporte
-        @param text:  el texto a buscar
-        """
-        self.webView.findText( text, QWebPage.HighlightAllOccurrences )
-
-    @pyqtSignature( "int" )
-    def on_verticalSlider_valueChanged( self, value ):
-        self.webView.setZoomFactor( value * 0.2 )
-
-
+        
+        
+    def on_webview_loadFinished(self, status):
+        if not status:
+            QMessageBox.critical(self, "Llantera Esquipulas", "El reporte no se pudo cargar")
+            return 
+        self.emit(SIGNAL("paintRequested"), QPrinter())
+    
+    
