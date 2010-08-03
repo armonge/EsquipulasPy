@@ -1,7 +1,7 @@
 '''
 Created on 18/05/2010
 
-@author: armonge
+@author: Luis Carlos Mejia Garcia
 '''
 from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery

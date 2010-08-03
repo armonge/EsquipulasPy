@@ -1,8 +1,7 @@
 '''
 Created on 18/05/2010
 
-@author: armongeno, no me contrataron
- y vos como vas con tu pegue
+@author: Luis Carlos Mejia Garcia
 
 '''
 from decimal import Decimal
