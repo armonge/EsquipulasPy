@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\recibo.ui'
 #
-# Created: Thu Jul 29 00:44:24 2010
+# Created: Mon Aug 02 21:38:49 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -216,6 +216,7 @@ class Ui_frmRecibo(object):
         self.txttasaret.setSizePolicy(sizePolicy)
         self.txttasaret.setMinimumSize(QtCore.QSize(0, 20))
         self.txttasaret.setStyleSheet("None")
+        self.txttasaret.setText("")
         self.txttasaret.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.txttasaret.setDragEnabled(True)
         self.txttasaret.setReadOnly(True)
@@ -371,6 +372,11 @@ class Ui_frmRecibo(object):
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.txtobservaciones = QtGui.QPlainTextEdit(self.tabdetails)
         self.txtobservaciones.setEnabled(True)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.txtobservaciones.sizePolicy().hasHeightForWidth())
+        self.txtobservaciones.setSizePolicy(sizePolicy)
         self.txtobservaciones.setMaximumSize(QtCore.QSize(16777215, 50))
         self.txtobservaciones.setReadOnly(True)
         self.txtobservaciones.setObjectName("txtobservaciones")
@@ -381,6 +387,11 @@ class Ui_frmRecibo(object):
         self.label_3.setObjectName("label_3")
         self.gridLayout_3.addWidget(self.label_3, 0, 0, 1, 1)
         self.lbltotal = QtGui.QLabel(self.tabdetails)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lbltotal.sizePolicy().hasHeightForWidth())
+        self.lbltotal.setSizePolicy(sizePolicy)
         self.lbltotal.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.lbltotal.setObjectName("lbltotal")
         self.gridLayout_3.addWidget(self.lbltotal, 0, 1, 1, 1)
@@ -395,7 +406,7 @@ class Ui_frmRecibo(object):
         self.gridLayout_3.addWidget(self.label_19, 1, 0, 1, 1)
         self.lbltotalreten = QtGui.QLabel(self.tabdetails)
         self.lbltotalreten.setEnabled(True)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lbltotalreten.sizePolicy().hasHeightForWidth())
@@ -559,7 +570,6 @@ class Ui_frmRecibo(object):
         self.label_6.setText(QtGui.QApplication.translate("frmRecibo", "En concepto de:", None, QtGui.QApplication.UnicodeUTF8))
         self.ckretener.setText(QtGui.QApplication.translate("frmRecibo", "Retener", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("frmRecibo", "%", None, QtGui.QApplication.UnicodeUTF8))
-        self.txttasaret.setText(QtGui.QApplication.translate("frmRecibo", "2", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("frmRecibo", "%", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("frmRecibo", "Detalle de Abono a Facturas", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_3.setTitle(QtGui.QApplication.translate("frmRecibo", "Especifique los tipos de pagos", None, QtGui.QApplication.UnicodeUTF8))

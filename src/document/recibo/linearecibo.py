@@ -13,6 +13,7 @@ class LineaRecibo:
         self.nref = ""
         self.montoDolar = Decimal( 0 )
         self.monto = Decimal(0)
+        self.simboloMoneda =""
 #        self.tasa = Decimal( 0 )
 
 

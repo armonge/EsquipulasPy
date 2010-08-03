@@ -19,9 +19,11 @@ class ReciboDelegate(QStyledItemDelegate):
         SELECT 
             idtipopago,
             CONCAT(descripcion, ' ' , moneda) as tipopago,
-            idtipomoneda        
+            idtipomoneda,
+            m.simbolo
             FROM tiposmoneda m
         JOIN tipospago p
+        
         ;
         """) 
         self.prods = SingleSelectionModel()
@@ -30,7 +32,8 @@ class ReciboDelegate(QStyledItemDelegate):
             self.prods.items.append([
                 query.value(0).toInt()[0],
                 query.value(1).toString(),
-                query.value(2).toInt()[0]
+                query.value(2).toInt()[0],
+                query.value(3).toString()
                                     ])
 
 
@@ -50,7 +53,8 @@ class ReciboDelegate(QStyledItemDelegate):
             if index.data() != "":
                 self.prods.items.append([tabla.index( index.row(),0 ).data().toInt()[0]  ,
                                         index.data().toString(),
-                                        tabla.index( index.row(),2 ).data().toInt()[0]
+                                        tabla.index( index.row(),2 ).data().toInt()[0],
+                                        tabla.index(index.row(),3).data().toString()
                                          ])
 
             
@@ -99,7 +103,8 @@ class ReciboDelegate(QStyledItemDelegate):
                     model.setData(index,  [
                                            self.prods.items[editor.currentIndex()][0],  
                                            self.prods.items[editor.currentIndex()][1],
-                                           self.prods.items[editor.currentIndex()][2]
+                                           self.prods.items[editor.currentIndex()][2],
+                                           self.prods.items[editor.currentIndex()][3]
                     ])
                     del self.prods.items[editor.currentIndex()]
                 except IndexError as inst:

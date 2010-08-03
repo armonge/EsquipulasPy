@@ -11,11 +11,12 @@ from linearecibo import LineaRecibo
 from decimal import  Decimal
 from PyQt4.QtCore import QAbstractTableModel, Qt,SIGNAL
 
-IDPAGO, DESCRIPCION, REFERENCIA, MONTO, IDMONEDA = range( 5 )
+IDPAGO, DESCRIPCION, REFERENCIA, MONTO, MONTODOLAR, IDMONEDA = range( 6 )
 class ReciboModel( AccountsSelectorModel ):
     def __init__( self , tipocambio):
         AccountsSelectorModel.__init__( self )
         self.total =Decimal(0) 
+        self.tipoCambio = tipocambio
         
     def asignarTotal(self,valor):     
         self.total = valor
@@ -28,7 +29,7 @@ class ReciboModel( AccountsSelectorModel ):
                 self.setData(self.index(nfilas-1,MONTO),valor)
         
     def columnCount( self, index = QModelIndex() ):
-        return 5
+        return 6
 
     def flags( self, index ):
         if not index.isValid():
@@ -48,7 +49,7 @@ class ReciboModel( AccountsSelectorModel ):
     
     @property
     def currentSum( self ):
-        currentsum = sum( [line.monto for line in  self.lines if line.valid ] )
+        currentsum = sum( [line.montoDolar for line in  self.lines if line.valid ] )
         return currentsum if currentsum != 0 else Decimal( 0 )     
 #        else:
 #            
@@ -69,13 +70,17 @@ class ReciboModel( AccountsSelectorModel ):
             elif column == REFERENCIA:
                 return line.nref
             elif column == MONTO:
-                return moneyfmt( Decimal( line.monto ), 4, "US$" ) if line.monto != 0 else ""
+                return moneyfmt( Decimal( line.monto ), 4, line.simboloMoneda ) if line.monto != 0 else ""
+            elif column == MONTODOLAR:
+                return moneyfmt( Decimal( line.montoDolar ), 4, "US$" ) if line.montoDolar != 0 else ""
 #            elif column == MONEDA:
 #                return line.itemDescription
         elif role == Qt.EditRole:
 #            Esto es lo que recibe el delegate cuando va a mostrar la el widget 
             if column == MONTO:
                 return line.monto
+            elif column == MONTODOLAR:
+                return line.montoDolar
 
     def setData( self, index, value, role = Qt.EditRole ):
         if  not index.isValid():
@@ -84,39 +89,45 @@ class ReciboModel( AccountsSelectorModel ):
         line = self.lines[index.row()]
         column = index.column()
         if column== DESCRIPCION:
+            line.monedaId = value[2]
+            
+            line.montoDolar = line.monto / self.tipoCambio if line.monedaId ==1 else line.monto    
             line.pagoId = value[0]
             line.pagoDescripcion = value[1]
-            line.monedaId = value[2]
+
+            line.simboloMoneda = value[3]
+
         elif column == MONTO:
-            valor = value.toString() if type(value)!= Decimal else value
-            line.monto = Decimal( valor if valor!="" else 0 )
+            if type(value) != Decimal:
+                value = Decimal(value.toString())
+         
+            line.monto = value
+            line.montoDolar =  line.monto / self.tipoCambio if line.monedaId ==1 else line.monto   
+#            
+#            if line.monedaId == 1:
+#                line.montoDolar = value / self.tipoCambio 
+#            else:
+#                line.montoDolar =value
+#                
             suma = self.currentSum
             suma =  self.total - suma
             ultimaFila = len(self.lines)-1 
             if  suma !=0:
-                if line.valid:
-                    ultimaFila+=1
-                    self.insertRow(ultimaFila)
-#                    self.linew[ultimaFila].monto+=suma
-                self.lines[ultimaFila].montoDolar=suma
+#                if line.valid:
+#                    ultimaFila+=1
+#                    self.insertRow(ultimaFila)
+##                    self.linew[ultimaFila].monto+=suma
+#                
+                self.lines[ultimaFila].montoDolar+=suma
+#            line.monto = value
+#            if line.monedaId == 1:
+#                line.montoDolar =self.tipoCambio * suma 
 #            else:
-#                self.removeRows(ultimaFila, 1 )
-#                self.lines[ultimaFila-1].monto+=suma
-                
-                
-#                    
-#                    
+#                line.montoDolar =suma
+##            else:
+##                self.removeRows(ultimaFila, 1 )
+#            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
 #            
-#        if not self.valid and self.lines[-1].valid:
-#                self.insertRow( len( self.lines ) )
-#            elif not self.valid and not self.lines[-1].valid:
-#                self.lines[-1].amount = self.currentSum * -1
-#            elif self.valid and not self.lines[-1].valid:
-#                if len( self.lines ) > 1:
-#                    self.removeRows( len( self.lines ) - 1, 1 )
-
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
-            
             return True
         return False
 
@@ -131,9 +142,11 @@ class ReciboModel( AccountsSelectorModel ):
             if  section == DESCRIPCION:
                 return u"Descripción"
             elif section == MONTO:
-                return "MONTO"
+                return "Monto"
+            elif section == MONTODOLAR:
+                return u"Monto US$"
             elif section == REFERENCIA:
-                return "REFERENCIA"
+                return "Referencia"
         return int( section + 1 )
 
 

@@ -28,10 +28,9 @@ from utility.constantes import IDRECIBO,IDRETENCION
 IDDOCUMENTO, NDOCIMPRESO, OBSERVACION, TOTAL, FECHA, CONCEPTO, CLIENTE, NRETENCION, TASARETENCION, TOTALRETENCION, OBSERVACIONRET, CONRETENCION = range( 12 )
 
 #table
-IDDOCUMENTOT, DESCRIPCION, REFERENCIA, MONTO = range( 4 )
+IDDOCUMENTOT, DESCRIPCION, REFERENCIA, MONTO,MONTODOLAR,IDMONEDA = range( 6 )
 IDPAGO=0
 TOTALFAC=3
-IDMONEDA=4
 IDRECIBODOC, NFAC, ABONO = range( 3 )
 class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
     """
@@ -54,7 +53,6 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.frbotones.setVisible( False )
         self.actionSave.setVisible( False )
         self.actionCancel.setVisible( False )
-
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #        El modelo principal
@@ -296,7 +294,9 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.editmodel.asignarTotal(self.abonoeditmodel.total)
          
         self.lbltotal.setText( moneyfmt( self.abonoeditmodel.total, 4, "US$" ) )
-        self.lbltotalreten.setText( moneyfmt( self.datosRecibo.getRetencion, 4, "US$" ) )
+        ret=self.datosRecibo.getRetencion
+        self.lbltotalreten.setText( moneyfmt( ret, 4, "US$" ) )
+        self.lbltotalrecibo.setText( moneyfmt( self.abonoeditmodel.total - ret, 4, "US$" ) )
         self.tabledetails.resizeColumnsToContents()
 
     def removeLine( self ):
@@ -424,6 +424,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             
             self.datosRecibo = DatosRecibo(self.parentWindow.datosSesion)
             self.datosRecibo.cargarRetenciones(self.cbtasaret)
+            
             if self.datosRecibo.retencionModel.rowCount()==0:
                 QMessageBox.warning( None, "Recibo", u"No existe ninguna tasa de retención. Por favor contacte al administrador del sistema" )
                 return ""
@@ -432,13 +433,13 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 # Asigno el modelo del recibo
 
 
-            self.datosRecibo.cargarNumeros(self.lblnrec,self.lblnreten)
+            self.datosRecibo.cargarNumeros(self)
             
             self.tablefacturas.setSelectionMode(QAbstractItemView.SingleSelection)
             self.tablefacturas.setSelectionBehavior(QAbstractItemView.SelectRows)
-            self.tabledetails.setModel( self.editmodel )
             self.tableabonos.setModel( self.abonoeditmodel )
             self.tableabonos.setColumnHidden(IDDOCUMENTO,True)
+            self.tabledetails.setModel( self.editmodel )
 
 # ASIGNO EL DELEGADO A LA TABLA DE LOS PAGO            
             delegate = ReciboDelegate()
@@ -518,7 +519,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.tableabonos.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
             self.tabWidget.setCurrentIndex( 0 )
-            self.lblnrec.setText( "" )
+
             self.dtPicker.setDate( self.parentWindow.datosSesion.fecha )
             self.cbcliente.setCurrentIndex(-1)
             self.swcliente.setCurrentIndex( 0 )
@@ -532,6 +533,10 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.tableabonos.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
+            
+        self.tabledetails.setColumnWidth(DESCRIPCION,250)
+        self.tabledetails.setColumnWidth(MONTO,80)
+            
 
     @pyqtSlot( "bool" )
     def on_btnadd_clicked( self, on ):
@@ -625,7 +630,13 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
         if index>-1:
             self.datosRecibo.tasaRetencionCambio(self,index)
+        else:
+            self.datosRecibo.retencionId
 
+    @pyqtSlot( "QDateTime" )
+    def on_dtPicker_dateTimeChanged( self, datetime ):
+        pass
+    
 class dlgRecibo(Ui_dlgRecibo,QDialog):
     def __init__( self,factura,readOnly=False):
         super( dlgRecibo, self ).__init__( factura )
@@ -699,7 +710,6 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             self.tabledetails.setColumnWidth(DESCRIPCION,200)
             
             self.tabledetails.setItemDelegate(delegado)
-            self.swtasaret.setCurrentIndex( 0 )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
      
     
@@ -935,7 +945,7 @@ class DatosRecibo(object):
             self.retencionModel.setQuery( """
                     SELECT 
                         idcostoagregado, 
-                        FORMAT(valorcosto,0) as tasa 
+                        FORMAT(valorcosto,0) as tasa
                     FROM costosagregados 
                     WHERE 
                     (idtipocosto=10 OR idtipocosto = 8) AND 
@@ -946,45 +956,36 @@ class DatosRecibo(object):
             cbtasaret.setModel( self.retencionModel )
             cbtasaret.setModelColumn( 1 )
 
-    def cargarNumeros(self,lblnrec,lblnreten):
+    def cargarNumeros(self,recibo):
 #            Cargar el numero de el Recibo actual
         idrec= str(IDRECIBO)
         idret = str(IDRETENCION)
-        query = QSqlQuery( "SELECT " + 
-                           " MAX(IF(idtipodoc=" + idrec + ",CAST(ndocimpreso AS SIGNED),0))+1 as reciboNumber," +
-                           " MAX(IF(idtipodoc=" + idret + ",CAST(ndocimpreso AS SIGNED),0))+1 as retencionNumber FROM documentos d" + 
-                           " WHERE idtipodoc IN (" + idrec + "," + idret + ");" )
+        query = QSqlQuery( "CALL spConsecutivo(" + idrec +",null)")
         if not query.exec_():
             print( query.lastError().text() )
         query.first()
         n = query.value( 0 ).toString()
-        if n == "0" :
-            n = "1"
-        lblnrec.setText( n )
+        print n
+        recibo.lblnrec.setText( n )
         self.printedDocumentNumber = n
-        
-        n = query.value( 1 ).toString()
-        if n == "0" :
-            n = "1"
-        lblnreten.setText( n )        
-        self.retencionNumeroImpreso = n
-        
+
+        query = QSqlQuery( "CALL spConsecutivo(" + idret +",null)")
+        if not query.exec_():
+            print( query.lastError().text() )
+        query.first()
+        n = query.value( 0 ).toString()
+        recibo.lblnreten.setText( n )        
+        self.retencionNumeroImpreso = n                
+                
 
     def tasaRetencionCambio(self,recibo,index):
-        self.retencionId = self.retencionModel.record(index).value( "idcostoagregado" ).toInt()[0]    
+        self.retencionId = self.retencionModel.record(index).value( "idcostoagregado" ).toInt()[0]
         value =self.retencionModel.record( index ).value( "tasa" ).toString()
         self.retencionTasa = Decimal( value if value!="" else 0 )
         recibo.updateLabels()
         
     def retencionAplicada(self,recibo,on):
-#        recibo.txtobservaciones.setEnabled( on )
-#        self.lbltotalreten.setVisible( on )
-#        self.lblnreten.setVisible( on )
-#        self.label_7.setVisible( on )
-#        self.label_19.setVisible( on )
-#        self.label_20.setVisible( on )
         recibo.cbtasaret.setCurrentIndex(-1)
-        recibo.txtobservaciones.setPlainText("")
         recibo.cbtasaret.setEnabled(on)
         self.aplicarRet = on    
         recibo.updateLabels()
@@ -1013,26 +1014,24 @@ class RODetailsModel( QSortFilterProxyModel ):
         super( QSortFilterProxyModel, self ).__init__()
 
     def columnCount( self, index = QModelIndex() ):
-        return 5
+        return 6
 
     def headerData( self, section, orientation, role = Qt.DisplayRole ):
         if role == Qt.TextAlignmentRole:
             if orientation == Qt.Horizontal:
-                return int( Qt.AlignLeft | Qt.AlignVCenter )
-            return int( Qt.AlignRight | Qt.AlignVCenter )
+                return Qt.AlignLeft | Qt.AlignVCenter
+            return Qt.AlignRight | Qt.AlignVCenter
         if role != Qt.DisplayRole:
             return None
         if orientation == Qt.Horizontal:
             if  section == DESCRIPCION:
                 return u"Descripción"
             elif section == MONTO:
-                return "MONTO"
-#            elif section == IDPAGO:
-#                return "PAGO"
+                return "Monto"
+            elif section == MONTODOLAR:
+                return u"Monto US$"
             elif section == REFERENCIA:
-                return "REFERENCIA"
-#            elif section == IDMONEDA:
-#                return "MONEDA"
+                return "Referencia"
         return int( section + 1 )
 
 
