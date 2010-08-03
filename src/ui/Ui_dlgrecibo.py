@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\dlgrecibo.ui'
 #
-# Created: Thu Jul 29 00:44:30 2010
+# Created: Sat Jul 31 15:15:34 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -87,16 +87,16 @@ class Ui_dlgRecibo(object):
         self.label.setSizePolicy(sizePolicy)
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
-        self.txtpersona = QtGui.QLineEdit(self.groupBox_4)
+        self.txtcliente = QtGui.QLineEdit(self.groupBox_4)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.txtpersona.sizePolicy().hasHeightForWidth())
-        self.txtpersona.setSizePolicy(sizePolicy)
-        self.txtpersona.setMinimumSize(QtCore.QSize(0, 20))
-        self.txtpersona.setReadOnly(True)
-        self.txtpersona.setObjectName("txtpersona")
-        self.gridLayout.addWidget(self.txtpersona, 1, 1, 1, 6)
+        sizePolicy.setHeightForWidth(self.txtcliente.sizePolicy().hasHeightForWidth())
+        self.txtcliente.setSizePolicy(sizePolicy)
+        self.txtcliente.setMinimumSize(QtCore.QSize(0, 20))
+        self.txtcliente.setReadOnly(True)
+        self.txtcliente.setObjectName("txtcliente")
+        self.gridLayout.addWidget(self.txtcliente, 1, 1, 1, 6)
         self.label_6 = QtGui.QLabel(self.groupBox_4)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)

@@ -13,8 +13,9 @@ class LineaAbono:
         self.nFac=""
         self.monto= Decimal(0)
         self.totalFac=0
-        self.nlinea=0
-        
+        self.saldo=Decimal(0)
+        self.nlinea=0   
+    
     def getPrice(self):    
         """
         el precio unitario del producto en esta linea

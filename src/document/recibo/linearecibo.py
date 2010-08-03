@@ -11,21 +11,9 @@ class LineaRecibo:
         self.monedaId = 0
         self.pagoDescripcion = ""
         self.nref = ""
-        self.monto = Decimal( 0 )
+        self.montoDolar = Decimal( 0 )
+        self.monto = Decimal(0)
 #        self.tasa = Decimal( 0 )
-
-
-    def getPrice( self ):
-        """
-        el precio unitario del producto en esta linea
-        """
-        return self.price
-    def setPrice( self, price ):
-        self.price = Decimal( price )
-        
-    itemPrice = property( getPrice, setPrice )
-
-
 
 
     @property
@@ -33,7 +21,7 @@ class LineaRecibo:
         """
         es esta linea valida
         """
-        if  int( self.pagoId ) != 0   and Decimal( self.monto ) > 0:
+        if  int( self.pagoId ) != 0   and Decimal( self.montoDolar ) > 0:
             if self.pagoId > 1 and self.nref == "":
                 return False
             return True
@@ -59,7 +47,7 @@ class LineaRecibo:
         query.bindValue( ":idpago", self.pagoId )
         query.bindValue( ":idmoneda", self.monedaId )
 
-        query.bindValue( ":monto", self.monto.to_eng_string() )
+        query.bindValue( ":monto", self.montoDolar.to_eng_string() )
         query.bindValue( ":ref", self.nref )
 
         if not query.exec_():

@@ -635,7 +635,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.uid != 0
         self.warehouseId != 0
         """
-        if int( self.editmodel.datosSesion.userId ) == 0: 
+        if int( self.editmodel.datosSesion.usuarioId ) == 0: 
             raise Exception("No existe el usuario")
         elif int( self.editmodel.clienteId ) == 0:
             QMessageBox.warning(None,"Factura Incompleta","Por favor elija el cliente")
@@ -663,7 +663,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 
                 if self.editmodel.escontado:
                     dialog = dlgRecibo(self)
-                    if self.editmodel.total() > 1000:
+                    if self.editmodel.total > 1000:
                         if dialog.datosRecibo.retencionModel.rowCount()==0:
                             QMessageBox.warning( None,
                                              "Llantera Esquipulas",
@@ -672,6 +672,9 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                                             QMessageBox.Ok ),
                                             QMessageBox.Ok )
                             return
+                    else:
+                        dialog.ckretener.setChecked(False)
+                        dialog.ckretener.setEnabled(False)
                     
                     if dialog.exec_():
                         print "OK"

@@ -30,6 +30,7 @@ IDDOCUMENTO, NDOCIMPRESO, OBSERVACION, TOTAL, FECHA, CONCEPTO, CLIENTE, NRETENCI
 #table
 IDDOCUMENTOT, DESCRIPCION, REFERENCIA, MONTO = range( 4 )
 IDPAGO=0
+TOTALFAC=3
 IDMONEDA=4
 IDRECIBODOC, NFAC, ABONO = range( 3 )
 class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
@@ -83,13 +84,13 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
 
 
-        #general events
-        self.connect( self.actionEditCell, SIGNAL( "triggered()" ), self.editCell )
-        self.connect( self.actionDeleteRow, SIGNAL( "triggered()" ), self.removeLine )
-        self.connect( self.actionGoFirst, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'first' ) )
-        self.connect( self.actionGoPrevious, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'previous' ) )
-        self.connect( self.actionGoNext, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'next' ) )
-        self.connect( self.actionGoLast, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'last' ) )
+#        #general events
+#        self.connect( self.actionEditCell, SIGNAL( "triggered()" ), self.editCell )
+#        self.connect( self.actionDeleteRow, SIGNAL( "triggered()" ), self.removeLine )
+#        self.connect( self.actionGoFirst, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'first' ) )
+#        self.connect( self.actionGoPrevious, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'previous' ) )
+#        self.connect( self.actionGoNext, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'next' ) )
+#        self.connect( self.actionGoLast, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'last' ) )
 
         QTimer.singleShot( 0, self.loadModels )
 
@@ -124,7 +125,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         Asignar las observaciones al objeto __document
         """
         if not self.editmodel is None:
-            self.editmodel.observacionesRet = self.txtobservaciones.toPlainText()
+            self.editmodel.observaciones = self.txtobservaciones.toPlainText()
 
 
 
@@ -235,8 +236,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.mapper.addMapping( self.lblnrec, NDOCIMPRESO , "text" )
             self.mapper.addMapping( self.lblnreten, NRETENCION , "text" )
 
-            self.mapper.addMapping( self.txtpersona, OBSERVACION )
-            self.mapper.addMapping( self.txtobservaciones, OBSERVACIONRET )
+            self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
             self.mapper.addMapping( self.dtPicker, FECHA )
             self.mapper.addMapping( self.txtcliente, CLIENTE, "text" )
             self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
@@ -289,8 +289,12 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 QSqlDatabase.database().close()
 
 
+    
 
     def updateLabels( self ):
+        
+        self.editmodel.asignarTotal(self.abonoeditmodel.total)
+         
         self.lbltotal.setText( moneyfmt( self.abonoeditmodel.total, 4, "US$" ) )
         self.lbltotalreten.setText( moneyfmt( self.datosRecibo.getRetencion, 4, "US$" ) )
         self.tabledetails.resizeColumnsToContents()
@@ -415,7 +419,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             completerconcepto.setModel( self.conceptosModel )
             completerconcepto.setCompletionColumn( 1 )
 
-            self.editmodel = ReciboModel()
+            self.editmodel = ReciboModel(self.parentWindow.datosSesion.tipoCambioBanco)
             self.abonoeditmodel = AbonoModel()
             
             self.datosRecibo = DatosRecibo(self.parentWindow.datosSesion)
@@ -430,8 +434,11 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
             self.datosRecibo.cargarNumeros(self.lblnrec,self.lblnreten)
             
+            self.tablefacturas.setSelectionMode(QAbstractItemView.SingleSelection)
+            self.tablefacturas.setSelectionBehavior(QAbstractItemView.SelectRows)
             self.tabledetails.setModel( self.editmodel )
             self.tableabonos.setModel( self.abonoeditmodel )
+            self.tableabonos.setColumnHidden(IDDOCUMENTO,True)
 
 # ASIGNO EL DELEGADO A LA TABLA DE LOS PAGO            
             delegate = ReciboDelegate()
@@ -439,20 +446,19 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 # ASIGNO EL DELEGADO A LA TABLA DE LOS ABONOS
             delegado = AbonoDelegate()
             self.tableabonos.setItemDelegate( delegado )
-            self.addLine()
-            
-#            self.abonoeditmodel.insertRows(1)
-            self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
-            self.connect( self.abonoeditmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+#            self.addLine()
             
             
             self.status = False
             self.frbotones.setVisible( True )
             self.updateFacturasFilter()
+            
+            self.connect( self.abonoeditmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
 
         if QSqlDatabase.database().isOpen():
             QSqlDatabase.database().close()
 
+        
 
 
 
@@ -493,7 +499,6 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         @param status false = editando        true = navegando
         """
         self.dtPicker.setReadOnly( True )
-        self.txtpersona.setReadOnly( status )
         self.ckretener.setEnabled( ( not status ) )
         self.txtobservaciones.setReadOnly( status )
         self.actionSave.setVisible( not status )
@@ -514,9 +519,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         else:
             self.tabWidget.setCurrentIndex( 0 )
             self.lblnrec.setText( "" )
-            self.txtpersona.setText( "" )
             self.dtPicker.setDate( self.parentWindow.datosSesion.fecha )
-
+            self.cbcliente.setCurrentIndex(-1)
             self.swcliente.setCurrentIndex( 0 )
             self.swconcepto.setCurrentIndex( 0 )
             self.swtasaret.setCurrentIndex( 0 )
@@ -524,7 +528,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             
             self.lbltotalreten.setText( "0.00" )
             self.lbltotal.setText( "$0.00" )
-            self.txtpersona.setFocus()
+            self.cbcliente.setFocus()
 
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.tableabonos.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
@@ -585,11 +589,11 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         if  rows > 0:
             self.abonoeditmodel.removeRows( 0, self.tablefacturas, rows )
             self.updateLabels()
-
-    @pyqtSlot(  )
-    def on_txtpersona_editingFinished( self ):
-        if not  self.__status:
-            self.datos.observaciones = self.txtpersona.text()
+#
+#    @pyqtSlot(  )
+#    def on_txtpersona_editingFinished( self ):
+#        if not  self.__status:
+#            self.datos.observaciones = self.txtpersona.text()
 
 
     @pyqtSlot( "int" )
@@ -598,12 +602,11 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         asignar proveedor al objeto self.editmodel
         """
         if not self.editmodel is None:
-
-            self.datos.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0] if index != -1 else - 1
+            self.datosRecibo.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0] if index != -1 else - 1
             self.tableabonos.setEnabled( index != -1 )
             self.frbotones.setEnabled( index != -1 )
             self.abonoeditmodel.removeRows( 0, self.tablefacturas, self.abonoeditmodel.rowCount() )
-            self.abonoeditmodel.idcliente = self.editmodel.clienteId
+            self.abonoeditmodel.idcliente = self.datosRecibo.clienteId
             self.updateFacturasFilter()
             self.updateLabels()
 
@@ -613,7 +616,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         asignar la concepto al objeto self.editmodel
         """
         if not self.editmodel is None:
-            self.datos.conceptoId = self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
+            self.datosRecibo.conceptoId = self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
 
     @pyqtSlot( "int" )
     def on_cbtasaret_currentIndexChanged( self, index ):
@@ -628,27 +631,28 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         super( dlgRecibo, self ).__init__( factura )
         self.editModel=None
         self.setupUi( self )
-        self.readOnly=readOnly
-        
+        self.readOnly=readOnly        
         self.lbltotal.setText(factura.lblsubtotal.text())
-        if not readOnly:
-            self.totalFactura = factura.editmodel.total
+        self.txtcliente.setText(factura.cbcliente.currentText())
+        self.setControls(False,factura)
+        self.connect( self.buttonBox, SIGNAL( "accepted()" ), self.aceptar )
     
-        self.txtpersona.setText(factura.cbcliente.currentText())
-        self.setControls(False)
-                    
+    def aceptar(self):
+#        if self.datosRecibo.valid():
+            return self.accept()              
 #        self.setWindowFlags(Qt.WindowTitleHint | Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)
     def save(self):
+        self.datosRecibo.observaciones = self.txtobservaciones.toPlainText()
         self.datosRecibo.lines = self.editModel.lines
         linea = LineaAbono()
         self.datosRecibo.lineasAbonos.append()
         self.datosRecibo.save()
         
-    def setControls( self, status ):
+    def setControls( self, status,factura ):
         """
         @param status false = editando        true = navegando
         """
-        self.txtpersona.setReadOnly( status )
+        self.txtcliente.setReadOnly( status )
         self.ckretener.setEnabled(not status)
         self.txtobservaciones.setReadOnly( status )
         self.readOnly=status
@@ -657,7 +661,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
 #            self.lblnrec.setText( "" )
-            self.editModel = ReciboModel()
+            self.editModel = ReciboModel(self.datosRecibo.datosSesion.tipoCambioBanco)
             
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
@@ -670,7 +674,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
                     QMessageBox.Ok ),
                 QMessageBox.Ok )
             else:        
-                self.datosRecibo = DatosRecibo(1)
+                self.datosRecibo = DatosRecibo(factura.editmodel.datosSesion)
                 self.datosRecibo.cargarNumeros(self.lblnrec, self.lblnreten)
                 self.datosRecibo.cargarRetenciones(self.cbtasaret)
                 delegado = ReciboDelegate()    
@@ -685,7 +689,9 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             linea.monedaId = 0
             linea.pagoDescripcion = ""
             linea.nref = ""
-            linea.monto = self.totalFactura
+            linea.monto = factura.editmodel.total
+            index= self.editModel.index(0,MONTO)
+            self.editModel.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
             
             self.tabledetails.setModel(self.editModel)
             self.tabledetails.setColumnHidden(IDPAGO,True)
@@ -697,10 +703,10 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
      
     
-    @pyqtSlot()
-    def on_txtpersona_editingFinished( self ):    
-        if not  self.readOnly:
-            self.datosRecibo.observaciones = self.txtpersona.text()
+#    @pyqtSlot()
+#    def on_txtpersona_editingFinished( self ):    
+#        if not  self.readOnly:
+#            self.datosRecibo.observaciones = self.txtpersona.text()
             
 # MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
     @pyqtSignature( "bool" )
@@ -730,7 +736,6 @@ class DatosRecibo(object):
         self.__documentType = 18
         self.clienteId = 0
         self.observaciones = ""
-        self.observacionesRet = ""
         self.aplicarRet = True
         
         self.lineas = []
@@ -792,8 +797,6 @@ class DatosRecibo(object):
 
     @property
     def getRetencion( self ):
-        print self.retencionTasa
-        print self.aplicarRet
         return ( self.total * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else Decimal(0)
     
     @property
@@ -828,15 +831,15 @@ class DatosRecibo(object):
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
-            query.bindValue( ":idusuario", self.uid )
+            query.bindValue( ":idusuario", self.datosSesion.usuarioId )
             query.bindValue( ":anulado", 0 )
             query.bindValue( ":idpersona", self.clienteId )
             query.bindValue( ":observacion", self.observaciones )
             query.bindValue( ":total", self.total.to_eng_string() )
             query.bindValue( ":escontado", self.escontado )
-            query.bindValue( ":idtc", self.idtc )
+            query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
             query.bindValue( ":concepto", self.conceptoId )
-
+            
             if not query.exec_():
                 raise Exception( "No se pudo insertar el recibo" )
             insertedId = query.lastInsertId().toInt()[0]
@@ -852,8 +855,6 @@ class DatosRecibo(object):
             query.bindValue( ":idrecibo", insertedId )
 
             if not query.exec_():
-                print( insertedId )
-                print( self.sesion )
                 raise Exception( "No se Inserto la relacion entre la sesion de caja y el recibo" )
 
 
@@ -866,7 +867,6 @@ class DatosRecibo(object):
 #INSERTAR los abonos
             
             for l in self.lineasAbonos:
-                print( l.idFac )
                 if l.valid:
                     l.save( insertedId )
 
@@ -903,8 +903,6 @@ class DatosRecibo(object):
                 query.bindValue( ":idretencion", idret )
 
                 if not query.exec_():
-                    print( insertedId )
-                    print( idret )
                     raise Exception( "No se Inserto la relacion entre la retencion y el recibo" )
 
 
@@ -919,14 +917,12 @@ class DatosRecibo(object):
 
 
             #manejar las cuentas contables
-            print( "cuentas" )
             movAbonoDeCliente( insertedId, self.total * self.tc, self.getRetencion * self.tc )
 
             if not QSqlDatabase.database().commit():
                 raise Exception( "No se pudo hacer commit" )
         except Exception as inst:
             print  query.lastError().databaseText()
-            print query.lastError().driverText()
             print inst.args
             QSqlDatabase.database().rollback()
             return False
@@ -981,7 +977,7 @@ class DatosRecibo(object):
         recibo.updateLabels()
         
     def retencionAplicada(self,recibo,on):
-        recibo.txtobservaciones.setEnabled( on )
+#        recibo.txtobservaciones.setEnabled( on )
 #        self.lbltotalreten.setVisible( on )
 #        self.lblnreten.setVisible( on )
 #        self.label_7.setVisible( on )
@@ -1083,7 +1079,7 @@ class ROAbonosModel( QSortFilterProxyModel ):
         value = QSortFilterProxyModel.data( self, index, role )
         if value.isValid() and role == Qt.DisplayRole:
             if index.column() == ABONO:
-                return moneyfmt( Decimal( value.toString() ), 2, "US$" )
+                return moneyfmt( Decimal( value.toString() ), 4, "US$" )
         return value
 
 class ROFacturasModel( QSortFilterProxyModel ):
@@ -1119,6 +1115,6 @@ class ROFacturasModel( QSortFilterProxyModel ):
         value = QSortFilterProxyModel.data( self, index, role )
         if value.isValid() and role == Qt.DisplayRole:
             if index.column() == ABONO:
-                return moneyfmt( Decimal( value.toString() ), 2, "$" )
+                return moneyfmt( Decimal( value.toString() ), 4, "$" )
         return value
 

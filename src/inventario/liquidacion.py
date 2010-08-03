@@ -454,6 +454,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         if not self.editmodel is None:
             self.editmodel.agencyTotal = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
+            
 
     @pyqtSlot( "QString" )
     def on_txtStore_textChanged( self, p0 ):

@@ -9,7 +9,7 @@ from PyQt4.QtCore import Qt, QSize
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from utility.singleselectionmodel import SingleSelectionModel 
 #IDTIPOPAGO,DESCRIPCION,  REFERENCIA,  MONTO,  TOTALPROD = range(5)
-IDFAC,NFAC,ABONO = range(3)
+IDFAC,NFAC,TOTALFAC,ABONO,SALDO = range(5)
 class AbonoDelegate(QStyledItemDelegate):
     def __init__(self, parent=None):
         super(AbonoDelegate, self).__init__(parent)
@@ -49,11 +49,13 @@ class AbonoDelegate(QStyledItemDelegate):
 #            textbox = QLineEdit(parent)
 #            return textbox
 #        el
-        if index.column() == NFAC :           
+        if index.column() in (NFAC,TOTALFAC,SALDO) :           
             return None
         elif index.column()==ABONO:
             spinbox = QDoubleSpinBox(parent)
-            spinbox.setRange(0.0001,999999999)
+            max= index.model().lines[index.row()].totalFac
+            
+            spinbox.setRange(0.0001,max)
             spinbox.setDecimals(4)
             spinbox.setSingleStep(1)
             spinbox.setAlignment(Qt.AlignRight|Qt.AlignVCenter)

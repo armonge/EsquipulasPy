@@ -13,7 +13,20 @@ from PyQt4.QtCore import QAbstractTableModel, Qt,SIGNAL
 
 IDPAGO, DESCRIPCION, REFERENCIA, MONTO, IDMONEDA = range( 5 )
 class ReciboModel( AccountsSelectorModel ):
-    
+    def __init__( self , tipocambio):
+        AccountsSelectorModel.__init__( self )
+        self.total =Decimal(0) 
+        
+    def asignarTotal(self,valor):     
+        self.total = valor
+        nfilas = self.rowCount()
+        if valor <=0:
+            self.removeRows(0,nfilas)
+            self.insertRow(0)
+        elif nfilas>0: 
+                valor = self.lines[nfilas-1].monto            
+                self.setData(self.index(nfilas-1,MONTO),valor)
+        
     def columnCount( self, index = QModelIndex() ):
         return 5
 
@@ -27,13 +40,20 @@ class ReciboModel( AccountsSelectorModel ):
             return Qt.ItemIsEnabled | Qt.ItemIsEditable
     
     def bloqueada(self,index):
-        if self.lines[index.row()].pagoId == 1:
-            if index.row() == 0:
-                return index.column() in (4)
-            else:
-                return True
+        
+        if index.column() == REFERENCIA:
+            return self.lines[index.row()].pagoId == 1
         else:
-            return index.column() in (1,2) and index.row() == 0      
+            return False
+    
+    @property
+    def currentSum( self ):
+        currentsum = sum( [line.monto for line in  self.lines if line.valid ] )
+        return currentsum if currentsum != 0 else Decimal( 0 )     
+#        else:
+#            
+#            
+#            return index.column() in (1,2) and index.row() == 0      
           
     def data( self, index, role = Qt.DisplayRole ):
         """
@@ -58,25 +78,42 @@ class ReciboModel( AccountsSelectorModel ):
                 return line.monto
 
     def setData( self, index, value, role = Qt.EditRole ):
-        if index.isValid() and 0 <= index.row() < len( self.lines ):
-            line = self.lines[index.row()]
-            column = index.column()
-            if column== DESCRIPCION:
-                line.pagoId = value[0]
-                line.pagoDescripcion = value[1]
-                line.monedaId = value[2]
-            elif column == MONTO:
-                valor = value.toString()
-                line.monto = Decimal( valor if valor!="" else 0 )
-
-
-            if not self.valid and self.lines[-1].valid:
-                self.insertRow( len( self.lines ) )
-            elif not self.valid and not self.lines[-1].valid:
-                self.lines[-1].amount = self.currentSum * -1
-            elif self.valid and not self.lines[-1].valid:
-                if len( self.lines ) > 1:
-                    self.removeRows( len( self.lines ) - 1, 1 )
+        if  not index.isValid():
+            return None
+        
+        line = self.lines[index.row()]
+        column = index.column()
+        if column== DESCRIPCION:
+            line.pagoId = value[0]
+            line.pagoDescripcion = value[1]
+            line.monedaId = value[2]
+        elif column == MONTO:
+            valor = value.toString() if type(value)!= Decimal else value
+            line.monto = Decimal( valor if valor!="" else 0 )
+            suma = self.currentSum
+            suma =  self.total - suma
+            ultimaFila = len(self.lines)-1 
+            if  suma !=0:
+                if line.valid:
+                    ultimaFila+=1
+                    self.insertRow(ultimaFila)
+#                    self.linew[ultimaFila].monto+=suma
+                self.lines[ultimaFila].montoDolar=suma
+#            else:
+#                self.removeRows(ultimaFila, 1 )
+#                self.lines[ultimaFila-1].monto+=suma
+                
+                
+#                    
+#                    
+#            
+#        if not self.valid and self.lines[-1].valid:
+#                self.insertRow( len( self.lines ) )
+#            elif not self.valid and not self.lines[-1].valid:
+#                self.lines[-1].amount = self.currentSum * -1
+#            elif self.valid and not self.lines[-1].valid:
+#                if len( self.lines ) > 1:
+#                    self.removeRows( len( self.lines ) - 1, 1 )
 
             self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
             

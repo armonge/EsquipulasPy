@@ -11,8 +11,8 @@ from lineaabono import LineaAbono
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
 
-IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, TOTALPROD, MONEDA = range( 6 )
-IDFAC, NFAC, ABONO = range( 3 )
+IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, MONTODOLAR, MONEDA = range( 6 )
+IDFAC, NFAC, TOTALFAC, ABONO,SALDO = range( 5 )
 class AbonoModel( QAbstractTableModel ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
@@ -56,7 +56,7 @@ class AbonoModel( QAbstractTableModel ):
         return len( self.lines )
 
     def columnCount( self, index = QModelIndex ):
-        return 3
+        return 5
 
     def data( self, index, role = Qt.DisplayRole ):
         """
@@ -71,10 +71,10 @@ class AbonoModel( QAbstractTableModel ):
                 return line.nFac
             elif column == ABONO:
                 return moneyfmt( Decimal( line.monto ), 4, "US$" ) if line.monto != 0 else ""
-#            elif column == TOTALPROD:
-#                return moneyfmt(line.total ,  4,  "US$")
-#            elif column == MONEDA:
-#                return line.itemDescription
+            elif column == TOTALFAC:
+                return moneyfmt(line.totalFac ,  4,  "US$")
+            elif column == SALDO:
+                return moneyfmt(line.saldo ,  4,  "US$")
         elif role == Qt.EditRole:
 #            Esto es lo que recibe el delegate cuando va a mostrar la el widget 
             if column == ABONO:
@@ -99,8 +99,7 @@ class AbonoModel( QAbstractTableModel ):
             elif column == ABONO:
                 valor = Decimal( value.toString() )
                 line.monto = valor if valor <= line.totalFac else line.totalFac
-
-
+                line.saldo = line.totalFac - line.monto
             self.dirty = True
 
             self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
@@ -156,6 +155,10 @@ class AbonoModel( QAbstractTableModel ):
                 return u"No. Factura"
             elif section == ABONO:
                 return "Abono"
+            elif section == TOTALFAC:
+                return "Total"
+            elif section == SALDO:
+                return "Saldo Pendiente"
         return int( section + 1 )
 
 #TODO: INSERCION
