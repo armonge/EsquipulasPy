@@ -16,6 +16,7 @@ from document.cheque.chequemodel import ChequeModel
 from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorLine,AccountsSelectorModel
 from utility import constantes
 from utility.widgets.searchpanel import SearchPanel
+from utility.reports import frmReportes
 IDDOCUMENTO,NCHEQUE,NOMBRE,FECHA,CONCEPTO,USUARIO,TOTAL,OBSERVACIONES,ANULADO,OBSERVACIONESRETENCION,TASARETENCION,TOTALRETENCION,TIPOCAMBIO,SUBTOTAL,IVA,CUENTABANCARIA=range(16)
 #accounts model
 IDDOC, IDCUENTA,CODIGO,DESCRIPCION, MONTO= range( 5 )
@@ -90,7 +91,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         CONCAT(valorcosto, '%s') as 'Retencion',
         IF(hijo.total IS NULL, '-' ,CONCAT(tm.simbolo,hijo.total))   as 'Total Ret C$',
         tc.tasa as TipoCambio,
-        IF(hijo.total='-',@subtotal:=padre.total/1.15,@subtotal:=padre.total+hijo.total/1.15) as 'subtotal',
+        IF(hijo.total='-',@subtotal:=padre.total/1.15,@subtotal:=(padre.total+hijo.total)/1.15) as 'subtotal',
         concat(tm.simbolo,padre.total+hijo.total- @subtotal) as IVA,
         cb.descripcion as 'Cuenta Bancaria'
         FROM documentos padre
@@ -288,7 +289,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
 #            self.iva.setText("0.0")
 #                
         self.editmodel.retencionNumero=Decimal(self.retencion.text())
-        self.editmodel.iva=self.iva.text()        
+        self.editmodel.iva=self.iva.text()
+        self.editmodel.total=Decimal(self.total.text())        
     
     @pyqtSignature( "" )
     def on_actionCancel_activated( self ):
@@ -308,6 +310,16 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         
         self.status = True
         self.tabWidget.setCurrentIndex(1)               
+
+
+    @pyqtSlot(  )
+    def on_actionPreview_activated( self ):
+        """
+        Funcion usada para mostrar el reporte de una entrada compra
+        """
+
+        report = frmReportes( "cheques.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.parentWindow.user, self )
+        report.show()
 
     def on_actionNew_activated( self ):
         """
