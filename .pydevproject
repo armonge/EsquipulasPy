@@ -8,4 +8,7 @@
 <path>/EsquipulasPy/src</path>
 </pydev_pathproperty>
 
+<pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
+<path>/usr/lib/python/site-packages/PyQt4</path>
+</pydev_pathproperty>
 </pydev_project>
