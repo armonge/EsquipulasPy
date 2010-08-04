@@ -308,8 +308,11 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
     @pyqtSlot(  )
     def on_actionPreview_activated( self ):
-        
-        report = frmReportes( "liquidaciones.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.user, self , QPrinter.Landscape)
+        printer = QPrinter()
+        printer.setOrientation(QPrinter.Landscape)
+        printer.setPageSize(QPrinter.Letter)
+        web = "liquidaciones.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] 
+        report = frmReportes( web, self.user, printer,self )
         report.exec_()
 
     @pyqtSlot(  )

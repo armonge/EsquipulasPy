@@ -279,12 +279,13 @@ class DevolucionModel( QAbstractTableModel ):
             
 
             if not QSqlDatabase.database().transaction():
-                raise Exception( u"No se puedo comenzar la transacción" )
-
-            query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,idusuario,anulado, idpersona, observacion,total, idtipocambio)
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:idusuario,:anulado,:idpersona,:observacion,:total, :idtipocambio)
-            """ )
+                raise Exception( u"No se puedo comenzar la transaccion" )
+            #Insertar el documento
+            if not query.prepare( """
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,  observacion,total, idtipocambio)
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total, :idtipocambio)
+            """ ):
+                raise Exception(u"No se pudo preparar la consulta para añadir el documento")
 
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
@@ -299,13 +300,37 @@ class DevolucionModel( QAbstractTableModel ):
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
 
+
             insertedId = query.lastInsertId().toInt()[0]
+            
+            #Insertar el usuario y cliente
+            if not query.prepare("""
+            INSERT INTO personasxdocumento (idpersona, iddocumento)
+            VALUES (:idpersona, :iddocumento)
+            """):
+                raise Exception("No se pudo preparar la consulta para los usuarios y las personas")
+
+            query.bindValue(":idpersona", self.clientId )
+            query.bindValue(":iddocumento", insertedId)
+
+            if not query.exec_():
+                raise Exception(u"No se pudo aniadir el cliente")
+
+            if not query.prepare("""
+            INSERT INTO personasxdocumento (idpersona, iddocumento)
+            VALUES (:idusuario, :iddocumento)
+            """):
+                raise Exception("No se pudo preparar la consulta para el usuario")
+            query.bindValue(":idusuario", self.uid)
+            query.bindValue(":iddocumento", insertedId)
+
+            if not query.exec_():
+                raise Exception(u"No se pudo aniadir el usuario")
 
             for linea in self.lines:
                 if linea.valid:
                     linea.save( insertedId )
 
-#FIXME:Manejar las cuentas contables de devolucion
             movFacturaCredito( insertedId, self.subtotalC * -1, self.ivaC * -1, self.totalCostC * -1 )
 
 
@@ -330,7 +355,7 @@ class DevolucionModel( QAbstractTableModel ):
 
 
         except Exception as inst:
-            print QSqlDatabase.database().lastError().text()
+            print query.lastError().text()
             print inst
             QSqlDatabase.database().rollback()
 

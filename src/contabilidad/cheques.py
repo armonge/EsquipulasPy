@@ -7,7 +7,7 @@ Created on 03/07/2010
 from utility.base import Base
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase,QSqlQuery
 from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, SIGNAL, QModelIndex, QTimer,QSize
-from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox
+from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, QPrinter
 from decimal import Decimal, InvalidOperation
 import functools
 from utility.moneyfmt import moneyfmt
@@ -317,9 +317,11 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         """
         Funcion usada para mostrar el reporte de una entrada compra
         """
-
-        report = frmReportes( "cheques.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.parentWindow.user, self )
-        report.show()
+        printer = QPrinter()
+        printer.setPageSize(QPrinter.Letter)
+        web = "cheques.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
+        report = frmReportes( web , self.user, printer, self )
+        report.exec_()
 
     def on_actionNew_activated( self ):
         """

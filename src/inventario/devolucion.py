@@ -191,7 +191,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         self.actionGoLast.setVisible( status )
         self.actionPreview.setVisible( status )
 
-        self.txtDocumentNumber.setReadOnly( status )
+        #self.txtDocumentNumber.setReadOnly( status )
         self.txtObservations.setReadOnly( status )
         self.dtPicker.setReadOnly( status )
         
@@ -261,8 +261,16 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
     
     
                 self.txtBill.setText( self.editmodel.billPrinted )
-    
-    
+                query = QSqlQuery( """
+                CALL spConsecutivo(%d,NULL);
+                """ % constantes.IDDEVOLUCION )
+                if not query.exec_():
+                    raise UserWarning( u"No se pudo calcular el numero de la devolución" )
+                query.first()
+                self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
+
+                self.txtDocumentNumber.setText( self.editmodel.printedDocumentNumber)
+                
                 query.prepare( """
                 SELECT 
                     v.idarticulo, 
@@ -294,7 +302,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                     self.editmodel.lines[row] = linea
     
     
-                self.status( False )
+                
                 self.tabnavigation.setEnabled( False )
                 self.tabWidget.setCurrentIndex( 0 )
                 self.tabledetails.setModel( self.editmodel )
@@ -303,10 +311,15 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 self.tabledetails.setItemDelegate( delegate )
 
                 self.tabledetails.resizeColumnsToContents()
-                self.dtPicker.emit( SIGNAL( "dateTimeChanged( QDateTime )" ), QDateTime.currentDateTime() )
+                self.dtPicker.setDateTime( QDateTime.currentDateTime() )
                 self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+                self.status =  False 
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            self.status = True
         except Exception as inst:
             print inst
+            self.status = True
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
