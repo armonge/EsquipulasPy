@@ -152,12 +152,11 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                 if not self.database.open():
                     raise UserWarning( "No se pudo conectar con la base de datos" )
 
+
+            #Obtener los datos de la sesión
             query = QSqlQuery( """
             SELECT 
-                IF(SUM(d.total) IS NOT NULL, SUM(d.total), 0) + p.total as 'totalsesion', 
-                DATE(p.fechacreacion), 
-                tc.tasa,
-                tc.idtc
+                IF(SUM(d.total) IS NOT NULL, SUM(d.total), 0) + p.total as 'totalsesion' 
             FROM documentos p
             LEFT JOIN docpadrehijos dpd ON dpd.idpadre = p.iddocumento
             LEFT JOIN documentos d ON dpd.idhijo = d.iddocumento
@@ -182,6 +181,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             if not query.exec_():
                 raise UserWarning( "No se pudo calcular el numero del arqueo" )
             query.first()
+            print query.value( 0 ).toString()
             self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
 
             self.lblTotalSesion.setText( moneyfmt( self.editmodel.expectedTotal, 4, "US$" ) )
@@ -248,7 +248,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         Redefiniendo el metodo save de Base para mostrar advertencias si el arqueo no concuerda
         """
         if self.editmodel.total == self.editmodel.expectedTotal or QMessageBox.question( self, "Llantera Esquipulas: Caja", u"El total de la sesión no coincide con el total del arqueo\n ¿Desea continuar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
-            self.editmodel.save()
+            super(frmArqueo, self).on_actionSave_activated()
 
     @pyqtSlot(  )
     def on_actionPreview_activated( self ):
