@@ -39,7 +39,7 @@ class ReciboDelegate(QStyledItemDelegate):
 
 
     def createEditor( self, parent, option, index ):
-        if index.column() == DESCRIPCION:
+        if index.column() == DESCRIPCION:             
             completer = QCompleter()            
             combo = QComboBox(parent)
             combo.setEditable(True)
@@ -53,7 +53,7 @@ class ReciboDelegate(QStyledItemDelegate):
             if index.data() != "":
                 self.prods.items.append([tabla.index( index.row(),0 ).data().toInt()[0]  ,
                                         index.data().toString(),
-                                        tabla.index( index.row(),2 ).data().toInt()[0],
+                                        tabla.index( index.row(),2).data().toInt()[0],
                                         tabla.index(index.row(),3).data().toString()
                                          ])
 
@@ -63,12 +63,14 @@ class ReciboDelegate(QStyledItemDelegate):
             completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
             combo.setCompleter(completer)
             return combo
-        if index.column() == MONTO:
+        elif index.column() == MONTO:
             doublespinbox = QDoubleSpinBox( parent )
             doublespinbox.setMinimum( -1000000 )
             doublespinbox.setMaximum( 1000000 )
             doublespinbox.setDecimals( 4 )
             return doublespinbox
+        elif index.column() == REFERENCIA:
+            return QStyledItemDelegate.createEditor(self, parent, option,index)
             
     def removeFromFilter(self,value):
         try:
@@ -109,6 +111,7 @@ class ReciboDelegate(QStyledItemDelegate):
                     del self.prods.items[editor.currentIndex()]
                 except IndexError as inst:
                     print inst
+                
         else:
             QStyledItemDelegate.setModelData( self, editor, model, index )
 
@@ -119,8 +122,8 @@ class ReciboDelegate(QStyledItemDelegate):
         fm = option.fontMetrics
         if index.column() == DESCRIPCION:
             return QSize( 250, fm.height() )
-        elif index.column() == MONTO:
-            return QSize( 80, fm.height() )
+        else:
+            return QSize( 150, fm.height() )
         
         return QStyledItemDelegate.sizeHint( self, option, index )
     

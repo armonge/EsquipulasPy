@@ -251,33 +251,27 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
 
 #Se utiliza en modo de edicion
-#            self.tablefacturas.setModel(self.facturasproxymodel)
+
             self.tablefacturas.setModel( self.facturasproxymodel )
 
 # OCULTO LAS COLUMNAS DE LOS ABONOS
-            self.tableabonos.setColumnHidden( IDRECIBO, True )
-##            self.tableabonos.setColumnHidden( IDCLIENTE+1, True )
-#            self.tableabonos.setColumnHidden( 5,True )
+            self.tableabonos.setColumnHidden( IDDOCUMENTO, True )
+
 
             self.frbotones.setVisible( False )
-
-            self.tablefacturas.setColumnHidden( IDRECIBO, True )
-            self.tablefacturas.setColumnHidden( 3, True )
-
 
             self.tabledetails.setColumnHidden( IDPAGO, True )
             self.tabledetails.setColumnHidden( IDMONEDA, True )
             self.tabledetails.setColumnHidden( IDDOCUMENTOT, True )
 
+            self.tablefacturas.setColumnHidden( IDDOCUMENTO, True )
+            self.tablefacturas.setColumnHidden( 3, True )
 
             self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
             self.tablenavigation.setColumnHidden( OBSERVACIONRET, True )
             self.tablenavigation.setColumnHidden( TOTALRETENCION, True )
             self.tablenavigation.setColumnHidden( CONRETENCION, True )
 
-#            self.tablenavigation.setColumnHidden( OBSERVACION, True )
-#            self.tablenavigation.setColumnHidden( SUBTOTAL, True )
-#            self.tablenavigation.setColumnHidden( IVA, True )
             self.navigate( 'last' )
 
         except Exception as inst:
@@ -297,7 +291,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         ret=self.datosRecibo.getRetencion
         self.lbltotalreten.setText( moneyfmt( ret, 4, "US$" ) )
         self.lbltotalrecibo.setText( moneyfmt( self.abonoeditmodel.total - ret, 4, "US$" ) )
-        self.tabledetails.resizeColumnsToContents()
+#        self.tabledetails.resizeColumnsToContents()
 
     def removeLine( self ):
         """
@@ -535,7 +529,9 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.tableabonos.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             
         self.tabledetails.setColumnWidth(DESCRIPCION,250)
-        self.tabledetails.setColumnWidth(MONTO,80)
+        self.tabledetails.setColumnWidth(MONTO,150)
+        self.tabledetails.setColumnWidth(MONTODOLAR,150)
+        self.tabledetails.setColumnWidth(REFERENCIA,150)
             
 
     @pyqtSlot( "bool" )
@@ -1018,9 +1014,9 @@ class RODetailsModel( QSortFilterProxyModel ):
 
     def headerData( self, section, orientation, role = Qt.DisplayRole ):
         if role == Qt.TextAlignmentRole:
-            if orientation == Qt.Horizontal:
-                return Qt.AlignLeft | Qt.AlignVCenter
-            return Qt.AlignRight | Qt.AlignVCenter
+#            if orientation == Qt.Horizontal:
+#                return Qt.AlignLeft | Qt.AlignVCenter
+            return Qt.AlignHCenter | Qt.AlignVCenter
         if role != Qt.DisplayRole:
             return None
         if orientation == Qt.Horizontal:

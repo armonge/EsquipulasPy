@@ -10,10 +10,10 @@ class LineaRecibo:
         self.pagoId = 0
         self.monedaId = 0
         self.pagoDescripcion = ""
-        self.nref = ""
+        self.referencia = ""
         self.montoDolar = Decimal( 0 )
         self.monto = Decimal(0)
-        self.simboloMoneda =""
+        self.simboloMoneda ="US$"
 #        self.tasa = Decimal( 0 )
 
 
@@ -23,7 +23,7 @@ class LineaRecibo:
         es esta linea valida
         """
         if  int( self.pagoId ) != 0   and Decimal( self.montoDolar ) > 0:
-            if self.pagoId > 1 and self.nref == "":
+            if self.pagoId > 1 and self.referencia == "":
                 return False
             return True
         return False
@@ -49,7 +49,7 @@ class LineaRecibo:
         query.bindValue( ":idmoneda", self.monedaId )
 
         query.bindValue( ":monto", self.montoDolar.to_eng_string() )
-        query.bindValue( ":ref", self.nref )
+        query.bindValue( ":ref", self.referencia )
 
         if not query.exec_():
             print( query.lastError().text() )
