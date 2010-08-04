@@ -36,6 +36,8 @@
     <file>res/help-contents.png</file>
   </qresource>
   <qresource prefix="images">
+    <file>res/reconcile.png</file>
+    <file>res/account-types-checking.png</file>
     <file>res/view-pim-tasks.png</file>
     <file>res/marca.png</file>
     <file>res/llanta.png</file>

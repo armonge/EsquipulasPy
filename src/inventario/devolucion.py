@@ -202,7 +202,6 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             self.navigate( 'last' )
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
-            self.txtDocumentNumber.setText( "" )
             self.txtClient.setText( self.editmodel.clientName )
             self.txtObservations.setPlainText( "" )
             self.lblTotal.setText( "US$0.0000 / C$0.0000" )

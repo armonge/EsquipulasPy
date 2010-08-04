@@ -4,7 +4,7 @@ Created on 25/05/2010
 @author: Luis Carlos Mejia
 '''
 from PyQt4 import QtGui,QtCore
-from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter,QDialog
+from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter,QDialog, QPrinter
 from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QModelIndex, QTimer, QDateTime,QDate
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 from decimal import Decimal
@@ -195,9 +195,11 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         Funcion usada para mostrar el reporte de una entrada compra
         """
-
-        report = frmReportes( "facturas.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.parentWindow.user, self )
-        report.show()
+        printer = QPrinter()
+        printer.setPageSize(QPrinter.Letter)
+        web = "facturas.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] 
+        report = frmReportes( web , self.parentWindow.user, printer, self )
+        report.exec_()
 
 
     @pyqtSlot(  )

@@ -5,7 +5,7 @@ Created on 07/06/2010
 @author: armonge
 '''
 from decimal import  Decimal
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter
 from PyQt4.QtCore import pyqtSlot, SIGNAL, QDateTime, QTimer, QModelIndex
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 from ui.Ui_arqueo import Ui_frmArqueo
@@ -16,6 +16,7 @@ from document.arqueo.arqueomodel import ArqueoModel
 from document.arqueo.arqueodelegate import ArqueoDelegate
 
 from utility import constantes
+from utility.reports import frmReportes
 #navmodel
 IDDOCUMMENTO, NDOCIMPRESO, FECHA, NOMBRE, TOTAL = range( 5 )
 #detailsmodel
@@ -61,24 +62,28 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.navmodel.setQuery( """
             SELECT
                 d.iddocumento, 
-                d.ndocimpreso, 
-                d.fechacreacion, 
-                u.nombre, 
+                d.ndocimpreso AS 'Numero de Arqueo', 
+                d.fechacreacion AS 'Fecha', 
+                p.nombre AS 'Arqueador', 
                 CONCAT('US$',FORMAT(d.total,4))  as 'Total US$'
             FROM documentos d  
             JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
-            JOIN usuarios u ON u.idusuario = d.idusuario
+            JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
+            JOIN personas p ON p.idpersona = pxd.idpersona AND p.tipopersona = %d
             WHERE d.idtipodoc = %d
-            """ % constantes.IDARQUEO)
-            self.detailsModel.setQuery( """
+            """ % ( constantes.USUARIO, constantes.IDARQUEO))
+            
+            #FIXME: El simbolo de la moneda deberia de venir de la tabla tiposmoneda
+            self.detailsModel.setQuery( u"""
             SELECT 
-                l.cantidad as 'Cantidad', 
-                CONCAT(IF(l.idtipomoneda = 1, "C$", "US$") ,
-                l.denominacion) as 'Denominacion',
-                CASE l.idtipomoneda WHEN 1 THEN 'Cordoba' WHEN 2 THEN 'Dolar' END as 'Moneda',
-                CONCAT("US$", FORMAT(l.cantidad * IF(l.idtipomoneda = 1, l.denominacion * tc.tasa, l.denominacion), 4)) as 'Total US$',
+                l.cantidad AS 'Cantidad',
+                CONCAT_WS(' ', tm.simbolo, de.valor) as 'Denominación',
+                tm.moneda as 'Moneda',
+                CONCAT("US$", FORMAT(l.cantidad * IF(de.idtipomoneda = 1, de.valor * tc.tasa, de.valor), 4)) as 'Total US$',
                 l.iddocumento
             FROM lineasarqueo l
+            JOIN denominaciones de ON de.iddenominacion = l.iddenominacion
+            JOIN tiposmoneda tm ON de.idtipomoneda = tm.idtipomoneda
             JOIN documentos d ON d.iddocumento = l.iddocumento
             JOIN tiposcambio tc ON d.idtipocambio = tc.idtc
             """ )
@@ -90,6 +95,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.mapper.addMapping( self.lblUserName, NOMBRE, "text" )
             self.mapper.addMapping( self.lblTotalArqueo, TOTAL, "text" )
 
+            
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
         except Exception as inst:
@@ -244,4 +250,14 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         if self.editmodel.total == self.editmodel.expectedTotal or QMessageBox.question( self, "Llantera Esquipulas: Caja", u"El total de la sesión no coincide con el total del arqueo\n ¿Desea continuar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
             self.editmodel.save()
 
+    @pyqtSlot(  )
+    def on_actionPreview_activated( self ):
+        """
+        Funcion usada para mostrar el reporte de una entrada compra
+        """
+        printer = QPrinter()
+        printer.setPageSize(QPrinter.Letter)
+        web = "arqueos.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] 
+        report = frmReportes( web , self.parentWindow.user, printer, self )
+        report.exec_()
 
