@@ -7,7 +7,7 @@ from PyQt4.QtCore import pyqtSlot, SIGNAL, QModelIndex, Qt, QTimer, \
     SLOT, QDateTime
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
-     QLineEdit
+     QLineEdit,QMessageBox
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from ui.Ui_devolucion import Ui_frmDevoluciones
 from utility.base import Base
@@ -111,7 +111,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 QSqlDatabase.database().open()
 
             self.navmodel.setQuery( """
-            SELECT
+             SELECT
                 d.iddocumento,
                 d.ndocimpreso as 'Numero de Entrada',
                 padre.ndocimpreso as padre,
@@ -127,13 +127,13 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             JOIN docpadrehijos dpd ON dpd.idhijo = d.iddocumento
             JOIN documentos padre ON dpd.idpadre = padre.iddocumento
             JOIN tiposcambio tc ON d.idtipocambio = tc.idtc
-            JOIN personas p ON p.idpersona = d.idpersona
+        JOIN personasxdocumento pd ON d.iddocumento=pd.iddocumento
+        LEFT JOIN personas p ON p.idpersona=pd.idpersona
             JOIN articulosxdocumento axd ON axd.iddocumento = d.iddocumento
             LEFT JOIN costosxdocumento cxd ON cxd.iddocumento = padre.iddocumento
             LEFT JOIN costosagregados ca ON ca .idcostoagregado = cxd.idcostoagregado
             WHERE d.idtipoDoc = 10
-            GROUP BY d.iddocumento
-            """ )
+            GROUP BY d.iddocumento""")
 
             self.detailsmodel.setQuery( u"""
             SELECT 
@@ -370,10 +370,10 @@ class dlgSelectBill( QDialog ):
        JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
         JOIN personas p ON pxd.idpersona = p.idpersona
         JOIN articulosxdocumento axd ON (axd.iddocumento = d.iddocumento OR axd.iddocumento = devs.iddocumento)
-        WHERE d.idtipodoc =%d
+        WHERE d.idtipodoc =%d and p.tipopersona=%d
         GROUP BY d.iddocumento
         HAVING unittotal > 0   
-        """ % (constantes.IDFACTURA) )
+        """ % (constantes.IDFACTURA,constantes.CLIENTE) )
 
 
 
