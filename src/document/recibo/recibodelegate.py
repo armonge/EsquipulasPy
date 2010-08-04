@@ -53,12 +53,10 @@ class ReciboDelegate(QStyledItemDelegate):
             if index.data() != "":
                 self.prods.items.append([tabla.index( index.row(),0 ).data().toInt()[0]  ,
                                         index.data().toString(),
-                                        tabla.index( index.row(),2).data().toInt()[0],
-                                        tabla.index(index.row(),3).data().toString()
+                                        tabla.lines[index.row()].monedaId,
+                                        tabla.lines[index.row()].simboloMoneda
                                          ])
-
             
-                
             completer.setCaseSensitivity(Qt.CaseInsensitive)
             completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
             combo.setCompleter(completer)
@@ -68,6 +66,7 @@ class ReciboDelegate(QStyledItemDelegate):
             doublespinbox.setMinimum( -1000000 )
             doublespinbox.setMaximum( 1000000 )
             doublespinbox.setDecimals( 4 )
+            doublespinbox.setAlignment(Qt.AlignHCenter)
             return doublespinbox
         elif index.column() == REFERENCIA:
             return QStyledItemDelegate.createEditor(self, parent, option,index)

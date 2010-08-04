@@ -73,15 +73,20 @@ class ReciboModel( AccountsSelectorModel ):
             elif column == REFERENCIA:
                 return line.referencia
             elif column == MONTO:
-                return moneyfmt( line.monto, 4, line.simboloMoneda ) if line.monto != 0 else ""
+                value = moneyfmt( line.monto,2, line.simboloMoneda) if line.monto != 0 else ""
+                return value
+                
+                
             elif column == MONTODOLAR:
                 return moneyfmt( line.montoDolar , 4, "US$" ) if line.montoDolar != 0 else ""
-#            elif column == MONEDA:
-#                return line.itemDescription
+            elif column == IDMONEDA:
+                return line.monedaId
         elif role == Qt.EditRole:
 #            Esto es lo que recibe el delegate cuando va a mostrar la el widget 
             if column == MONTO:
                 return line.monto
+            elif column == IDMONEDA:
+                return line.monedaId
         elif role == Qt.TextAlignmentRole:
             if column != DESCRIPCION:
                 return Qt.AlignHCenter | Qt.AlignVCenter 
@@ -96,7 +101,7 @@ class ReciboModel( AccountsSelectorModel ):
             line.pagoDescripcion = value[1]
             line.monedaId = value[2]
             line.simboloMoneda = value[3]
-            index = self.index(index.row(),MONTO)   
+            index = self.index(index.row(),MONTO)
             line.monto =Decimal(str(line.montoDolar * self.tipoCambio)) if line.monedaId == 1 else line.montoDolar
             
         elif column == MONTO:
@@ -144,7 +149,7 @@ class ReciboModel( AccountsSelectorModel ):
             if ultimaFila >0:
                 if 0== line.montoDolar:
                     self.removeRows(ultimaFila,1)
-        print line.monto
+        
         return True
 
     def headerData( self, section, orientation, role = Qt.DisplayRole ):
