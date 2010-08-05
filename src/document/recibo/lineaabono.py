@@ -63,7 +63,7 @@ class LineaAbono:
 
         if not query.exec_():
             print(query.lastError().text())
-            raise Exception("line" + str(self.itemId))
+            raise Exception("line" + str(self.nlinea))
             
             
 

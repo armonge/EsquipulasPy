@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\recibo.ui'
 #
-# Created: Wed Aug 04 20:28:14 2010
+# Created: Wed Aug 04 22:42:25 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -546,16 +546,24 @@ class Ui_frmRecibo(object):
         self.swconcepto.setCurrentIndex(1)
         self.swtasaret.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(frmRecibo)
-        frmRecibo.setTabOrder(self.cbconcepto, self.cbcliente)
-        frmRecibo.setTabOrder(self.cbcliente, self.tablefacturas)
+        frmRecibo.setTabOrder(self.cbcliente, self.cbconcepto)
+        frmRecibo.setTabOrder(self.cbconcepto, self.ckretener)
+        frmRecibo.setTabOrder(self.ckretener, self.cbtasaret)
+        frmRecibo.setTabOrder(self.cbtasaret, self.tablefacturas)
         frmRecibo.setTabOrder(self.tablefacturas, self.btnadd)
         frmRecibo.setTabOrder(self.btnadd, self.btnaddall)
-        frmRecibo.setTabOrder(self.btnaddall, self.tablenavigation)
-        frmRecibo.setTabOrder(self.tablenavigation, self.txtSearch)
-        frmRecibo.setTabOrder(self.txtSearch, self.btnremove)
+        frmRecibo.setTabOrder(self.btnaddall, self.btnremove)
         frmRecibo.setTabOrder(self.btnremove, self.btnremoveall)
-        frmRecibo.setTabOrder(self.btnremoveall, self.txtcliente)
+        frmRecibo.setTabOrder(self.btnremoveall, self.tableabonos)
+        frmRecibo.setTabOrder(self.tableabonos, self.tabledetails)
+        frmRecibo.setTabOrder(self.tabledetails, self.txtobservaciones)
+        frmRecibo.setTabOrder(self.txtobservaciones, self.dtPicker)
+        frmRecibo.setTabOrder(self.dtPicker, self.tabWidget)
+        frmRecibo.setTabOrder(self.tabWidget, self.txtcliente)
         frmRecibo.setTabOrder(self.txtcliente, self.txtconcepto)
+        frmRecibo.setTabOrder(self.txtconcepto, self.txttasaret)
+        frmRecibo.setTabOrder(self.txttasaret, self.txtSearch)
+        frmRecibo.setTabOrder(self.txtSearch, self.tablenavigation)
 
     def retranslateUi(self, frmRecibo):
         frmRecibo.setWindowTitle(QtGui.QApplication.translate("frmRecibo", "Recibo Oficial de Caja", None, QtGui.QApplication.UnicodeUTF8))

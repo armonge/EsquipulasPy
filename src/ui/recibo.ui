@@ -1032,17 +1032,25 @@ p, li { white-space: pre-wrap; }
   </action>
  </widget>
  <tabstops>
-  <tabstop>cbconcepto</tabstop>
   <tabstop>cbcliente</tabstop>
+  <tabstop>cbconcepto</tabstop>
+  <tabstop>ckretener</tabstop>
+  <tabstop>cbtasaret</tabstop>
   <tabstop>tablefacturas</tabstop>
   <tabstop>btnadd</tabstop>
   <tabstop>btnaddall</tabstop>
-  <tabstop>tablenavigation</tabstop>
-  <tabstop>txtSearch</tabstop>
   <tabstop>btnremove</tabstop>
   <tabstop>btnremoveall</tabstop>
+  <tabstop>tableabonos</tabstop>
+  <tabstop>tabledetails</tabstop>
+  <tabstop>txtobservaciones</tabstop>
+  <tabstop>dtPicker</tabstop>
+  <tabstop>tabWidget</tabstop>
   <tabstop>txtcliente</tabstop>
   <tabstop>txtconcepto</tabstop>
+  <tabstop>txttasaret</tabstop>
+  <tabstop>txtSearch</tabstop>
+  <tabstop>tablenavigation</tabstop>
  </tabstops>
  <resources>
   <include location="res.qrc"/>

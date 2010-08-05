@@ -17,11 +17,11 @@ class AbonoModel( QAbstractTableModel ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
-    def __init__( self ):
+    def __init__( self ,lineas):
         super( AbonoModel, self ).__init__()
 
         self.dirty = False
-        self.lines = []
+        self.lines =lineas
 
 
     @property

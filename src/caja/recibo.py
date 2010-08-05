@@ -285,13 +285,21 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
     def updateLabels( self ):
         
-        self.editmodel.asignarTotal(self.abonoeditmodel.total)
-         
-        self.lbltotal.setText( moneyfmt( self.abonoeditmodel.total, 4, "US$" ) )
-        ret=self.datosRecibo.getRetencion
-        self.lbltotalreten.setText( moneyfmt( ret, 4, "US$" ) )
-        self.lbltotalrecibo.setText( moneyfmt( self.abonoeditmodel.total - ret, 4, "US$" ) )
-#        self.tabledetails.resizeColumnsToContents()
+        self.editmodel.asignarTotal(self.abonoeditmodel.total)  
+        totalAbono = self.abonoeditmodel.total
+        tasa = self.datosRecibo.datosSesion.tipoCambioBanco
+        
+        self.lbltotal.setText( moneyfmt(totalAbono, 4, "US$ " ) )
+        self.lbltotal.setToolTip(moneyfmt(totalAbono * tasa, 4, "C$ " ))
+        
+        ret=self.datosRecibo.obtenerRetencion
+        
+        self.lbltotalreten.setText( moneyfmt( ret, 4, "US$ " ) )
+        self.lbltotalreten.setToolTip(moneyfmt( ret* tasa, 4, "C$ " ) )
+        
+        self.lbltotalrecibo.setText( moneyfmt(totalAbono - ret, 4, "US$ "  ) )
+        self.lbltotalrecibo.setToolTip( moneyfmt((totalAbono - ret) * tasa, 4, "C$ ") )
+
 
     def removeLine( self ):
         """
@@ -312,27 +320,30 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
         Slot documentation goes here.
         """
-        self.datosRecibo.lineasAbonos =self.abonoeditmodel.lines
-        self.datosRecibo.lineas = self.editmodel.lines
+#        self.datosRecibo.lineasAbonos =self.abonoeditmodel.lines
+#        self.datosRecibo.lineas = self.editmodel.lines
+        
         if self.datosRecibo.valid(self):
-            if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
-      
-            if self.datosRecibo.save():
-                QMessageBox.information( None,
-                    self.trUtf8( "Llantera Esquipulas" ),
-                    self.trUtf8( """El documento se ha guardado con exito""" ) )
-                self.editmodel = None
-                self.updateModels()
-                self.navigate( 'last' )
-                self.status = True
-            else:
-                QMessageBox.critical( None,
-                    self.trUtf8( "Llantera Esquipulas" ),
-                    self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
-
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+            if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+                if not QSqlDatabase.database().isOpen():
+                    QSqlDatabase.database().open()
+    
+          
+                if self.datosRecibo.save():
+                    QMessageBox.information( None,
+                        self.trUtf8( "Llantera Esquipulas" ),
+                        self.trUtf8( """El documento se ha guardado con exito""" ) )
+                    self.editmodel = None
+                    self.updateModels()
+                    self.navigate( 'last' )
+                    self.status = True
+                else:
+                    QMessageBox.critical( None,
+                        self.trUtf8( "Llantera Esquipulas" ),
+                        self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
+    
+                if QSqlDatabase.database().isOpen():
+                    QSqlDatabase.database().close()
 
 
     @pyqtSlot(  )
@@ -365,16 +376,13 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 #            Rellenar el combobox de los CLLIENTES
             self.clientesModel = QSqlQueryModel()
             self.clientesModel.setQuery( """
-              SELECT
-                    p.idpersona,
-                    p.nombre,
-                    sum(s.saldo) as SaldoTotal
-                    FROM personas p
-                    JOIN vw_saldofacturas s ON s.idpersona=p.idpersona
-                    WHERE s.saldo>0
-                    group by p.idpersona
-                    ORDER BY p.nombre
-                    ;
+            SELECT
+            s.idpersona,
+            s.nombre
+            FROM vw_saldofacturas s
+            GROUP BY s.idpersona
+            HAVING SUM(s.saldo)>0
+            ORDER BY s.nombre
             """ )
 #Verificar si existen clientes morosos            
             if self.clientesModel.rowCount() == 0:
@@ -401,16 +409,18 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
             
             self.cbconcepto.setModel( self.conceptosModel )
+            self.cbconcepto.setCurrentIndex(-1)
             self.cbconcepto.setModelColumn( 1 )
             completerconcepto = QCompleter()
             completerconcepto.setCaseSensitivity( Qt.CaseInsensitive )
             completerconcepto.setModel( self.conceptosModel )
             completerconcepto.setCompletionColumn( 1 )
 
-            self.editmodel = ReciboModel(self.parentWindow.datosSesion.tipoCambioBanco)
-            self.abonoeditmodel = AbonoModel()
-            
             self.datosRecibo = DatosRecibo(self.parentWindow.datosSesion)
+            self.editmodel = ReciboModel(self.datosRecibo.lineas,self.datosRecibo.datosSesion.tipoCambioBanco)
+            self.abonoeditmodel = AbonoModel(self.datosRecibo.lineasAbonos)
+            
+            
             self.datosRecibo.cargarRetenciones(self.cbtasaret)
             
             if self.datosRecibo.retencionModel.rowCount()==0:
@@ -488,7 +498,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         @param status false = editando        true = navegando
         """
         self.dtPicker.setReadOnly( True )
-        self.ckretener.setEnabled( ( not status ) )
+#        self.ckretener.setEnabled( ( not status ) )
         self.txtobservaciones.setReadOnly( status )
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
@@ -515,8 +525,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.swtasaret.setCurrentIndex( 0 )
             self.txtobservaciones.setPlainText( "" )
             
-            self.lbltotalreten.setText( "0.00" )
-            self.lbltotal.setText( "$0.00" )
+            self.lbltotalreten.setText( "US$ 0.0000" )
+            self.lbltotal.setText( "US$ 0.0000" )
             self.cbcliente.setFocus()
 
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
@@ -537,15 +547,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         if not cindex.model() is None:
             if not self.tablefacturas.isRowHidden( cindex.row() ):
                 i = self.abonoeditmodel.rowCount()
-                self.abonoeditmodel.insertRows( i )
-
-                self.abonoeditmodel.lines[i].idFac = cindex.model().index( cindex.row(), 0 ).data()
-                self.abonoeditmodel.lines[i].nFac = cindex.model().index( cindex.row(), 1 ).data()
-                self.abonoeditmodel.lines[i].monto = Decimal( cindex.model().data( cindex.model().index( cindex.row(), 2 ), Qt.EditRole ).toString() )
-                self.abonoeditmodel.lines[i].totalFac = self.abonoeditmodel.lines[i].monto
-                self.abonoeditmodel.lines[i].nlinea = cindex.row()
-
-                self.tablefacturas.setRowHidden( cindex.row(), True )
+                self.agregarFactura(i,cindex.row())
                 self.updateLabels()
 
     @pyqtSlot( "bool" )
@@ -556,14 +558,22 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         i = self.abonoeditmodel.rowCount()
         for n in range( self.facturasproxymodel.rowCount() ):
             if not self.tablefacturas.isRowHidden( n ):
-                self.abonoeditmodel.insertRows( i )
-                self.abonoeditmodel.lines[i].nFac = self.facturasproxymodel.index( n, 1 ).data()
-                self.abonoeditmodel.lines[i].monto = Decimal( self.facturasproxymodel.data( self.facturasproxymodel.index( n, 2 ), Qt.EditRole ).toString() )
-                self.abonoeditmodel.lines[i].totalFac = self.abonoeditmodel.lines[i].monto
-                self.abonoeditmodel.lines[i].nlinea = n
-                self.tablefacturas.setRowHidden( n, True )
+                self.agregarFactura(i, n)
                 i = i + 1
         self.updateLabels()
+
+    def agregarFactura(self,i,n):
+#        modelo = cindex.model()
+        modelo = self.facturasproxymodel
+        self.abonoeditmodel.insertRows( i )
+        self.abonoeditmodel.lines[i].idFac = modelo.index(n, 0 ).data()
+        self.abonoeditmodel.lines[i].nFac = modelo.index( n, 1 ).data()
+        self.abonoeditmodel.lines[i].monto = Decimal( modelo.data( modelo.index( n, 2 ), Qt.EditRole ).toString() )
+        self.abonoeditmodel.lines[i].totalFac = self.abonoeditmodel.lines[i].monto
+        self.abonoeditmodel.lines[i].nlinea = n
+        self.tablefacturas.setRowHidden( n, True )
+        
+        
 
     @pyqtSlot( "bool" )
     def on_btnremove_clicked( self, on ):
@@ -618,10 +628,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
         asignar la retencion al objeto self.editmodel
         """
-        if index>-1:
-            self.datosRecibo.tasaRetencionCambio(self,index)
-        else:
-            self.datosRecibo.retencionId
+        self.datosRecibo.tasaRetencionCambio(self,index)
+
 
     @pyqtSlot( "QDateTime" )
     def on_dtPicker_dateTimeChanged( self, datetime ):
@@ -644,9 +652,9 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
 #        self.setWindowFlags(Qt.WindowTitleHint | Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)
     def save(self):
         self.datosRecibo.observaciones = self.txtobservaciones.toPlainText()
-        self.datosRecibo.lines = self.editModel.lines
-        linea = LineaAbono()
-        self.datosRecibo.lineasAbonos.append()
+#        self.datosRecibo.lines = self.editModel.lines
+#        linea = LineaAbono()
+#        self.datosRecibo.lineasAbonos.append()
         self.datosRecibo.save()
         
     def setControls( self, status,factura ):
@@ -725,7 +733,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         
     def updateLabels( self ):
         if not self.readOnly:
-            self.lbltotalreten.setText( moneyfmt( self.datosRecibo.getRetencion, 4, "US$" ) )
+            self.lbltotalreten.setText( moneyfmt( self.datosRecibo.obtenerRetencion, 4, "US$" ) )
             self.lbltotalrecibo.setText(moneyfmt(self.datosRecibo.totalPagado))
             self.tabledetails.resizeColumnsToContents()
         
@@ -753,7 +761,7 @@ class DatosRecibo(object):
     def total( self ):
         """
         """
-        tmpsubtotal = sum( [linea.monto for linea in self.lineas if linea.valid] )
+        tmpsubtotal = sum( [linea.montoDolar for linea in self.lineas])
         return tmpsubtotal if tmpsubtotal > 0 else Decimal( 0 )
     
     @property
@@ -818,8 +826,19 @@ class DatosRecibo(object):
         return False
 
     @property
-    def getRetencion( self ):
-        return ( self.total * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else Decimal(0)
+    def obtenerRetencion( self ):
+        total = self.total
+        totalC = total * self.datosSesion.tipoCambioBanco
+        if totalC<=1000:
+            return Decimal(0)
+        else:
+            return ( total * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else Decimal(0)
+        
+    @property
+    def obtenerGanancia( self ):
+        total = self.total
+        retencion = self.obtenerRetencion
+        return Decimal(str(round((total + retencion) * (self.datosSesion.tipoCambioBanco - self.datosSesion.tipoCambioOficial),4)))    
     
     @property
     def validLines( self ):
@@ -845,102 +864,111 @@ class DatosRecibo(object):
 
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
-#INSERTAR RECIBO
+            
+            fechaCreacion = self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString("hhmmss")
+    #INSERTAR RECIBO
             query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,idusuario,anulado, idpersona, observacion,total,escontado,idtipocambio,idconcepto) 
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:idusuario,:anulado,:idpersona,:observacion,:total,:escontado,:idtc,:concepto)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc, observacion,total,idtipocambio,idconcepto) 
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:idtc,:concepto)
             """ )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-            query.bindValue( ":fechacreacion", self.datosSesion.toString( 'yyyyMMdd' ) & QDateTime.currentDateTime().toString("hhmmss") )
+            query.bindValue( ":fechacreacion", fechaCreacion )
             query.bindValue( ":idtipodoc", self.__documentType )
-            query.bindValue( ":idusuario", self.datosSesion.usuarioId )
-            query.bindValue( ":anulado", 0 )
-            query.bindValue( ":idpersona", self.clienteId )
             query.bindValue( ":observacion", self.observaciones )
             query.bindValue( ":total", self.total.to_eng_string() )
-            query.bindValue( ":escontado", self.escontado )
             query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
             query.bindValue( ":concepto", self.conceptoId )
             
             if not query.exec_():
+                print query.lastError().text()
                 raise Exception( "No se pudo insertar el recibo" )
-            insertedId = query.lastInsertId().toInt()[0]
-
-
-#INSERTAR LA RELACION CON LA SESION DE CAJA            
+            insertedId = query.lastInsertId().toString()
+    
+    
+    #INSERTAR LA RELACION CON LA SESION DE CAJA            
             query.prepare( """
                 INSERT INTO docpadrehijos (idpadre,idhijo)
                 VALUES (:idsesion,:idrecibo)
                 """ )
-
-            query.bindValue( ":idsesion", self.sesion )
+    
+            query.bindValue( ":idsesion", self.datosSesion.sesionId )
             query.bindValue( ":idrecibo", insertedId )
-
+    
             if not query.exec_():
                 raise Exception( "No se Inserto la relacion entre la sesion de caja y el recibo" )
-
-
-#INSERTAR LOS TIPOS DE PAGO
+    
+    
+    #INSERTAR LA RELACION CON El USUARIO y EL CLIENTE
+#            print "recibo ID " + insertedId            
+            query.prepare( 
+                "INSERT INTO personasxdocumento (iddocumento,idpersona) VALUES" +  
+                "(" + insertedId + ",:iduser),"
+                "(" + insertedId + ",:idcliente)"     
+                )
+    
+            query.bindValue( ":iduser", self.datosSesion.usuarioId )
+            query.bindValue( ":idcliente", self.clienteId )
+            
+    
+            if not query.exec_():
+                raise Exception( "No se Inserto la relacion entre el recibo y las personas" )
+    
+    #INSERTAR LOS TIPOS DE PAGO
             i = 0
             for linea in self.lineas:
-                if linea.valid:
-                    linea.save( insertedId, i )
-                    i = i + 1
-#INSERTAR los abonos
+#                    print insertedId + "-" + str(linea.pagoId) + "-" + str(linea.monedaId)
+                linea.save( insertedId, i )
+                i = i + 1
+    #INSERTAR los abonos
             
             for l in self.lineasAbonos:
-                if l.valid:
-                    l.save( insertedId )
-
-#VERIFICO SI se aplicara la retencion                     
+                l.save( insertedId )
+    
+    #VERIFICO SI se aplicara la retencion                     
             if self.aplicarRet :
-
-#INSERTAR EL DOCUMENTO RETENCION            
+    
+    #INSERTAR EL DOCUMENTO RETENCION            
                 query.prepare( """
-                INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,idusuario,anulado, idpersona, observacion,total,escontado,idtipocambio,idconcepto) 
-                VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:idusuario,:anulado,:idpersona,:observacion,:total,:escontado,:idtc,:concepto)
+                INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,total,idtipocambio,idconcepto) 
+                VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:total,:idtc,:concepto)
                 """ )
-                query.bindValue( ":ndocimpreso", self.retencionNumero )
-                query.bindValue( ":fechacreacion", self.datetime )
-                query.bindValue( ":idtipodoc", 19 )
-                query.bindValue( ":idusuario", self.uid )
-                query.bindValue( ":anulado", 0 )
-                query.bindValue( ":idpersona", self.clienteId )
-                query.bindValue( ":observacion", self.observacionesRet )
-                query.bindValue( ":total", self.getRetencion.to_eng_string() )
-                query.bindValue( ":escontado", self.escontado )
-                query.bindValue( ":idtc", self.idtc )
+                query.bindValue( ":ndocimpreso", self.retencionNumeroImpreso )
+                query.bindValue( ":fechacreacion", fechaCreacion)
+                query.bindValue( ":idtipodoc", IDRETENCION )
+                query.bindValue( ":total", self.obtenerRetencion.to_eng_string() )
+                query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
                 query.bindValue( ":concepto", self.conceptoId )
                 if not query.exec_():
                     raise Exception( "No se Inserto la retencion" )
-
+    
                 idret = query.lastInsertId().toInt()[0]
-
+    
                 query.prepare( """
                 INSERT INTO docpadrehijos (idpadre,idhijo)
                 VALUES (:idrecibo,:idretencion)
                 """ )
-
+    
                 query.bindValue( ":idrecibo", insertedId )
                 query.bindValue( ":idretencion", idret )
-
+    
                 if not query.exec_():
                     raise Exception( "No se Inserto la relacion entre la retencion y el recibo" )
-
-
-# INSERTAR EL ID DEL COSTO RETENCION                
+    
+    
+    # INSERTAR EL ID DEL COSTO RETENCION                
                 query.prepare( """
                 INSERT INTO costosxdocumento (iddocumento, idcostoagregado) VALUES( :iddocumento, :idcostoagregado )
                 """ )
                 query.bindValue( ":iddocumento", insertedId )
-                query.bindValue( ":idcostoagregado", self.retencionid )
+                query.bindValue( ":idcostoagregado", self.retencionId )
                 if not query.exec_():
                     raise Exception( "el costo Retencion  NO SE INSERTO" )
-
-
+    
+    
             #manejar las cuentas contables
-            movAbonoDeCliente( insertedId, self.total * self.tc, self.getRetencion * self.tc )
-
+            tasa = self.datosSesion.tipoCambioOficial
+            movAbonoDeCliente( insertedId, self.total * tasa, self.obtenerRetencion * tasa, self.obtenerGanancia)
+    
             if not QSqlDatabase.database().commit():
                 raise Exception( "No se pudo hacer commit" )
         except Exception as inst:
@@ -967,6 +995,8 @@ class DatosRecibo(object):
 
             cbtasaret.setModel( self.retencionModel )
             cbtasaret.setModelColumn( 1 )
+            cbtasaret.setCurrentIndex(-1)
+            self.retencionId =0
 
     def cargarNumeros(self,recibo):
 #            Cargar el numero de el Recibo actual
@@ -977,7 +1007,7 @@ class DatosRecibo(object):
             print( query.lastError().text() )
         query.first()
         n = query.value( 0 ).toString()
-        print n
+        
         recibo.lblnrec.setText( n )
         self.printedDocumentNumber = n
 

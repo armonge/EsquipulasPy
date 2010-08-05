@@ -13,10 +13,11 @@ from PyQt4.QtCore import QAbstractTableModel, Qt,SIGNAL
 
 IDPAGO, DESCRIPCION, REFERENCIA, MONTO, MONTODOLAR, IDMONEDA = range( 6 )
 class ReciboModel( AccountsSelectorModel ):
-    def __init__( self , tipocambio):
+    def __init__( self ,lineas, tipocambio):
         AccountsSelectorModel.__init__( self )
         self.total =Decimal(0) 
         self.tipoCambio = Decimal(tipocambio)
+        self.lines = lineas
         
     def asignarTotal(self,valor):     
         self.total = valor

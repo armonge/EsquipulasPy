@@ -79,6 +79,11 @@ El id de la cuenta PE PUENTE INVENTARIO-PROVEEDORES, 210 001 002 008 000
 @type:string
 """
 
+PRODUCTOSFINANCIEROS = "323"
+"""
+El id de la cuenta PRODUCTOS FINANCIEROS, 640 001 000 000 000
+@type:string
+"""
 
 def movFacturaContado( iddoc, subtotal, impuesto, retencion, totalcosto ):
     '''
@@ -178,7 +183,7 @@ def movFacturaCredito( iddoc, subtotal, impuesto, totalcosto ):
         raise Exception( "NO SE PUDIERON INSERTAR LAS CUENTAS CONTABLES" )
 
 
-def movAbonoDeCliente( iddoc, total, retencion ):
+def movAbonoDeCliente( iddoc, total, retencion,ganancia ):
     '''
     MOVIMIENTOS CONTABLE PARA LA UN RECIBO
     
@@ -195,22 +200,20 @@ def movAbonoDeCliente( iddoc, total, retencion ):
     @type total: Decimal
     @param retencion: TODO
     @type retencion: Decimal
-    
-    
-    '''
+    '''    
     iddoc = str( iddoc )
     query = QSqlQuery()
     query.prepare( "INSERT INTO cuentasxdocumento (idcuenta,iddocumento,monto) values " +
     "(" + CXCCLIENTE + "," + iddoc + ",-:total)," +
+    "(" + PRODUCTOSFINANCIEROS + "," + iddoc + ",-:ganancia)," +
     ( "" if retencion == 0 else "(" + RETENCIONPAGADA + "," + iddoc + ",:retencion)," ) +
     "(" + CAJAGENERAL + "," + iddoc + ",:totalpagar)" )
 
     query.bindValue( ":total", total.to_eng_string() )
+    query.bindValue( ":ganancia", ganancia.to_eng_string() )
     query.bindValue( ":retencion", retencion.to_eng_string() )
-    query.bindValue( ":totalpagar", ( total - retencion ).to_eng_string() )
+    query.bindValue( ":totalpagar", ( total - retencion + ganancia ).to_eng_string() )
 
-    print( total.to_eng_string() )
-    print( retencion.to_eng_string() )
 
     if not query.exec_():
         print( iddoc )

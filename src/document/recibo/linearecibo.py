@@ -14,6 +14,7 @@ class LineaRecibo:
         self.montoDolar = Decimal( 0 )
         self.monto = Decimal(0)
         self.simboloMoneda ="US$"
+        
 #        self.tasa = Decimal( 0 )
 
 
@@ -53,7 +54,7 @@ class LineaRecibo:
 
         if not query.exec_():
             print( query.lastError().text() )
-            raise Exception( "line" + str( self.itemId ) )
+            raise Exception( "line" + str( linea ) )
 
 
 
