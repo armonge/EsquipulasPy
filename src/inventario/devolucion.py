@@ -132,8 +132,8 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             JOIN articulosxdocumento axd ON axd.iddocumento = d.iddocumento
             LEFT JOIN costosxdocumento cxd ON cxd.iddocumento = padre.iddocumento
             LEFT JOIN costosagregados ca ON ca .idcostoagregado = cxd.idcostoagregado
-            WHERE d.idtipoDoc = 10
-            GROUP BY d.iddocumento""")
+            WHERE d.idtipoDoc = %d and p.tipopersona=%d
+            GROUP BY d.iddocumento""") %(constantes.IDDEVOLUCION,constantes.IDCLIENTE)
 
             self.detailsmodel.setQuery( u"""
             SELECT 
