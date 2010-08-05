@@ -2,7 +2,8 @@ SELECT
 factura.iddocumento,
 factura.ndocimpreso,
 factura.total - SUM(IFNULL(abono.monto,0)) - IFNULL(devolucion.total,0)  AS saldo,
-p.idpersona
+p.idpersona,
+p.nombre
 FROM documentos factura
 JOIN personasxdocumento pd ON pd.iddocumento=factura.iddocumento
 JOIN personas p ON pd.idpersona=p.idpersona AND p.tipopersona=1
