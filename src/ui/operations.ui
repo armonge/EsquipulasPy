@@ -81,6 +81,9 @@
              <property name="readOnly">
               <bool>true</bool>
              </property>
+             <property name="calendarPopup">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -154,6 +157,9 @@
               <property name="icon">
                <iconset resource="res.qrc">
                 <normaloff>:/icons/res/list-add.png</normaloff>:/icons/res/list-add.png</iconset>
+              </property>
+              <property name="shortcut">
+               <string>Ctrl+N</string>
               </property>
              </widget>
             </item>

@@ -17,25 +17,85 @@ class ChequeModel( AccountsSelectorModel ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
+    
+    __documentType = constantes.IDCHEQUE
+    """
+    @ivar:El tipo de documento
+    @type: int
+    """ 
     def __init__( self  ):
         super( ChequeModel, self ).__init__()
 
         self.proveedorId = 0
+        """
+        @ivar: El id del proveedor en este documento
+        @type: int
+        """
         self.observations = ""
+        """
+        @ivar: Las observaciones que podria tener el documento
+        @type: string
+        """ 
         self.total=Decimal(0)
+        """
+        @ivar: El total del documento
+        @type: Decimal
+        """
         self.printedDocumentNumber = ""
+        """
+        @ivar: El numero de documento impreso
+        @type:string
+        """
         self.datetime = QDateTime.currentDateTime()
+        """
+        @ivar: La fecha en la que se hizo el documento
+        @type: QDateTime
+        """ 
         self.uid = 0
+        """
+        @ivar: El id del usuario que esta haciendo este documento
+        @type: int
+        """
         self.conceptoId = 0
+        """
+        @ivar: El id del concepto de este documento
+        @type: int
+        """ 
 
         self.retencionId = 0
+        """
+        @ivar: El id de la retención de este documento
+        @type: int
+        """
         self.retencionNumero = 0
+        """
+        @ivar: El numero de retención de este documento
+        @type: int
+        """
         
         self.iva=Decimal(0)
+        """
+        @ivar: El iva de este documento
+        @type: Decimal
+        """ 
         
         self.exchangeRateId=0
-        self.exchangeRate=0
+        """
+        @ivar: El id del tipo de cambio de este documento
+        @type: int
+        """
+        self.exchangeRate= Decimal(0)
+        """
+        @ivar: El tipo de cambio usado en este documento
+        @type: Decimal
+        """
+        
         self.validError = ""
+        """
+        @ivar: Si existe o no un error de validación en este documento entonces se muestra aca
+        @type: string
+        """
+        
     @property
     def valid( self ):
         """
@@ -94,7 +154,7 @@ class ChequeModel( AccountsSelectorModel ):
             
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
-            query.bindValue( ":idtipodoc", constantes.IDCHEQUE )
+            query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":anulado", 0 )
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.total.to_eng_string())

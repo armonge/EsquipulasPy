@@ -10,7 +10,7 @@ from PyQt4.QtCore import pyqtSlot, QDateTime, SIGNAL, QTimer, QModelIndex
 
 from ui.Ui_operations import Ui_frmOperations
 from utility.accountselector import AccountsSelectorModel, AccountsSelectorDelegate
-import utility
+from utility import constantes
 
 IDDOCUMENTO, NDOCIMPRESO, FECHACREACION, CONCEPTO = range( 4 )
 
@@ -68,7 +68,7 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             JOIN conceptos c ON c.idconcepto = d.idconcepto
             WHERE d.idtipodoc = %d
             ORDER BY d.iddocumento DESC
-            """ % utility.constantes.IDAJUSTECONTABLE )
+            """ % constantes.IDAJUSTECONTABLE )
             self.detailsmodel.setQuery( """
             SELECT 
                 cxd.idcuenta,  
@@ -81,7 +81,7 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             JOIN documentos d ON d.iddocumento = cxd.iddocumento 
             WHERE d.idtipodoc = %d
             ORDER BY nlinea 
-            """ % utility.constantes.IDAJUSTECONTABLE )
+            """ % constantes.IDAJUSTECONTABLE )
 
             self.mapper.addMapping( self.dtPicker, FECHACREACION )
             self.mapper.addMapping( self.txtConcept, CONCEPTO )
@@ -160,7 +160,8 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             """ ) )
     
             self.dtPicker.setDateTime( QDateTime.currentDateTime() )
-    
+            self.dtPicker.setMaximumDateTime(QDateTime.currentDateTime())
+            
             self.conceptsmodel = QSqlQueryModel()
             self.conceptsmodel.setQuery( """
             SELECT 
@@ -168,7 +169,12 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
                 descripcion 
             FROM conceptos 
             WHERE idtipodoc = %d
-             """ % utility.constantes.IDAJUSTECONTABLE )
+             """ % constantes.IDAJUSTECONTABLE )
+            
+            if self.conceptsmodel.rowCount() < 1:
+                raise UserWarning("No existen conceptos")
+            
+            
             self.cbConcepts.setModel( self.conceptsmodel )
             self.cbConcepts.setModelColumn( 1 )
             self.tableDetails.setModel( self.editModel )
@@ -226,7 +232,7 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             if not query.prepare( """
             INSERT INTO documentos (ndocimpreso, fechacreacion, idconcepto, escontado, anulado, idtipodoc) 
             VALUES (:ndocimpreso, :fechacreacion, :idconcepto, 0,0, %d)
-            """ % utility.constantes.IDAJUSTECONTABLE ):
+            """ % constantes.IDAJUSTECONTABLE ):
                 raise Exception( "No se pudo preparar la consulta para guardar el documento" )
             query.bindValue( ":ndocimpreso", n )
             query.bindValue( ":fechacreacion", self.dtPicker.dateTime().toString( "yyyyMMddhhmmss" ) )

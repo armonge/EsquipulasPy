@@ -53,7 +53,8 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
 
         dlg = dlgAccountMod( self )
         if dlg.exec_() == QDialog.Accepted:
-            self.accountsTree.model().sourceModel().insertRows( 
+            try:
+                self.accountsTree.model().sourceModel().insertRows( 
                                                  index.row(),
                                                  1,
                                                  index,
@@ -61,6 +62,10 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
                                                  dlg.txtDescription.text(),
                                                  1 if dlg.cbEsdebe.checkState() == Qt.CheckState else 0
                                                    )
+            except UserWarning as inst:
+                QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            except Exception as inst:
+                print inst
 
     @pyqtSlot(  )
     def on_btnModify_clicked( self ):
@@ -136,10 +141,10 @@ class AccountsModel( QAbstractItemModel ):
     def insertRows( self, position, rows, parent, code, description, esdebe ):
         parentItem = self.getItem( parent )
         self.beginInsertRows( parent, position, position + rows - 1 )
-        success = parentItem.insertChildren( position, rows, [code, description, esdebe] );
+        result = parentItem.insertChildren( position, rows, [code, description, esdebe] );
         self.endInsertRows()
 
-        return success
+        return result
     
  
     def columnCount( self, parent ):
@@ -283,7 +288,8 @@ class Account( object ):
             query.bindValue( ":descripcion", self.description )
             query.bindValue( ":esdebe", self.esdebe )
             if not query.exec_():
-                raise Exception( "No se pudo insertar la cuenta contable" )
+                print query.lastError().text()
+                raise UserWarning( "No se pudo insertar la cuenta contable" )
             self.id = query.lastInsertId().toInt()[0]
 
     @property

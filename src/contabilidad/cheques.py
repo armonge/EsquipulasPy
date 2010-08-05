@@ -6,7 +6,7 @@ Created on 03/07/2010
 '''
 from utility.base import Base
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase,QSqlQuery
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, SIGNAL, QModelIndex, QTimer,QSize
+from PyQt4.QtCore import pyqtSlot, pyqtSlot, Qt, QDateTime, SIGNAL, QModelIndex, QTimer,QSize
 from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, QPrinter
 from decimal import Decimal, InvalidOperation
 import functools
@@ -48,7 +48,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         #        El modelo que filtra a self.navmodel
         self.navproxymodel.setFilterKeyColumn( -1 )
         self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
-        self.editmodel = None    
+        self.editmodel = None  
+#        FIXME: El valor del iva deberia estar en el modelo de edición, ademas no se deberia de mantener instanciado cuando no se esta editando
         self.ivaRate=Decimal(0)
         self.exchangeRate=Decimal(0)
         self.exchangeRateId=0
@@ -57,10 +58,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         
         #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
           
-        self.connect( self.actionGoFirst, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'first' ) )
-        self.connect( self.actionGoPrevious, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'previous' ) )
-        self.connect( self.actionGoNext, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'next' ) )
-        self.connect( self.actionGoLast, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'last' ) )
         
         QTimer.singleShot( 0, self.loadModels )
 
@@ -174,14 +171,22 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.actionNew.setVisible( status)
         self.actionPreview.setVisible( status)
         
+        if not status:
+            self.total.setText("0.0")
+            self.subtotal.setValue(0)
+            self.iva.setText("0.0")
+            self.retencion.setText("0.0")
+            self.txtobservaciones.setPlainText( "" )
+            self.editmodel.uid = self.user.uid 
         
         
-    @pyqtSignature( "int" )
+        
+    @pyqtSlot( "int" )
     def on_cboconcepto_currentIndexChanged( self, index ):
         if not self.editmodel is None:
             self.editmodel.conceptoId= self.conceptosmodel.record( index ).value( "idconcepto" ).toInt()[0]
     
-    @pyqtSignature( "int" )
+    @pyqtSlot( "int" )
     def on_cbocuenta_currentIndexChanged( self, index ):
         if not self.editmodel is None:
             if not QSqlDatabase.database().isOpen():
@@ -224,20 +229,20 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                     self.lblret.setText(u"Retención  "+self.moneda)
                     
                 
-    @pyqtSignature( "int" )
+    @pyqtSlot( "int" )
     def on_cboretencion_currentIndexChanged( self, index ):
         if not self.editmodel is None:
             self.editmodel.retencionId = self.retencionModel.record( index ).value( "idcostoagregado" ).toInt()[0]
             if index>=0:self.updateTotals()
             
-    @pyqtSignature( "int" )
+    @pyqtSlot( "int" )
     def on_cbobeneficiario_currentIndexChanged( self, index ):
         if not self.editmodel is None:
             self.editmodel.proveedorId= self.proveedoresmodel.record( index ).value( "idpersona" ).toInt()[0]        
 
-    @pyqtSignature( "double" )
+    @pyqtSlot( "double" )
     def on_subtotal_valueChanged(self,index):
-      
+#FIXME: El subtotal y la moneda no son atributos del modelo?      
         if not self.editmodel is None:
             if self.moneda=="US$":
                 self.updateTotals(True)
@@ -245,6 +250,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                 self.updateTotals(False)
                 
     def updateTotals(self,bool=None,): 
+#FIXME: Que significa bool? por que es de tipo None?        
+#FIXME: El codigo para calcular los totales y el iva deberia estar en el modelo no en la interfaz        
         if bool:
             if self.subtotal.value()>1000:
             
@@ -292,7 +299,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.editmodel.iva=self.iva.text()
         self.editmodel.total=Decimal(self.total.text())        
     
-    @pyqtSignature( "" )
+    @pyqtSlot(  )
     def on_actionCancel_activated( self ):
         """
         Aca se cancela la edicion del documento
@@ -339,8 +346,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                         QMessageBox.Ok ),
                     QMessageBox.Ok )
                     raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
-            self.actionSave.setVisible( True )
-            self.actionCancel.setVisible( True )
             #Sacar valor del IVA
             query=QSqlQuery( """SELECT 
                 valorcosto
@@ -366,18 +371,16 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
 
             
     #            Rellenar el combobox de las retenciones
-#FIXME: Los tipos de costo no son los que deberian
-#FIXME: Utilizar el modulo de constantes    
             self.retencionModel = QSqlQueryModel()
             self.retencionModel.setQuery( """             
                     SELECT
                         idcostoagregado, 
                         FORMAT(valorcosto,0) as tasa 
                     FROM costosagregados 
-                    WHERE idtipocosto IN (8,10) AND 
+                    WHERE idtipocosto IN (%d,%d) AND 
                     activo=1 
                     ORDER BY valorcosto desc; 
-                    """ )
+                    """ % (constantes.RETENCION10, constantes.RETENCION2))
     
             self.cboretencion.setModel( self.retencionModel )
             self.cboretencion.setCurrentIndex(-1)
@@ -464,20 +467,18 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             self.retencionwidget.setCurrentIndex(1)
             self.beneficiariowidget.setCurrentIndex(1)
             self.cuentawidget.setCurrentIndex(1)
-            self.status = False
-            self.total.setText("0.0")
-            self.subtotal.setValue(0)
-            self.iva.setText("0.0")
-            self.retencion.setText("0.0")
-            self.txtobservaciones.setPlainText( "" )
-            self.editmodel.uid = self.user.uid 
+            
+            
             
             self.dtPicker.setDateTime(QDateTime.currentDateTime())
             self.lbltipocambio.setText(str(self.editmodel.exchangeRate))
             
+            self.status = False
         except UserWarning as inst:
-            self.status = True
             QMessageBox.warning(self, "Llantera Esquipulas", str(inst))
+            self.status = True
+        except Exception as inst:
+            print inst
             self.status = True
         finally:
             if QSqlDatabase.database().isOpen():

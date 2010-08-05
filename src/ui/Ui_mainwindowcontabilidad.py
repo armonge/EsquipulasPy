@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/mainwindowcontabilidad.ui'
 #
-# Created: Wed Aug  4 09:14:49 2010
+# Created: Thu Aug  5 12:52:07 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setWindowModality(QtCore.Qt.ApplicationModal)
-        MainWindow.resize(1151, 753)
+        MainWindow.resize(1151, 713)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/res/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -49,29 +49,10 @@ class Ui_MainWindow(object):
         self.toolBox = QtGui.QToolBox(self.dockWidgetContents_2)
         self.toolBox.setObjectName("toolBox")
         self.page = QtGui.QWidget()
+        self.page.setGeometry(QtCore.QRect(0, 0, 214, 567))
         self.page.setObjectName("page")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.btnConceptos = QtGui.QPushButton(self.page)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btnConceptos.sizePolicy().hasHeightForWidth())
-        self.btnConceptos.setSizePolicy(sizePolicy)
-        self.btnConceptos.setMinimumSize(QtCore.QSize(0, 70))
-        font = QtGui.QFont()
-        font.setWeight(75)
-        font.setBold(True)
-        self.btnConceptos.setFont(font)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/images/res/view-pim-tasks.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnConceptos.setIcon(icon1)
-        self.btnConceptos.setIconSize(QtCore.QSize(48, 48))
-        self.btnConceptos.setAutoDefault(False)
-        self.btnConceptos.setDefault(False)
-        self.btnConceptos.setFlat(False)
-        self.btnConceptos.setObjectName("btnConceptos")
-        self.verticalLayout_2.addWidget(self.btnConceptos)
         self.btnAccounts = QtGui.QPushButton(self.page)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -83,6 +64,8 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         font.setBold(True)
         self.btnAccounts.setFont(font)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/images/res/view-pim-tasks.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnAccounts.setIcon(icon1)
         self.btnAccounts.setIconSize(QtCore.QSize(48, 48))
         self.btnAccounts.setAutoDefault(False)
@@ -92,7 +75,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.btnAccounts)
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtGui.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 254, 590))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 567))
         self.page_2.setObjectName("page_2")
         self.gridLayout = QtGui.QGridLayout(self.page_2)
         self.gridLayout.setObjectName("gridLayout")
@@ -236,22 +219,26 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Llantera Esquipulas: Contabilidad", None, QtGui.QApplication.UnicodeUTF8))
         self.dockWidget.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Contabilidad", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnConceptos.setText(QtGui.QApplication.translate("MainWindow", "Conceptos", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnConceptos.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnAccounts.setText(QtGui.QApplication.translate("MainWindow", "Cuentas Contables", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAccounts.setText(QtGui.QApplication.translate("MainWindow", "Cuentas\n"
+"Contables", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAccounts.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+2", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page), QtGui.QApplication.translate("MainWindow", "Catalogos", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnBalance.setText(QtGui.QApplication.translate("MainWindow", "Balance General", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnBalance.setText(QtGui.QApplication.translate("MainWindow", "Balance\n"
+"General", None, QtGui.QApplication.UnicodeUTF8))
         self.btnBalance.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
         self.btnCheques.setText(QtGui.QApplication.translate("MainWindow", "Cheques", None, QtGui.QApplication.UnicodeUTF8))
         self.btnCheques.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnEstado.setText(QtGui.QApplication.translate("MainWindow", "Estado de Resultados", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnEstado.setText(QtGui.QApplication.translate("MainWindow", "Estado\n"
+"de Resultados", None, QtGui.QApplication.UnicodeUTF8))
         self.btnEstado.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnMovements.setText(QtGui.QApplication.translate("MainWindow", "Movimientos Contables", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnMovements.setText(QtGui.QApplication.translate("MainWindow", "Movimientos\n"
+"Contables", None, QtGui.QApplication.UnicodeUTF8))
         self.btnMovements.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+1", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnConciliacion.setText(QtGui.QApplication.translate("MainWindow", "Conciliación Bancaria", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnConciliacion.setText(QtGui.QApplication.translate("MainWindow", "Conciliación\n"
+"Bancaria", None, QtGui.QApplication.UnicodeUTF8))
         self.btnConciliacion.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+3", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnNotasCD.setText(QtGui.QApplication.translate("MainWindow", "Movimientos Bancarios", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnNotasCD.setText(QtGui.QApplication.translate("MainWindow", "Movimientos\n"
+"Bancarios", None, QtGui.QApplication.UnicodeUTF8))
         self.btnNotasCD.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), QtGui.QApplication.translate("MainWindow", "Operaciones", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))

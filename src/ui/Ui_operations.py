@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/armonge/workspace/EsquipulasPy/src/ui/operations.ui'
+# Form implementation generated from reading ui file 'src/ui/operations.ui'
 #
-# Created: Sun Jul  4 13:19:11 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Thu Aug  5 10:13:59 2010
+#      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -133,6 +133,7 @@ class Ui_frmOperations(object):
         self.label.setText(QtGui.QApplication.translate("frmOperations", "&Fecha", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("frmOperations", "Concepto", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAdd.setText(QtGui.QApplication.translate("frmOperations", "Añadir", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAdd.setShortcut(QtGui.QApplication.translate("frmOperations", "Ctrl+N", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("frmOperations", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmOperations", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
 

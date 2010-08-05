@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1151</width>
-    <height>753</height>
+    <height>713</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,57 +80,18 @@
         <number>1</number>
        </property>
        <widget class="QWidget" name="page">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>214</width>
+          <height>567</height>
+         </rect>
+        </property>
         <attribute name="label">
          <string>Catalogos</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QPushButton" name="btnConceptos">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>70</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Conceptos</string>
-           </property>
-           <property name="icon">
-            <iconset resource="res.qrc">
-             <normaloff>:/images/res/view-pim-tasks.png</normaloff>:/images/res/view-pim-tasks.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>48</width>
-             <height>48</height>
-            </size>
-           </property>
-           <property name="shortcut">
-            <string>Ctrl+4</string>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
-           </property>
-           <property name="default">
-            <bool>false</bool>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
          <item>
           <widget class="QPushButton" name="btnAccounts">
            <property name="sizePolicy">
@@ -152,7 +113,8 @@
             </font>
            </property>
            <property name="text">
-            <string>Cuentas Contables</string>
+            <string>Cuentas
+Contables</string>
            </property>
            <property name="icon">
             <iconset resource="res.qrc">
@@ -185,8 +147,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>254</width>
-          <height>590</height>
+          <width>214</width>
+          <height>567</height>
          </rect>
         </property>
         <attribute name="label">
@@ -214,7 +176,8 @@
             </font>
            </property>
            <property name="text">
-            <string>Balance General</string>
+            <string>Balance
+General</string>
            </property>
            <property name="icon">
             <iconset resource="res.qrc">
@@ -308,7 +271,8 @@
             </font>
            </property>
            <property name="text">
-            <string>Estado de Resultados</string>
+            <string>Estado
+de Resultados</string>
            </property>
            <property name="icon">
             <iconset resource="res.qrc">
@@ -355,7 +319,8 @@
             </font>
            </property>
            <property name="text">
-            <string>Movimientos Contables</string>
+            <string>Movimientos
+Contables</string>
            </property>
            <property name="icon">
             <iconset resource="res.qrc">
@@ -402,7 +367,8 @@
             </font>
            </property>
            <property name="text">
-            <string>Conciliación Bancaria</string>
+            <string>Conciliación
+Bancaria</string>
            </property>
            <property name="icon">
             <iconset resource="res.qrc">
@@ -449,7 +415,8 @@
             </font>
            </property>
            <property name="text">
-            <string>Movimientos Bancarios</string>
+            <string>Movimientos
+Bancarios</string>
            </property>
            <property name="icon">
             <iconset resource="res.qrc">

@@ -4,6 +4,7 @@ Created on 07/06/2010
 
 @author: armonge
 '''
+#FIXME: EL arqueo no muestra todavia el total de la sesión
 from decimal import  Decimal
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter
 from PyQt4.QtCore import pyqtSlot, SIGNAL, QDateTime, QTimer, QModelIndex
@@ -18,7 +19,7 @@ from document.arqueo.arqueodelegate import ArqueoDelegate
 from utility import constantes
 from utility.reports import frmReportes
 #navmodel
-IDDOCUMMENTO, NDOCIMPRESO, FECHA, NOMBRE, TOTAL = range( 5 )
+IDDOCUMMENTO, NDOCIMPRESO, FECHA, NOMBRE, TOTAL, TOTALSESION = range( 6 )
 #detailsmodel
 CANTIDAD, DENOMINACION, MONEDA, TOTALP, IDDOCUMMENTOT = range( 5 )
 class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/cuentas.ui'
 #
-# Created: Tue Jul 20 15:24:42 2010
+# Created: Thu Aug  5 12:56:05 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -20,7 +20,7 @@ class Ui_frmAccounts(object):
         self.accountsTree = QtGui.QTreeView(self.centralwidget)
         self.accountsTree.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.accountsTree.setObjectName("accountsTree")
-        self.gridLayout.addWidget(self.accountsTree, 0, 0, 1, 5)
+        self.gridLayout.addWidget(self.accountsTree, 0, 0, 1, 3)
         self.label = QtGui.QLabel(self.centralwidget)
         self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label.setIndent(15)
@@ -28,25 +28,13 @@ class Ui_frmAccounts(object):
         self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
         self.txtSearch = QtGui.QLineEdit(self.centralwidget)
         self.txtSearch.setObjectName("txtSearch")
-        self.gridLayout.addWidget(self.txtSearch, 1, 1, 2, 4)
+        self.gridLayout.addWidget(self.txtSearch, 1, 1, 1, 1)
         self.btnAdd = QtGui.QPushButton(self.centralwidget)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/res/list-add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnAdd.setIcon(icon)
         self.btnAdd.setObjectName("btnAdd")
-        self.gridLayout.addWidget(self.btnAdd, 3, 2, 1, 1)
-        self.btnModify = QtGui.QPushButton(self.centralwidget)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/icons/res/document-edit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnModify.setIcon(icon1)
-        self.btnModify.setObjectName("btnModify")
-        self.gridLayout.addWidget(self.btnModify, 3, 3, 1, 1)
-        self.btnDelete = QtGui.QPushButton(self.centralwidget)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/icons/res/edit-delete.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnDelete.setIcon(icon2)
-        self.btnDelete.setObjectName("btnDelete")
-        self.gridLayout.addWidget(self.btnDelete, 3, 4, 1, 1)
+        self.gridLayout.addWidget(self.btnAdd, 1, 2, 1, 1)
         frmAccounts.setCentralWidget(self.centralwidget)
         self.statusbar = QtGui.QStatusBar(frmAccounts)
         self.statusbar.setObjectName("statusbar")
@@ -63,8 +51,6 @@ class Ui_frmAccounts(object):
         frmAccounts.setWindowTitle(QtGui.QApplication.translate("frmAccounts", "Cuentas Contables", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("frmAccounts", "&Buscar:", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAdd.setText(QtGui.QApplication.translate("frmAccounts", "&Añadir", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnModify.setText(QtGui.QApplication.translate("frmAccounts", "&Modificar", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnDelete.setText(QtGui.QApplication.translate("frmAccounts", "Borrar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmAccounts", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc

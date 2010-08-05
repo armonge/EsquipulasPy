@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/mainwindowinventario.ui'
 #
-# Created: Fri Jul 23 20:57:46 2010
+# Created: Thu Aug  5 12:49:35 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -114,19 +114,6 @@ class Ui_MainWindow(object):
         self.btnProviders.setFlat(False)
         self.btnProviders.setObjectName("btnProviders")
         self.gridLayout_2.addWidget(self.btnProviders, 3, 0, 1, 1)
-        self.btnConceptos = QtGui.QPushButton(self.page)
-        self.btnConceptos.setMinimumSize(QtCore.QSize(0, 70))
-        font = QtGui.QFont()
-        font.setPointSize(9)
-        font.setWeight(75)
-        font.setBold(True)
-        self.btnConceptos.setFont(font)
-        self.btnConceptos.setAutoFillBackground(False)
-        self.btnConceptos.setIcon(icon4)
-        self.btnConceptos.setIconSize(QtCore.QSize(64, 64))
-        self.btnConceptos.setFlat(False)
-        self.btnConceptos.setObjectName("btnConceptos")
-        self.gridLayout_2.addWidget(self.btnConceptos, 4, 0, 1, 1)
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtGui.QWidget()
         self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 580))
@@ -287,7 +274,7 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionUnlockSession)
 
         self.retranslateUi(MainWindow)
-        self.toolBox.setCurrentIndex(2)
+        self.toolBox.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -297,7 +284,6 @@ class Ui_MainWindow(object):
         self.btnCategories.setText(QtGui.QApplication.translate("MainWindow", "Categorias", None, QtGui.QApplication.UnicodeUTF8))
         self.btnBrands.setText(QtGui.QApplication.translate("MainWindow", "Marcas", None, QtGui.QApplication.UnicodeUTF8))
         self.btnProviders.setText(QtGui.QApplication.translate("MainWindow", "Proveedores", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnConceptos.setText(QtGui.QApplication.translate("MainWindow", "Conceptos", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page), QtGui.QApplication.translate("MainWindow", "Catalogos", None, QtGui.QApplication.UnicodeUTF8))
         self.btnLiquidations.setText(QtGui.QApplication.translate("MainWindow", "Liquidaciones", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAnnulments.setText(QtGui.QApplication.translate("MainWindow", "Anulaciones de\n"
