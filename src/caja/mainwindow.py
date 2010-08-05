@@ -41,7 +41,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         
         DatosSesion = namedtuple('DatosSesion','usuarioId sesionId tipoCambioId tipoCambioOficial tipoCambioBanco fecha')
         
-        self.datosSesion = DatosSesion(1,1,30,Decimal('21.4138'),Decimal('21.50'),QDate.currentDate())
+        self.datosSesion = DatosSesion(1,17,30,Decimal('21.4138'),Decimal('21.50'),QDate.currentDate())
         
 
 #        self.date =None
@@ -69,12 +69,10 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
 
         self.btnArqueo.setEnabled( state )
         self.btnBanks.setEnabled( state )
-        self.btnpos.setEnabled( state )
         self.btnClients.setEnabled( state )
         self.btnrecibo.setEnabled( state )
         self.btnfactura.setEnabled( state )
         self.btnAnnulments.setEnabled( state )
-        self.btnConceptos.setEnabled( state )
         self.mdiArea.setEnabled( state )
         self.mdiArea.setVisible( state )
         self.actionLockSession.setVisible( state )

@@ -4,7 +4,7 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtGui import QMainWindow,QDialog, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter
+from PyQt4.QtGui import QMainWindow,QDialog, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter
 from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, SIGNAL, QModelIndex, QTimer
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 
@@ -351,10 +351,11 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
         Funcion usada para mostrar el reporte de una entrada compra
         """
+        printer = QPrinter()
+        web =  "recibos.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
+        report = frmReportes(web , self.parentWindow.user,  printer, self)
 
-        report = frmReportes( "entradaslocales.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.datosRecibo.userId, self )
-
-        report.show()
+        report.exec_()
 
     @pyqtSlot(  )
     def on_actionNew_activated( self ):

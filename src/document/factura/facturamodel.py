@@ -257,7 +257,7 @@ class FacturaModel( QAbstractTableModel ):
                 "(" + insertedId + ",:idvendedor)" 
                 )
 
-            query.bindValue( ":iduser", self.datosSesion.userId )
+            query.bindValue( ":iduser", self.datosSesion.usuarioId )
             query.bindValue( ":idcliente", self.clienteId )
             query.bindValue( ":idvendedor", self.vendedorId )
 
