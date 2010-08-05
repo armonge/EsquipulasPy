@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/mainwindowcaja.ui'
+# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\mainwindowcaja.ui'
 #
-# Created: Tue Jul 27 21:24:10 2010
-#      by: PyQt4 UI code generator 4.7.2
+# Created: Wed Aug 04 20:36:29 2010
+#      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -51,7 +51,7 @@ class Ui_MainWindow(object):
         self.toolBox.setObjectName("toolBox")
         self.page = QtGui.QWidget()
         self.page.setEnabled(True)
-        self.page.setGeometry(QtCore.QRect(0, 0, 176, 316))
+        self.page.setGeometry(QtCore.QRect(0, 0, 230, 574))
         self.page.setObjectName("page")
         self.gridLayout = QtGui.QGridLayout(self.page)
         self.gridLayout.setObjectName("gridLayout")
@@ -120,7 +120,7 @@ class Ui_MainWindow(object):
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtGui.QWidget()
         self.page_2.setEnabled(True)
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 555))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 574))
         self.page_2.setObjectName("page_2")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page_2)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -241,24 +241,19 @@ class Ui_MainWindow(object):
         self.btnConceptos.setText(QtGui.QApplication.translate("MainWindow", "Conceptos", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page), QtGui.QApplication.translate("MainWindow", "Catalogos", None, QtGui.QApplication.UnicodeUTF8))
         self.btnApertura.setText(QtGui.QApplication.translate("MainWindow", "Apertura de Caja", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnApertura.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+1", None, QtGui.QApplication.UnicodeUTF8))
         self.btnfactura.setText(QtGui.QApplication.translate("MainWindow", "Facturas", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnfactura.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+2", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAnnulments.setText(QtGui.QApplication.translate("MainWindow", "Anulaciones \n"
 "de Factura", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAnnulments.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+3", None, QtGui.QApplication.UnicodeUTF8))
         self.btnrecibo.setText(QtGui.QApplication.translate("MainWindow", "Recibos", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnrecibo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
         self.btnArqueo.setText(QtGui.QApplication.translate("MainWindow", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnArqueo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+5", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), QtGui.QApplication.translate("MainWindow", "Movimientos", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionLockSession.setText(QtGui.QApplication.translate("MainWindow", "Bloquear Sesión", None, QtGui.QApplication.UnicodeUTF8))
         self.actionUnlockSession.setText(QtGui.QApplication.translate("MainWindow", "Desbloquear Sesión", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    MainWindow = QtGui.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
-

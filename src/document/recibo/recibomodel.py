@@ -123,8 +123,7 @@ class ReciboModel( AccountsSelectorModel ):
         line.monto = value
         line.montoDolar = round(value  / self.tipoCambio,4) if  monedaId==1 else value
         line.montoDolar = Decimal( str(line.montoDolar))
-        
-        
+
         
         suma = self.currentSum
         suma =  self.total - suma

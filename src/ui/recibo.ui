@@ -963,6 +963,9 @@ p, li { white-space: pre-wrap; }
    <property name="text">
     <string>Guardar</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
   </action>
   <action name="actionCancel">
    <property name="icon">

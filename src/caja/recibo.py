@@ -312,11 +312,13 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
         Slot documentation goes here.
         """
-        if self.editmodel.valid and self.abonoeditmodel.valid:
+        self.datosRecibo.lineasAbonos =self.abonoeditmodel.lines
+        self.datosRecibo.lineas = self.editmodel.lines
+        if self.datosRecibo.valid(self):
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
-
-            if self.editmodel.save( self.abonoeditmodel.lines ):
+      
+            if self.datosRecibo.save():
                 QMessageBox.information( None,
                     self.trUtf8( "Llantera Esquipulas" ),
                     self.trUtf8( """El documento se ha guardado con exito""" ) )
@@ -331,14 +333,6 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
-
-        else:
-            QMessageBox.warning( None,
-                self.trUtf8( "Llantera Esquipulas" ),
-                self.trUtf8( """El documento no puede guardarse ya que la información no esta completa""" ),
-                QMessageBox.StandardButtons( \
-                    QMessageBox.Ok ),
-                QMessageBox.Ok )
 
 
     @pyqtSlot(  )
@@ -772,8 +766,8 @@ class DatosRecibo(object):
     
     
         
-    @property
-    def valid( self ):
+    
+    def valid(self, recibo ):
         """
         Un documento es valido cuando 
         self.printedDocumentNumber != ""
@@ -783,21 +777,43 @@ class DatosRecibo(object):
         self.uid != 0
         self.warehouseId != 0 
         """
-        if  self.printedDocumentNumber == "":
-            print( "No existe numero de doc impreso" )
-        elif int( self.clienteId ) == 0:
-            print( "No existe un cliente seleccionado" )
-        elif int( self.validLines ) < 1:
-            print( "No Hay ninguna linea no valida" )
-        elif int( self.retencionId ) == 0:
-            print( "No hay tasa de retencion" )
-        elif int( self.uid ) == 0:
-            print( "No hay un usuario" )
+        
+        if int( self.clienteId ) == 0:
+            recibo.cbcliente.setFocus()
+            QMessageBox.information(None,"Guardar Recibo","No existe un cliente seleccionado" )
         elif int( self.conceptoId ) == 0:
-            print( "No hay un concepto" )
-        elif self.idtc == 0:
-            print( "no hay un tipo de cambio para la fecha" + self.datetime )
+            recibo.cbconcepto.setFocus()
+            QMessageBox.information(None,"Guardar Recibo","No hay un concepto" )
+        elif int( self.retencionId ) == 0:
+            recibo.cbtasaret.setFocus()
+            QMessageBox.information(None,"Guardar Recibo","No hay tasa de retencion" )
+        elif self.datosSesion.tipoCambioBanco == 0:
+            QMessageBox.information(None,"Guardar Recibo","no hay un tipo de cambio para la fecha" + self.datosSesion.fecha )
+        elif int( self.datosSesion.usuarioId ) == 0:
+            raise Exception("No hay un usuario" )
+        elif  self.printedDocumentNumber == "":
+            raise Exception("No existe numero de doc impreso" )
         else:
+            foo = 0
+            for line in self.lineas:
+                foo += 1
+                if not line.valid:
+                    recibo.tabledetails.selectRow(foo - 1)
+                    QMessageBox.information(None,"Guardar Recibo",u"La linea " + str(foo) + u" del tipo de pago no es válida")
+                    return False
+            if len(self.lineasAbonos) ==0:
+                QMessageBox.information(None,"Guardar Recibo",u"Por favor elija al menos una factura a la que se realizará el abono")
+                return False
+            
+            foo = 0
+            for line in self.lineasAbonos:
+                foo += 1
+                if not line.valid:
+                    recibo.tableabonos.selectRow(foo - 1)
+                    QMessageBox.information(None,"Guardar Recibo",u"La linea " + str(foo) + u" de las facturas abonadas no es válida")
+                    return False
+                
+                
             return True
         return False
 
@@ -815,7 +831,7 @@ class DatosRecibo(object):
             if line.valid:foo += 1
         return foo
     
-    def save( self ):
+    def save( self):
         """
         Este metodo guarda el documento actual en la base de datos
         """
@@ -835,7 +851,7 @@ class DatosRecibo(object):
             VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:idusuario,:anulado,:idpersona,:observacion,:total,:escontado,:idtc,:concepto)
             """ )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-            query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
+            query.bindValue( ":fechacreacion", self.datosSesion.toString( 'yyyyMMdd' ) & QDateTime.currentDateTime().toString("hhmmss") )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":idusuario", self.datosSesion.usuarioId )
             query.bindValue( ":anulado", 0 )

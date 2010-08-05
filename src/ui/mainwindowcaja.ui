@@ -90,8 +90,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>176</width>
-          <height>316</height>
+          <width>230</width>
+          <height>574</height>
          </rect>
         </property>
         <attribute name="label">
@@ -266,7 +266,7 @@ Caja</string>
           <x>0</x>
           <y>0</y>
           <width>230</width>
-          <height>555</height>
+          <height>574</height>
          </rect>
         </property>
         <attribute name="label">
@@ -303,6 +303,9 @@ Caja</string>
              <width>64</width>
              <height>64</height>
             </size>
+           </property>
+           <property name="shortcut">
+            <string>Ctrl+1</string>
            </property>
            <property name="flat">
             <bool>false</bool>
@@ -345,6 +348,9 @@ Caja</string>
              <height>64</height>
             </size>
            </property>
+           <property name="shortcut">
+            <string>Ctrl+2</string>
+           </property>
            <property name="flat">
             <bool>false</bool>
            </property>
@@ -383,6 +389,9 @@ de Factura</string>
              <height>64</height>
             </size>
            </property>
+           <property name="shortcut">
+            <string>Ctrl+3</string>
+           </property>
            <property name="flat">
             <bool>false</bool>
            </property>
@@ -419,6 +428,9 @@ de Factura</string>
              <width>32</width>
              <height>32</height>
             </size>
+           </property>
+           <property name="shortcut">
+            <string>Ctrl+4</string>
            </property>
            <property name="flat">
             <bool>false</bool>
@@ -460,6 +472,9 @@ de Factura</string>
              <width>64</width>
              <height>64</height>
             </size>
+           </property>
+           <property name="shortcut">
+            <string>Ctrl+5</string>
            </property>
            <property name="flat">
             <bool>false</bool>
