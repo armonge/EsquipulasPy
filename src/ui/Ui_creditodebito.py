@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/credito-debito.ui'
+# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/creditodebito.ui'
 #
 # Created by: PyQt4 UI code generator 4.7.3
 #
@@ -356,7 +356,7 @@ class Ui_frmCreditoDebito(object):
         frmCreditoDebito.setTabOrder(self.tablenavigation, self.txtSearch)
 
     def retranslateUi(self, frmCreditoDebito):
-        frmCreditoDebito.setWindowTitle(QtGui.QApplication.translate("frmCreditoDebito", "Devoluciones", None, QtGui.QApplication.UnicodeUTF8))
+        frmCreditoDebito.setWindowTitle(QtGui.QApplication.translate("frmCreditoDebito", "Notas Debito/Credito", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("frmCreditoDebito", "# Documento", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("frmCreditoDebito", "Cliente", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("frmCreditoDebito", "# Devolucion", None, QtGui.QApplication.UnicodeUTF8))
