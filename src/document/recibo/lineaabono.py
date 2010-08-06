@@ -19,7 +19,7 @@ class LineaAbono(object):
     def __setMonto(self,monto):
         self.__monto = monto
         if self.tasaIva==0:
-            self.subMonto = 0
+            self.subMonto = monto
         else:
             self.subMonto = Decimal( str( round(monto / (1+ self.tasaIva /100),4)))
     def __getMonto(self):
