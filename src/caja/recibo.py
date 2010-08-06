@@ -141,21 +141,21 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 #        El modelo principal
 
             self.navmodel.setQuery( """
-            SELECT
+                        SELECT
                             padre.iddocumento,
                             padre.ndocimpreso as 'No. Recibo',
-                            padre.observacion as 'Recibimos de',
-                            padre.total as 'Total C$',
+                            p.nombre as 'Cliente',
+                            padre.total as 'Total',
                             DATE(padre.fechacreacion) as 'El dia',
                             c.descripcion as 'En cocepto de',
-                            p.nombre as 'Al Cliente',
                             IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
-                            CONCAT(valorcosto,'%') as 'Retencion',
-                           IF(hijo.total IS NULL, '-' ,hijo.total)   as 'Total Ret C$',
-                           hijo.observacion,
-                           IF(hijo.ndocimpreso IS NULL, 0,1)
+                            CONCAT(CAST(ca.valorcosto AS CHAR),'%') as 'Retencion',
+                            IFNULL(HIJO.TOTAL,'-') as 'Total Ret C$',
+                           padre.observacion ,
+                           IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion'
             FROM documentos padre
-            JOIN personas p ON p.idpersona = padre.idpersona
+            JOIN personasxdocumento pxd ON pxd.iddocumento = padre.iddocumento
+            JOIN personas p ON p.idpersona = pxd.idpersona
             JOIN conceptos c ON  c.idconcepto=padre.idconcepto
             LEFT JOIN costosxdocumento cd ON cd.iddocumento=padre.iddocumento
             LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
