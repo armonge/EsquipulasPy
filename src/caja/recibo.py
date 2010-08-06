@@ -25,7 +25,7 @@ from utility.constantes import IDRECIBO,IDRETENCION
 #from PyQt4.QtGui import QMainWindow
 
 #controles
-IDDOCUMENTO, NDOCIMPRESO, OBSERVACION, TOTAL, FECHA, CONCEPTO, CLIENTE, NRETENCION, TASARETENCION, TOTALRETENCION, OBSERVACIONRET, CONRETENCION = range( 12 )
+IDDOCUMENTO,FECHA, NDOCIMPRESO,CLIENTE,TOTAL,  CONCEPTO, NRETENCION, TASARETENCION, TOTALRETENCION,TOTALPAGADO, OBSERVACION, CONRETENCION = range( 12 )
 
 #table
 IDDOCUMENTOT, DESCRIPCION, REFERENCIA, MONTO,MONTODOLAR,IDMONEDA = range( 6 )
@@ -109,14 +109,6 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 #            self.editmodel.escontado = 1 if self.rbcontado.isChecked() else 0
 #            print(str(self.editmodel.escontado))
 
-
-# MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
-    @pyqtSignature( "bool" )
-    def on_ckretener_toggled( self, on ):
-        """
-        """
-        self.datosRecibo.retencionAplicada(self,on)
-
     @pyqtSignature( "" )
     def on_txtobservaciones_textChanged( self ):
         """
@@ -143,14 +135,15 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.navmodel.setQuery( """
                         SELECT
                             padre.iddocumento,
+                            DATE(padre.fechacreacion) as 'Fecha',
                             padre.ndocimpreso as 'No. Recibo',
                             p.nombre as 'Cliente',
                             padre.total as 'Total',
-                            DATE(padre.fechacreacion) as 'El dia',
                             c.descripcion as 'En cocepto de',
                             IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
-                            CONCAT(CAST(ca.valorcosto AS CHAR),'%') as 'Retencion',
+                            IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%')) as 'Retencion',
                             IFNULL(HIJO.TOTAL,'-') as 'Total Ret C$',
+                            padre.total - IFNULL(HIJO.TOTAL,0) as 'Total Pagado', 
                            padre.observacion ,
                            IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion'
             FROM documentos padre
@@ -162,7 +155,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
             LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
             WHERE padre.idtipodoc=18
-            ORDER BY CAST(padre.ndocimpreso AS SIGNED)
+            AND p.tipopersona=1
+            ORDER BY padre.iddocumento
             ;
             """ )
     #        El modelo que filtra a self.navmodel
@@ -184,6 +178,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             FROM pagos p
             JOIN tiposmoneda tm ON tm.idtipomoneda=p.tipomoneda
             JOIN tipospago tp ON tp.idtipopago=p.tipopago
+            ORDER BY p.nlinea
             ;
             """ )
 
@@ -202,6 +197,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             FROM docpadrehijos d
             JOIN documentos padre ON d.idpadre=padre.iddocumento
             WHERE padre.idtipodoc=5 and d.monto is not null
+            ORDER BY d.nlinea
 ;
             """ )
 
@@ -219,7 +215,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 idpersona
             FROM vw_saldofacturas c
             WHERE c.saldo>0
-            ORDER BY c.ndocimpreso
+            ORDER BY CAST(c.ndocimpreso AS SIGNED)
             ;
         """ )
             self.facturasproxymodel = ROFacturasModel( self )
@@ -241,6 +237,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.mapper.addMapping( self.lbltotalreten, TOTALRETENCION, "text" )
             self.mapper.addMapping( self.txttasaret, TASARETENCION, "text" )
             self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
+            self.mapper.addMapping(self.lbltotalrecibo, TOTALPAGADO, "text" )
             self.mapper.addMapping( self.ckretener, CONRETENCION, "checked" )
 
 
@@ -268,7 +265,6 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.tablefacturas.setColumnHidden( 3, True )
 
             self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
-            self.tablenavigation.setColumnHidden( OBSERVACIONRET, True )
             self.tablenavigation.setColumnHidden( TOTALRETENCION, True )
             self.tablenavigation.setColumnHidden( CONRETENCION, True )
 
@@ -284,16 +280,23 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
     
 
     def updateLabels( self ):
-        
-        self.editmodel.asignarTotal(self.abonoeditmodel.total)  
+        #Asingar el total al modelo
         totalAbono = self.abonoeditmodel.total
+
+        retener = self.datosRecibo.retencionValida
+        
+        self.ckretener.setEnabled(retener)
+        if self.cbtasaret.currentIndex() >-1:
+            self.ckretener.setChecked(retener)
+        
+                    
+        ret=self.datosRecibo.obtenerRetencion
+        self.editmodel.asignarTotal(totalAbono-ret)
         tasa = self.datosRecibo.datosSesion.tipoCambioBanco
         
         self.lbltotal.setText( moneyfmt(totalAbono, 4, "US$ " ) )
         self.lbltotal.setToolTip(moneyfmt(totalAbono * tasa, 4, "C$ " ))
-        
-        ret=self.datosRecibo.obtenerRetencion
-        
+
         self.lbltotalreten.setText( moneyfmt( ret, 4, "US$ " ) )
         self.lbltotalreten.setToolTip(moneyfmt( ret* tasa, 4, "C$ " ) )
         
@@ -322,7 +325,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
 #        self.datosRecibo.lineasAbonos =self.abonoeditmodel.lines
 #        self.datosRecibo.lineas = self.editmodel.lines
-        
+        self.datosRecibo.observaciones = self.txtobservaciones.toPlainText()
         if self.datosRecibo.valid(self):
             if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
                 if not QSqlDatabase.database().isOpen():
@@ -510,10 +513,12 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.actionGoNext.setVisible( status )
         self.actionGoLast.setVisible( status )
         self.actionPreview.setVisible( status )
+        self.ckretener.setEnabled(False)
         if status:
             self.navigate( 'last' )
             self.swcliente.setCurrentIndex( 1 )
             self.swconcepto.setCurrentIndex( 1 )
+            self.swtasaret.setCurrentIndex( 1 )
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
             self.tableabonos.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
@@ -528,8 +533,9 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             
             self.lbltotalreten.setText( "US$ 0.0000" )
             self.lbltotal.setText( "US$ 0.0000" )
+            self.lbltotalrecibo.setText( "US$ 0.0000" )
             self.cbcliente.setFocus()
-
+            self.ckretener.setChecked(False)
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.tableabonos.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             
@@ -550,7 +556,9 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 i = self.abonoeditmodel.rowCount()
                 self.agregarFactura(i,cindex.row())
                 self.updateLabels()
+                
 
+    
     @pyqtSlot( "bool" )
     def on_btnaddall_clicked( self, on ):
         """
@@ -630,7 +638,18 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         asignar la retencion al objeto self.editmodel
         """
         self.datosRecibo.tasaRetencionCambio(self,index)
+        if self.ckretener.isEnabled():
+            self.updateLabels()
 
+# MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
+    @pyqtSignature( "bool" )
+    def on_ckretener_toggled( self, on ):
+        """
+        """
+        if self.editmodel != None:
+            self.datosRecibo.aplicarRet = on   
+            self.cbtasaret.setEnabled(on)
+            self.cbtasaret.setCurrentIndex(-1)
 
     @pyqtSlot( "QDateTime" )
     def on_dtPicker_dateTimeChanged( self, datetime ):
@@ -722,7 +741,8 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
     def on_ckretener_toggled( self, on ):
         """
         """
-        self.datosRecibo.retencionAplicada(self,on)
+        if self.editModel != None and self.ckretener.isEnabled():
+            self.datosRecibo.retencionAplicada(self,on)
   
         
     @pyqtSlot( "int" )
@@ -762,7 +782,7 @@ class DatosRecibo(object):
     def total( self ):
         """
         """
-        tmpsubtotal = sum( [linea.montoDolar for linea in self.lineas])
+        tmpsubtotal = sum( [linea.monto for linea in self.lineasAbonos])
         return tmpsubtotal if tmpsubtotal > 0 else Decimal( 0 )
     
     @property
@@ -793,9 +813,9 @@ class DatosRecibo(object):
         elif int( self.conceptoId ) == 0:
             recibo.cbconcepto.setFocus()
             QMessageBox.information(None,"Guardar Recibo","No hay un concepto" )
-        elif int( self.retencionId ) == 0:
-            recibo.cbtasaret.setFocus()
-            QMessageBox.information(None,"Guardar Recibo","No hay tasa de retencion" )
+        elif self.aplicarRet and int( self.retencionId ) == 0:
+                recibo.cbtasaret.setFocus()
+                QMessageBox.information(None,"Guardar Recibo","No hay tasa de retencion" )
         elif self.datosSesion.tipoCambioBanco == 0:
             QMessageBox.information(None,"Guardar Recibo","no hay un tipo de cambio para la fecha" + self.datosSesion.fecha )
         elif int( self.datosSesion.usuarioId ) == 0:
@@ -825,15 +845,21 @@ class DatosRecibo(object):
                 
             return True
         return False
+    
+    @property
+    def retencionValida(self):
+        total = self.total
+        totalC = total * self.datosSesion.tipoCambioBanco
+        return totalC>1000
 
     @property
     def obtenerRetencion( self ):
-        total = self.total
-        totalC = total * self.datosSesion.tipoCambioBanco
-        if totalC<=1000:
+        if not self.retencionValida:
+            self.aplicarRet = False
+            self.retencionId =0
             return Decimal(0)
         else:
-            return ( total * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else Decimal(0)
+            return ( self.total * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else Decimal(0)
         
     @property
     def obtenerGanancia( self ):
@@ -921,9 +947,10 @@ class DatosRecibo(object):
                 linea.save( insertedId, i )
                 i = i + 1
     #INSERTAR los abonos
-            
+            i = 0        
             for l in self.lineasAbonos:
-                l.save( insertedId )
+                l.save( insertedId,i )
+                i = i + 1
     
     #VERIFICO SI se aplicara la retencion                     
             if self.aplicarRet :
@@ -1025,14 +1052,8 @@ class DatosRecibo(object):
         self.retencionId = self.retencionModel.record(index).value( "idcostoagregado" ).toInt()[0]
         value =self.retencionModel.record( index ).value( "tasa" ).toString()
         self.retencionTasa = Decimal( value if value!="" else 0 )
-        recibo.updateLabels()
+
         
-    def retencionAplicada(self,recibo,on):
-        recibo.cbtasaret.setCurrentIndex(-1)
-        recibo.cbtasaret.setEnabled(on)
-        self.aplicarRet = on    
-        recibo.updateLabels()
-            
         
 class RONavigationModel( QSortFilterProxyModel ):
     """
@@ -1043,9 +1064,14 @@ class RONavigationModel( QSortFilterProxyModel ):
         Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
         """
         value = QSortFilterProxyModel.data( self, index, role )
-        if value.isValid() and role in ( Qt.EditRole, Qt.DisplayRole ):
-            if index.column() == TOTAL :
-                return moneyfmt( Decimal( value.toString() ), 2, "$" )
+        if value.isValid() and role in ( Qt.EditRole, Qt.DisplayRole ,Qt.TextAlignmentRole):
+            if index.column() in (TOTAL,TOTALPAGADO,TOTALRETENCION) :
+                if role in ( Qt.EditRole, Qt.DisplayRole):
+                    value = value.toString()
+                    return moneyfmt( Decimal( value if value!="-" else 0 ), 4, "US$" )
+                elif role == Qt.TextAlignmentRole:
+                    return Qt.AlignHCenter | Qt.AlignVCenter
+            
         return value
 
 class RODetailsModel( QSortFilterProxyModel ):

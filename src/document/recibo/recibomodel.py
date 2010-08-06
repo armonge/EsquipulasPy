@@ -74,14 +74,14 @@ class ReciboModel( AccountsSelectorModel ):
             elif column == REFERENCIA:
                 return line.referencia
             elif column == MONTO:
-                value = moneyfmt( line.monto,2, line.simboloMoneda) if line.monto != 0 else ""
+                value = moneyfmt( line.monto,4, line.simboloMoneda) if line.monto != 0 else ""
                 return value
-                
-                
             elif column == MONTODOLAR:
                 return moneyfmt( line.montoDolar , 4, "US$" ) if line.montoDolar != 0 else ""
             elif column == IDMONEDA:
                 return line.monedaId
+            elif column == IDPAGO:
+                return line.pagoId
         elif role == Qt.EditRole:
 #            Esto es lo que recibe el delegate cuando va a mostrar la el widget 
             if column == MONTO:

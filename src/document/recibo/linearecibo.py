@@ -40,17 +40,17 @@ class LineaRecibo:
         query = QSqlQuery()
         if not query.prepare( 
         """
-        INSERT INTO pagos (recibo, tipopago, tipomoneda, monto,refexterna ) 
-        VALUES( :iddocumento, :idpago, :idmoneda, :monto,:ref )
+        INSERT INTO pagos (recibo, tipopago, tipomoneda, monto,refexterna,nlinea ) 
+        VALUES( :iddocumento, :idpago, :idmoneda, :monto,:ref,:linea )
         """ ):
             raise Exception( "no esta preparada" )
 
         query.bindValue( ":iddocumento", iddocumento )
         query.bindValue( ":idpago", self.pagoId )
         query.bindValue( ":idmoneda", self.monedaId )
-
         query.bindValue( ":monto", self.montoDolar.to_eng_string() )
         query.bindValue( ":ref", self.referencia )
+        query.bindValue( ":linea", linea )
 
         if not query.exec_():
             print( query.lastError().text() )

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\recibo.ui'
 #
-# Created: Wed Aug 04 22:42:25 2010
+# Created: Thu Aug 05 21:53:10 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -196,6 +196,7 @@ class Ui_frmRecibo(object):
         self.horizontalLayout_9 = QtGui.QHBoxLayout(self.page_9)
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
         self.cbtasaret = QtGui.QComboBox(self.page_9)
+        self.cbtasaret.setEnabled(False)
         self.cbtasaret.setMinimumSize(QtCore.QSize(0, 20))
         self.cbtasaret.setEditable(False)
         self.cbtasaret.setObjectName("cbtasaret")
@@ -217,15 +218,11 @@ class Ui_frmRecibo(object):
         self.txttasaret.setMinimumSize(QtCore.QSize(0, 20))
         self.txttasaret.setStyleSheet("None")
         self.txttasaret.setText("")
-        self.txttasaret.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.txttasaret.setAlignment(QtCore.Qt.AlignCenter)
         self.txttasaret.setDragEnabled(True)
         self.txttasaret.setReadOnly(True)
         self.txttasaret.setObjectName("txttasaret")
         self.horizontalLayout_10.addWidget(self.txttasaret)
-        self.label_9 = QtGui.QLabel(self.page_10)
-        self.label_9.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-        self.label_9.setObjectName("label_9")
-        self.horizontalLayout_10.addWidget(self.label_9)
         self.swtasaret.addWidget(self.page_10)
         self.gridLayout_2.addWidget(self.swtasaret, 2, 6, 1, 1)
         self.horizontalLayout_4.addLayout(self.gridLayout_2)
@@ -544,7 +541,7 @@ class Ui_frmRecibo(object):
         self.tabWidget.setCurrentIndex(0)
         self.swcliente.setCurrentIndex(1)
         self.swconcepto.setCurrentIndex(1)
-        self.swtasaret.setCurrentIndex(1)
+        self.swtasaret.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(frmRecibo)
         frmRecibo.setTabOrder(self.cbcliente, self.cbconcepto)
         frmRecibo.setTabOrder(self.cbconcepto, self.ckretener)
@@ -578,7 +575,6 @@ class Ui_frmRecibo(object):
         self.label_6.setText(QtGui.QApplication.translate("frmRecibo", "En concepto de:", None, QtGui.QApplication.UnicodeUTF8))
         self.ckretener.setText(QtGui.QApplication.translate("frmRecibo", "Retener", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("frmRecibo", "%", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_9.setText(QtGui.QApplication.translate("frmRecibo", "%", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("frmRecibo", "Detalle de Abono a Facturas", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_3.setTitle(QtGui.QApplication.translate("frmRecibo", "Especifique los tipos de pagos", None, QtGui.QApplication.UnicodeUTF8))
         self.label_22.setText(QtGui.QApplication.translate("frmRecibo", "<b>Observaciones </b>", None, QtGui.QApplication.UnicodeUTF8))

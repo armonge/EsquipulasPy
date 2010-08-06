@@ -13,7 +13,7 @@ class LineaAbono:
         self.monto= Decimal(0)
         self.totalFac=0
         self.saldo=Decimal(0)
-        self.nlinea=0   
+        
     
     def getPrice(self):    
         """
@@ -41,7 +41,7 @@ class LineaAbono:
             return True
         return False
        
-    def save(self,  iddocumento):
+    def save(self,  iddocumento, linea):
         """
         Este metodo guarda la linea en la base de datos
         @param iddocumento el id del documento al que esta enlazada la linea
@@ -52,18 +52,19 @@ class LineaAbono:
         query = QSqlQuery()
         if not query.prepare(
         """
-        INSERT INTO docpadrehijos(idpadre,idhijo,monto) 
-        VALUES (:idfac,:iddocumento, :monto) 
+        INSERT INTO docpadrehijos(idpadre,idhijo,monto,nlinea) 
+        VALUES (:idfac,:iddocumento, :monto,:linea) 
         """):
             raise Exception("no esta preparada")
         
         query.bindValue(":idfac",  self.idFac)
         query.bindValue(":iddocumento",  iddocumento)
         query.bindValue(":monto",  self.monto.to_eng_string())
+        query.bindValue( ":linea", linea )
 
         if not query.exec_():
             print(query.lastError().text())
-            raise Exception("line" + str(self.nlinea))
+            raise Exception("line" + str(linea))
             
             
 
