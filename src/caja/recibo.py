@@ -691,6 +691,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             linea.pagoDescripcion = ""
             linea.nref = ""
             linea.monto = factura.editmodel.total
+            linea.montoDolar =factura.editmodel.total 
             index= self.editmodel.index(0,MONTO)
             self.editmodel.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
             

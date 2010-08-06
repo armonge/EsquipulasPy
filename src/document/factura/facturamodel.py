@@ -26,7 +26,7 @@ class FacturaModel( QAbstractTableModel ):
         self.clienteId = 0
         self.vendedorId =0
         self.bodegaId = 0
-        self.observations = ""
+        self.observaciones = ""
         self.ivaTasa = Decimal( 0 )
         self.ivaId = 0
         self.lines = []
@@ -226,7 +226,7 @@ class FacturaModel( QAbstractTableModel ):
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
-            query.bindValue( ":observacion", self.observations )
+            query.bindValue( ":observacion", self.observaciones )
             query.bindValue( ":total", self.total.to_eng_string() )
             query.bindValue( ":bodega", self.bodegaId )
             query.bindValue( ":escontado", self.escontado )

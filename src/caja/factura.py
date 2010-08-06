@@ -53,7 +53,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
 #        Este es el modelo con los datos de la con los detalles
         self.detailsmodel = QSqlQueryModel( self )
-        self.detailsproxymodel = RODetailsModel( self )
+        self.detailsproxymodel = QSortFilterProxyModel( self )
         self.detailsproxymodel.setSourceModel( self.detailsmodel )
 
         #inicializando el documento
@@ -61,146 +61,17 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.lblanulado.setHidden(True)
         
         QTimer.singleShot( 0, self.loadModels )
-
-
-    def updateModels( self ):
-        """
-        Recargar todos los modelos
-        """
-
-        try:
-
-            if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
-
-
-#        El modelo principal
-            self.navmodel.setQuery( """
-                SELECT
-                    d.iddocumento,
-                    d.ndocimpreso as 'No. Factura',
-                    GROUP_CONCAT(IF(p.tipopersona=1,p.nombre,"") SEPARATOR '') as Cliente,
-                    GROUP_CONCAT(IF(p.tipopersona=3,p.nombre,"") SEPARATOR '') as Vendedor,
-                    ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as subtotal,
-                    d.total- ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as iva,
-                    d.Total,
-                    d.observacion,
-                    DATE_FORMAT(d.fechacreacion,'%d/%m/%Y') as Fecha,
-                    b.nombrebodega as Bodega,
-                    tc.tasa as 'Tipo de Cambio Oficial',
-                    valorcosto as tasaiva,
-                    d.anulado as Anulada,
-                    d.escontado
-                FROM documentos d
-                JOIN bodegas b ON b.idbodega=d.idbodega
-                JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
-                JOIN personasxdocumento pxd ON pxd.iddocumento=d.iddocumento
-                JOIN personas p ON p.idpersona=pxd.idpersona
-                LEFT JOIN costosxdocumento cd ON cd.iddocumento=d.iddocumento
-                LEFT JOIN costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
-                WHERE d.idtipodoc=5
-                GROUP BY iddocumento
-                ;
-            """ )
-    #        El modelo que filtra a self.navmodel
-#            self.navproxymodel = QSortFilterProxyModel( self )
-
-    #        Este es el modelo con los datos de la tabla para navegar
-            self.detailsmodel.setQuery( """
-                SELECT
-                    ad.idarticulo,
-                    ad.descripcion,
-                    -a.unidades as Unidades,
-                    a.precioventa as 'Precio Unit $',
-                    -a.unidades*a.precioventa as 'Total $',
-                    a.iddocumento
-                FROM articulosxdocumento a
-                JOIN vw_articulosdescritos ad on a.idarticulo=ad.idarticulo
-                WHERE a.precioventa IS NOT NULL
-                ;
-            """ )
-
-    #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
-
-            self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
-            self.mapper.setModel( self.navproxymodel )
-            self.mapper.addMapping( self.lblnfac, NDOCIMPRESO , "text" )
-            self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
-            self.mapper.addMapping( self.txtcliente, CLIENTE, "text" )
-            self.mapper.addMapping( self.txtvendedor, VENDEDOR, "text" )
-            self.mapper.addMapping( self.txtbodega, BODEGA, "text" )
-            self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
-            self.mapper.addMapping( self.lblsubtotal, SUBTOTAL, "text" )
-            self.mapper.addMapping( self.lbliva, IVA, "text" )
-            
-
-
-    #        asignar los modelos a sus tablas
-            
-            self.tablenavigation.setModel( self.navproxymodel )
-            self.tabledetails.setModel( self.detailsproxymodel )
-            self.tabledetails.setColumnHidden( IDARTICULO, True )
-                
-            self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
-            self.tablenavigation.setColumnHidden( OBSERVACION, True )
-            self.tablenavigation.setColumnHidden( SUBTOTAL, True )
-            self.tablenavigation.setColumnHidden( IVA, True )
-            self.tablenavigation.setColumnHidden( TASAIVA, True )
-            self.tablenavigation.setColumnHidden( TASA, True )
-            
-#            
-#            self.navigate( 'last' )
-
-        except Exception as inst:
-            print inst
-        finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
-
-
-
-    def updateLabels( self ):
-        self.lblsubtotal.setText( moneyfmt( self.editmodel.subtotal, 4, "US$ " ) )
-        self.lbliva.setText( moneyfmt( self.editmodel.IVA, 4, "US$ " ) )
-        self.lbltotal.setText( moneyfmt( self.editmodel.total, 4, "US$ " ) )
-
-        self.tabledetails.resizeColumnsToContents()
-
-    def removeLine( self ):
-        """
-        Funcion usada para borrar lineas de la tabla
-        """
-        index = self.tabledetails.currentIndex()
-
-        if not index.isValid():
-            return
-        row = index.row()
-
-        self.tabledetails.removeRows( row )
-        self.updateLabels()
-
-# MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
-    @pyqtSlot( "bool" )
-    def on_rbcontado_toggled( self, on ):
-        """
-        Asignar las observaciones al objeto __qdocument
-        """
-        if not self.editmodel is None:
-            self.editmodel.escontado = 1 if on else 0
-
-
+    
     @pyqtSlot(  )
-    def on_actionPreview_activated( self ):
+    def on_actionCancel_activated( self ):
         """
-        Funcion usada para mostrar el reporte de una entrada compra
+        Aca se cancela la edicion del documento
         """
-        printer = QPrinter()
-        printer.setPageSize(QPrinter.Letter)
-        web = "facturas.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] 
-        report = frmReportes( web , self.parentWindow.user, printer, self )
-        report.exec_()
-
-
+        self.editmodel = None
+        self.tablenavigation.setModel( self.navproxymodel )
+        self.tabledetails.setModel( self.detailsproxymodel )
+        self.status = True
+                
     @pyqtSlot(  )
     def on_actionNew_activated( self ):
         """
@@ -379,6 +250,18 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 QSqlDatabase.database().close()
 
     @pyqtSlot(  )
+    def on_actionPreview_activated( self ):
+        """
+        Funcion usada para mostrar el reporte de una entrada compra
+        """
+        printer = QPrinter()
+        printer.setPageSize(QPrinter.Letter)
+        web = "facturas.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] 
+        report = frmReportes( web , self.parentWindow.user, printer, self )
+        report.exec_()
+
+ 
+    @pyqtSlot(  )
     def on_actionSave_activated( self ):
         """
         Guardar el documento actual
@@ -410,14 +293,10 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 if not QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().open()
                 
-                                  
-                    
-                datetime =QDateTime.currentDateTime()
-                datetime.setDate(self.editmodel.datosSesion.fecha)
-                self.editmodel.datetime=datetime
-                
+                self.editmodel.observaciones = self.txtobservaciones.toPlainText()
+                                
                 if self.editmodel.save():
-                    if self.editmodel.escontado:
+                    if self.edritmodel.escontado:
                         if not dialog.save():
                             QMessageBox.critical( None,
                         "Llantera Esquipulas" ,
@@ -440,81 +319,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     QSqlDatabase.database().close()
 
 
-    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
-        """
-        Aca se cancela la edicion del documento
-        """
-        self.editmodel = None
-        self.tablenavigation.setModel( self.navproxymodel )
-        self.tabledetails.setModel( self.detailsproxymodel )
-        self.status = True
+   
 
-
-    def updateDetailFilter( self, index ):
-#        self.lbliva.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "iva" ).toString())))
-#        self.lblsubtotal.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "subtotal" ).toString())))
-#        self.lbltotal.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "total" ).toString())))
-        self.lbltasaiva.setText(self.navmodel.record( index ).value( "tasaiva" ).toString() +'%')
-        self.lblanulado.setHidden(self.navmodel.record( index ).value( "Anulada" ).toInt()[0]==0)
-        self.dtPicker.setDate(QDate.fromString(self.navmodel.record( index ).value( "Fecha" ).toString(),"dd/MM/yyyy"))
-        
-        escontado = self.navmodel.record( index ).value( "escontado" ).toBool() 
-        if escontado:
-            self.rbcontado.setChecked(True)
-        else:
-            self.rbcredito.setChecked(True)
-        
-        
-        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-#        print self.navmodel.record( index ).value( "iddocumento" ).toString() 
-        self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
-        self.tablenavigation.selectRow( self.mapper.currentIndex() )
-        
-
-
-
-
-
-    def setControls( self, status ):
-        """
-        @param status: false = editando        true = navegando
-        """
-        self.txtobservaciones.setReadOnly( status )
-        self.rbcontado.setEnabled( ( not status ) )
-        self.rbcredito.setEnabled( not status )
-
-        self.actionSave.setVisible( not status )
-        self.actionCancel.setVisible( not status )
-        self.tabnavigation.setEnabled( status )
-        self.actionNew.setVisible( status )
-        self.actionGoFirst.setVisible( status )
-        self.actionGoPrevious.setVisible( status )
-        self.actionGoNext.setVisible( status )
-        self.actionGoLast.setVisible( status )
-        self.actionPreview.setVisible( status )
-        if status:
-            self.navigate( 'last' )
-            self.swcliente.setCurrentIndex( 1 )
-            self.swbodega.setCurrentIndex( 1 )
-            self.swvendedor.setCurrentIndex( 1 )
-
-            self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
-        else:
-            self.tabWidget.setCurrentIndex( 0 )
-            self.lblnfac.setText( "500" )
-            self.txtobservaciones.setPlainText( "" )
-            self.swcliente.setCurrentIndex( 0 )
-            self.swbodega.setCurrentIndex( 0 )
-            self.swvendedor.setCurrentIndex( 0 )
-            self.lblsubtotal.setText( "0.0000" )
-            self.lbliva.setText( "0.0000" )
-            self.lbltotal.setText( "0.0000" )
-            self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
-            self.lblanulado.setHidden(True)
-            self.rbcontado.setChecked(True)
-#            self.tabledetails.horizontalHeader().setStretchLastSection(True)
-    
     @pyqtSlot(  )
     def on_btnAnular_clicked( self ):
         
@@ -623,50 +429,6 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 else:
                     anulardialog.close()
                     print "Cancelar"   
-    
-
-    @pyqtSlot(  )
-    def on_txtDocumentNumber_editingFinished( self ):
-        """
-        Asignar el contenido al objeto documeto
-        """
-        if not self.editmodel is None:
-            self.editmodel.printedDocumentNumber = self.txtDocumentNumber.text()
-
-
-
-    @pyqtSlot( "QDate" )
-    def on_dtPicker_dateChanged( self, date ):
-        """
-        Asignar la fecha al objeto __document
-        """
-        if not self.editmodel is None:
-            self.editmodel.datetime = date
-
-
-    @pyqtSlot(  )
-    def on_txtobservaciones_textChanged( self ):
-        """
-        Asignar las observaciones al objeto __document
-        """
-        if not self.editmodel is None:
-            self.editmodel.observations = self.txtobservaciones.toPlainText()
-
-    @pyqtSlot( "int" )
-    def on_cbcliente_currentIndexChanged( self, index ):
-        """
-        asignar proveedor al objeto self.editmodel
-        """
-        if not self.editmodel is None:
-            self.editmodel.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0]
-
-    @pyqtSlot( "int" )
-    def on_cbvendedor_currentIndexChanged( self, index ):
-        """
-        asignar proveedor al objeto self.editmodel
-        """
-        if not self.editmodel is None:
-            self.editmodel.vendedorId = self.vendedoresModel.record( index ).value( "idpersona" ).toInt()[0]
 
     @pyqtSlot( "int" )
     def on_cbbodega_currentIndexChanged( self, index ):
@@ -685,6 +447,209 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.proxyAccounts.setFilterRegExp('%d'%self.editmodel.bodegaId)           
             
             self.updateLabels()
+
+    
+    
+    @pyqtSlot( "int" )
+    def on_cbcliente_currentIndexChanged( self, index ):
+        """
+        asignar proveedor al objeto self.editmodel
+        """
+        if not self.editmodel is None:
+            self.editmodel.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0]
+
+    @pyqtSlot( "int" )
+    def on_cbvendedor_currentIndexChanged( self, index ):
+        """
+        asignar proveedor al objeto self.editmodel
+        """
+        if not self.editmodel is None:
+            self.editmodel.vendedorId = self.vendedoresModel.record( index ).value( "idpersona" ).toInt()[0]
+
+
+    @pyqtSlot( "QDateTime" )
+    def on_dtPicker_dateTimeChanged( self, datetime ):
+        pass
+
+# MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
+    @pyqtSlot( "bool" )
+    def on_rbcontado_toggled( self, on ):
+        """
+        Asignar las observaciones al objeto __qdocument
+        """
+        if not self.editmodel is None:
+            self.editmodel.escontado = 1 if on else 0
+
+
+    def setControls( self, status ):
+        """
+        @param status: false = editando        true = navegando
+        """
+        self.txtobservaciones.setReadOnly( status )
+        self.rbcontado.setEnabled( ( not status ) )
+        self.rbcredito.setEnabled( not status )
+
+        self.actionSave.setVisible( not status )
+        self.actionCancel.setVisible( not status )
+        self.tabnavigation.setEnabled( status )
+        self.actionNew.setVisible( status )
+        self.actionGoFirst.setVisible( status )
+        self.actionGoPrevious.setVisible( status )
+        self.actionGoNext.setVisible( status )
+        self.actionGoLast.setVisible( status )
+        self.actionPreview.setVisible( status )
+        if status:
+            self.navigate( 'last' )
+            self.swcliente.setCurrentIndex( 1 )
+            self.swbodega.setCurrentIndex( 1 )
+            self.swvendedor.setCurrentIndex( 1 )
+
+            self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
+        else:
+            self.tabWidget.setCurrentIndex( 0 )
+            self.lblnfac.setText( "500" )
+            self.txtobservaciones.setPlainText( "" )
+            self.swcliente.setCurrentIndex( 0 )
+            self.swbodega.setCurrentIndex( 0 )
+            self.swvendedor.setCurrentIndex( 0 )
+            self.lblsubtotal.setText( "0.0000" )
+            self.lbliva.setText( "0.0000" )
+            self.lbltotal.setText( "0.0000" )
+            self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
+            self.lblanulado.setHidden(True)
+            self.rbcontado.setChecked(True)
+#            self.tabledetails.horizontalHeader().setStretchLastSection(True)
+    def removeLine( self ):
+        """
+        Funcion usada para borrar lineas de la tabla
+        """
+        index = self.tabledetails.currentIndex()
+
+        if not index.isValid():
+            return
+        row = index.row()
+
+        self.tabledetails.removeRows( row )
+        self.updateLabels()
+
+    def updateDetailFilter( self, index ):
+#        self.lbliva.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "iva" ).toString())))
+#        self.lblsubtotal.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "subtotal" ).toString())))
+#        self.lbltotal.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "total" ).toString())))
+        self.lbltasaiva.setText(self.navmodel.record( index ).value( "tasaiva" ).toString() +'%')
+        self.lblanulado.setHidden(self.navmodel.record( index ).value( "Anulada" ).toInt()[0]==0)
+        self.dtPicker.setDate(QDate.fromString(self.navmodel.record( index ).value( "Fecha" ).toString(),"dd/MM/yyyy"))
+        
+        escontado = self.navmodel.record( index ).value( "escontado" ).toBool() 
+        if escontado:
+            self.rbcontado.setChecked(True)
+        else:
+            self.rbcredito.setChecked(True)
+        
+        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
+#        print self.navmodel.record( index ).value( "iddocumento" ).toString() 
+        self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
+        self.tablenavigation.selectRow( self.mapper.currentIndex() )
+
+    def updateLabels( self ):
+        self.lblsubtotal.setText( moneyfmt( self.editmodel.subtotal, 4, "US$ " ) )
+        self.lbliva.setText( moneyfmt( self.editmodel.IVA, 4, "US$ " ) )
+        self.lbltotal.setText( moneyfmt( self.editmodel.total, 4, "US$ " ) )
+        self.tabledetails.resizeColumnsToContents()
+        
+    def updateModels( self ):
+        """
+        Recargar todos los modelos
+        """
+
+        try:
+
+            if not QSqlDatabase.database().isOpen():
+                QSqlDatabase.database().open()
+
+
+#        El modelo principal
+            self.navmodel.setQuery( """
+                SELECT
+                    d.iddocumento,
+                    d.ndocimpreso as 'No. Factura',
+                    GROUP_CONCAT(IF(p.tipopersona=1,p.nombre,"") SEPARATOR '') as Cliente,
+                    GROUP_CONCAT(IF(p.tipopersona=3,p.nombre,"") SEPARATOR '') as Vendedor,
+                    ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as subtotal,
+                    d.total- ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as iva,
+                    d.Total,
+                    d.observacion,
+                    DATE_FORMAT(d.fechacreacion,'%d/%m/%Y') as Fecha,
+                    b.nombrebodega as Bodega,
+                    tc.tasa as 'Tipo de Cambio Oficial',
+                    valorcosto as tasaiva,
+                    d.anulado as Anulada,
+                    d.escontado
+                FROM documentos d
+                JOIN bodegas b ON b.idbodega=d.idbodega
+                JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
+                JOIN personasxdocumento pxd ON pxd.iddocumento=d.iddocumento
+                JOIN personas p ON p.idpersona=pxd.idpersona
+                LEFT JOIN costosxdocumento cd ON cd.iddocumento=d.iddocumento
+                LEFT JOIN costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
+                WHERE d.idtipodoc=5
+                GROUP BY iddocumento
+                ;
+            """ )
+    #        El modelo que filtra a self.navmodel
+#            self.navproxymodel = QSortFilterProxyModel( self )
+
+    #        Este es el modelo con los datos de la tabla para navegar
+            self.detailsmodel.setQuery( """
+                SELECT
+                    ad.idarticulo,
+                    ad.descripcion,
+                    -a.unidades as Unidades,
+                    a.precioventa as 'Precio Unit $',
+                    -a.unidades*a.precioventa as 'Total $',
+                    a.iddocumento
+                FROM articulosxdocumento a
+                JOIN vw_articulosdescritos ad on a.idarticulo=ad.idarticulo
+                WHERE a.precioventa IS NOT NULL
+                ;
+            """ )
+
+    #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
+
+            self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
+            self.mapper.setModel( self.navproxymodel )
+            self.mapper.addMapping( self.lblnfac, NDOCIMPRESO , "text" )
+            self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
+            self.mapper.addMapping( self.txtcliente, CLIENTE, "text" )
+            self.mapper.addMapping( self.txtvendedor, VENDEDOR, "text" )
+            self.mapper.addMapping( self.txtbodega, BODEGA, "text" )
+            self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
+            self.mapper.addMapping( self.lblsubtotal, SUBTOTAL, "text" )
+            self.mapper.addMapping( self.lbliva, IVA, "text" )
+            
+
+
+    #        asignar los modelos a sus tablas
+            
+            self.tablenavigation.setModel( self.navproxymodel )
+            self.tabledetails.setModel( self.detailsproxymodel )
+            self.tabledetails.setColumnHidden( IDARTICULO, True )
+                
+            self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
+            self.tablenavigation.setColumnHidden( OBSERVACION, True )
+            self.tablenavigation.setColumnHidden( SUBTOTAL, True )
+            self.tablenavigation.setColumnHidden( IVA, True )
+            self.tablenavigation.setColumnHidden( TASAIVA, True )
+            self.tablenavigation.setColumnHidden( TASA, True )
+            
+#            
+#            self.navigate( 'last' )
+
+        except Exception as inst:
+            print inst
+        finally:
+            if QSqlDatabase.database().isOpen():
+                QSqlDatabase.database().close()
 
     @property
     def valid( self ):
@@ -713,69 +678,64 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         else:
             return True
         return False
-    
-    
 
-    @pyqtSlot( "QDateTime" )
-    def on_dtPicker_dateTimeChanged( self, datetime ):
-        pass
 
-class RONavigationModel( QSortFilterProxyModel ):
-    """
-    basicamente le da formato a la salida de mapper
-    """
-    def data( self, index, role = Qt.DisplayRole ):
-        """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
-        """
-        value = QSortFilterProxyModel.data( self, index, role )
-        if value.isValid() and role in ( Qt.EditRole, Qt.DisplayRole):
-            if index.column() in ( SUBTOTAL, IVA, TOTAL ):
-                return moneyfmt( Decimal( value.toString() ), 4, "US$" )
-            elif index.column() == ANULADO:
-                if role == Qt.DisplayRole:
-                    return "Anulada" if value.toInt()[0]==1 else ""
-                
-        return value
-
-class RODetailsModel( QSortFilterProxyModel ):
-    """
-    El modelo que maneja la tabla en la que se previsualizan los os,
-    basicamente esta creado para darle formato al total y al precio
-    """
-    def __init__( self, dbcursor = None ):
-        super( QSortFilterProxyModel, self ).__init__()
-
-    def columnCount( self, index = QModelIndex() ):
-        return 5
-
-    def headerData( self, section, orientation, role = Qt.DisplayRole ):
-        if role == Qt.TextAlignmentRole:
-            if orientation == Qt.Horizontal:
-                return int( Qt.AlignLeft | Qt.AlignVCenter )
-            return int( Qt.AlignRight | Qt.AlignVCenter )
-        if role != Qt.DisplayRole:
-            return None
-        if orientation == Qt.Horizontal:
-            if  section == DESCRIPCION:
-                return u"Descripción"
-            elif section == PRECIO:
-                return "Precio"
-            elif section == TOTALPROD:
-                return "TOTAL"
-            elif section == CANTIDAD:
-                return "Cantidad"
-        return int( section + 1 )
-
-    def data( self, index, role = Qt.DisplayRole ):
-        """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
-        """
-        value = QSortFilterProxyModel.data( self, index, role )
-        if value.isValid() and role == Qt.DisplayRole:
-            if index.column() in ( TOTALPROD, PRECIO ):
-                return moneyfmt( Decimal( value.toString() ), 4, "US$" )
-        return value
+#class RONavigationModel( QSortFilterProxyModel ):
+#    """
+#    basicamente le da formato a la salida de mapper
+#    """
+#    def data( self, index, role = Qt.DisplayRole ):
+#        """
+#        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
+#        """
+#        value = QSortFilterProxyModel.data( self, index, role )
+#        if value.isValid() and role in ( Qt.EditRole, Qt.DisplayRole):
+#            if index.column() in ( SUBTOTAL, IVA, TOTAL ):
+#                return moneyfmt( Decimal( value.toString() ), 4, "US$" )
+#            elif index.column() == ANULADO:
+#                if role == Qt.DisplayRole:
+#                    return "Anulada" if value.toInt()[0]==1 else ""
+#                
+#        return value
+#
+#class RODetailsModel( QSortFilterProxyModel ):
+#    """
+#    El modelo que maneja la tabla en la que se previsualizan los os,
+#    basicamente esta creado para darle formato al total y al precio
+#    """
+#    def __init__( self, dbcursor = None ):
+#        super( QSortFilterProxyModel, self ).__init__()
+#
+#    def columnCount( self, index = QModelIndex() ):
+#        return 5
+#
+#    def headerData( self, section, orientation, role = Qt.DisplayRole ):
+#        if role == Qt.TextAlignmentRole:
+#            if orientation == Qt.Horizontal:
+#                return int( Qt.AlignLeft | Qt.AlignVCenter )
+#            return int( Qt.AlignRight | Qt.AlignVCenter )
+#        if role != Qt.DisplayRole:
+#            return None
+#        if orientation == Qt.Horizontal:
+#            if  section == DESCRIPCION:
+#                return u"Descripción"
+#            elif section == PRECIO:
+#                return "Precio"
+#            elif section == TOTALPROD:
+#                return "TOTAL"
+#            elif section == CANTIDAD:
+#                return "Cantidad"
+#        return int( section + 1 )
+#
+#    def data( self, index, role = Qt.DisplayRole ):
+#        """
+#        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
+#        """
+#        value = QSortFilterProxyModel.data( self, index, role )
+#        if value.isValid() and role == Qt.DisplayRole:
+#            if index.column() in ( TOTALPROD, PRECIO ):
+#                return moneyfmt( Decimal( value.toString() ), 4, "US$" )
+#        return value
 
 
 class Anular( QDialog ):
