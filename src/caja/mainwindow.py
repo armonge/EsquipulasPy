@@ -56,7 +56,20 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.date =QDate.currentDate()
     
         self.status = True
-        
+    
+    def closeEvent( self, event ):
+        u"""
+        Guardar el tamaño, la posición en la pantalla y la posición de la barra de tareas
+        Preguntar si realmente se desea cerrar la pestaña cuando se esta en modo edición
+        """
+        for hijo in self.mdiArea.subWindowList():
+            if not hijo.close():
+                event.ignore()
+                return
+                
+            
+#        if not QMessageBox.question(self, "Llantera Esquipulas", u"¿Está seguro que desea salir?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+#            event.ignore()        
         
     def setControls( self, state ):
         """

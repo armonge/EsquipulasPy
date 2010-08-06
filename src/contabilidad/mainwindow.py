@@ -29,6 +29,16 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         MainWindowBase.__init__( self )
         self.status = True
 
+    def closeEvent( self, event ):
+        u"""
+        Guardar el tamaño, la posición en la pantalla y la posición de la barra de tareas
+        Preguntar si realmente se desea cerrar la pestaña cuando se esta en modo edición
+        """
+        for hijo in self.mdiArea.subWindowList():
+            if not hijo.close():
+                event.ignore()
+                return
+                
     def setControls( self, status ):
         self.btnMovements.setEnabled( status )
 

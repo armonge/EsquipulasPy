@@ -689,8 +689,6 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         if status:
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
-#            self.lblnrec.setText( "" )
-            self.editModel = ReciboModel(self.datosRecibo.datosSesion.tipoCambioBanco)
             
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
@@ -704,14 +702,14 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
                 QMessageBox.Ok )
             else:        
                 self.datosRecibo = DatosRecibo(factura.editmodel.datosSesion)
-                self.datosRecibo.cargarNumeros(self.lblnrec, self.lblnreten)
+                self.datosRecibo.cargarNumeros(self)
                 self.datosRecibo.cargarRetenciones(self.cbtasaret)
                 delegado = ReciboDelegate()    
                 
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
 
-            self.editModel = ReciboModel()
+            self.editModel = ReciboModel(self.datosRecibo.datosSesion.tipoCambioBanco)
             self.editModel.insertRow(0)
             linea = self.editModel.lines[0]
             linea.pagoId = 0

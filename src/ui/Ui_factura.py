@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/factura.ui'
+# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\factura.ui'
 #
-# Created: Fri Jul 23 21:53:45 2010
-#      by: PyQt4 UI code generator 4.7.2
+# Created: Thu Aug 05 22:26:57 2010
+#      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -211,17 +211,17 @@ class Ui_frmFactura(object):
         self.verticalLayout_3.addWidget(self.label_7)
         self.gridLayout_2 = QtGui.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.mtxtobservaciones = QtGui.QPlainTextEdit(self.tabdetails)
+        self.txtobservaciones = QtGui.QPlainTextEdit(self.tabdetails)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.mtxtobservaciones.sizePolicy().hasHeightForWidth())
-        self.mtxtobservaciones.setSizePolicy(sizePolicy)
-        self.mtxtobservaciones.setMinimumSize(QtCore.QSize(0, 40))
-        self.mtxtobservaciones.setMaximumSize(QtCore.QSize(16777215, 80))
-        self.mtxtobservaciones.setReadOnly(True)
-        self.mtxtobservaciones.setObjectName("mtxtobservaciones")
-        self.gridLayout_2.addWidget(self.mtxtobservaciones, 0, 0, 3, 1)
+        sizePolicy.setHeightForWidth(self.txtobservaciones.sizePolicy().hasHeightForWidth())
+        self.txtobservaciones.setSizePolicy(sizePolicy)
+        self.txtobservaciones.setMinimumSize(QtCore.QSize(0, 40))
+        self.txtobservaciones.setMaximumSize(QtCore.QSize(16777215, 80))
+        self.txtobservaciones.setReadOnly(True)
+        self.txtobservaciones.setObjectName("txtobservaciones")
+        self.gridLayout_2.addWidget(self.txtobservaciones, 0, 0, 3, 1)
         self.label_3 = QtGui.QLabel(self.tabdetails)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -427,7 +427,7 @@ class Ui_frmFactura(object):
         self.label_4.setBuddy(self.txtSearch)
 
         self.retranslateUi(frmFactura)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         self.swcliente.setCurrentIndex(1)
         self.swvendedor.setCurrentIndex(1)
         self.swbodega.setCurrentIndex(1)
@@ -437,8 +437,8 @@ class Ui_frmFactura(object):
         frmFactura.setTabOrder(self.cbbodega, self.rbcontado)
         frmFactura.setTabOrder(self.rbcontado, self.rbcredito)
         frmFactura.setTabOrder(self.rbcredito, self.tabledetails)
-        frmFactura.setTabOrder(self.tabledetails, self.mtxtobservaciones)
-        frmFactura.setTabOrder(self.mtxtobservaciones, self.tabWidget)
+        frmFactura.setTabOrder(self.tabledetails, self.txtobservaciones)
+        frmFactura.setTabOrder(self.txtobservaciones, self.tabWidget)
         frmFactura.setTabOrder(self.tabWidget, self.dtPicker)
         frmFactura.setTabOrder(self.dtPicker, self.txtvendedor)
         frmFactura.setTabOrder(self.txtvendedor, self.txtSearch)
@@ -472,11 +472,13 @@ class Ui_frmFactura(object):
         self.actionNew.setText(QtGui.QApplication.translate("frmFactura", "Nuevo", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setShortcut(QtGui.QApplication.translate("frmFactura", "Ctrl+N", None, QtGui.QApplication.UnicodeUTF8))
         self.actionPreview.setText(QtGui.QApplication.translate("frmFactura", "Previsualizar", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionPreview.setShortcut(QtGui.QApplication.translate("frmFactura", "Ctrl+P", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoFirst.setText(QtGui.QApplication.translate("frmFactura", "Ir al Primer Registro", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoPrevious.setText(QtGui.QApplication.translate("frmFactura", "Ir al Registro Anterior", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoNext.setText(QtGui.QApplication.translate("frmFactura", "Ir al siguiente registro", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoLast.setText(QtGui.QApplication.translate("frmFactura", "Ir al ultimo registro", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave.setText(QtGui.QApplication.translate("frmFactura", "Guardar", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSave.setShortcut(QtGui.QApplication.translate("frmFactura", "Ctrl+G", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCancel.setText(QtGui.QApplication.translate("frmFactura", "Cancelar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionEditCell.setText(QtGui.QApplication.translate("frmFactura", "Editar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionEditCell.setShortcut(QtGui.QApplication.translate("frmFactura", "Ctrl+E", None, QtGui.QApplication.UnicodeUTF8))
@@ -488,13 +490,3 @@ class Ui_frmFactura(object):
         self.actionPaste.setText(QtGui.QApplication.translate("frmFactura", "Pegar", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    frmFactura = QtGui.QMainWindow()
-    ui = Ui_frmFactura()
-    ui.setupUi(frmFactura)
-    frmFactura.show()
-    sys.exit(app.exec_())
-

@@ -21,7 +21,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabdetails">
        <attribute name="icon">
@@ -344,7 +344,7 @@ color: rgb(255, 0, 0);</string>
         <item>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0" rowspan="3">
-           <widget class="QPlainTextEdit" name="mtxtobservaciones">
+           <widget class="QPlainTextEdit" name="txtobservaciones">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -655,6 +655,9 @@ color: rgb(255, 0, 0);</string>
    <property name="text">
     <string>Previsualizar</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
   </action>
   <action name="actionGoFirst">
    <property name="icon">
@@ -699,6 +702,9 @@ color: rgb(255, 0, 0);</string>
    </property>
    <property name="text">
     <string>Guardar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
   <action name="actionCancel">
@@ -772,7 +778,7 @@ color: rgb(255, 0, 0);</string>
   <tabstop>rbcontado</tabstop>
   <tabstop>rbcredito</tabstop>
   <tabstop>tabledetails</tabstop>
-  <tabstop>mtxtobservaciones</tabstop>
+  <tabstop>txtobservaciones</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>dtPicker</tabstop>
   <tabstop>txtvendedor</tabstop>

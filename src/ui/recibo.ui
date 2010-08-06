@@ -911,6 +911,9 @@ p, li { white-space: pre-wrap; }
    <property name="text">
     <string>Previsualizar</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
   </action>
   <action name="actionGoFirst">
    <property name="icon">

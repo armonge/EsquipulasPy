@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\recibo.ui'
 #
-# Created: Thu Aug 05 21:53:10 2010
+# Created: Thu Aug 05 22:26:45 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -603,6 +603,7 @@ class Ui_frmRecibo(object):
         self.actionNew.setText(QtGui.QApplication.translate("frmRecibo", "Nuevo", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setShortcut(QtGui.QApplication.translate("frmRecibo", "Ctrl+N", None, QtGui.QApplication.UnicodeUTF8))
         self.actionPreview.setText(QtGui.QApplication.translate("frmRecibo", "Previsualizar", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionPreview.setShortcut(QtGui.QApplication.translate("frmRecibo", "Ctrl+P", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoFirst.setText(QtGui.QApplication.translate("frmRecibo", "Ir al Primer Registro", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoPrevious.setText(QtGui.QApplication.translate("frmRecibo", "Ir al Registro Anterior", None, QtGui.QApplication.UnicodeUTF8))
         self.actionGoNext.setText(QtGui.QApplication.translate("frmRecibo", "Ir al siguiente registro", None, QtGui.QApplication.UnicodeUTF8))
