@@ -65,16 +65,16 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 #        Este es el modelo con los datos de la con los detalles
         self.detailsmodel = QSqlQueryModel( self )
 #        Este es el filtro del modelo anterior
-        self.detailsproxymodel = RODetailsModel( self )
-        self.detailsproxymodel.setSourceModel( self.detailsmodel )
+        self.detailsproxymodel = QSortFilterProxyModel( self )
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #        Este es el modelo con los datos de la con los detalles
         self.abonosmodel = QSqlQueryModel( self )
 #        Este es el filtro del modelo anterior
-        self.abonosproxymodel = ROAbonosModel( self )
+        self.abonosproxymodel = QSortFilterProxyModel( self )
         self.abonosproxymodel.setSourceModel( self.abonosmodel )
-
-
+        self.facturasmodel = QSqlQueryModel( self )
+        self.facturasproxymodel = ROFacturasModel( self )
+        self.facturasproxymodel.setSourceModel( self.facturasmodel )
 
         #inicializando el documento
         self.editmodel = None
@@ -109,256 +109,24 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 #            self.editmodel.escontado = 1 if self.rbcontado.isChecked() else 0
 #            print(str(self.editmodel.escontado))
 
-    @pyqtSignature( "" )
-    def on_txtobservaciones_textChanged( self ):
-        """
-        Asignar las observaciones al objeto __document
-        """
-        if not self.editmodel is None:
-            self.editmodel.observaciones = self.txtobservaciones.toPlainText()
-
-
-
-    def updateModels( self ):
-        """
-        Recargar todos los modelos
-        """
-
-        try:
-
-            if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
-
-
-#        El modelo principal
-
-            self.navmodel.setQuery( """
-                        SELECT
-                            padre.iddocumento,
-                            DATE(padre.fechacreacion) as 'Fecha',
-                            padre.ndocimpreso as 'No. Recibo',
-                            p.nombre as 'Cliente',
-                            padre.total as 'Total',
-                            c.descripcion as 'En cocepto de',
-                            IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
-                            IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%')) as 'Retencion',
-                            IFNULL(HIJO.TOTAL,'-') as 'Total Ret C$',
-                            padre.total - IFNULL(HIJO.TOTAL,0) as 'Total Pagado', 
-                           padre.observacion ,
-                           IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion'
-            FROM documentos padre
-            JOIN personasxdocumento pxd ON pxd.iddocumento = padre.iddocumento
-            JOIN personas p ON p.idpersona = pxd.idpersona
-            JOIN conceptos c ON  c.idconcepto=padre.idconcepto
-            LEFT JOIN costosxdocumento cd ON cd.iddocumento=padre.iddocumento
-            LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
-            LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
-            LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
-            WHERE padre.idtipodoc=18
-            AND p.tipopersona=1
-            ORDER BY padre.iddocumento
-            ;
-            """ )
-    #        El modelo que filtra a self.navmodel
-            self.navproxymodel = RONavigationModel( self )
-            self.navproxymodel.setSourceModel( self.navmodel )
-            self.navproxymodel.setFilterKeyColumn( -1 )
-            self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
-
-    #        Este es el modelo con los datos de la tabla para navegar
-            self.detailsmodel = QSqlQueryModel( self )
-            self.detailsmodel.setQuery( """
-                SELECT
-                p.recibo as iddocumento,
-                CONCAT(tp.descripcion, ' ' , tm.moneda) as 'Tipo de Pago',
-                 p.refexterna as 'No. Referencia',
-                 monto as 'Monto',
-                tp.idtipopago,
-                tm.idtipomoneda
-            FROM pagos p
-            JOIN tiposmoneda tm ON tm.idtipomoneda=p.tipomoneda
-            JOIN tipospago tp ON tp.idtipopago=p.tipopago
-            ORDER BY p.nlinea
-            ;
-            """ )
-
-    #        Este es el filtro del modelo anterior
-            self.detailsproxymodel = RODetailsModel( self )
-            self.detailsproxymodel.setSourceModel( self.detailsmodel )
-
-
-# ESTE ES EL MODELO CON LOS DATOS DE Los ABONOS PARA NAVEGAR
-            self.abonosmodel = QSqlQueryModel( self )
-            self.abonosmodel.setQuery( """
-           SELECT
-            d.idhijo as idrecibo,
-            padre.ndocimpreso,
-            d.monto as abono
-            FROM docpadrehijos d
-            JOIN documentos padre ON d.idpadre=padre.iddocumento
-            WHERE padre.idtipodoc=5 and d.monto is not null
-            ORDER BY d.nlinea
-;
-            """ )
-
-    #        Este es el filtro del modelo anterior
-            self.abonosproxymodel = ROAbonosModel( self )
-            self.abonosproxymodel.setSourceModel( self.abonosmodel )
-
-## ESTE ES EL MODELO CON LOS DATOS DE LAS FACTURAS PARA NAVEGAR
-            self.facturasmodel = QSqlQueryModel( self )
-            self.facturasmodel.setQuery( """            
-                    SELECT
-                iddocumento,
-                ndocimpreso,
-                Saldo,
-                idpersona
-            FROM vw_saldofacturas c
-            WHERE c.saldo>0
-            ORDER BY CAST(c.ndocimpreso AS SIGNED)
-            ;
-        """ )
-            self.facturasproxymodel = ROFacturasModel( self )
-            self.facturasproxymodel.setSourceModel( self.facturasmodel )
-
-
-
-    #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
-
-            self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
-            self.mapper.setModel( self.navproxymodel )
-            self.mapper.addMapping( self.lblnrec, NDOCIMPRESO , "text" )
-            self.mapper.addMapping( self.lblnreten, NRETENCION , "text" )
-
-            self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
-            self.mapper.addMapping( self.dtPicker, FECHA )
-            self.mapper.addMapping( self.txtcliente, CLIENTE, "text" )
-            self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
-            self.mapper.addMapping( self.lbltotalreten, TOTALRETENCION, "text" )
-            self.mapper.addMapping( self.txttasaret, TASARETENCION, "text" )
-            self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
-            self.mapper.addMapping(self.lbltotalrecibo, TOTALPAGADO, "text" )
-            self.mapper.addMapping( self.ckretener, CONRETENCION, "checked" )
-
-
-    #        asignar los modelos a sus tablas
-            self.tablenavigation.setModel( self.navproxymodel )
-            self.tabledetails.setModel( self.detailsproxymodel )
-            self.tableabonos.setModel( self.abonosproxymodel )
-
-
-#Se utiliza en modo de edicion
-
-            self.tablefacturas.setModel( self.facturasproxymodel )
-
-# OCULTO LAS COLUMNAS DE LOS ABONOS
-            self.tableabonos.setColumnHidden( IDDOCUMENTO, True )
-
-
-            self.frbotones.setVisible( False )
-
-            self.tabledetails.setColumnHidden( IDPAGO, True )
-            self.tabledetails.setColumnHidden( IDMONEDA, True )
-            self.tabledetails.setColumnHidden( IDDOCUMENTOT, True )
-
-            self.tablefacturas.setColumnHidden( IDDOCUMENTO, True )
-            self.tablefacturas.setColumnHidden( 3, True )
-
-            self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
-            self.tablenavigation.setColumnHidden( TOTALRETENCION, True )
-            self.tablenavigation.setColumnHidden( CONRETENCION, True )
-
-            self.navigate( 'last' )
-
-        except Exception as inst:
-            print inst
-        finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
-
-
-    
-
-    def updateLabels( self ):
-        #Asingar el total al modelo
-        totalAbono = self.abonoeditmodel.total
-
-        retener = self.datosRecibo.retencionValida
-        
-        self.ckretener.setEnabled(retener)
-        if self.cbtasaret.currentIndex() >-1:
-            self.ckretener.setChecked(retener)
-        
-                    
-        ret=self.datosRecibo.obtenerRetencion
-        self.editmodel.asignarTotal(totalAbono-ret)
-        tasa = self.datosRecibo.datosSesion.tipoCambioBanco
-        
-        self.lbltotal.setText( moneyfmt(totalAbono, 4, "US$ " ) )
-        self.lbltotal.setToolTip(moneyfmt(totalAbono * tasa, 4, "C$ " ))
-
-        self.lbltotalreten.setText( moneyfmt( ret, 4, "US$ " ) )
-        self.lbltotalreten.setToolTip(moneyfmt( ret* tasa, 4, "C$ " ) )
-        
-        self.lbltotalrecibo.setText( moneyfmt(totalAbono - ret, 4, "US$ "  ) )
-        self.lbltotalrecibo.setToolTip( moneyfmt((totalAbono - ret) * tasa, 4, "C$ ") )
-
-
-    def removeLine( self ):
-        """
-        Funcion usada para borrar lineas de la tabla
-        """
-        index = self.tabledetails.currentIndex()
-
-        if not index.isValid():
-            return
-        row = index.row()
-
-        self.tabledetails.removeRows( row )
-        self.updateLabels()
-
-
-    @pyqtSlot( )
-    def on_actionSave_activated( self ):
-        """
-        Slot documentation goes here.
-        """
-#        self.datosRecibo.lineasAbonos =self.abonoeditmodel.lines
-#        self.datosRecibo.lineas = self.editmodel.lines
-        self.datosRecibo.observaciones = self.txtobservaciones.toPlainText()
-        if self.datosRecibo.valid(self):
-            if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-                if not QSqlDatabase.database().isOpen():
-                    QSqlDatabase.database().open()
-    
-          
-                if self.datosRecibo.save():
-                    QMessageBox.information( None,
-                        self.trUtf8( "Llantera Esquipulas" ),
-                        self.trUtf8( """El documento se ha guardado con exito""" ) )
-                    self.editmodel = None
-                    self.updateModels()
-                    self.navigate( 'last' )
-                    self.status = True
-                else:
-                    QMessageBox.critical( None,
-                        self.trUtf8( "Llantera Esquipulas" ),
-                        self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
-    
-                if QSqlDatabase.database().isOpen():
-                    QSqlDatabase.database().close()
-
+    def agregarFactura(self,i,n):
+#        modelo = cindex.model()
+        modelo = self.facturasproxymodel
+        self.abonoeditmodel.insertRows( i )
+        self.abonoeditmodel.lines[i].idFac = modelo.index(n, 0 ).data()
+        self.abonoeditmodel.lines[i].nFac = modelo.index( n, 1 ).data()
+        self.abonoeditmodel.lines[i].monto = Decimal( modelo.data( modelo.index( n, 2 ), Qt.EditRole ).toString() )
+        self.abonoeditmodel.lines[i].totalFac = self.abonoeditmodel.lines[i].monto
+        self.abonoeditmodel.lines[i].nlinea = n
+        self.tablefacturas.setRowHidden( n, True )
 
     @pyqtSlot(  )
-    def on_actionPreview_activated( self ):
+    def on_actionCancel_activated( self ):
         """
-        Funcion usada para mostrar el reporte de una entrada compra
+        Aca se cancela la edicion del documento
         """
-        printer = QPrinter()
-        web =  "recibos.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
-        report = frmReportes(web , self.parentWindow.user,  printer, self)
-
-        report.exec_()
+        self.status = True
+        
 
     @pyqtSlot(  )
     def on_actionNew_activated( self ):
@@ -376,6 +144,22 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 QMessageBox.Ok ),
             QMessageBox.Ok )
         else:
+
+            self.facturasmodel.setQuery( """            
+                    SELECT
+                iddocumento,
+                ndocimpreso,
+                Saldo,
+                idpersona
+            FROM vw_saldofacturas c
+            WHERE c.saldo>0
+            ORDER BY CAST(c.ndocimpreso AS SIGNED)
+            ;
+        """ )
+
+            self.tablefacturas.setModel( self.facturasproxymodel )
+            self.tablefacturas.setColumnHidden( IDDOCUMENTO, True )
+            self.tablefacturas.setColumnHidden( 3, True )
 
 #            Rellenar el combobox de los CLLIENTES
             self.clientesModel = QSqlQueryModel()
@@ -461,90 +245,48 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         if QSqlDatabase.database().isOpen():
             QSqlDatabase.database().close()
 
-        
-
-
-
     @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
+    def on_actionPreview_activated( self ):
         """
-        Aca se cancela la edicion del documento
+        Funcion usada para mostrar el reporte de una entrada compra
         """
-        self.editmodel = None
-        self.frbotones.setVisible( False )
-        self.tablenavigation.setModel( self.navproxymodel )
-        self.tabledetails.setModel( self.detailsproxymodel )
-        self.tableabonos.setModel( self.abonosproxymodel )
+        printer = QPrinter()
+        web =  "recibos.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
+        report = frmReportes(web , self.parentWindow.user,  printer, self)
 
+        report.exec_()
 
-        self.status = True
-
-
-    def updateDetailFilter( self, index ):
-        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        iddoc = self.navmodel.record( index ).value( "iddocumento" ).toString()
-        self.detailsproxymodel.setFilterRegExp( iddoc )
-        self.tablenavigation.selectRow( self.mapper.currentIndex() )
-# FILTRO DE LOS ABONOS
-        self.abonosproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.abonosproxymodel.setFilterRegExp( iddoc )
-
-
-    def updateFacturasFilter( self ):
-        self.facturasproxymodel.setFilterKeyColumn( 3 )
-        self.facturasproxymodel.setFilterRegExp( str( self.datosRecibo.clienteId ) )
-
-
-
-
-    def setControls( self, status ):
+    @pyqtSlot( )
+    def on_actionSave_activated( self ):
         """
-        @param status false = editando        true = navegando
+        Slot documentation goes here.
         """
-        self.dtPicker.setReadOnly( True )
-#        self.ckretener.setEnabled( ( not status ) )
-        self.txtobservaciones.setReadOnly( status )
-        self.actionSave.setVisible( not status )
-        self.actionCancel.setVisible( not status )
-        self.tabnavigation.setEnabled( status )
-        self.actionNew.setVisible( status )
-        self.actionGoFirst.setVisible( status )
-        self.actionGoPrevious.setVisible( status )
-        self.actionGoNext.setVisible( status )
-        self.actionGoLast.setVisible( status )
-        self.actionPreview.setVisible( status )
-        self.ckretener.setEnabled(False)
-        if status:
-            self.navigate( 'last' )
-            self.swcliente.setCurrentIndex( 1 )
-            self.swconcepto.setCurrentIndex( 1 )
-            self.swtasaret.setCurrentIndex( 1 )
-            self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
-            self.tableabonos.setEditTriggers( QAbstractItemView.NoEditTriggers )
-        else:
-            self.tabWidget.setCurrentIndex( 0 )
+#        self.datosRecibo.lineasAbonos =self.abonoeditmodel.lines
+#        self.datosRecibo.lineas = self.editmodel.lines
+        self.datosRecibo.observaciones = self.txtobservaciones.toPlainText()
+        if self.datosRecibo.valid(self):
+            if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+                if not QSqlDatabase.database().isOpen():
+                    QSqlDatabase.database().open()
+    
+          
+                if self.datosRecibo.save():
+                    QMessageBox.information( None,
+                        self.trUtf8( "Llantera Esquipulas" ),
+                        self.trUtf8( """El documento se ha guardado con exito""" ) )
+                    self.editmodel = None
+                    self.updateModels()
+                    self.navigate( 'last' )
+                    self.status = True
+                else:
+                    QMessageBox.critical( None,
+                        self.trUtf8( "Llantera Esquipulas" ),
+                        self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
+    
+                if QSqlDatabase.database().isOpen():
+                    QSqlDatabase.database().close()
 
-            self.dtPicker.setDate( self.parentWindow.datosSesion.fecha )
-            self.cbcliente.setCurrentIndex(-1)
-            self.swcliente.setCurrentIndex( 0 )
-            self.swconcepto.setCurrentIndex( 0 )
-            self.swtasaret.setCurrentIndex( 0 )
-            self.txtobservaciones.setPlainText( "" )
-            
-            self.lbltotalreten.setText( "US$ 0.0000" )
-            self.lbltotal.setText( "US$ 0.0000" )
-            self.lbltotalrecibo.setText( "US$ 0.0000" )
-            self.cbcliente.setFocus()
-            self.ckretener.setChecked(False)
-            self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
-            self.tableabonos.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
-            
-        self.tabledetails.setColumnWidth(DESCRIPCION,250)
-        self.tabledetails.setColumnWidth(MONTO,150)
-        self.tabledetails.setColumnWidth(MONTODOLAR,150)
-        self.tabledetails.setColumnWidth(REFERENCIA,150)
-            
-
+      
     @pyqtSlot( "bool" )
     def on_btnadd_clicked( self, on ):
         """
@@ -570,19 +312,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 self.agregarFactura(i, n)
                 i = i + 1
         self.updateLabels()
-
-    def agregarFactura(self,i,n):
-#        modelo = cindex.model()
-        modelo = self.facturasproxymodel
-        self.abonoeditmodel.insertRows( i )
-        self.abonoeditmodel.lines[i].idFac = modelo.index(n, 0 ).data()
-        self.abonoeditmodel.lines[i].nFac = modelo.index( n, 1 ).data()
-        self.abonoeditmodel.lines[i].monto = Decimal( modelo.data( modelo.index( n, 2 ), Qt.EditRole ).toString() )
-        self.abonoeditmodel.lines[i].totalFac = self.abonoeditmodel.lines[i].monto
-        self.abonoeditmodel.lines[i].nlinea = n
-        self.tablefacturas.setRowHidden( n, True )
-        
-        
+      
 
     @pyqtSlot( "bool" )
     def on_btnremove_clicked( self, on ):
@@ -654,6 +384,228 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
     @pyqtSlot( "QDateTime" )
     def on_dtPicker_dateTimeChanged( self, datetime ):
         pass
+
+    def removeLine( self ):
+        """
+        Funcion usada para borrar lineas de la tabla
+        """
+        index = self.tabledetails.currentIndex()
+
+        if not index.isValid():
+            return
+        row = index.row()
+
+        self.tabledetails.removeRows( row )
+        self.updateLabels()
+
+
+    def setControls( self, status ):
+        """
+        @param status false = editando        true = navegando
+        """
+        self.dtPicker.setReadOnly( True )
+#        self.ckretener.setEnabled( ( not status ) )
+        self.txtobservaciones.setReadOnly( status )
+        self.actionSave.setVisible( not status )
+        self.actionCancel.setVisible( not status )
+        self.tabnavigation.setEnabled( status )
+        self.actionNew.setVisible( status )
+        self.actionGoFirst.setVisible( status )
+        self.actionGoPrevious.setVisible( status )
+        self.actionGoNext.setVisible( status )
+        self.actionGoLast.setVisible( status )
+        self.actionPreview.setVisible( status )
+        self.ckretener.setEnabled(False)
+        
+        if status:
+            self.editmodel = None
+            self.frbotones.setVisible( False )
+            self.tablenavigation.setModel( self.navproxymodel )
+            self.tabledetails.setModel( self.detailsproxymodel )
+            self.tableabonos.setModel( self.abonosproxymodel )
+            self.tableabonos.setColumnHidden( IDDOCUMENTO, True )
+            self.tabledetails.setColumnHidden( IDPAGO, True )
+            self.tabledetails.setColumnHidden( IDMONEDA, True )
+            self.tabledetails.setColumnHidden( IDDOCUMENTOT, True )
+            
+            self.swcliente.setCurrentIndex( 1 )
+            self.swconcepto.setCurrentIndex( 1 )
+            self.swtasaret.setCurrentIndex( 1 )
+            self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
+            self.tableabonos.setEditTriggers( QAbstractItemView.NoEditTriggers )
+        else:
+            self.tabWidget.setCurrentIndex( 0 )
+            self.dtPicker.setDate( self.parentWindow.datosSesion.fecha )
+            self.cbcliente.setCurrentIndex(-1)
+            self.swcliente.setCurrentIndex( 0 )
+            self.swconcepto.setCurrentIndex( 0 )
+            self.swtasaret.setCurrentIndex( 0 )
+            self.txtobservaciones.setPlainText( "" )
+            self.lbltotalreten.setText( "US$ 0.0000" )
+            self.lbltotal.setText( "US$ 0.0000" )
+            self.lbltotalrecibo.setText( "US$ 0.0000" )
+            self.cbcliente.setFocus()
+            self.ckretener.setChecked(False)
+            self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
+            self.tableabonos.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
+            self.tabledetails.setColumnHidden( IDMONEDA, True )            
+            
+    
+        self.tabledetails.setColumnWidth(DESCRIPCION,250)
+        self.tabledetails.setColumnWidth(MONTO,150)
+        self.tabledetails.setColumnWidth(MONTODOLAR,150)
+        self.tabledetails.setColumnWidth(REFERENCIA,150)
+    
+    
+    def updateDetailFilter( self, index ):
+        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
+        iddoc = self.navmodel.record( index ).value( "iddocumento" ).toString()
+        self.detailsproxymodel.setFilterRegExp( iddoc )
+        self.tablenavigation.selectRow( self.mapper.currentIndex() )
+# FILTRO DE LOS ABONOS
+        self.abonosproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
+        self.abonosproxymodel.setFilterRegExp( iddoc )
+        
+
+
+    def updateFacturasFilter( self ):
+        self.facturasproxymodel.setFilterKeyColumn( 3 )
+        self.facturasproxymodel.setFilterRegExp( str( self.datosRecibo.clienteId ) )
+
+
+    def updateLabels( self ):
+        #Asingar el total al modelo
+        totalAbono = self.abonoeditmodel.total
+
+        retener = self.datosRecibo.retencionValida
+
+        if self.cbtasaret.currentIndex() >-1 or (not self.ckretener.isEnabled()):
+            self.ckretener.setChecked(retener)
+        self.ckretener.setEnabled(retener)        
+                    
+        ret=self.datosRecibo.obtenerRetencion
+        self.editmodel.asignarTotal(totalAbono-ret)
+        tasa = self.datosRecibo.datosSesion.tipoCambioBanco
+        
+        self.lbltotal.setText( moneyfmt(totalAbono, 4, "US$ " ) )
+        self.lbltotal.setToolTip(moneyfmt(totalAbono * tasa, 4, "C$ " ))
+
+        self.lbltotalreten.setText( moneyfmt( ret, 4, "US$ " ) )
+        self.lbltotalreten.setToolTip(moneyfmt( ret* tasa, 4, "C$ " ) )
+        
+        self.lbltotalrecibo.setText( moneyfmt(totalAbono - ret, 4, "US$ "  ) )
+        self.lbltotalrecibo.setToolTip( moneyfmt((totalAbono - ret) * tasa, 4, "C$ ") )
+
+
+
+    def updateModels( self ):
+        """
+        Recargar todos los modelos
+        """
+        try:
+
+            if not QSqlDatabase.database().isOpen():
+                QSqlDatabase.database().open()
+#        El modelo principal
+            self.navmodel.setQuery( """
+                        SELECT
+                            padre.iddocumento,
+                            DATE(padre.fechacreacion) as 'Fecha',
+                            padre.ndocimpreso as 'No. Recibo',
+                            p.nombre as 'Cliente',
+                            padre.total as 'Total',
+                            c.descripcion as 'En cocepto de',
+                            IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
+                            IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%')) as 'Retencion',
+                            IFNULL(HIJO.TOTAL,'-') as 'Total Ret C$',
+                            padre.total - IFNULL(HIJO.TOTAL,0) as 'Total Pagado', 
+                           padre.observacion ,
+                           IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion'
+            FROM documentos padre
+            JOIN personasxdocumento pxd ON pxd.iddocumento = padre.iddocumento
+            JOIN personas p ON p.idpersona = pxd.idpersona
+            JOIN conceptos c ON  c.idconcepto=padre.idconcepto
+            LEFT JOIN costosxdocumento cd ON cd.iddocumento=padre.iddocumento
+            LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
+            LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
+            LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
+            WHERE padre.idtipodoc=18
+            AND p.tipopersona=1
+            ORDER BY padre.iddocumento
+            ;
+            """ )
+    #        El modelo que filtra a self.navmodel
+            self.navproxymodel = RONavigationModel( self )
+            self.navproxymodel.setSourceModel( self.navmodel )
+            self.navproxymodel.setFilterKeyColumn( -1 )
+            self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
+
+    #        Este es el modelo con los datos de la tabla para navegar
+            self.detailsmodel.setQuery( """
+                SELECT
+                p.recibo as iddocumento,
+                CONCAT(tp.descripcion, ' ' , tm.moneda) as 'Tipo de Pago',
+                 p.refexterna as 'No. Referencia',
+                 CONCAT(tm.simbolo,' ',FORMAT(monto * IF(p.tipomoneda=2,1,IFNULL(tc.tasaBanco,tc.tasa)),4)) as 'Monto',
+                 CONCAT('US$ ',FORMAT(monto,4)) as 'Monto US$'
+            FROM pagos p
+            JOIN documentos d ON d.iddocumento=p.recibo
+            JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
+            JOIN tiposmoneda tm ON tm.idtipomoneda=p.tipomoneda
+            JOIN tipospago tp ON tp.idtipopago=p.tipopago
+            ORDER BY p.nlinea
+            ;
+            """ )
+
+    #        Este es el filtro del modelo anterior
+            self.detailsproxymodel = QSortFilterProxyModel( self )
+            self.detailsproxymodel.setSourceModel( self.detailsmodel )
+
+# ESTE ES EL MODELO CON LOS DATOS DE Los ABONOS PARA NAVEGAR
+            self.abonosmodel = QSqlQueryModel( self )
+            self.abonosmodel.setQuery( """
+           SELECT
+            d.idhijo as idrecibo,
+            padre.ndocimpreso as 'No. Factura',
+            CONCAT('US$ ',FORMAT(d.monto,4)) as 'Saldo'
+            FROM docpadrehijos d
+            JOIN documentos padre ON d.idpadre=padre.iddocumento
+            WHERE padre.idtipodoc=5 and d.monto is not null
+            ORDER BY d.nlinea
+;
+            """ )
+
+    #        Este es el filtro del modelo anterior
+            self.abonosproxymodel.setSourceModel( self.abonosmodel )
+           
+           
+    #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
+            self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
+            self.mapper.setModel( self.navproxymodel )
+            self.mapper.addMapping( self.lblnrec, NDOCIMPRESO , "text" )
+            self.mapper.addMapping( self.lblnreten, NRETENCION , "text" )
+
+            self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
+            self.mapper.addMapping( self.dtPicker, FECHA )
+            self.mapper.addMapping( self.txtcliente, CLIENTE, "text" )
+            self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
+            self.mapper.addMapping( self.lbltotalreten, TOTALRETENCION, "text" )
+            self.mapper.addMapping( self.txttasaret, TASARETENCION, "text" )
+            self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
+            self.mapper.addMapping(self.lbltotalrecibo, TOTALPAGADO, "text" )
+            self.mapper.addMapping( self.ckretener, CONRETENCION, "checked" )
+
+            self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
+            self.tablenavigation.setColumnHidden( TOTALRETENCION, True )
+            self.tablenavigation.setColumnHidden( CONRETENCION, True )
+
+        except Exception as inst:
+            print inst
+        finally:
+            if QSqlDatabase.database().isOpen():
+                QSqlDatabase.database().close()
+
+
     
 class dlgRecibo(Ui_dlgRecibo,QDialog):
     def __init__( self,factura,readOnly=False):
@@ -729,11 +681,6 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
      
     
-#    @pyqtSlot()
-#    def on_txtpersona_editingFinished( self ):    
-#        if not  self.readOnly:
-#            self.datosRecibo.observaciones = self.txtpersona.text()
-            
 # MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
     @pyqtSignature( "bool" )
     def on_ckretener_toggled( self, on ):
@@ -754,7 +701,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         if not self.readOnly:
             self.lbltotalreten.setText( moneyfmt( self.datosRecibo.obtenerRetencion, 4, "US$" ) )
             self.lbltotalrecibo.setText(moneyfmt(self.datosRecibo.totalPagado))
-            self.tabledetails.resizeColumnsToContents()
+#            self.tabledetails.resizeColumnsToContents()
         
 class DatosRecibo(object):
     def __init__(self,datosSesion):
@@ -1072,82 +1019,6 @@ class RONavigationModel( QSortFilterProxyModel ):
             
         return value
 
-class RODetailsModel( QSortFilterProxyModel ):
-    """
-    El modelo que maneja la tabla en la que se previsualizan los os,
-    basicamente esta creado para darle formato al total y al MONTO
-    """
-    def __init__( self, dbcursor = None ):
-        super( QSortFilterProxyModel, self ).__init__()
-
-    def columnCount( self, index = QModelIndex() ):
-        return 6
-
-    def headerData( self, section, orientation, role = Qt.DisplayRole ):
-        if role == Qt.TextAlignmentRole:
-#            if orientation == Qt.Horizontal:
-#                return Qt.AlignLeft | Qt.AlignVCenter
-            return Qt.AlignHCenter | Qt.AlignVCenter
-        if role != Qt.DisplayRole:
-            return None
-        if orientation == Qt.Horizontal:
-            if  section == DESCRIPCION:
-                return u"Descripción"
-            elif section == MONTO:
-                return "Monto"
-            elif section == MONTODOLAR:
-                return u"Monto US$"
-            elif section == REFERENCIA:
-                return "Referencia"
-        return int( section + 1 )
-
-
-    def data( self, index, role = Qt.DisplayRole ):
-        """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
-        """
-        value = QSortFilterProxyModel.data( self, index, role )
-        if value.isValid() and role == Qt.DisplayRole:
-            if index.column() == MONTO:
-                return moneyfmt( Decimal( value.toString() ), 2, "US$" )
-        return value
-
-class ROAbonosModel( QSortFilterProxyModel ):
-    """
-    El modelo que maneja la tabla en la que se previsualizan los os,
-    basicamente esta creado para darle formato al total y al MONTO
-    """
-    def __init__( self, dbcursor = None ):
-        super( QSortFilterProxyModel, self ).__init__()
-
-    def columnCount( self, index = QModelIndex() ):
-        return 3
-
-    def headerData( self, section, orientation, role = Qt.DisplayRole ):
-        if role == Qt.TextAlignmentRole:
-            if orientation == Qt.Horizontal:
-                return int( Qt.AlignLeft | Qt.AlignVCenter )
-            return int( Qt.AlignRight | Qt.AlignVCenter )
-        if role != Qt.DisplayRole:
-            return None
-        if orientation == Qt.Horizontal:
-            if  section == NFAC:
-                return u"No. Factura"
-            elif section == ABONO:
-                return "Monto"
-        return int( section + 1 )
-
-
-    def data( self, index, role = Qt.DisplayRole ):
-        """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
-        """
-        value = QSortFilterProxyModel.data( self, index, role )
-        if value.isValid() and role == Qt.DisplayRole:
-            if index.column() == ABONO:
-                return moneyfmt( Decimal( value.toString() ), 4, "US$" )
-        return value
-
 class ROFacturasModel( QSortFilterProxyModel ):
     """
     El modelo que maneja la tabla en la que se previsualizan los os,
@@ -1181,6 +1052,6 @@ class ROFacturasModel( QSortFilterProxyModel ):
         value = QSortFilterProxyModel.data( self, index, role )
         if value.isValid() and role == Qt.DisplayRole:
             if index.column() == ABONO:
-                return moneyfmt( Decimal( value.toString() ), 4, "$" )
+                return moneyfmt( Decimal( value.toString() ), 4, "US$ " )
         return value
 

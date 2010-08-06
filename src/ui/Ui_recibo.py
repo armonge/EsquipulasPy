@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\recibo.ui'
 #
-# Created: Thu Aug 05 22:26:45 2010
+# Created: Thu Aug 05 23:07:24 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -565,14 +565,14 @@ class Ui_frmRecibo(object):
     def retranslateUi(self, frmRecibo):
         frmRecibo.setWindowTitle(QtGui.QApplication.translate("frmRecibo", "Recibo Oficial de Caja", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_4.setTitle(QtGui.QApplication.translate("frmRecibo", "Datos del Recibo", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("frmRecibo", "Recibo No.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("frmRecibo", "<b>Recibo No.</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.lblnrec.setText(QtGui.QApplication.translate("frmRecibo", "-", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_7.setText(QtGui.QApplication.translate("frmRecibo", "Retención No.", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_7.setText(QtGui.QApplication.translate("frmRecibo", "<b>Retención No.</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.lblnreten.setText(QtGui.QApplication.translate("frmRecibo", "-", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("frmRecibo", "&Fecha", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtGui.QApplication.translate("frmRecibo", "&<b>Fecha</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.dtPicker.setDisplayFormat(QtGui.QApplication.translate("frmRecibo", "dd/MM/yyyy", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("frmRecibo", "Recibimos de:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("frmRecibo", "En concepto de:", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("frmRecibo", "<b>Recibimos de:</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setText(QtGui.QApplication.translate("frmRecibo", "<b>En concepto de:</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.ckretener.setText(QtGui.QApplication.translate("frmRecibo", "Retener", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("frmRecibo", "%", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("frmRecibo", "Detalle de Abono a Facturas", None, QtGui.QApplication.UnicodeUTF8))
@@ -588,7 +588,7 @@ class Ui_frmRecibo(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">-Retención</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">- Retención</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.lbltotalreten.setText(QtGui.QApplication.translate("frmRecibo", "0.0000", None, QtGui.QApplication.UnicodeUTF8))
         self.label_10.setText(QtGui.QApplication.translate("frmRecibo", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"

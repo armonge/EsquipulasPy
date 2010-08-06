@@ -81,13 +81,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     d.ndocimpreso as 'No. Factura',
                     GROUP_CONCAT(IF(p.tipopersona=1,p.nombre,"") SEPARATOR '') as Cliente,
                     GROUP_CONCAT(IF(p.tipopersona=3,p.nombre,"") SEPARATOR '') as Vendedor,
-                    (
-                    @subtotal:=
-                    (
-                    d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100))
-                    )
-                    ) as subtotal,
-                    d.total-@subtotal as iva,
+                    ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as subtotal,
+                    d.total- ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as iva,
                     d.Total,
                     d.observacion,
                     DATE_FORMAT(d.fechacreacion,'%d/%m/%Y') as Fecha,
@@ -134,6 +129,10 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.mapper.addMapping( self.txtcliente, CLIENTE, "text" )
             self.mapper.addMapping( self.txtvendedor, VENDEDOR, "text" )
             self.mapper.addMapping( self.txtbodega, BODEGA, "text" )
+            self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
+            self.mapper.addMapping( self.lblsubtotal, SUBTOTAL, "text" )
+            self.mapper.addMapping( self.lbliva, IVA, "text" )
+            
 
 
     #        asignar los modelos a sus tablas
@@ -161,9 +160,9 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 
 
     def updateLabels( self ):
-        self.lblsubtotal.setText( moneyfmt( self.editmodel.subtotal, 4, "$" ) )
-        self.lbliva.setText( moneyfmt( self.editmodel.IVA, 4, "$" ) )
-        self.lbltotal.setText( moneyfmt( self.editmodel.total, 4, "$" ) )
+        self.lblsubtotal.setText( moneyfmt( self.editmodel.subtotal, 4, "US$ " ) )
+        self.lbliva.setText( moneyfmt( self.editmodel.IVA, 4, "US$ " ) )
+        self.lbltotal.setText( moneyfmt( self.editmodel.total, 4, "US$ " ) )
 
         self.tabledetails.resizeColumnsToContents()
 
@@ -453,9 +452,9 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 
 
     def updateDetailFilter( self, index ):
-        self.lbliva.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "iva" ).toString())))
-        self.lblsubtotal.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "subtotal" ).toString())))
-        self.lbltotal.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "total" ).toString())))
+#        self.lbliva.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "iva" ).toString())))
+#        self.lblsubtotal.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "subtotal" ).toString())))
+#        self.lbltotal.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "total" ).toString())))
         self.lbltasaiva.setText(self.navmodel.record( index ).value( "tasaiva" ).toString() +'%')
         self.lblanulado.setHidden(self.navmodel.record( index ).value( "Anulada" ).toInt()[0]==0)
         self.dtPicker.setDate(QDate.fromString(self.navmodel.record( index ).value( "Fecha" ).toString(),"dd/MM/yyyy"))
@@ -730,14 +729,12 @@ class RONavigationModel( QSortFilterProxyModel ):
         Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
         """
         value = QSortFilterProxyModel.data( self, index, role )
-        if not value.isValid():
-            return None
-        if index.column() in ( SUBTOTAL, IVA, TOTAL ):
-            if role == Qt.DisplayRole:
+        if value.isValid() and role in ( Qt.EditRole, Qt.DisplayRole):
+            if index.column() in ( SUBTOTAL, IVA, TOTAL ):
                 return moneyfmt( Decimal( value.toString() ), 4, "US$" )
-        elif index.column() == ANULADO:
-            if role == Qt.DisplayRole:
-                return "Anulada" if value.toInt()[0]==1 else ""
+            elif index.column() == ANULADO:
+                if role == Qt.DisplayRole:
+                    return "Anulada" if value.toInt()[0]==1 else ""
                 
         return value
 

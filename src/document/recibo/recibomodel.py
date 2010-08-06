@@ -161,7 +161,7 @@ class ReciboModel( AccountsSelectorModel ):
             return None
         if orientation == Qt.Horizontal:
             if  section == DESCRIPCION:
-                return u"Descripción"
+                return u"Tipo de Pago"
             elif section == MONTO:
                 return "Monto"
             elif section == MONTODOLAR:

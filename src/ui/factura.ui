@@ -43,7 +43,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Facturar No.</string>
+             <string>&lt;b&gt;Facturar No.&lt;/b&gt;</string>
             </property>
            </widget>
           </item>
@@ -56,7 +56,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Fecha</string>
+             <string>&lt;b&gt;Fecha&lt;/b&gt;</string>
             </property>
             <property name="buddy">
              <cstring>dtPicker</cstring>
@@ -94,7 +94,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>&amp;Facturar a:</string>
+             <string>&amp;&lt;b&gt;Facturar a:&lt;/b&gt;</string>
             </property>
             <property name="buddy">
              <cstring>txtcliente</cstring>
@@ -145,7 +145,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Vendedor:</string>
+             <string>&lt;b&gt;Vendedor:&lt;/b&gt;</string>
             </property>
             <property name="buddy">
              <cstring>txtcliente</cstring>
@@ -196,7 +196,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>&amp;Bodega:</string>
+             <string>&amp;&lt;b&gt;Bodega:&lt;.b&gt;</string>
             </property>
             <property name="buddy">
              <cstring>txtbodega</cstring>
@@ -337,7 +337,7 @@ color: rgb(255, 0, 0);</string>
         <item>
          <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>Observaciones</string>
+           <string>&lt;b&gt;Observaciones&lt;/b&gt;</string>
           </property>
          </widget>
         </item>
@@ -377,14 +377,14 @@ color: rgb(255, 0, 0);</string>
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Subtotal</string>
+             <string>&lt;b&gt;Subtotal&lt;/b&gt;</string>
             </property>
            </widget>
           </item>
           <item row="0" column="2">
            <widget class="QLabel" name="lblsubtotal">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -402,7 +402,7 @@ color: rgb(255, 0, 0);</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">border:1px solid #000</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string/>
@@ -423,7 +423,7 @@ color: rgb(255, 0, 0);</string>
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Iva</string>
+               <string>&lt;b&gt;Iva&lt;/b&gt;</string>
               </property>
              </widget>
             </item>
@@ -451,7 +451,7 @@ color: rgb(255, 0, 0);</string>
           <item row="1" column="2">
            <widget class="QLabel" name="lbliva">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -469,7 +469,7 @@ color: rgb(255, 0, 0);</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">border:1px solid #000</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string/>
@@ -488,14 +488,14 @@ color: rgb(255, 0, 0);</string>
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Total</string>
+             <string>&lt;b&gt;Total&lt;/b&gt;</string>
             </property>
            </widget>
           </item>
           <item row="2" column="2">
            <widget class="QLabel" name="lbltotal">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -513,7 +513,7 @@ color: rgb(255, 0, 0);</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">border:1px solid #000</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string/>
