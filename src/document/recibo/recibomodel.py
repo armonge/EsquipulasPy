@@ -88,6 +88,8 @@ class ReciboModel( AccountsSelectorModel ):
                 return line.monto
             elif column == IDMONEDA:
                 return line.monedaId
+            elif column == REFERENCIA:
+                return line.referencia
         elif role == Qt.TextAlignmentRole:
             if column != DESCRIPCION:
                 return Qt.AlignHCenter | Qt.AlignVCenter 

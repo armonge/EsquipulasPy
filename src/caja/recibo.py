@@ -654,13 +654,14 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         """
         @param status false = editando        true = navegando
         """
-        self.txtcliente.setReadOnly( status )
+#        self.txtcliente.setReadOnly( status )
         self.ckretener.setEnabled(not status)
         self.txtobservaciones.setReadOnly( status )
         self.readOnly=status
         self.lbltotal.setText(factura.lbltotal.text())
         if status:
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
+            self.swtasaret.setCurrentIndex(1)
         else:
             self.lbltotal.setText(factura.lbltotal.text())
             if not QSqlDatabase.database().isOpen():
@@ -702,6 +703,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             
             self.tabledetails.setItemDelegate(delegado)
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
+            self.swtasaret.setCurrentIndex(0)
      
     
     @pyqtSignature( "bool" )

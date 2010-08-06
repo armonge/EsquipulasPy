@@ -69,7 +69,9 @@ class ReciboDelegate(QStyledItemDelegate):
             doublespinbox.setAlignment(Qt.AlignHCenter)
             return doublespinbox
         elif index.column() == REFERENCIA:
-            return QStyledItemDelegate.createEditor(self, parent, option,index)
+            textbox = QStyledItemDelegate.createEditor(self, parent, option,index)
+            textbox.setAlignment(Qt.AlignHCenter)
+            return textbox
             
     def removeFromFilter(self,value):
         try:
