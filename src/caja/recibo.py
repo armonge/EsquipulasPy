@@ -115,11 +115,16 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.abonoeditmodel.insertRows( i )
         self.abonoeditmodel.lines[i].idFac = modelo.index(n, 0 ).data()
         self.abonoeditmodel.lines[i].nFac = modelo.index( n, 1 ).data()
-        self.abonoeditmodel.lines[i].monto = Decimal( modelo.data( modelo.index( n, 2 ), Qt.EditRole ).toString() )
-        self.abonoeditmodel.lines[i].tasaIva = Decimal( modelo.data( modelo.index( n, 3 ), Qt.EditRole ).toString() )
+        monto = Decimal( modelo.data( modelo.index( n, 2 ), Qt.EditRole ).toString() )
+        
+        self.abonoeditmodel.lines[i].tasaIva = Decimal( modelo.data( modelo.index( n, 3 ), Qt.EditRole ).toString())
+        self.abonoeditmodel.lines[i].monto = monto
+#        self.abonoeditmodel.lines[i].setMonto( monto)
+        
+        
         self.abonoeditmodel.lines[i].nlinea = n
         
-        self.abonoeditmodel.lines[i].totalFac = self.abonoeditmodel.lines[i].monto
+        self.abonoeditmodel.lines[i].totalFac = monto
         self.tablefacturas.setRowHidden( n, True )
 
     @pyqtSlot(  )
@@ -152,7 +157,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 s.iddocumento,
                 s.ndocimpreso,
                 s.Saldo,
-                ca.valorcosto as tasaiva,
+                IFNULL(ca.valorcosto,0) as tasaiva,
                 s.idpersona
             FROM vw_saldofacturas s
             LEFT JOIN costosxdocumento cxd ON s.iddocumento= cxd.iddocumento
@@ -773,6 +778,13 @@ class DatosRecibo(object):
         return tmpsubtotal if tmpsubtotal > 0 else Decimal( 0 )
     
     @property
+    def subtotal( self ):
+        """
+        """
+        tmpsubtotal = sum( [linea.subMonto for linea in self.lineasAbonos])
+        return tmpsubtotal if tmpsubtotal > 0 else Decimal( 0 )
+    
+    @property
     def totalPagado( self ):
         """
     
@@ -835,9 +847,9 @@ class DatosRecibo(object):
     
     @property
     def retencionValida(self):
-        total = self.total
-        totalC = total * self.datosSesion.tipoCambioBanco
-        return totalC>1000
+        subtotal = self.subtotal
+        subtotalC = subtotal * self.datosSesion.tipoCambioBanco
+        return subtotalC>1000
 
     @property
     def obtenerRetencion( self ):
@@ -846,7 +858,7 @@ class DatosRecibo(object):
             self.retencionId =0
             return Decimal(0)
         else:
-            return ( self.total * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else Decimal(0)
+            return ( self.subtotal * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else Decimal(0)
         
     @property
     def obtenerGanancia( self ):
@@ -1084,6 +1096,8 @@ class ROFacturasModel( QSortFilterProxyModel ):
                 return u"No. Factura"
             elif section == SALDO:
                 return "Saldo"
+            elif section == TASAIVA:
+                return "Tasa Iva"
         return int( section + 1 )
 
 

@@ -6,31 +6,33 @@ Created on 18/05/2010
 '''
 from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery
-class LineaAbono:
+class LineaAbono(object):
     def __init__(self, parent):    
         self.idFac=0
         self.nFac=""
-        self.monto= Decimal(0)
+        self.__monto= Decimal(0)
         self.totalFac=Decimal(0)
         self.saldo=Decimal(0)
         self.tasaIva = Decimal(0)
+        self.subMonto = Decimal(0)
     
-    def getPrice(self):    
-        """
-        el precio unitario del producto en esta linea
-        """
-        return self.price
-    def setPrice(self,  price):
-        self.price = Decimal(price)
+    def __setMonto(self,monto):
+        self.__monto = monto
+        if self.tasaIva==0:
+            self.subMonto = 0
+        else:
+            self.subMonto = Decimal( str( round(monto / (1+ self.tasaIva /100),4)))
+    def __getMonto(self):
+        return self.__monto
+    monto = property(__getMonto,__setMonto)
         
-    itemPrice = property(getPrice,  setPrice)
-  
+
     @property
     def valid(self):
         """
         es esta linea valida
         """
-        if  Decimal(self.monto) > 0:
+        if  Decimal(self.__monto) > 0:
             return True
         return False
        
