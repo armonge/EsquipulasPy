@@ -11,9 +11,9 @@ class LineaAbono:
         self.idFac=0
         self.nFac=""
         self.monto= Decimal(0)
-        self.totalFac=0
+        self.totalFac=Decimal(0)
         self.saldo=Decimal(0)
-        
+        self.tasaIva = Decimal(0)
     
     def getPrice(self):    
         """
@@ -24,14 +24,7 @@ class LineaAbono:
         self.price = Decimal(price)
         
     itemPrice = property(getPrice,  setPrice)
-    
-#    @property
-#    def total(self):
-#        """
-#        el total de esta linea
-#        """
-#        return Decimal(self.quantity * self.itemPrice ) if self.valid else Decimal(0) 
-    
+  
     @property
     def valid(self):
         """

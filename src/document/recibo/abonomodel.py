@@ -7,12 +7,13 @@ Created on 18/05/2010
 from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
 
 from lineaabono import LineaAbono
-
+from PyQt4.QtGui import QStyledItemDelegate, QDoubleSpinBox
+from utility.singleselectionmodel import SingleSelectionModel 
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
 
-IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, MONTODOLAR, MONEDA = range( 6 )
-IDFAC, NFAC, TOTALFAC, ABONO,SALDO = range( 5 )
+#IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, MONTODOLAR, MONEDA = range( 6 )
+IDFAC, NFAC, TOTALFAC,TASAIVA, ABONO,SALDO = range( 6 )
 class AbonoModel( QAbstractTableModel ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
@@ -56,7 +57,7 @@ class AbonoModel( QAbstractTableModel ):
         return len( self.lines )
 
     def columnCount( self, index = QModelIndex ):
-        return 5
+        return 6
 
     def data( self, index, role = Qt.DisplayRole ):
         """
@@ -73,12 +74,17 @@ class AbonoModel( QAbstractTableModel ):
                 return moneyfmt( Decimal( line.monto ), 4, "US$" ) if line.monto != 0 else ""
             elif column == TOTALFAC:
                 return moneyfmt(line.totalFac ,  4,  "US$")
+            elif column == TASAIVA:
+                return str(line.tasaIva)
             elif column == SALDO:
                 return moneyfmt(line.saldo ,  4,  "US$")
         elif role == Qt.EditRole:
 #            Esto es lo que recibe el delegate cuando va a mostrar la el widget 
             if column == ABONO:
                 return line.monto
+            elif column == TASAIVA:
+                return line.tasaIva
+            
 
     def flags( self, index ):
         if not index.isValid():
@@ -159,6 +165,50 @@ class AbonoModel( QAbstractTableModel ):
                 return "Total"
             elif section == SALDO:
                 return "Saldo Pendiente"
+            elif section == TASAIVA:
+                return "Tasa IVA"
         return int( section + 1 )
 
-#TODO: INSERCION
+class AbonoDelegate(QStyledItemDelegate):
+    def __init__(self, query, parent=None):
+        super(AbonoDelegate, self).__init__(parent)
+        self.prods = SingleSelectionModel()
+        query.exec_()
+        while query.next():
+            self.prods.items.append([
+                query.value(0).toInt()[0],
+                query.value(1).toString(),
+                query.value(2).toInt()[0]
+                                    ])
+             
+    def sizeHint( self, option, index ):
+        fm = option.fontMetrics
+        if index.column() == NFAC:
+            return QSize( 250, fm.height() )
+        return QStyledItemDelegate.sizeHint( self, option, index )
+
+
+
+    def createEditor(self,  parent,  option,  index):
+        if index.column()==ABONO:
+            spinbox = QDoubleSpinBox(parent)
+            max= index.model().lines[index.row()].totalFac
+            
+            spinbox.setRange(0.0001,max)
+            spinbox.setDecimals(4)
+            spinbox.setSingleStep(1)
+            spinbox.setAlignment(Qt.AlignRight|Qt.AlignVCenter)
+            return spinbox
+        else:
+            None
+    
+    def setEditorData(self, editor, index):
+        """
+        En esta funcion se inicializan los datos a mostrarse en el editor
+        se ejecuta justo en el momento en el que se muestra el editor
+        """
+        if index.column() == ABONO:
+            valortemp=index.model().data(index, Qt.EditRole)
+            editor.setValue( valortemp )
+        else:
+            QStyledItemDelegate.setEditorData(self, editor, index)

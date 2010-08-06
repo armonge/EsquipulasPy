@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\dlgrecibo.ui'
 #
-# Created: Mon Aug 02 21:18:15 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Fri Aug 06 08:25:58 2010
+#      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
 
