@@ -11,7 +11,7 @@ from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from document.liquidacion.linealiquidacion import LineaLiquidacion
 from utility.moneyfmt import moneyfmt
 from utility.accountselector import AccountsSelectorModel
-
+from utility import constantes
 
 IDARTICULO, ARTICULO, CANTIDAD, COSTOUNIT, FOB, FLETE, SEGURO, OTROS, CIF, IMPUESTOS, COMISION, AGENCIA, ALMACEN, PAPELERIA, TRANSPORTE, TCOSTOD, COSTOD, TCOSTOC, COSTOC = range( 19 )
 class LiquidacionModel( QAbstractTableModel ):
@@ -19,7 +19,7 @@ class LiquidacionModel( QAbstractTableModel ):
     Este modelo es el que se utiliza para realizar todos los calculos relacionados a una liquidacion,
     tambien se encarga de guardarla en la base de datos y darle formato
     """
-    __documentType = 7
+    __documentType = constantes.IDLIQUIDACION
     """
     @cvar:EL id del tipo de documento
     @type:int 

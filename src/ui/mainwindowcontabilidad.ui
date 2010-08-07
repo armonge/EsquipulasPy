@@ -84,8 +84,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
-          <height>567</height>
+          <width>163</width>
+          <height>78</height>
          </rect>
         </property>
         <attribute name="label">
@@ -319,7 +319,7 @@ de Resultados</string>
             </font>
            </property>
            <property name="text">
-            <string>Movimientos
+            <string>Ajustes
 Contables</string>
            </property>
            <property name="icon">

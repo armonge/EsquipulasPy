@@ -12,7 +12,7 @@ from PyQt4.QtCore import QTimer, Qt, pyqtSlot, SIGNAL, SLOT, QDateTime
 
 from ui.Ui_kardex import Ui_frmKardex
 
-import utility.constantes
+from  utility import constantes
 from utility.base import Base
 from document.kardex.kardexmodel import KardexModel
 from document.kardex.lineakardex import LineaKardex
@@ -69,7 +69,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             self.navigationmodel.setQuery((QSqlQuery(u"""
             SELECT 
                 d.iddocumento, 
-                CONCAT_WS(' ',IF(d.idtipodoc = 7, 'Liquidación: ', 'Entrada Local: '),d.ndocimpreso) as 'Documento Referencia',
+                d.ndocimpreso as 'Documento Referencia',
                 kx.ndocimpreso as 'Numero Kardex',
                 b.nombrebodega as 'Bodega',        
                 d.fechacreacion as 'Fecha', 
@@ -124,6 +124,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
         self.editmodel = None
         self.tabledetails.setModel(self.detailsproxymodel)
         self.status = True    
+        
     @pyqtSlot()
     def on_txtKardexObservation_textChanged(self):
         if not self.editmodel is None:
@@ -217,7 +218,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
                       MAX(CAST(ndocimpreso AS SIGNED))+1
                 FROM documentos d
                 WHERE idtipodoc=%d
-                """ % utility.constantes.IDKARDEX )
+                """ % constantes.IDKARDEX )
     
                 query.exec_()
                 query.first()
@@ -266,7 +267,7 @@ class dlgSelectDoc( QDialog ):
         self.model.setQuery( u"""
         SELECT 
             d.iddocumento, 
-            CONCAT_WS(' ',IF(d.idtipodoc = 7, 'Liquidación: ', 'Entrada Local: '),d.ndocimpreso) as 'Documento',
+            d.ndocimpreso as 'Documento',
             b.nombrebodega as 'Bodega',        
             d.fechacreacion as 'Fecha',
             b.idbodega,
@@ -275,11 +276,13 @@ class dlgSelectDoc( QDialog ):
         JOIN bodegas b ON b.idbodega = d.idbodega
         LEFT JOIN docpadrehijos dpd ON dpd.idpadre = d.iddocumento
         LEFT JOIN documentos h ON h.iddocumento = dpd.idhijo AND h.idtipodoc = %d
-        WHERE d.idtipodoc IN (%s) AND h.iddocumento IS NULL
+        WHERE d.idtipodoc IN (%s) 
         GROUP BY d.iddocumento
-        """ % ( utility.constantes.IDKARDEX, tiposdoc))
-        
-        
+        HAVING SUM(h.idtipodoc) IS NULL
+        """ % ( constantes.IDKARDEX , tiposdoc))
+
+
+
 
         self.setWindowTitle( "Seleccione el documento para bodega" )
         self.filtermodel = QSortFilterProxyModel()

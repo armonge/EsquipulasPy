@@ -5,12 +5,12 @@ Created on 23/07/2010
 @author: armonge
 '''
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox
-from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
+from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QTimer,pyqtSlot, QDateTime
 from utility.base import Base
 from ui.Ui_kardexother import Ui_frmKardexOther
 
-import utility.constantes
+from utility import constantes
 class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
     '''
     classdocs
@@ -79,7 +79,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             JOIN bodegas b ON b.idbodega = d.idbodega
             LEFT JOIN docpadrehijos dph ON dph.idhijo = d.iddocumento
             WHERE d.idtipodoc = %d AND dph.idhijo IS NULL
-            """ % utility.constantes.IDKARDEX)
+            """ % constantes.IDKARDEX)
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
         except Exception as inst:
@@ -90,18 +90,28 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open:
                     raise UserWarning("No se pudo conectar con la base de datos")
-
+            
+            
+            
             conceptosmodel = QSqlQueryModel()
             conceptosmodel.setQuery("""
             SELECT
             	c.idconcepto,
             	c.descripcion
             FROM conceptos c
-            WHERE c.modulo = %d
-            """ % utility.constantes.IDINVENTARIO)
-
+            WHERE c.idtipodoc = %d
+            """ % constantes.IDKARDEX)
+            
             self.cbConcept.setModel(conceptosmodel)
             self.cbConcept.setModelColumn(1)
+            
+            query = QSqlQuery( """
+            CALL spConsecutivo(%d,NULL);
+            """ % constantes.IDKARDEX )
+            if not query.exec_():
+                raise UserWarning( "No se pudo calcular el numero del kardex" )
+            query.first()
+            self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
 
             self.dtPicker.setDateTime(QDateTime.currentDateTime())
 

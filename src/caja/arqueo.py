@@ -182,7 +182,6 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             if not query.exec_():
                 raise UserWarning( "No se pudo calcular el numero del arqueo" )
             query.first()
-            print query.value( 0 ).toString()
             self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
 
             self.lblTotalSesion.setText( moneyfmt( self.editmodel.expectedTotal, 4, "US$" ) )

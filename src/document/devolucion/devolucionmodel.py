@@ -11,14 +11,14 @@ from decimal import Decimal
 from document.devolucion.lineadevolucion import LineaDevolucion
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movFacturaCredito
-import utility.constantes
+from utility import constantes
 
 DESCRIPCION, PRECIO, CANTIDADMAX, CANTIDAD, TOTALPROD = range( 5 )
 class DevolucionModel( QAbstractTableModel ):
     """
     Esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
-    __documentType = utility.constantes.IDDEVOLUCION
+    __documentType = constantes.IDDEVOLUCION
     """
     @cvar: El id del tipo de documento
     @type: int
@@ -31,12 +31,12 @@ class DevolucionModel( QAbstractTableModel ):
         @type:string
         """
         self.lines = []
-        """
-        @ivar:Las lineas en esta devolucion
+        u"""
+        @ivar:Las lineas en esta devolución
         @type: LineaDevolucion[]
         """
         self.printedDocumentNumber = ""
-        """
+        u"""
         @ivar:El numero de esta devolución
         @type:string
         """
@@ -62,7 +62,7 @@ class DevolucionModel( QAbstractTableModel ):
         """
         self.uid = 0
         """
-        @ivar: El id del usuario que realiza esta devlución
+        @ivar: El id del usuario que realiza esta devolución
         @type: int
         """
         self.clientName = ""
@@ -70,6 +70,12 @@ class DevolucionModel( QAbstractTableModel ):
         @ivar: El nombre del cliente que realiza esta devolución
         @type: string
         """
+        
+        self.conceptId = 0
+        u"""
+        @ivar: El id del concepto de la devolución
+        @type: int
+        """ 
 
         self.ivaRate = Decimal( 0 )
         """
@@ -105,9 +111,29 @@ class DevolucionModel( QAbstractTableModel ):
         Un documento es valido cuando 
         @rtype: bool
         """
-        if    int( self.clientId ) != 0 and int( self.validLines ) > 0  and int( self.uid ) != 0 and int( self.invoiceId ) != 0 and self.printedDocumentNumber != "" and int( self.exchangeRateId ) != 0 :
-            return True
-        return False
+        if not int( self.clientId ) != 0:
+            self.validError = "No ha seleccionado un cliente"
+            return False
+        elif not  int( self.validLines ) > 0:
+            self.validError = u"No existen lineas que guardar en la devolución"
+            return False
+        elif not int( self.uid ) != 0:
+            self.validError = "No se puede determinar el usuario que realiza el documento"
+            return False
+        elif not int( self.invoiceId ) != 0:
+            self.validError = "No se ha especificado el numero de factura"
+            return False
+        elif not self.printedDocumentNumber != "":
+            self.validError = u"No se ha especificado el numero de devolución"
+            return False
+        elif not int( self.exchangeRateId ) != 0 :
+            self.validError = "No hay un tipo de cambio para el documento"
+            return False
+        elif not int(self.conceptId) > 0:
+            self.validError = u"No se ha especificado un concepto para la devolución"
+            return False
+        return True
+        
 
     @property
     def totalD( self ):
@@ -117,6 +143,7 @@ class DevolucionModel( QAbstractTableModel ):
         """
         foo = sum( [ line.totalD for line in self.lines if line.valid ] )
         return foo if foo != 0 else Decimal( 0 )
+    
     @property
     def subtotalD( self ):
         """
@@ -282,8 +309,8 @@ class DevolucionModel( QAbstractTableModel ):
                 raise Exception( u"No se puedo comenzar la transaccion" )
             #Insertar el documento
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,  observacion,total, idtipocambio)
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total, :idtipocambio)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,  observacion,total, idtipocambio, idconcepto)
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total, :idtipocambio, :idconcepto)
             """ ):
                 raise Exception(u"No se pudo preparar la consulta para añadir el documento")
 
@@ -296,6 +323,7 @@ class DevolucionModel( QAbstractTableModel ):
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.totalD.to_eng_string() )
             query.bindValue( ":idtipocambio", self.exchangeRateId )
+            query.bindValue(":idconcepto", self.conceptId)
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )

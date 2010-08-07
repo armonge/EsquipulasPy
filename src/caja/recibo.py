@@ -9,7 +9,6 @@ from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, SIGNAL, QModelI
 from PyQt4.QtSql import QSqlQueryModel,QSqlQuery, QSqlDatabase
 
 from decimal import Decimal
-import functools
 from PyQt4.QtSql import  QSqlQuery
 from utility.movimientos import movAbonoDeCliente
 from utility.base import Base
@@ -21,7 +20,7 @@ from document.recibo.recibomodel import ReciboModel
 from document.recibo.abonomodel import AbonoModel,LineaAbono, AbonoDelegate
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
-from utility.constantes import IDRECIBO,IDRETENCION
+from utility import constantes
 #from PyQt4.QtGui import QMainWindow
 
 #controles
@@ -270,7 +269,9 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         Funcion usada para mostrar el reporte de una entrada compra
         """
         printer = QPrinter()
+        printer.setPageSize(QPrinter.Letter)
         web =  "recibos.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
+        print web
         report = frmReportes(web , self.parentWindow.user,  printer, self)
 
         report.exec_()
@@ -527,6 +528,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
 #        El modelo principal
+#FIXME: como escapar el % ???
             self.navmodel.setQuery( """
                         SELECT
                             padre.iddocumento,
@@ -536,9 +538,9 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                             padre.total as 'Total',
                             c.descripcion as 'En cocepto de',
                             IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
-                            IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%')) as 'Retencion',
-                            IFNULL(HIJO.TOTAL,'-') as 'Total Ret C$',
-                            padre.total - IFNULL(HIJO.TOTAL,0) as 'Total Pagado', 
+                            IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%s')) as 'Retencion',
+                            IFNULL(hijo.total,'-') as 'Total Ret C$',
+                            padre.total - IFNULL(hijo.total,0) as 'Total Pagado', 
                            padre.observacion ,
                            IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion'
             FROM documentos padre
@@ -549,11 +551,11 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
             LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
             LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
-            WHERE padre.idtipodoc=18
-            AND p.tipopersona=1
+            WHERE padre.idtipodoc=%d
+            AND p.tipopersona=%d
             ORDER BY padre.iddocumento
             ;
-            """ )
+            """ % ('%',constantes.IDRECIBO , constantes.CLIENTE))
     #        El modelo que filtra a self.navmodel
             self.navproxymodel = RONavigationModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )
@@ -561,6 +563,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
 
     #        Este es el modelo con los datos de la tabla para navegar
+#FIXME: Se el simbolo de la moneda deberia de salir desde la tabla tiposmoneda    
             self.detailsmodel.setQuery( """
                 SELECT
                 p.recibo as iddocumento,
@@ -590,10 +593,10 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             CONCAT('US$ ',FORMAT(d.monto,4)) as 'Saldo'
             FROM docpadrehijos d
             JOIN documentos padre ON d.idpadre=padre.iddocumento
-            WHERE padre.idtipodoc=5 and d.monto is not null
+            WHERE padre.idtipodoc=%d and d.monto is not null
             ORDER BY d.nlinea
 ;
-            """ )
+            """ % constantes.IDFACTURA)
 
     #        Este es el filtro del modelo anterior
             self.abonosproxymodel.setSourceModel( self.abonosmodel )
@@ -985,7 +988,7 @@ class DatosRecibo(object):
                 """ )
                 query.bindValue( ":ndocimpreso", self.retencionNumeroImpreso )
                 query.bindValue( ":fechacreacion", fechaCreacion)
-                query.bindValue( ":idtipodoc", IDRETENCION )
+                query.bindValue( ":idtipodoc", constantes.IDRETENCION )
                 query.bindValue( ":total", self.obtenerRetencion.to_eng_string() )
                 query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
                 query.bindValue( ":concepto", self.conceptoId )
@@ -1051,8 +1054,8 @@ class DatosRecibo(object):
 
     def cargarNumeros(self,recibo):
 #            Cargar el numero de el Recibo actual
-        idrec= str(IDRECIBO)
-        idret = str(IDRETENCION)
+        idrec= str(constantes.IDRECIBO)
+        idret = str(constantes.IDRETENCION)
         query = QSqlQuery( "CALL spConsecutivo(" + idrec +",null)")
         if not query.exec_():
             print( query.lastError().text() )

@@ -14,6 +14,7 @@ IDCONCEPTODEPOSITO = 0
 
 # constantes de tipos de documento
 IDFACTURA = 5
+IDLIQUIDACION = 7
 IDDEVOLUCION = 10
 IDND = 11
 IDCHEQUE = 12

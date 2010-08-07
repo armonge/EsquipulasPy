@@ -7,7 +7,7 @@ Created on 28/06/2010
 El formulario principal de contabilidad
 '''
 from PyQt4.QtGui import QMainWindow
-from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL
+from PyQt4.QtCore import pyqtSlot
 from ui.Ui_mainwindowcontabilidad import Ui_MainWindow
 from utility.mainwindowbase import MainWindowBase
 from conciliacion import frmConciliacion

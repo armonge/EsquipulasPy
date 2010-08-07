@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/entradacompra.ui'
 #
-# Created: Fri Jul 23 23:18:14 2010
+# Created: Sat Aug  7 00:13:09 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -42,7 +42,7 @@ class Ui_frmEntradaCompra(object):
         self.txtDocumentNumber.setObjectName("txtDocumentNumber")
         self.gridLayout_2.addWidget(self.txtDocumentNumber, 0, 1, 1, 1)
         self.label = QtGui.QLabel(self.tabdetails)
-        self.label.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label.setObjectName("label")
         self.gridLayout_2.addWidget(self.label, 0, 5, 1, 1)
         self.dtPicker = QtGui.QDateTimeEdit(self.tabdetails)
@@ -339,6 +339,9 @@ class Ui_frmEntradaCompra(object):
         self.toolBar.addAction(self.actionGoPrevious)
         self.toolBar.addAction(self.actionGoNext)
         self.toolBar.addAction(self.actionGoLast)
+        self.label_2.setBuddy(self.txtDocumentNumber)
+        self.label.setBuddy(self.dtPicker)
+        self.label_3.setBuddy(self.txtProvider)
         self.label_4.setBuddy(self.txtSearch)
 
         self.retranslateUi(frmEntradaCompra)
@@ -356,8 +359,16 @@ class Ui_frmEntradaCompra(object):
 
     def retranslateUi(self, frmEntradaCompra):
         frmEntradaCompra.setWindowTitle(QtGui.QApplication.translate("frmEntradaCompra", "Entrada Compra", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("frmEntradaCompra", "# Compra", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("frmEntradaCompra", "Fecha", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("frmEntradaCompra", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\"># Compra:</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("frmEntradaCompra", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Fecha:</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("frmEntradaCompra", "Observaciones", None, QtGui.QApplication.UnicodeUTF8))
         self.label_6.setText(QtGui.QApplication.translate("frmEntradaCompra", "Subtotal: ", None, QtGui.QApplication.UnicodeUTF8))
         self.lblSubtotal.setText(QtGui.QApplication.translate("frmEntradaCompra", "0.00", None, QtGui.QApplication.UnicodeUTF8))
@@ -365,13 +376,17 @@ class Ui_frmEntradaCompra(object):
         self.lblIVA.setText(QtGui.QApplication.translate("frmEntradaCompra", "0.00", None, QtGui.QApplication.UnicodeUTF8))
         self.label_11.setText(QtGui.QApplication.translate("frmEntradaCompra", "Total C$: ", None, QtGui.QApplication.UnicodeUTF8))
         self.lblTotal.setText(QtGui.QApplication.translate("frmEntradaCompra", "0.00", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("frmEntradaCompra", "Total US$", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtGui.QApplication.translate("frmEntradaCompra", "Total US$:", None, QtGui.QApplication.UnicodeUTF8))
         self.lblTotalD.setText(QtGui.QApplication.translate("frmEntradaCompra", "0.00", None, QtGui.QApplication.UnicodeUTF8))
         self.gbRadios.setTitle(QtGui.QApplication.translate("frmEntradaCompra", "Tipo de Pago", None, QtGui.QApplication.UnicodeUTF8))
         self.rbCash.setText(QtGui.QApplication.translate("frmEntradaCompra", "Contado", None, QtGui.QApplication.UnicodeUTF8))
         self.rbCredit.setText(QtGui.QApplication.translate("frmEntradaCompra", "Credito", None, QtGui.QApplication.UnicodeUTF8))
         self.rbCheck.setText(QtGui.QApplication.translate("frmEntradaCompra", "Cheque", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("frmEntradaCompra", "Proveedor", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("frmEntradaCompra", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Proveedor:</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), None)
         self.label_4.setText(QtGui.QApplication.translate("frmEntradaCompra", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)

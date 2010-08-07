@@ -211,7 +211,7 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
         
         return QStyledItemDelegate.sizeHint( self, option, index )
 
-class AccountsSelectorLine():
+class AccountsSelectorLine(object):
     def __init__( self ):
         self.itemId = 0
         self.amount = Decimal( 0 )

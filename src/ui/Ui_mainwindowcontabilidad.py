@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/mainwindowcontabilidad.ui'
 #
-# Created: Thu Aug  5 12:52:07 2010
+# Created: Fri Aug  6 15:15:59 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -49,7 +49,7 @@ class Ui_MainWindow(object):
         self.toolBox = QtGui.QToolBox(self.dockWidgetContents_2)
         self.toolBox.setObjectName("toolBox")
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 214, 567))
+        self.page.setGeometry(QtCore.QRect(0, 0, 163, 78))
         self.page.setObjectName("page")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -231,7 +231,7 @@ class Ui_MainWindow(object):
         self.btnEstado.setText(QtGui.QApplication.translate("MainWindow", "Estado\n"
 "de Resultados", None, QtGui.QApplication.UnicodeUTF8))
         self.btnEstado.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnMovements.setText(QtGui.QApplication.translate("MainWindow", "Movimientos\n"
+        self.btnMovements.setText(QtGui.QApplication.translate("MainWindow", "Ajustes\n"
 "Contables", None, QtGui.QApplication.UnicodeUTF8))
         self.btnMovements.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+1", None, QtGui.QApplication.UnicodeUTF8))
         self.btnConciliacion.setText(QtGui.QApplication.translate("MainWindow", "Conciliación\n"

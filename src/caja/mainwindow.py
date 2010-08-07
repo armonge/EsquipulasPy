@@ -81,7 +81,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
             self.actionUnlockSession.setVisible( not state )
 
         self.btnArqueo.setEnabled( state )
-        self.btnBanks.setEnabled( state )
         self.btnClients.setEnabled( state )
         self.btnrecibo.setEnabled( state )
         self.btnfactura.setEnabled( state )

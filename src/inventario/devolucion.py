@@ -3,11 +3,11 @@
 Module implementing frmDevolucion.
 """
 
-from PyQt4.QtCore import pyqtSlot, SIGNAL, QModelIndex, Qt, QTimer, \
+from PyQt4.QtCore import pyqtSlot, SIGNAL, Qt, QTimer, \
     SLOT, QDateTime
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
-     QLineEdit,QMessageBox
+     QLineEdit,QMessageBox, QPrinter
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from ui.Ui_devolucion import Ui_frmDevoluciones
 from utility.base import Base
@@ -22,7 +22,7 @@ from utility import constantes
 
 
 #navmodel
-IDDOCUMENTO, NDOCIMPRESO, FACTURA, CLIENTE, OBSERVACION, FECHA, SUBTOTAL, IMPUESTOS, COSTO, TOTAL, TASA = range( 11 )
+IDDOCUMENTO, NDOCIMPRESO, FACTURA, CLIENTE, OBSERVACION, FECHA, SUBTOTAL, IMPUESTOS, COSTO, TOTAL, TASA, CONCEPTO = range( 12 )
 #detailsmodel
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD, IDDOCUMENTOT = range( 6 )
 class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
@@ -100,6 +100,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         self.mapper.addMapping( self.lblSubtotal, SUBTOTAL, "text" )
         self.mapper.addMapping( self.lblCost, COSTO, "text" )
         self.mapper.addMapping( self.lblTaxes, IMPUESTOS, "text" )
+        self.mapper.addMapping( self.txtConcept, CONCEPTO, "text" )
 
 #        asignar los modelos a sus tablas
         self.tablenavigation.setModel( self.navproxymodel )
@@ -108,9 +109,9 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         try:
 
             if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
-
-            self.navmodel.setQuery( """
+                if not QSqlDatabase.database().open():
+                    raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
+            query = """
              SELECT
                 d.iddocumento,
                 d.ndocimpreso as 'Numero de Entrada',
@@ -122,8 +123,10 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 @subtotald * (IF( ca.valorcosto IS NOT NULL , ca.valorcosto / 100, 0 )  ) as ivad,
                 SUM( axd.costounit ) as costod,
                 d.total as totald,
-                tc.tasa
+                tc.tasa,
+                c.descripcion
             FROM documentos d
+            JOIN conceptos c ON c.idconcepto = d.idconcepto
             JOIN docpadrehijos dpd ON dpd.idhijo = d.iddocumento
             JOIN documentos padre ON dpd.idpadre = padre.iddocumento
             JOIN tiposcambio tc ON d.idtipocambio = tc.idtc
@@ -132,8 +135,10 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             JOIN articulosxdocumento axd ON axd.iddocumento = d.iddocumento
             LEFT JOIN costosxdocumento cxd ON cxd.iddocumento = padre.iddocumento
             LEFT JOIN costosagregados ca ON ca .idcostoagregado = cxd.idcostoagregado
-            WHERE d.idtipoDoc = %d and p.tipopersona=%d
-            GROUP BY d.iddocumento""") %(constantes.IDDEVOLUCION,constantes.IDCLIENTE)
+            WHERE d.idtipodoc = %d and p.tipopersona=%d
+            GROUP BY d.iddocumento""" %(constantes.IDDEVOLUCION,constantes.CLIENTE) 
+            print query
+            self.navmodel.setQuery(query )
 
             self.detailsmodel.setQuery( u"""
             SELECT 
@@ -146,8 +151,8 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             FROM articulosxdocumento axd
             JOIN vw_articulosdescritos ad ON axd.idarticulo = ad.idarticulo
             JOIN documentos d ON d.iddocumento = axd.iddocumento 
-            WHERE d.idtipodoc = 10
-            """ )
+            WHERE d.idtipodoc = %d
+            """ % constantes.IDDEVOLUCION)
 
 
             self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
@@ -158,7 +163,8 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             self.tablenavigation.setColumnHidden( COSTO, True )
 
 
-
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
         except Exception as inst:
             print inst
         finally:
@@ -197,6 +203,8 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
+        
+        self.swConcept.setCurrentIndex(1 if status else 0)
         if status:
             
             self.navigate( 'last' )
@@ -299,7 +307,18 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                     self.editmodel.insertRows( row )
     
                     self.editmodel.lines[row] = linea
-    
+                
+                
+                self.conceptsmodel = QSqlQueryModel()
+                self.conceptsmodel.setQuery("""
+                SELECT idconcepto, descripcion 
+                FROM conceptos 
+                WHERE idtipodoc = %d
+                """ % constantes.IDDEVOLUCION)
+                
+                self.cbConcept.setModel(self.conceptsmodel)
+                self.cbConcept.setModelColumn(1)
+                self.cbConcept.setCurrentIndex(-1)
     
                 
                 self.tabnavigation.setEnabled( False )
@@ -323,7 +342,13 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
 
-
+    @pyqtSlot( "int" )
+    def on_cbConcept_currentIndexChanged( self, index ):
+        """
+        asignar proveedor al objeto self.editmodel
+        """
+        if not self.editmodel is None:
+            self.editmodel.conceptId = self.conceptsmodel.record( index ).value( "idconcepto" ).toInt()[0]
 
 
     @pyqtSlot(  )
@@ -331,9 +356,11 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         """
         Funcion usada para mostrar el reporte de una entrada compra
         """
-
-        report = frmReportes( "devoluciones.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.user, self )
-        report.show()
+        printer = QPrinter()
+        printer.setPageSize(QPrinter.Letter)
+        web = "devoluciones.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
+        report = frmReportes(  web, self.user, printer, self )
+        report.exec_()
 
     @pyqtSlot(  )
     def on_actionCancel_activated( self ):
@@ -350,30 +377,49 @@ class dlgSelectBill( QDialog ):
     def __init__( self, parent = None ):
         super( dlgSelectBill, self ).__init__( parent )
         self.billsmodel = QSqlQueryModel()
-        self.billsmodel.setQuery( """
-        SELECT 
-            d.iddocumento, 
-            d.ndocimpreso, 
-            d.fechacreacion, 
-            p.nombre, -1*SUM(unidades) as unittotal, 
-            p.idpersona, 
-            valorcosto, 
-            ca.idcostoagregado,
-            tc.tasa,
-            tc.idtc
-        FROM documentos d
-        JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
-        LEFT JOIN docpadrehijos dpd ON d.iddocumento = dpd.idpadre
-        LEFT JOIN documentos devs ON dpd.idhijo = devs.iddocumento
-        LEFT JOIN costosxdocumento cxd ON cxd.iddocumento = d.iddocumento
-        LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado
-       JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
-        JOIN personas p ON pxd.idpersona = p.idpersona
-        JOIN articulosxdocumento axd ON (axd.iddocumento = d.iddocumento OR axd.iddocumento = devs.iddocumento)
-        WHERE d.idtipodoc =%d and p.tipopersona=%d
-        GROUP BY d.iddocumento
-        HAVING unittotal > 0   
-        """ % (constantes.IDFACTURA,constantes.CLIENTE) )
+        query = """
+        SELECT * FROM (
+            SELECT
+                factura.iddocumento,
+                factura.ndocimpreso,
+                factura.fechacreacion,
+                p.nombre,
+                -SUM(axd.unidades) -
+            IFNULL((
+                SELECT
+                SUM(axddev.unidades)
+                FROM documentos devoluciones
+                JOIN docpadrehijos dpddev ON devoluciones.iddocumento = dpddev.idhijo
+                JOIN articulosxdocumento axddev ON axddev.iddocumento = devoluciones.iddocumento
+                WHERE devoluciones.idtipodoc = %d AND dpddev.idpadre = factura.iddocumento
+                GROUP BY dpddev.idpadre
+            ),0) as unittotal,
+                p.idpersona,
+                ca.valorcosto,
+                ca.idcostoagregado,
+                tc.tasa,
+                tc.idtc
+            FROM documentos factura
+            JOIN articulosxdocumento axd ON axd.iddocumento = factura.iddocumento AND factura.idtipodoc = %d
+            JOIN tiposcambio tc ON tc.idtc = factura.idtipocambio
+            JOIN personasxdocumento pxd ON pxd.iddocumento = factura.iddocumento
+            JOIN personas p ON pxd.idpersona = p.idpersona AND p.tipopersona=%d
+            LEFT JOIN costosxdocumento cxd ON cxd.iddocumento = factura.iddocumento
+            LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado
+            JOIN (
+                SELECT
+                dpdk.idpadre
+                FROM documentos kardex
+                JOIN docpadrehijos dpdk ON kardex.iddocumento = dpdk.idhijo
+                WHERE kardex.idtipodoc = %d
+            ) as kardex ON kardex.idpadre = factura.iddocumento
+            GROUP BY factura.iddocumento
+            ) as tbl
+            WHERE unittotal > 0
+        """ % (constantes.IDDEVOLUCION, constantes.IDFACTURA, constantes.CLIENTE, constantes.IDKARDEX)
+        
+        print query 
+        self.billsmodel.setQuery( query)
 
 
 

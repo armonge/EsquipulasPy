@@ -3,7 +3,7 @@
 """
 Module implementing frmEntradaCompra.
 """
-from PyQt4.QtGui import QMainWindow,  QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter
+from PyQt4.QtGui import QMainWindow,  QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter
 from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QTimer, QDateTime, QModelIndex
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from decimal import Decimal
@@ -223,10 +223,12 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         """
         Funcion usada para mostrar el reporte de una entrada compra
         """
+        printer = QPrinter()
+        printer.setPageSize(QPrinter.Letter)
+        web = "entradaslocales.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
+        report = frmReportes(web  , self.user, printer, self )
 
-        report = frmReportes( "entradaslocales.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] , self.user, self )
-
-        report.show()
+        report.exec_()
 
 
     @pyqtSlot(  )

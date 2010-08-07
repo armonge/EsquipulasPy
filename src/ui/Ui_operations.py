@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/operations.ui'
 #
-# Created: Thu Aug  5 10:13:59 2010
+# Created: Fri Aug  6 15:15:03 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -58,6 +58,7 @@ class Ui_frmOperations(object):
         self.gridLayout_3.addWidget(self.label, 0, 0, 1, 1)
         self.dtPicker = QtGui.QDateTimeEdit(self.groupBox)
         self.dtPicker.setReadOnly(True)
+        self.dtPicker.setCalendarPopup(True)
         self.dtPicker.setObjectName("dtPicker")
         self.gridLayout_3.addWidget(self.dtPicker, 0, 2, 1, 1)
         self.label_3 = QtGui.QLabel(self.groupBox)
@@ -128,7 +129,7 @@ class Ui_frmOperations(object):
         QtCore.QMetaObject.connectSlotsByName(frmOperations)
 
     def retranslateUi(self, frmOperations):
-        frmOperations.setWindowTitle(QtGui.QApplication.translate("frmOperations", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        frmOperations.setWindowTitle(QtGui.QApplication.translate("frmOperations", "Ajustes Contables", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("frmOperations", "Detalles", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("frmOperations", "&Fecha", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("frmOperations", "Concepto", None, QtGui.QApplication.UnicodeUTF8))
