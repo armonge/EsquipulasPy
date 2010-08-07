@@ -224,7 +224,7 @@ class FacturaModel( QAbstractTableModel ):
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-            query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
+            query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) & QDateTime.currentDateTime().toString("hhmmss") )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":observacion", self.observaciones )
             query.bindValue( ":total", self.total.to_eng_string() )

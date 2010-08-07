@@ -47,7 +47,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 #        El modelo principal
         self.navmodel = QSqlQueryModel( self )
 #        El modelo que filtra a self.navmodel
-        self.navproxymodel = RONavigationModel( self )
+        self.navproxymodel = QSortFilterProxyModel( self )
         self.navproxymodel.setSourceModel( self.navmodel )
         self.navproxymodel.setFilterKeyColumn( -1 )
         self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
@@ -266,57 +266,64 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         Guardar el documento actual
         """
-        if self.valid:
-            if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+        if not self.valid:
+            return
+        
+        recibo = None
+        if self.editmodel.escontado:
+            recibo = dlgRecibo(self)
+            if recibo.datosRecibo.retencionValida:
+                if recibo.datosRecibo.retencionModel.rowCount()==0:
+                    QMessageBox.warning( None,
+                                     "Llantera Esquipulas",
+                                     """No es posible crear un recibo porque no existen retenciones en la base de datos""",
+                                     QMessageBox.StandardButtons( \
+                                    QMessageBox.Ok ),
+                                    QMessageBox.Ok )
+                    return
+            else:
+                recibo.ckretener.setChecked(False)
+                recibo.ckretener.setEnabled(False)
+            
+            result = -1
+            print "aceptar " + str(QDialog.Accepted)
+            while result not in (QDialog.Rejected,QDialog.Accepted):
+                result = recibo.exec_()
+                print result
+
+            if result == QDialog.Rejected:
+                return
+
+            
+        if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
                 
+            if not QSqlDatabase.database().isOpen():
+                QSqlDatabase.database().open()
+        
+            self.editmodel.observaciones = self.txtobservaciones.toPlainText()
+                            
+            if self.editmodel.save():
                 if self.editmodel.escontado:
-                    dialog = dlgRecibo(self)
-                    if self.editmodel.total > 1000:
-                        if dialog.datosRecibo.retencionModel.rowCount()==0:
-                            QMessageBox.warning( None,
-                                             "Llantera Esquipulas",
-                                             """No es posible crear un recibo porque no existen retenciones en la base de datos""",
-                                             QMessageBox.StandardButtons( \
-                                            QMessageBox.Ok ),
-                                            QMessageBox.Ok )
-                            return
-                    else:
-                        dialog.ckretener.setChecked(False)
-                        dialog.ckretener.setEnabled(False)
-                    
-                    if dialog.exec_():
-                        print "OK"
-                    else:
-                        print "Cancel"
+                    if not recibo.save():
+                        QMessageBox.critical( None,
+                    "Llantera Esquipulas" ,
+                     """Ha ocurrido un error al guardar el recibo""" ) 
                         return
-                        
-                if not QSqlDatabase.database().isOpen():
-                    QSqlDatabase.database().open()
-                
-                self.editmodel.observaciones = self.txtobservaciones.toPlainText()
-                                
-                if self.editmodel.save():
-                    if self.edritmodel.escontado:
-                        if not dialog.save():
-                            QMessageBox.critical( None,
-                        "Llantera Esquipulas" ,
-                         """Ha ocurrido un error al guardar el recibo""" ) 
-                            return
-                        
-                    QMessageBox.information( None,
-                         "Llantera Esquipulas" ,
-                         u"""El documento se ha guardado con éxito""" ) 
-                    self.editmodel = None
-                    self.updateModels()
-                    self.navigate( 'last' )
-                    self.status = True
-                else:
-                    QMessageBox.critical( None,
-                        "Llantera Esquipulas" ,
-                         """Ha ocurrido un error al guardar la factura""" ) 
+                    
+                QMessageBox.information( None,
+                     "Llantera Esquipulas" ,
+                     u"""El documento se ha guardado con éxito""" ) 
+                self.editmodel = None
+                self.updateModels()
+                self.navigate( 'last' )
+                self.status = True
+            else:
+                QMessageBox.critical( None,
+                    "Llantera Esquipulas" ,
+                     """Ha ocurrido un error al guardar la factura""" ) 
     
-                if QSqlDatabase.database().isOpen():
-                    QSqlDatabase.database().close()
+            if QSqlDatabase.database().isOpen():
+                QSqlDatabase.database().close()
 
 
    
@@ -430,6 +437,12 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     anulardialog.close()
                     print "Cancelar"   
 
+    @pyqtSlot(  )
+    def on_btnrecibo_clicked( self ):
+        recibo = dlgRecibo(self,True)
+        recibo.show()
+        
+
     @pyqtSlot( "int" )
     def on_cbbodega_currentIndexChanged( self, index ):
         """
@@ -479,6 +492,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         if not self.editmodel is None:
             self.editmodel.escontado = 1 if on else 0
+        else:
+            self.btnrecibo.setHidden(not on)
 
 
     def setControls( self, status ):
@@ -506,6 +521,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
+            self.btnrecibo.setHidden(True)
             self.tabWidget.setCurrentIndex( 0 )
             self.lblnfac.setText( "500" )
             self.txtobservaciones.setPlainText( "" )
@@ -577,7 +593,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     GROUP_CONCAT(IF(p.tipopersona=3,p.nombre,"") SEPARATOR '') as Vendedor,
                     ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as subtotal,
                     d.total- ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as iva,
-                    d.Total,
+                    CONCAT('US$ ',FORMAT(d.Total,4)),
                     d.observacion,
                     DATE_FORMAT(d.fechacreacion,'%d/%m/%Y') as Fecha,
                     b.nombrebodega as Bodega,

@@ -630,24 +630,27 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 class dlgRecibo(Ui_dlgRecibo,QDialog):
     def __init__( self,factura,readOnly=False):
         super( dlgRecibo, self ).__init__( factura )
-        
+        self.setModal(True)
         self.editmodel = None
-        
         self.setupUi( self )
         self.readOnly=readOnly        
         self.txtcliente.setText(factura.cbcliente.currentText())
-        self.setControls(False,factura)
+        self.setControls(readOnly,factura)
         self.connect( self.buttonBox, SIGNAL( "accepted()" ), self.aceptar )
+        
     
     def aceptar(self):
-#        if self.datosRecibo.valid():
-            return self.accept()              
-#        self.setWindowFlags(Qt.WindowTitleHint | Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)
+        if self.readOnly:
+            return self.accept()
+        
+        if self.datosRecibo.valid(self):
+            return self.accept()
+        else:
+            self.setResult(-1)
+            
+            
     def save(self):
         self.datosRecibo.observaciones = self.txtobservaciones.toPlainText()
-#        self.datosRecibo.lines = self.editmodel.lines
-#        linea = LineaAbono()
-#        self.datosRecibo.lineasAbonos.append()
         self.datosRecibo.save()
         
     def setControls( self, status,factura ):
@@ -662,6 +665,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         if status:
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
             self.swtasaret.setCurrentIndex(1)
+            self.buttonBox.buttons()[1].setHidden(True)
         else:
             self.lbltotal.setText(factura.lbltotal.text())
             if not QSqlDatabase.database().isOpen():
@@ -705,6 +709,16 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             self.tabledetails.setItemDelegate(delegado)
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.swtasaret.setCurrentIndex(0)
+            self.datosRecibo.clienteId = factura.editmodel.clienteId
+            self.datosRecibo.conceptoId = 1
+            
+            linea = LineaAbono(self)
+            linea.idFac=1
+            linea.tasaIva = factura.editmodel.ivaTasa
+            linea.monto= factura.editmodel.total
+            
+            
+            self.datosRecibo.lineasAbonos.append(linea)
      
     
     @pyqtSignature( "bool" )
@@ -810,10 +824,16 @@ class DatosRecibo(object):
         """
         
         if int( self.clienteId ) == 0:
-            recibo.cbcliente.setFocus()
+            try:
+                recibo.cbcliente.setFocus()
+            except:
+                pass
             QMessageBox.information(None,"Guardar Recibo","No existe un cliente seleccionado" )
         elif int( self.conceptoId ) == 0:
-            recibo.cbconcepto.setFocus()
+            try:
+                recibo.cbconcepto.setFocus()
+            except:
+                pass
             QMessageBox.information(None,"Guardar Recibo","No hay un concepto" )
         elif self.aplicarRet and int( self.retencionId ) == 0:
                 recibo.cbtasaret.setFocus()
@@ -839,8 +859,9 @@ class DatosRecibo(object):
             foo = 0
             for line in self.lineasAbonos:
                 foo += 1
+                print line.monto
                 if not line.valid:
-                    recibo.tableabonos.selectRow(foo - 1)
+#                    recibo.tableabonos.selectRow(foo - 1)
                     QMessageBox.information(None,"Guardar Recibo",u"La linea " + str(foo) + u" de las facturas abonadas no es válida")
                     return False
                 

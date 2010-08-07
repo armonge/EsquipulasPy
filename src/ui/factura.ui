@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>730</width>
-    <height>583</height>
+    <width>479</width>
+    <height>513</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -525,6 +525,29 @@ color: rgb(255, 0, 0);</string>
           </item>
          </layout>
         </item>
+        <item>
+         <widget class="QCommandLinkButton" name="btnrecibo">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Datos del Recibo</string>
+          </property>
+          <property name="icon">
+           <iconset resource="res.qrc">
+            <normaloff>:/images/res/view-pim-tasks.png</normaloff>:/images/res/view-pim-tasks.png</iconset>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="tabnavigation">
@@ -779,7 +802,6 @@ color: rgb(255, 0, 0);</string>
   <tabstop>rbcredito</tabstop>
   <tabstop>tabledetails</tabstop>
   <tabstop>txtobservaciones</tabstop>
-  <tabstop>tabWidget</tabstop>
   <tabstop>dtPicker</tabstop>
   <tabstop>txtvendedor</tabstop>
   <tabstop>txtSearch</tabstop>
