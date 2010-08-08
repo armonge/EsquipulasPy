@@ -69,13 +69,14 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             self.navigationmodel.setQuery((QSqlQuery(u"""
             SELECT 
                 d.iddocumento, 
-                d.ndocimpreso as 'Documento Referencia',
+                CONCAT_WS(' ',tdc.descripcion, d.ndocimpreso) as 'Documento Referencia',
                 kx.ndocimpreso as 'Numero Kardex',
                 b.nombrebodega as 'Bodega',        
                 d.fechacreacion as 'Fecha', 
                 d.observacion, 
                 d.idbodega
             FROM documentos d
+            JOIN tiposdoc tdc ON tdc.idtipodoc = d.idtipodoc
             JOIN bodegas b ON b.idbodega = d.idbodega
             JOIN docpadrehijos dpd ON dpd.idpadre = d.iddocumento
             JOIN documentos kx ON kx.iddocumento = dpd.idhijo AND kx.idtipodoc = 27
@@ -264,22 +265,25 @@ class dlgSelectDoc( QDialog ):
         self.setupUi()
         
         self.model = QSqlQueryModel()
-        self.model.setQuery( u"""
+        query = u"""
         SELECT 
             d.iddocumento, 
-            d.ndocimpreso as 'Documento',
+            CONCAT_WS(' ', tdc.descripcion, d.ndocimpreso) as 'Documento',
             b.nombrebodega as 'Bodega',        
             d.fechacreacion as 'Fecha',
             b.idbodega,
             d.observacion
         FROM documentos d
+        JOIN tiposdoc tdc ON tdc.idtipodoc = d.idtipodoc
         JOIN bodegas b ON b.idbodega = d.idbodega
         LEFT JOIN docpadrehijos dpd ON dpd.idpadre = d.iddocumento
         LEFT JOIN documentos h ON h.iddocumento = dpd.idhijo AND h.idtipodoc = %d
         WHERE d.idtipodoc IN (%s) 
         GROUP BY d.iddocumento
         HAVING SUM(h.idtipodoc) IS NULL
-        """ % ( constantes.IDKARDEX , tiposdoc))
+        """ % ( constantes.IDKARDEX , tiposdoc)
+        print query
+        self.model.setQuery( query)
 
 
 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/user.ui'
 #
-# Created: Sat Aug  7 17:54:01 2010
+# Created: Sun Aug  8 17:36:07 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -93,8 +93,8 @@ class Ui_dlgUserLogin(object):
         spacerItem9 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout.addItem(spacerItem9, 8, 0, 1, 6)
         self.horizontalLayout.addWidget(self.frame)
-        self.label_2.setBuddy(self.txtPassword)
-        self.label_3.setBuddy(self.txtUser)
+        self.label_2.setBuddy(self.txtUser)
+        self.label_3.setBuddy(self.txtPassword)
 
         self.retranslateUi(dlgUserLogin)
         QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"), dlgUserLogin.accept)

@@ -91,7 +91,7 @@
            <string>&amp;Usuario</string>
           </property>
           <property name="buddy">
-           <cstring>txtPassword</cstring>
+           <cstring>txtUser</cstring>
           </property>
          </widget>
         </item>
@@ -108,7 +108,7 @@
            <string>&amp;Contraseña</string>
           </property>
           <property name="buddy">
-           <cstring>txtUser</cstring>
+           <cstring>txtPassword</cstring>
           </property>
          </widget>
         </item>

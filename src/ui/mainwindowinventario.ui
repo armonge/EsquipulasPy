@@ -77,7 +77,7 @@
      <item>
       <widget class="QToolBox" name="toolBox">
        <property name="currentIndex">
-        <number>1</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
@@ -363,21 +363,6 @@ Facturas</string>
            </property>
           </widget>
          </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="widget">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>214</width>
-          <height>540</height>
-         </rect>
-        </property>
-        <attribute name="label">
-         <string>Kardex</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QPushButton" name="btnDevolutions">
            <property name="sizePolicy">
@@ -399,8 +384,7 @@ Facturas</string>
             </font>
            </property>
            <property name="text">
-            <string>Entradas por
-Devoluciones</string>
+            <string>Devoluciones</string>
            </property>
            <property name="iconSize">
             <size>
@@ -413,6 +397,21 @@ Devoluciones</string>
            </property>
           </widget>
          </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="widget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>214</width>
+          <height>540</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Kardex</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QPushButton" name="btnKEntries">
            <property name="sizePolicy">
@@ -434,10 +433,10 @@ Devoluciones</string>
             </font>
            </property>
            <property name="text">
-            <string>Entradas por
-Compras
-Locales e
-Importaciones</string>
+            <string>Entradas
+Locales,
+Importaciones y
+Devoluciones</string>
            </property>
            <property name="iconSize">
             <size>

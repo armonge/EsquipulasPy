@@ -22,7 +22,7 @@ from utility import constantes
 
 
 #navmodel
-IDDOCUMENTO, NDOCIMPRESO, FACTURA, CLIENTE, OBSERVACION, FECHA, SUBTOTAL, IMPUESTOS, COSTO, TOTAL, TASA, CONCEPTO = range( 12 )
+IDDOCUMENTO, NDOCIMPRESO, FACTURA, CLIENTE, OBSERVACION, FECHA, SUBTOTAL, IMPUESTOS, COSTO, TOTAL, TASA, CONCEPTO, NOMBREBODEGA = range( 13 )
 #detailsmodel
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD, IDDOCUMENTOT = range( 6 )
 class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
@@ -106,8 +106,10 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 SUM( axd.costounit ) as costod,
                 d.total AS totald,
                 tc.tasa,
-                c.descripcion AS 'Concepto'
+                c.descripcion AS 'Concepto',
+                b.nombrebodega AS 'Bodega'
             FROM documentos d
+            JOIN bodegas b ON d.idbodega = b.idbodega
             JOIN conceptos c ON c.idconcepto = d.idconcepto
             JOIN docpadrehijos dpd ON dpd.idhijo = d.iddocumento
             JOIN documentos padre ON dpd.idpadre = padre.iddocumento
@@ -153,6 +155,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             self.mapper.addMapping( self.lblCost, COSTO, "text" )
             self.mapper.addMapping( self.lblTaxes, IMPUESTOS, "text" )
             self.mapper.addMapping( self.txtConcept, CONCEPTO, "text" )
+            self.mapper.addMapping( self.txtWarehouse, NOMBREBODEGA, "text" )
 
     #        asignar los modelos a sus tablas
             self.tablenavigation.setModel( self.navproxymodel )
@@ -261,19 +264,24 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             if dlgbill.exec_() == QDialog.Accepted:
                 self.editmodel = DevolucionModel()
                 self.editmodel.invoiceId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 0 ).data().toInt()[0]
-                self.editmodel.clientId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 5 ).data().toInt()[0]
-                self.editmodel.uid = self.user.uid
-                self.editmodel.clientName = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 3 ).data().toString()
                 self.editmodel.billPrinted = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 1 ).data().toString()
-    
+                self.editmodel.clientName = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 3 ).data().toString()
+                
+                self.editmodel.clientId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 5 ).data().toInt()[0]
+                
                 self.editmodel.ivaRate = Decimal( dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 6 ).data().toString() )
                 self.editmodel.ivaRateId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 7 ).data().toInt()[0]
     
                 self.editmodel.exchangeRate = Decimal( dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 8 ).data().toString() )
                 self.editmodel.exchangeRateId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 9 ).data().toInt()[0]
+                
+                self.editmodel.warehouseName = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 12 ).data().toString()
+                self.editmodel.warehouseId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 11 ).data().toInt()[0]
+                
     
-    
-                self.txtBill.setText( self.editmodel.billPrinted )
+                self.editmodel.uid = self.user.uid
+                
+                
                 query = QSqlQuery( """
                 CALL spConsecutivo(%d,NULL);
                 """ % constantes.IDDEVOLUCION )
@@ -282,7 +290,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 query.first()
                 self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
 
-                self.txtDocumentNumber.setText( self.editmodel.printedDocumentNumber)
+                
                 
                 query.prepare( """
                 SELECT 
@@ -337,6 +345,12 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 self.tabledetails.resizeColumnsToContents()
                 self.dtPicker.setDateTime( QDateTime.currentDateTime() )
                 self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+                
+                
+                self.txtDocumentNumber.setText( self.editmodel.printedDocumentNumber)
+                self.txtBill.setText( self.editmodel.billPrinted )
+                
+                
                 self.status =  False 
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
@@ -387,9 +401,9 @@ class dlgSelectBill( QDialog ):
         SELECT * FROM (
             SELECT
                 factura.iddocumento,
-                factura.ndocimpreso,
-                factura.fechacreacion,
-                p.nombre,
+                CONCAT_WS(' ', tdc.descripcion, factura.ndocimpreso) AS 'Numero de Factura',
+                factura.fechacreacion AS 'Fecha',
+                p.nombre AS 'Cliente',
                 -SUM(axd.unidades) -
             IFNULL((
                 SELECT
@@ -404,8 +418,12 @@ class dlgSelectBill( QDialog ):
                 ca.valorcosto,
                 ca.idcostoagregado,
                 tc.tasa,
-                tc.idtc
+                tc.idtc,
+                b.nombrebodega AS 'Bodega',
+                b.idbodega
             FROM documentos factura
+            JOIN bodegas b ON factura.idbodega = b.idbodega
+            JOIN tiposdoc tdc ON tdc.idtipodoc = factura.idtipodoc
             JOIN articulosxdocumento axd ON axd.iddocumento = factura.iddocumento AND factura.idtipodoc = %d
             JOIN tiposcambio tc ON tc.idtc = factura.idtipocambio
             JOIN personasxdocumento pxd ON pxd.iddocumento = factura.iddocumento
@@ -423,7 +441,7 @@ class dlgSelectBill( QDialog ):
             ) as tbl
             WHERE unittotal > 0
         """ % (constantes.IDDEVOLUCION, constantes.IDFACTURA, constantes.CLIENTE, constantes.IDKARDEX)
-        
+        print query
         self.billsmodel.setQuery( query)
 
 
@@ -434,7 +452,7 @@ class dlgSelectBill( QDialog ):
         self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
         self.filtermodel.setFilterKeyColumn( -1 )
 
-        iddoc, ndocimpreso, fechacreacion, nombre, total, idpersona, valorcosto, idcosto, tasacambio, idcambio = range( 10 )
+        iddoc, ndocimpreso, fechacreacion, nombre, total, idpersona, valorcosto, idcosto, tasacambio, idcambio, nombrebodega, idbodega = range( 12 )
         self.tblBills = QTableView()
         self.tblBills.setSelectionMode( QAbstractItemView.SingleSelection )
         self.tblBills.setSelectionBehavior( QAbstractItemView.SelectRows )
@@ -448,6 +466,7 @@ class dlgSelectBill( QDialog ):
         self.tblBills.setColumnHidden( idcosto, True )
         self.tblBills.setColumnHidden( idcambio, True )
         self.tblBills.setColumnHidden( tasacambio, True )
+        self.tblBills.setColumnHidden( idbodega, True )
 
         self.tblBills.horizontalHeader().setStretchLastSection( True )
 

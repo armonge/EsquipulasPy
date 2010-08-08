@@ -143,7 +143,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        kardex = frmKardex( self.user,[7,21], self )
+        kardex = frmKardex( self.user,[7,10,21], self )
         self.mdiArea.addSubWindow( kardex )
         kardex.show()
         

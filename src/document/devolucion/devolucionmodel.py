@@ -88,20 +88,31 @@ class DevolucionModel( QAbstractTableModel ):
         @type: int
         """
         self.applyIva = True
-        """
+        u"""
         @ivar: Si se aplica o no IVA en esta devolución
         type:bool
         """
 
         self.exchangeRateId = 0
-        """
+        u"""
         @ivar: El id del tipo de cambio en esta devolución
         @type:int
         """
         self.exchangeRate = Decimal( 0 )
-        """
+        u"""
         @ivar: EL tipo de cambio de esta devolución
         @type:Decimal
+        """
+        
+        self.warehouseId = 0
+        u"""
+        @ivar: El id de la bodega en la cual se hace la devolución
+        @type:Decimal
+        """
+        self.warehouseName = ""
+        u"""
+        @ivar: El nombre de la bodega en la cual se hace la devolución
+        @type:string
         """
 
 
@@ -131,6 +142,9 @@ class DevolucionModel( QAbstractTableModel ):
             return False
         elif not int(self.conceptId) > 0:
             self.validError = u"No se ha especificado un concepto para la devolución"
+            return False
+        elif not int(self.warehouseId) > 0:
+            self.validError = u"No se ha especificado la bodega para la devolución"
             return False
         return True
         
@@ -309,8 +323,8 @@ class DevolucionModel( QAbstractTableModel ):
                 raise Exception( u"No se puedo comenzar la transaccion" )
             #Insertar el documento
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,  observacion,total, idtipocambio, idconcepto)
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total, :idtipocambio, :idconcepto)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,  observacion,total, idtipocambio, idconcepto, idbodega)
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total, :idtipocambio, :idconcepto, :idbodega)
             """ ):
                 raise Exception(u"No se pudo preparar la consulta para añadir el documento")
 
@@ -324,6 +338,7 @@ class DevolucionModel( QAbstractTableModel ):
             query.bindValue( ":total", self.totalD.to_eng_string() )
             query.bindValue( ":idtipocambio", self.exchangeRateId )
             query.bindValue(":idconcepto", self.conceptId)
+            query.bindValue(":idbodega", self.warehouseId)
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )

@@ -5,8 +5,8 @@ Modulo en el que se maneja la logica de usuarios
 import hashlib
 
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
-from PyQt4.QtCore import QObject, SIGNAL, SLOT
-from PyQt4.QtGui import QDialog, QDialogButtonBox, QLineEdit, QVBoxLayout, QFormLayout, QIcon, qApp
+from PyQt4.QtCore import QObject, SIGNAL, SLOT, Qt 
+from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap
 
 from ui import res_rc
 from ui.Ui_user import Ui_dlgUserLogin
@@ -24,7 +24,16 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
 
         self.setWindowTitle( qApp.applicationName() )
         self.txtUser.setText('root')
-
+        
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        
+        dw = QDesktopWidget()
+        geometry = dw.screenGeometry()
+        
+        self.setGeometry( (geometry.width() -519) / 2, (geometry.height() -311)  / 2  , 519, 311)
+        
+        pixmap = QPixmap(":/images/res/passwd-bg.png");
+        self.setMask(pixmap.mask());
 
 
         QObject.connect( self.buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
