@@ -633,13 +633,12 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 class dlgRecibo(Ui_dlgRecibo,QDialog):
     def __init__( self,factura,readOnly=False):
         super( dlgRecibo, self ).__init__( factura )
-        self.setModal(True)
+#        self.setModal(True)
         self.editmodel = None
         self.setupUi( self )
         self.readOnly=readOnly        
-        self.txtcliente.setText(factura.cbcliente.currentText())
         self.setControls(readOnly,factura)
-        self.connect( self.buttonBox, SIGNAL( "accepted()" ), self.aceptar )
+        
         
     
     def aceptar(self):
@@ -650,11 +649,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             return self.accept()
         else:
             self.setResult(-1)
-            
-            
-    def save(self):
-        self.datosRecibo.observaciones = self.txtobservaciones.toPlainText()
-        self.datosRecibo.save()
+
         
     def setControls( self, status,factura ):
         """
@@ -670,6 +665,9 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             self.swtasaret.setCurrentIndex(1)
             self.buttonBox.buttons()[1].setHidden(True)
         else:
+            self.txtcliente.setText(factura.cbcliente.currentText())
+            self.totalFactura = Decimal(0)
+            self.connect( self.buttonBox, SIGNAL( "accepted()" ), self.aceptar )
             self.lbltotal.setText(factura.lbltotal.text())
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
@@ -719,6 +717,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             linea.idFac=1
             linea.tasaIva = factura.editmodel.ivaTasa
             linea.monto= factura.editmodel.total
+            self.totalFactura = factura.editmodel.total
             
             
             self.datosRecibo.lineasAbonos.append(linea)
@@ -738,7 +737,10 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         """
         asignar la retencion al objeto self.editmodel
         """
-        self.datosRecibo.tasaRetencionCambio(self,index)
+        if self.editmodel != None:
+            self.datosRecibo.tasaRetencionCambio(self,index)
+            if self.ckretener.isEnabled():
+                self.updateLabels()
         
 #    def updateLabels( self ):
 #        if not self.readOnly:
@@ -747,7 +749,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
 ##            self.tabledetails.resizeColumnsToContents()
     def updateLabels( self ):
         #Asingar el total al modelo
-        totalAbono = self.abonoeditmodel.total
+        totalAbono = self.totalFactura
 
         retener = self.datosRecibo.retencionValida
 

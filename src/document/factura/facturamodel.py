@@ -23,6 +23,7 @@ class FacturaModel( QAbstractTableModel ):
         
         self.dirty = False
         self.__documentType = 5
+        
         self.clienteId = 0
         self.vendedorId =0
         self.bodegaId = 0
@@ -206,7 +207,7 @@ class FacturaModel( QAbstractTableModel ):
         return int( section + 1 )
 
 #TODO: INSERCION
-    def save( self ):
+    def save( self , datosRecibo):
         """
         Este metodo guarda el documento actual en la base de datos
         """
@@ -224,7 +225,7 @@ class FacturaModel( QAbstractTableModel ):
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-            query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) & QDateTime.currentDateTime().toString("hhmmss") )
+            query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString("hhmmss") )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":observacion", self.observaciones )
             query.bindValue( ":total", self.total.to_eng_string() )
@@ -235,8 +236,9 @@ class FacturaModel( QAbstractTableModel ):
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
 
+            
             insertedId = query.lastInsertId().toString()
-
+            self.facturaId = query.lastInsertId().toString()
 #INSERTAR LA RELACION CON LA SESION DE CAJA            
             query.prepare( """
                 INSERT INTO docpadrehijos (idpadre,idhijo)
@@ -291,6 +293,11 @@ class FacturaModel( QAbstractTableModel ):
             #manejar las cuentas contables en Cordobas
             # el costo no se multiplica porque ya esta en cordobas
             movFacturaCredito( insertedId, self.subtotal * self.datosSesion.tipoCambioOficial , self.IVA * self.datosSesion.tipoCambioOficial, self.costototal )
+            
+        
+            if datosRecibo!=None:
+                datosRecibo.lineasAbonos[0].idFac= insertedId
+                datosRecibo.save()
 
 
             if not QSqlDatabase.database().commit():

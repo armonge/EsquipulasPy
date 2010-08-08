@@ -55,10 +55,10 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.detailsmodel = QSqlQueryModel( self )
         self.detailsproxymodel = QSortFilterProxyModel( self )
         self.detailsproxymodel.setSourceModel( self.detailsmodel )
-
         #inicializando el documento
         self.editmodel = None
         self.lblanulado.setHidden(True)
+        self.recibo = dlgRecibo(self,True)
         
         QTimer.singleShot( 0, self.loadModels )
     
@@ -235,10 +235,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
     
                 self.tabledetails.setModel( self.editmodel )
                 self.tabledetails.setItemDelegate( delegate )
-    
-    
-    
-    
+        
                 self.addLine()
                 self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
         except Exception as inst:
@@ -286,10 +283,9 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 recibo.ckretener.setEnabled(False)
             
             result = -1
-            print "aceptar " + str(QDialog.Accepted)
             while result not in (QDialog.Rejected,QDialog.Accepted):
                 result = recibo.exec_()
-                print result
+                
 
             if result == QDialog.Rejected:
                 return
@@ -301,19 +297,15 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 QSqlDatabase.database().open()
         
             self.editmodel.observaciones = self.txtobservaciones.toPlainText()
-                            
-            if self.editmodel.save():
-                if self.editmodel.escontado:
-                    if not recibo.save():
-                        QMessageBox.critical( None,
-                    "Llantera Esquipulas" ,
-                     """Ha ocurrido un error al guardar el recibo""" ) 
-                        return
-                    
+            if self.editmodel.escontado:
+                recibo.datosRecibo.observaciones = recibo.txtobservaciones.toPlainText()
+            if self.editmodel.save(recibo.datosRecibo if self.editmodel.escontado else None):
                 QMessageBox.information( None,
                      "Llantera Esquipulas" ,
                      u"""El documento se ha guardado con éxito""" ) 
-                self.editmodel = None
+                self.btnrecibo.setHidden(not self.editmodel.escontado)
+                
+                self.editmodel = None                    
                 self.updateModels()
                 self.navigate( 'last' )
                 self.status = True
@@ -439,8 +431,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 
     @pyqtSlot(  )
     def on_btnrecibo_clicked( self ):
-        recibo = dlgRecibo(self,True)
-        recibo.show()
+        self.recibo.show()
+        
         
 
     @pyqtSlot( "int" )
@@ -458,7 +450,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 
             self.editmodel.bodegaId = self.bodegasModel.record( index ).value( "idbodega" ).toInt()[0]
             self.proxyAccounts.setFilterRegExp('%d'%self.editmodel.bodegaId)           
-            
+            self.tabledetails.setColumnHidden(IDARTICULO,True)
             self.updateLabels()
 
     
@@ -518,7 +510,6 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.swcliente.setCurrentIndex( 1 )
             self.swbodega.setCurrentIndex( 1 )
             self.swvendedor.setCurrentIndex( 1 )
-
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
             self.btnrecibo.setHidden(True)
@@ -535,6 +526,10 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.lblanulado.setHidden(True)
             self.rbcontado.setChecked(True)
 #            self.tabledetails.horizontalHeader().setStretchLastSection(True)
+
+        self.tabledetails.setColumnHidden( IDARTICULO, True )
+        self.tabledetails.setColumnHidden( IDDOCUMENTOT, True )
+
     def removeLine( self ):
         """
         Funcion usada para borrar lineas de la tabla
@@ -549,18 +544,16 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.updateLabels()
 
     def updateDetailFilter( self, index ):
-#        self.lbliva.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "iva" ).toString())))
-#        self.lblsubtotal.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "subtotal" ).toString())))
-#        self.lbltotal.setText(moneyfmt(Decimal(self.navmodel.record( index ).value( "total" ).toString())))
         self.lbltasaiva.setText(self.navmodel.record( index ).value( "tasaiva" ).toString() +'%')
         self.lblanulado.setHidden(self.navmodel.record( index ).value( "Anulada" ).toInt()[0]==0)
         self.dtPicker.setDate(QDate.fromString(self.navmodel.record( index ).value( "Fecha" ).toString(),"dd/MM/yyyy"))
-        
         escontado = self.navmodel.record( index ).value( "escontado" ).toBool() 
         if escontado:
             self.rbcontado.setChecked(True)
+            
         else:
             self.rbcredito.setChecked(True)
+#            self.recibo.setHidden(True)
         
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
 #        print self.navmodel.record( index ).value( "iddocumento" ).toString() 
@@ -593,7 +586,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     GROUP_CONCAT(IF(p.tipopersona=3,p.nombre,"") SEPARATOR '') as Vendedor,
                     ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as subtotal,
                     d.total- ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as iva,
-                    CONCAT('US$ ',FORMAT(d.Total,4)),
+                    CONCAT('US$ ',FORMAT(d.Total,4)) as Total,
                     d.observacion,
                     DATE_FORMAT(d.fechacreacion,'%d/%m/%Y') as Fecha,
                     b.nombrebodega as Bodega,
@@ -616,13 +609,13 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 #            self.navproxymodel = QSortFilterProxyModel( self )
 
     #        Este es el modelo con los datos de la tabla para navegar
-            self.detailsmodel.setQuery( """
+            self.detailsmodel.setQuery( u"""
                 SELECT
                     ad.idarticulo,
-                    ad.descripcion,
+                    ad.descripcion as 'Descripción',
                     -a.unidades as Unidades,
-                    a.precioventa as 'Precio Unit $',
-                    -a.unidades*a.precioventa as 'Total $',
+                    CONCAT('US$ ',FORMAT(a.precioventa,4)) as 'Precio Unit.',
+                    CONCAT('US$ ',FORMAT(-a.unidades*a.precioventa,4)) as 'Total',
                     a.iddocumento
                 FROM articulosxdocumento a
                 JOIN vw_articulosdescritos ad on a.idarticulo=ad.idarticulo
@@ -644,12 +637,14 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.mapper.addMapping( self.lbliva, IVA, "text" )
             
 
+            self.mapper.addMapping( self.recibo.lbltotal, TOTAL, "text" )
+            self.mapper.addMapping( self.recibo.txtcliente, CLIENTE, "text" )
+            self.mapper.addMapping( self.recibo.lblfecha, FECHA, "text" )
 
     #        asignar los modelos a sus tablas
             
             self.tablenavigation.setModel( self.navproxymodel )
             self.tabledetails.setModel( self.detailsproxymodel )
-            self.tabledetails.setColumnHidden( IDARTICULO, True )
                 
             self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
             self.tablenavigation.setColumnHidden( OBSERVACION, True )
@@ -657,6 +652,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.tablenavigation.setColumnHidden( IVA, True )
             self.tablenavigation.setColumnHidden( TASAIVA, True )
             self.tablenavigation.setColumnHidden( TASA, True )
+            self.tablenavigation.setColumnHidden( ESCONTADO, True )
+            
             
 #            
 #            self.navigate( 'last' )

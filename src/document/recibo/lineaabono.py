@@ -41,7 +41,7 @@ class LineaAbono(object):
         Este metodo guarda la linea en la base de datos
         @param iddocumento el id del documento al que esta enlazada la linea
         """
-        if not self.valid:
+        if not self.valid or self.idFac == 0:
             raise Exception("Se intento guardar una linea no valida")
         
         query = QSqlQuery()
