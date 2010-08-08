@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/kardexother.ui'
 #
-# Created: Sat Jul 24 16:14:21 2010
+# Created: Sat Aug  7 13:56:12 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -46,6 +46,7 @@ class Ui_frmKardexOther(object):
         self.gridLayout.addWidget(self.dtPicker, 0, 4, 1, 1)
         self.tabledetails = QtGui.QTableView(self.tab)
         self.tabledetails.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tabledetails.setAlternatingRowColors(True)
         self.tabledetails.setObjectName("tabledetails")
         self.gridLayout.addWidget(self.tabledetails, 1, 0, 1, 5)
         self.swConcept = QtGui.QStackedWidget(self.tab)
@@ -83,6 +84,7 @@ class Ui_frmKardexOther(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.tablenavigation = QtGui.QTableView(self.tab_2)
         self.tablenavigation.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.tablenavigation.setAlternatingRowColors(True)
         self.tablenavigation.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.tablenavigation.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.tablenavigation.setSortingEnabled(True)

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/liquidacion.ui'
 #
-# Created: Wed Jul 28 19:38:08 2010
+# Created: Sat Aug  7 13:56:20 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -295,6 +295,7 @@ class Ui_frmLiquidacion(object):
         self.tabledetails = QtGui.QTableView(self.tabdetails)
         self.tabledetails.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.tabledetails.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tabledetails.setAlternatingRowColors(True)
         self.tabledetails.setObjectName("tabledetails")
         self.tabledetails.verticalHeader().setVisible(False)
         self.verticalLayout_5.addWidget(self.tabledetails)
@@ -307,6 +308,7 @@ class Ui_frmLiquidacion(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.tablenavigation = QtGui.QTableView(self.tabnavigation)
         self.tablenavigation.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tablenavigation.setAlternatingRowColors(True)
         self.tablenavigation.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.tablenavigation.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.tablenavigation.setObjectName("tablenavigation")
@@ -353,6 +355,7 @@ class Ui_frmLiquidacion(object):
         self.verticalLayout_8 = QtGui.QVBoxLayout(self.tabaccounts)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
         self.tableaccounts = QtGui.QTableView(self.tabaccounts)
+        self.tableaccounts.setAlternatingRowColors(True)
         self.tableaccounts.setObjectName("tableaccounts")
         self.tableaccounts.horizontalHeader().setStretchLastSection(True)
         self.tableaccounts.verticalHeader().setVisible(False)

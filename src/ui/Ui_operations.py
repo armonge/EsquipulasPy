@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/operations.ui'
 #
-# Created: Fri Aug  6 15:15:03 2010
+# Created: Sat Aug  7 13:56:48 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,6 +27,7 @@ class Ui_frmOperations(object):
         sizePolicy.setHeightForWidth(self.tableNavigation.sizePolicy().hasHeightForWidth())
         self.tableNavigation.setSizePolicy(sizePolicy)
         self.tableNavigation.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tableNavigation.setAlternatingRowColors(True)
         self.tableNavigation.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.tableNavigation.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.tableNavigation.setObjectName("tableNavigation")
@@ -40,6 +41,7 @@ class Ui_frmOperations(object):
         sizePolicy.setHeightForWidth(self.tableDetails.sizePolicy().hasHeightForWidth())
         self.tableDetails.setSizePolicy(sizePolicy)
         self.tableDetails.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tableDetails.setAlternatingRowColors(True)
         self.tableDetails.setObjectName("tableDetails")
         self.gridLayout.addWidget(self.tableDetails, 0, 0, 1, 1)
         self.verticalLayout = QtGui.QVBoxLayout()

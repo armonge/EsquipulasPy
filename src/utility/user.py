@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 """
 Modulo en el que se maneja la logica de usuarios
 """
@@ -9,38 +9,26 @@ from PyQt4.QtCore import QObject, SIGNAL, SLOT
 from PyQt4.QtGui import QDialog, QDialogButtonBox, QLineEdit, QVBoxLayout, QFormLayout, QIcon, qApp
 
 from ui import res_rc
+from ui.Ui_user import Ui_dlgUserLogin
 
 UID, FULLNAME, ROLE = range( 3 )
 
-class dlgUserLogin( QDialog ):
+class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
     """
     Dialogo utilizado para pedir valores de usuario y contraseña
     """
     def __init__( self, parent = None ):
         super( dlgUserLogin, self ).__init__( parent )
 
-        self.txtUser = QLineEdit()
-        self.txtUser.setText('root')
-        self.txtPassword = QLineEdit()
-        self.txtPassword.setEchoMode( QLineEdit.Password )
-        self.setWindowIcon( QIcon( ":/icons/res/logo.png" ) )
-        formlayout = QFormLayout()
-        formlayout.addRow( "Usuario:", self.txtUser )
-        formlayout.addRow( u"Contraseña", self.txtPassword )
+        self.setupUi(self)
 
         self.setWindowTitle( qApp.applicationName() )
+        self.txtUser.setText('root')
 
 
-        buttonbox = QDialogButtonBox( QDialogButtonBox.Ok | QDialogButtonBox.Cancel )
 
-        verticalLayout = QVBoxLayout()
-        verticalLayout.addLayout( formlayout )
-        verticalLayout.addWidget( buttonbox )
-
-        self.setLayout( verticalLayout )
-
-        QObject.connect( buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
-        QObject.connect( buttonbox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) )
+        QObject.connect( self.buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
+        QObject.connect( self.buttonbox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) )
 
 
 class User:
@@ -92,13 +80,17 @@ class User:
             else:
                 query = QSqlQuery()
                 if not query.prepare( """
-                SELECT u.idusuario AS uid, p.nombre, r.nombre as rol FROM usuarios u
+                SELECT 
+                    u.idusuario AS uid, 
+                    p.nombre, 
+                    r.nombre as rol 
+                FROM usuarios u
                 JOIN personas p ON p.idpersona = u.idusuario
                 JOIN usuarios_has_roles ur ON u.idusuario = ur.idusuario
                 JOIN roles r ON r.idrol = ur.idrol
                 WHERE u.estado = 1
-                AND u.username = :user
-                AND u.password = SHA1(:password)
+                AND u.username LIKE BINARY :user
+                AND u.password LIKE BINARY SHA1(:password)
                 """ ):
                     raise UserWarning( "No se pudo preparar la consulta para validar el usuario" )
                 query.bindValue( ":user", self.user )
@@ -185,3 +177,23 @@ class User:
         @rtype: int
         """
         return self.__uid
+if __name__=="__main__":
+    import sys
+    from PyQt4.QtGui import *
+    from PyQt4.QtCore import *
+
+    app = QApplication(sys.argv)
+    app.setStyleSheet("""
+    dlgUserLogin{
+        background: #2B579F;
+    }
+    """)
+    dlg = dlgUserLogin()
+
+
+    QObject.connect(dlg, SIGNAL("accepted()"), sys.exit)
+    QObject.connect(dlg, SIGNAL("rejected()"), sys.exit)
+    
+    dlg.exec_()
+
+    app.exec_()

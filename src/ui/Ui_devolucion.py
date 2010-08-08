@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/devolucion.ui'
 #
-# Created: Fri Aug  6 23:10:46 2010
+# Created: Sat Aug  7 14:01:18 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -254,8 +254,10 @@ class Ui_frmDevoluciones(object):
         sizePolicy.setHeightForWidth(self.tabledetails.sizePolicy().hasHeightForWidth())
         self.tabledetails.setSizePolicy(sizePolicy)
         self.tabledetails.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tabledetails.setAlternatingRowColors(True)
         self.tabledetails.setObjectName("tabledetails")
         self.tabledetails.horizontalHeader().setStretchLastSection(True)
+        self.tabledetails.verticalHeader().setVisible(False)
         self.gridLayout.addWidget(self.tabledetails, 2, 0, 1, 6)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/res/document-edit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -267,11 +269,13 @@ class Ui_frmDevoluciones(object):
         self.tablenavigation = QtGui.QTableView(self.tabnavigation)
         self.tablenavigation.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.tablenavigation.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tablenavigation.setAlternatingRowColors(True)
         self.tablenavigation.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.tablenavigation.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.tablenavigation.setSortingEnabled(True)
         self.tablenavigation.setObjectName("tablenavigation")
         self.tablenavigation.horizontalHeader().setStretchLastSection(True)
+        self.tablenavigation.verticalHeader().setVisible(False)
         self.verticalLayout_2.addWidget(self.tablenavigation)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -377,7 +381,7 @@ class Ui_frmDevoluciones(object):
         self.label.setBuddy(self.txtSearch)
 
         self.retranslateUi(frmDevoluciones)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.swConcept.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(frmDevoluciones)
         frmDevoluciones.setTabOrder(self.txtDocumentNumber, self.dtPicker)

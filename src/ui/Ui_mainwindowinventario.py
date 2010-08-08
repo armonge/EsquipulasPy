@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/mainwindowinventario.ui'
 #
-# Created: Thu Aug  5 12:49:35 2010
+# Created: Sat Aug  7 13:29:00 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setWindowModality(QtCore.Qt.ApplicationModal)
-        MainWindow.resize(1151, 753)
+        MainWindow.resize(1151, 713)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/res/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -49,7 +49,7 @@ class Ui_MainWindow(object):
         self.toolBox = QtGui.QToolBox(self.dockWidgetContents_2)
         self.toolBox.setObjectName("toolBox")
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 214, 580))
+        self.page.setGeometry(QtCore.QRect(0, 0, 214, 540))
         self.page.setObjectName("page")
         self.gridLayout_2 = QtGui.QGridLayout(self.page)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -116,7 +116,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.btnProviders, 3, 0, 1, 1)
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtGui.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 580))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 540))
         self.page_2.setObjectName("page_2")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page_2)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -171,7 +171,13 @@ class Ui_MainWindow(object):
         self.btnEntries.setFlat(False)
         self.btnEntries.setObjectName("btnEntries")
         self.verticalLayout_2.addWidget(self.btnEntries)
-        self.btnDevolutions = QtGui.QPushButton(self.page_2)
+        self.toolBox.addItem(self.page_2, "")
+        self.widget = QtGui.QWidget()
+        self.widget.setGeometry(QtCore.QRect(0, 0, 214, 540))
+        self.widget.setObjectName("widget")
+        self.verticalLayout_3 = QtGui.QVBoxLayout(self.widget)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.btnDevolutions = QtGui.QPushButton(self.widget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -185,28 +191,7 @@ class Ui_MainWindow(object):
         self.btnDevolutions.setIconSize(QtCore.QSize(32, 32))
         self.btnDevolutions.setFlat(False)
         self.btnDevolutions.setObjectName("btnDevolutions")
-        self.verticalLayout_2.addWidget(self.btnDevolutions)
-        self.toolBox.addItem(self.page_2, "")
-        self.widget = QtGui.QWidget()
-        self.widget.setGeometry(QtCore.QRect(0, 0, 214, 580))
-        self.widget.setObjectName("widget")
-        self.verticalLayout_3 = QtGui.QVBoxLayout(self.widget)
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.btnSalidas = QtGui.QPushButton(self.widget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btnSalidas.sizePolicy().hasHeightForWidth())
-        self.btnSalidas.setSizePolicy(sizePolicy)
-        self.btnSalidas.setMinimumSize(QtCore.QSize(0, 70))
-        font = QtGui.QFont()
-        font.setWeight(75)
-        font.setBold(True)
-        self.btnSalidas.setFont(font)
-        self.btnSalidas.setIconSize(QtCore.QSize(64, 64))
-        self.btnSalidas.setFlat(False)
-        self.btnSalidas.setObjectName("btnSalidas")
-        self.verticalLayout_3.addWidget(self.btnSalidas)
+        self.verticalLayout_3.addWidget(self.btnDevolutions)
         self.btnKEntries = QtGui.QPushButton(self.widget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -289,15 +274,17 @@ class Ui_MainWindow(object):
         self.btnAnnulments.setText(QtGui.QApplication.translate("MainWindow", "Anulaciones de\n"
 "Facturas", None, QtGui.QApplication.UnicodeUTF8))
         self.btnEntries.setText(QtGui.QApplication.translate("MainWindow", "Entradas", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnDevolutions.setText(QtGui.QApplication.translate("MainWindow", "Devoluciones", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), QtGui.QApplication.translate("MainWindow", "Movimientos", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnSalidas.setText(QtGui.QApplication.translate("MainWindow", "Entradas por\n"
+        self.btnDevolutions.setText(QtGui.QApplication.translate("MainWindow", "Entradas por\n"
 "Devoluciones", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnKEntries.setText(QtGui.QApplication.translate("MainWindow", "Entradas por Compras\n"
+        self.btnKEntries.setText(QtGui.QApplication.translate("MainWindow", "Entradas por\n"
+"Compras\n"
 "Locales e\n"
 "Importaciones", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnKExits.setText(QtGui.QApplication.translate("MainWindow", "Salida por Factura", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnKOther.setText(QtGui.QApplication.translate("MainWindow", "Otros Movimientos", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnKExits.setText(QtGui.QApplication.translate("MainWindow", "Salida por\n"
+"Factura", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnKOther.setText(QtGui.QApplication.translate("MainWindow", "Otros\n"
+"Movimientos", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.widget), QtGui.QApplication.translate("MainWindow", "Kardex", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionLockSession.setText(QtGui.QApplication.translate("MainWindow", "Bloquear Sesión", None, QtGui.QApplication.UnicodeUTF8))

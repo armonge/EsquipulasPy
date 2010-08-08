@@ -291,13 +291,14 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         """
         Aca se cancela la edicion del documento
         """
-        self.editmodel = None
+        if QMessageBox.question(self, "Llantera Esquipulas", u"¿Desea realmente cancelar?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+            self.editmodel = None
 
-        self.tablenavigation.setModel( self.navproxymodel )
-        self.tabledetails.setModel( self.detailsproxymodel )
-        self.tabledetails.removeAction( self.actionDeleteRow )
+            self.tablenavigation.setModel( self.navproxymodel )
+            self.tabledetails.setModel( self.detailsproxymodel )
+            self.tabledetails.removeAction( self.actionDeleteRow )
 
-        self.status = True
+            self.status = True
 
 
     def updateDetailFilter( self, index ):

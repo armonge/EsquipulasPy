@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/articulos.ui'
 #
-# Created: Tue Jul 27 12:35:44 2010
+# Created: Sat Aug  7 13:55:04 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -36,28 +36,30 @@ class Ui_frmArticlesNew(object):
         self.formLayout.setObjectName("formLayout")
         self.label = QtGui.QLabel(frmArticlesNew)
         self.label.setObjectName("label")
-        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.label)
+        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.label)
         self.txtComission = QtGui.QLineEdit(frmArticlesNew)
         self.txtComission.setObjectName("txtComission")
-        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.txtComission)
+        self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.txtComission)
         self.label_3 = QtGui.QLabel(frmArticlesNew)
         self.label_3.setObjectName("label_3")
-        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.label_3)
+        self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.label_3)
         self.txtISC = QtGui.QLineEdit(frmArticlesNew)
         self.txtISC.setObjectName("txtISC")
-        self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.txtISC)
+        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.txtISC)
         self.label_2 = QtGui.QLabel(frmArticlesNew)
         self.label_2.setObjectName("label_2")
-        self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.label_2)
+        self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.label_2)
         self.txtDAI = QtGui.QLineEdit(frmArticlesNew)
         self.txtDAI.setObjectName("txtDAI")
-        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.txtDAI)
+        self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.txtDAI)
         self.label_4 = QtGui.QLabel(frmArticlesNew)
         self.label_4.setObjectName("label_4")
-        self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.label_4)
+        self.formLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.label_4)
         self.txtProfit = QtGui.QLineEdit(frmArticlesNew)
         self.txtProfit.setObjectName("txtProfit")
-        self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.txtProfit)
+        self.formLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.txtProfit)
+        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.formLayout.setItem(0, QtGui.QFormLayout.LabelRole, spacerItem)
         self.gridLayout.addLayout(self.formLayout, 0, 2, 3, 1)
         self.categoriesview = QtGui.QTreeView(frmArticlesNew)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
@@ -66,6 +68,7 @@ class Ui_frmArticlesNew(object):
         sizePolicy.setHeightForWidth(self.categoriesview.sizePolicy().hasHeightForWidth())
         self.categoriesview.setSizePolicy(sizePolicy)
         self.categoriesview.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.categoriesview.setAlternatingRowColors(True)
         self.categoriesview.setSelectionBehavior(QtGui.QAbstractItemView.SelectItems)
         self.categoriesview.setObjectName("categoriesview")
         self.gridLayout.addWidget(self.categoriesview, 1, 0, 2, 1)
@@ -76,6 +79,7 @@ class Ui_frmArticlesNew(object):
         sizePolicy.setHeightForWidth(self.brandsview.sizePolicy().hasHeightForWidth())
         self.brandsview.setSizePolicy(sizePolicy)
         self.brandsview.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.brandsview.setAlternatingRowColors(True)
         self.brandsview.setObjectName("brandsview")
         self.gridLayout.addWidget(self.brandsview, 1, 1, 2, 1)
         self.horizontalLayout = QtGui.QHBoxLayout()

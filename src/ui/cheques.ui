@@ -24,7 +24,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabdetails">
        <attribute name="icon">
@@ -375,7 +375,11 @@
           </property>
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0" colspan="3">
-            <widget class="QTableView" name="tabledetails"/>
+            <widget class="QTableView" name="tabledetails">
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_15">

@@ -87,57 +87,39 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         self.detailsproxymodel = QSortFilterProxyModel( self )
         self.detailsproxymodel.setSourceModel( self.detailsmodel )
 
-#        Este objeto mapea una fila del modelo self.navproxymodel a los controles
-
-        self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
-        self.mapper.setModel( self.navproxymodel )
-        self.mapper.addMapping( self.txtDocumentNumber, NDOCIMPRESO )
-        self.mapper.addMapping( self.txtObservations, OBSERVACION )
-        self.mapper.addMapping( self.dtPicker, FECHA )
-        self.mapper.addMapping( self.txtClient, CLIENTE, "text" )
-        self.mapper.addMapping( self.txtBill, FACTURA, "text" )
-        self.mapper.addMapping( self.lblTotal, TOTAL, "text" )
-        self.mapper.addMapping( self.lblSubtotal, SUBTOTAL, "text" )
-        self.mapper.addMapping( self.lblCost, COSTO, "text" )
-        self.mapper.addMapping( self.lblTaxes, IMPUESTOS, "text" )
-        self.mapper.addMapping( self.txtConcept, CONCEPTO, "text" )
-
-#        asignar los modelos a sus tablas
-        self.tablenavigation.setModel( self.navproxymodel )
-        self.tabledetails.setModel( self.detailsproxymodel )
 
         try:
 
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
                     raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
-            query = """
+            query = u"""
              SELECT
                 d.iddocumento,
-                d.ndocimpreso as 'Numero de Entrada',
-                padre.ndocimpreso as padre,
-                p.nombre as cliente,
+                d.ndocimpreso AS 'Numero de Entrada',
+                padre.ndocimpreso AS padre,
+                p.nombre as 'Cliente',
                 d.observacion,
-                d.fechacreacion as 'Fecha',
-                (@subtotald:=(d.total / ( 1 + ( IF( ca.valorcosto IS NOT NULL , ca.valorcosto / 100, 0 ) )) ) ) as subtotald,
-                @subtotald * (IF( ca.valorcosto IS NOT NULL , ca.valorcosto / 100, 0 )  ) as ivad,
+                d.fechacreacion AS 'Fecha',
+                (@subtotald:=(d.total / ( 1 + ( IF( ca.valorcosto IS NOT NULL , ca.valorcosto / 100, 0 ) )) ) ) AS subtotald,
+                @subtotald * (IF( ca.valorcosto IS NOT NULL , ca.valorcosto / 100, 0 )  ) AS ivad,
                 SUM( axd.costounit ) as costod,
-                d.total as totald,
+                d.total AS totald,
                 tc.tasa,
-                c.descripcion
+                c.descripcion AS 'Concepto'
             FROM documentos d
             JOIN conceptos c ON c.idconcepto = d.idconcepto
             JOIN docpadrehijos dpd ON dpd.idhijo = d.iddocumento
             JOIN documentos padre ON dpd.idpadre = padre.iddocumento
             JOIN tiposcambio tc ON d.idtipocambio = tc.idtc
-        JOIN personasxdocumento pd ON d.iddocumento=pd.iddocumento
-        LEFT JOIN personas p ON p.idpersona=pd.idpersona
+            JOIN personasxdocumento pd ON d.iddocumento=pd.iddocumento
+            LEFT JOIN personas p ON p.idpersona=pd.idpersona
             JOIN articulosxdocumento axd ON axd.iddocumento = d.iddocumento
             LEFT JOIN costosxdocumento cxd ON cxd.iddocumento = padre.iddocumento
             LEFT JOIN costosagregados ca ON ca .idcostoagregado = cxd.idcostoagregado
-            WHERE d.idtipodoc = %d and p.tipopersona=%d
+            WHERE d.idtipodoc = %d AND p.tipopersona=%d
             GROUP BY d.iddocumento""" %(constantes.IDDEVOLUCION,constantes.CLIENTE) 
-            print query
+            
             self.navmodel.setQuery(query )
 
             self.detailsmodel.setQuery( u"""
@@ -155,13 +137,37 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             """ % constantes.IDDEVOLUCION)
 
 
+
+
+            #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
+
+            self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
+            self.mapper.setModel( self.navproxymodel )
+            self.mapper.addMapping( self.txtDocumentNumber, NDOCIMPRESO )
+            self.mapper.addMapping( self.txtObservations, OBSERVACION )
+            self.mapper.addMapping( self.dtPicker, FECHA )
+            self.mapper.addMapping( self.txtClient, CLIENTE, "text" )
+            self.mapper.addMapping( self.txtBill, FACTURA, "text" )
+            self.mapper.addMapping( self.lblTotal, TOTAL, "text" )
+            self.mapper.addMapping( self.lblSubtotal, SUBTOTAL, "text" )
+            self.mapper.addMapping( self.lblCost, COSTO, "text" )
+            self.mapper.addMapping( self.lblTaxes, IMPUESTOS, "text" )
+            self.mapper.addMapping( self.txtConcept, CONCEPTO, "text" )
+
+    #        asignar los modelos a sus tablas
+            self.tablenavigation.setModel( self.navproxymodel )
+            self.tabledetails.setModel( self.detailsproxymodel )
+
             self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
             self.tablenavigation.setColumnHidden( OBSERVACION, True )
             self.tablenavigation.setColumnHidden( SUBTOTAL, True )
             self.tablenavigation.setColumnHidden( IMPUESTOS, True )
             self.tablenavigation.setColumnHidden( TASA, True )
             self.tablenavigation.setColumnHidden( COSTO, True )
+            
 
+            self.tablenavigation.resizeColumnsToContents()
+            self.tablenavigation.horizontalHeader().setStretchLastSection(True)
 
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
@@ -418,7 +424,6 @@ class dlgSelectBill( QDialog ):
             WHERE unittotal > 0
         """ % (constantes.IDDEVOLUCION, constantes.IDFACTURA, constantes.CLIENTE, constantes.IDKARDEX)
         
-        print query 
         self.billsmodel.setQuery( query)
 
 
@@ -499,6 +504,7 @@ class RONavigationModel( QSqlQueryModel ):
             if index.column() in ( TOTAL, SUBTOTAL, COSTO, IMPUESTOS ):
                 return moneyfmt( Decimal( value.toString() ), 2, "US$" ) + " / " + moneyfmt( Decimal( value.toString() ) * exchangeRate, 2 , "C$" )
         return value
+
     def headerData( self, section, orientation, role = Qt.DisplayRole ):
         if role == Qt.TextAlignmentRole:
             if orientation == Qt.Horizontal:
@@ -518,7 +524,7 @@ class RONavigationModel( QSqlQueryModel ):
             elif section == IDDOCUMENTO:
                 return "Id"
             elif section == NDOCIMPRESO:
-                return "Numero de Devolución"
+                return u"Numero de Devolución"
             elif section == FACTURA:
                 return "Numero de Factura"
 

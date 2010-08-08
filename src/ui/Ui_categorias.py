@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'src/ui/categorias.ui'
 #
-# Created: Wed Jul 14 13:43:28 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Sat Aug  7 13:54:16 2010
+#      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -19,6 +19,7 @@ class Ui_frmCategorias(object):
         self.gridLayout.setObjectName("gridLayout")
         self.view = QtGui.QTreeView(self.centralwidget)
         self.view.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.view.setAlternatingRowColors(True)
         self.view.setObjectName("view")
         self.gridLayout.addWidget(self.view, 0, 0, 1, 2)
         self.label = QtGui.QLabel(self.centralwidget)

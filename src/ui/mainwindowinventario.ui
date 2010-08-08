@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1151</width>
-    <height>753</height>
+    <height>713</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -85,7 +85,7 @@
           <x>0</x>
           <y>0</y>
           <width>214</width>
-          <height>580</height>
+          <height>540</height>
          </rect>
         </property>
         <attribute name="label">
@@ -245,7 +245,7 @@
           <x>0</x>
           <y>0</y>
           <width>214</width>
-          <height>580</height>
+          <height>540</height>
          </rect>
         </property>
         <attribute name="label">
@@ -363,40 +363,6 @@ Facturas</string>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="btnDevolutions">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>70</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Devoluciones</string>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="widget">
@@ -405,7 +371,7 @@ Facturas</string>
           <x>0</x>
           <y>0</y>
           <width>214</width>
-          <height>580</height>
+          <height>540</height>
          </rect>
         </property>
         <attribute name="label">
@@ -413,7 +379,7 @@ Facturas</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QPushButton" name="btnSalidas">
+          <widget class="QPushButton" name="btnDevolutions">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -438,8 +404,8 @@ Devoluciones</string>
            </property>
            <property name="iconSize">
             <size>
-             <width>64</width>
-             <height>64</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="flat">
@@ -468,7 +434,8 @@ Devoluciones</string>
             </font>
            </property>
            <property name="text">
-            <string>Entradas por Compras
+            <string>Entradas por
+Compras
 Locales e
 Importaciones</string>
            </property>
@@ -504,7 +471,8 @@ Importaciones</string>
             </font>
            </property>
            <property name="text">
-            <string>Salida por Factura</string>
+            <string>Salida por
+Factura</string>
            </property>
            <property name="iconSize">
             <size>
@@ -538,7 +506,8 @@ Importaciones</string>
             </font>
            </property>
            <property name="text">
-            <string>Otros Movimientos</string>
+            <string>Otros
+Movimientos</string>
            </property>
            <property name="iconSize">
             <size>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/kardex.ui'
 #
-# Created: Fri Jul 23 16:23:53 2010
+# Created: Sat Aug  7 13:55:52 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -63,6 +63,7 @@ class Ui_frmKardex(object):
         sizePolicy.setHeightForWidth(self.tabledetails.sizePolicy().hasHeightForWidth())
         self.tabledetails.setSizePolicy(sizePolicy)
         self.tabledetails.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tabledetails.setAlternatingRowColors(True)
         self.tabledetails.setObjectName("tabledetails")
         self.tabledetails.verticalHeader().setVisible(False)
         self.gridLayout.addWidget(self.tabledetails, 1, 0, 1, 2)
@@ -89,6 +90,7 @@ class Ui_frmKardex(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.tablenavigation = QtGui.QTableView(self.tabnavigation)
         self.tablenavigation.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.tablenavigation.setAlternatingRowColors(True)
         self.tablenavigation.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.tablenavigation.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.tablenavigation.setSortingEnabled(True)
@@ -202,7 +204,7 @@ class Ui_frmKardex(object):
         self.label.setBuddy(self.lineEdit)
 
         self.retranslateUi(frmKardex)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(frmKardex)
 
     def retranslateUi(self, frmKardex):
