@@ -88,26 +88,32 @@ if __name__ == '__main__':
 
     if db:
         dlguser = dlgUserLogin()
-
-
-        if dlguser.exec_() == QtGui.QDialog.Accepted:
-            user = User( dlguser.txtUser.text(), dlguser.txtPassword.text() )
-
-            if user.valid:
-                if user.hasRole( module ):
-                    mainwindow = MainWindow( user )
-                    mainwindow.showMaximized()
-                    sys.exit( app.exec_() )
+        cont = 0
+        valido = False
+        while (not valido) and cont <3:
+            dlguser.txtPassword.setText("")
+            if dlguser.exec_() == QtGui.QDialog.Accepted:
+                user = User( dlguser.txtUser.text(), dlguser.txtPassword.text() )        
+                valido =user.valid 
+                if valido:
+                    if user.hasRole( module ):
+                        mainwindow = MainWindow( user )
+                        mainwindow.showMaximized()
+                        sys.exit( app.exec_() )
+                    else:
+                        QtGui.QMessageBox.critical( None,
+                        "Llantera Esquipulas",
+                        u"Usted no tiene permiso para acceder a este modulo",
+                        QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
                 else:
                     QtGui.QMessageBox.critical( None,
-                    "Llantera Esquipulas",
-                    u"Usted no tiene permiso para acceder a este modulo",
-                    QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
+                        "Llantera Esquipulas",
+                        user.error,
+                        QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
             else:
-                QtGui.QMessageBox.critical( None,
-                    "Llantera Esquipulas",
-                    user.error,
-                    QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
+                valido = True
+            
+            cont +=1
     else:
         QtGui.QMessageBox.critical( None,
             "Llantera Esquipulas",
