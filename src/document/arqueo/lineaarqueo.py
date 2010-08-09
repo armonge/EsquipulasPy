@@ -2,7 +2,7 @@
 '''
 Created on 07/06/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from PyQt4.QtSql import QSqlQuery
 from decimal import Decimal, DivisionByZero, InvalidOperation

@@ -1,8 +1,8 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 '''
 Created on 11/06/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot
 from PyQt4.QtGui import QDialog, QMessageBox

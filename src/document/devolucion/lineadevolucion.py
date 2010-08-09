@@ -2,20 +2,48 @@
 '''
 Created on 19/05/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery
 
 class LineaDevolucion:
     def __init__( self, parent ):
-        self.quantity = 0 #: La cantidad de articulos en esta linea
-        self.maxquantity = 0 #: La cantidad maxima de articulos que esta linea deberia de tener
-        self.itemId = 0 #: El id del articulo en esta linea
-        self.itemDescription = "" #: La descripción del articulo en esta linea
-        self.itemPrice = Decimal( 0 ) #: El precio de venta por unidad en esta linea
-        self.itemCost = Decimal( 0 ) #: El costo unitario de este articulo
-        self.parent = parent #: El documento devolución al que esta linea pertenece
+        self.quantity = 0
+        """
+        @ivar: La cantidad de articulos en esta linea
+        @type: int
+        """
+        self.maxquantity = 0
+        """
+        @ivar:La cantidad maxima de articulos que esta linea deberia de tener
+        @type:int
+        """
+        self.itemId = 0
+        """
+        @ivar:El id del articulo en esta linea
+        @type: int
+        """
+        self.itemDescription = ""
+        """
+        @ivar:La descripción del articulo en esta linea
+        @type:string
+        """
+        self.itemPrice = Decimal( 0 )
+        """
+        @ivar:El precio de venta por unidad en esta linea
+        @type:Decimal
+        """
+        self.itemCost = Decimal( 0 )
+        """
+        @ivar: El costo unitario de este articulo
+        @type: Decimal
+        """
+        self.parent = parent
+        """
+        @ivar: El documento devolución al que esta linea pertenece
+        @type: DevolucionModel
+        """
 
     @property
     def totalD( self ):
@@ -52,6 +80,7 @@ class LineaDevolucion:
     @property
     def valid( self ):
         """
+        Si una linea es valido o no
         @rtype: bool
         """
         if 0 < self.quantity <= self.maxquantity and self.itemId != 0 :
@@ -63,11 +92,12 @@ class LineaDevolucion:
             raise Exception( "Se intento guardar una linea no valida" )
 
         query = QSqlQuery()
-        query.prepare( 
+        if not query.prepare( 
         """
         INSERT INTO articulosxdocumento (iddocumento, idarticulo, unidades, costounit, precioventa ) 
         VALUES( :iddocumento, :idarticulo, :unidades, :costounit, :preciounit )
-        """ )
+        """ ):
+            raise Exception(u"No se pudo preparar la consulta para añadir una linea")
         query.bindValue( ":iddocumento", iddocumento )
         query.bindValue( ":idarticulo", self.itemId )
         query.bindValue( ":unidades", self.quantity )

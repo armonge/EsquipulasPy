@@ -1,8 +1,8 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 '''
 Created on 01/07/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QItemSelectionModel, QDataWidgetMapper, QMessageBox
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery

@@ -3,9 +3,10 @@
 Modulo en el que se maneja la logica de usuarios
 """
 import hashlib
+import functools
 
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
-from PyQt4.QtCore import QObject, SIGNAL, SLOT, Qt 
+from PyQt4.QtCore import QObject, SIGNAL, SLOT, Qt, QTimer
 from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap
 
 from ui import res_rc
@@ -17,29 +18,45 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
     """
     Dialogo utilizado para pedir valores de usuario y contraseña
     """
-    def __init__( self, parent = None ):
+    def __init__( self, parent = None, max = 3 ):
         super( dlgUserLogin, self ).__init__( parent )
 
         self.setupUi(self)
+        self.user = None
+        self.max = max
+
+        self.attempts = 0
 
         self.txtApplication.setText(self.txtApplication.text() +": "+ qApp.applicationName() )
         self.txtUser.setText('root')
-        
+
+        self.lblError.setVisible(False)
+
+        #No mostrar el marco de la ventana
         self.setWindowFlags(Qt.FramelessWindowHint)
-        
+
+        #Centrar el dialogo en la pantalla
         dw = QDesktopWidget()
         geometry = dw.screenGeometry()
-        
         self.setGeometry( (geometry.width() -519) / 2, (geometry.height() -311)  / 2  , 519, 311)
-        
+
+
+        #mostrar redondeado el dialogo
         pixmap = QPixmap(":/images/res/passwd-bg.png");
         self.setMask(pixmap.mask());
 
 
-        QObject.connect( self.buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
-        QObject.connect( self.buttonbox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) )
 
+    def accept(self):
+        self.user = User( self.txtUser.text(), self.txtPassword.text() )
 
+        if self.user.valid or self.attempts == self.max -1:
+            super(dlgUserLogin, self).accept()
+        else:
+            self.lblError.setVisible(True)
+            self.attempts+=1
+            QTimer.singleShot(3000, functools.partial(self.lblError.setVisible, False))
+            
 class User:
     secret = '7/46u23opA)P231popas;asdf3289AOP23'
     u"""
@@ -190,17 +207,16 @@ if __name__=="__main__":
     import sys
     from PyQt4.QtGui import *
     from PyQt4.QtCore import *
+    from utility import database
 
     app = QApplication(sys.argv)
-    app.setStyleSheet("""
-    dlgUserLogin{
-        background: #2B579F;
-    }
-    """)
+
+    db = database.Database.getDatabase()
+    db.open()
     dlg = dlgUserLogin()
 
 
-    QObject.connect(dlg, SIGNAL("accepted()"), sys.exit)
+    #QObject.connect(dlg, SIGNAL("accepted()"), sys.exit)
     QObject.connect(dlg, SIGNAL("rejected()"), sys.exit)
     
     dlg.exec_()

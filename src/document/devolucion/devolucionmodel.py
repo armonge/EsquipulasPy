@@ -2,7 +2,7 @@
 '''
 Created on 19/05/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, SIGNAL
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
@@ -383,14 +383,16 @@ class DevolucionModel( QAbstractTableModel ):
 
 
 #            Crear la relacion con su padre
-            query.prepare( """
+            if not query.prepare( """
             INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (:idpadre, :idhijo)
-            """ )
+            """ ):
+                raise Exception(u"No se pudo preparar la consulta para insertar la relación de la deovulución con la factura")
+            
             query.bindValue( ":idpadre", self.invoiceId )
             query.bindValue( ":idhijo", insertedId )
 
             if not query.exec_():
-                raise Exception( "No se crear la relacion de la devolución con la factura" )
+                raise Exception(u"No se crear la relacion de la devolución con la factura" )
 
 
             if not QSqlDatabase.database().commit():

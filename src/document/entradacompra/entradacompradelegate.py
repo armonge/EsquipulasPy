@@ -3,7 +3,7 @@
 Created on 18/05/2010
 
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from PyQt4.QtGui import QStyledItemDelegate, QSpinBox, QDoubleSpinBox
 from PyQt4.QtCore import Qt, QSize

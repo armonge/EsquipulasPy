@@ -2,7 +2,7 @@
 '''
 Created on 16/07/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery

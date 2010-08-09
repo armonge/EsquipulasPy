@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 '''
 Created on 25/05/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 
 class Document:

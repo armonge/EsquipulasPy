@@ -2,7 +2,7 @@
 '''
 Created on 19/05/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, SIGNAL
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase

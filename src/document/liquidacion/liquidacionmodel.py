@@ -2,7 +2,7 @@
 '''
 Created on 21/05/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 #import math
 from decimal import Decimal, ROUND_CEILING

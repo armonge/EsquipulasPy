@@ -1,8 +1,8 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 '''
 Created on 07/06/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 #FIXME: EL arqueo no muestra todavia el total de la sesión
 from decimal import  Decimal

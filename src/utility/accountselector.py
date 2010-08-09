@@ -2,7 +2,7 @@
 '''
 Created on 30/05/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 
 Este modulo tiene el codigo necesario para crear una tabla en la que se editaran montos
 para cuentas contables, para utilizarlo es necesario asignar el modelo y el delegado 

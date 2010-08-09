@@ -2,7 +2,7 @@
 '''
 Created on 28/05/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from PyQt4.QtCore import SIGNAL, SLOT, pyqtSlot, Qt , QVariant, pyqtSlot
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog

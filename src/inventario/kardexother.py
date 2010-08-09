@@ -2,7 +2,7 @@
 '''
 Created on 23/07/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery

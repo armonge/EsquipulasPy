@@ -2,7 +2,7 @@
 '''
 Created on 14/07/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from PyQt4.QtCore import Qt, QModelIndex, QAbstractItemModel

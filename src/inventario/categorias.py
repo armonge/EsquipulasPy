@@ -2,7 +2,7 @@
 '''
 Created on 10/07/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from PyQt4.QtGui import QMainWindow, QLineEdit, QVBoxLayout, QFormLayout, QDialogButtonBox, QDialog, QSortFilterProxyModel, QMessageBox
 from PyQt4.QtCore import  Qt, SIGNAL, SLOT, pyqtSlot

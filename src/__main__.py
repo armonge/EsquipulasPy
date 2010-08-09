@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 u'''
 El modulo de entrada a la aplicación
-@author: armonge
+@author: Andrés Reyes Monge
 
 G{importgraph}
 '''
@@ -59,7 +59,9 @@ if __name__ == '__main__':
     QToolBox .QWidget{
         background-color:transparent;
     }
-
+    QLabel[error=true]{
+        color:red;
+    }
     """)
     if "--inventario" in sys.argv:
         app.setApplicationName( "Inventario" )
@@ -90,30 +92,25 @@ if __name__ == '__main__':
         dlguser = dlgUserLogin()
         cont = 0
         valido = False
-        while (not valido) and cont <3:
-            dlguser.txtPassword.setText("")
-            if dlguser.exec_() == QtGui.QDialog.Accepted:
-                user = User( dlguser.txtUser.text(), dlguser.txtPassword.text() )        
-                valido =user.valid 
-                if valido:
-                    if user.hasRole( module ):
-                        mainwindow = MainWindow( user )
-                        mainwindow.showMaximized()
-                        sys.exit( app.exec_() )
-                    else:
-                        QtGui.QMessageBox.critical( None,
-                        "Llantera Esquipulas",
-                        u"Usted no tiene permiso para acceder a este modulo",
-                        QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
+        dlguser.txtPassword.setText("")
+        if dlguser.exec_() == QtGui.QDialog.Accepted:
+            user = dlguser.user
+            if user.valid:
+                if user.hasRole( module ):
+                    mainwindow = MainWindow( user )
+                    mainwindow.showMaximized()
+                    sys.exit( app.exec_() )
                 else:
                     QtGui.QMessageBox.critical( None,
-                        "Llantera Esquipulas",
-                        user.error,
-                        QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
+                    "Llantera Esquipulas",
+                    u"Usted no tiene permiso para acceder a este modulo",
+                    QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
             else:
-                valido = True
+                QtGui.QMessageBox.critical( None,
+                    "Llantera Esquipulas",
+                    user.error,
+                    QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
             
-            cont +=1
     else:
         QtGui.QMessageBox.critical( None,
             "Llantera Esquipulas",

@@ -2,7 +2,7 @@
 '''
 Created on 28/06/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 
 El formulario principal de contabilidad
 '''

@@ -2,7 +2,7 @@
 '''
 Created on 03/07/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from decimal import Decimal
 

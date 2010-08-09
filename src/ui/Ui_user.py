@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/user.ui'
 #
-# Created: Sun Aug  8 18:09:44 2010
+# Created: Mon Aug  9 12:30:39 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -65,13 +65,13 @@ class Ui_dlgUserLogin(object):
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonbox.setObjectName("buttonbox")
-        self.gridLayout.addWidget(self.buttonbox, 7, 0, 1, 5)
+        self.gridLayout.addWidget(self.buttonbox, 8, 0, 1, 5)
         spacerItem = QtGui.QSpacerItem(60, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 5, 0, 1, 1)
         spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.gridLayout.addItem(spacerItem1, 2, 0, 1, 6)
         spacerItem2 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem2, 6, 0, 1, 6)
+        self.gridLayout.addItem(spacerItem2, 7, 0, 1, 6)
         spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem3, 5, 4, 1, 1)
         spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -85,7 +85,11 @@ class Ui_dlgUserLogin(object):
         spacerItem8 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem8, 5, 1, 1, 1)
         spacerItem9 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem9, 8, 0, 1, 6)
+        self.gridLayout.addItem(spacerItem9, 9, 0, 1, 6)
+        self.lblError = QtGui.QLabel(self.frame)
+        self.lblError.setProperty("error", True)
+        self.lblError.setObjectName("lblError")
+        self.gridLayout.addWidget(self.lblError, 6, 3, 1, 2)
         self.horizontalLayout.addWidget(self.frame)
         self.label_2.setBuddy(self.txtUser)
         self.label_3.setBuddy(self.txtPassword)
@@ -102,6 +106,7 @@ class Ui_dlgUserLogin(object):
         self.txtUser.setWhatsThis(QtGui.QApplication.translate("dlgUserLogin", "Escriba aca su usuario", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("dlgUserLogin", "&Contraseña", None, QtGui.QApplication.UnicodeUTF8))
         self.txtPassword.setWhatsThis(QtGui.QApplication.translate("dlgUserLogin", "Escriba aca su contraseña, tenga en cuenta que el sistema hace diferencia entre minusculas y mayusculas", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblError.setText(QtGui.QApplication.translate("dlgUserLogin", "El usuario o la contraseña son incorrectos", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
 
