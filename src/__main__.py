@@ -28,16 +28,39 @@ if __name__ == '__main__':
     
     app.installTranslator(translator)
 
-#    el estilo
-#    try:
-#        pathname = os.path.dirname( sys.argv[0] ) + "/ui/stylesheet.qss"
-#        p = os.path.abspath( pathname )
-#        style = open( p )
-#        app.setStyleSheet( style.read() )
-#    except IOError as e:
-#        print "No se pudo cargar la plantilla con los estilos, se continua con el estilo del sistema"
 
+    app.setStyleSheet("""
+    QLabel{
+        background:transparent;
+    }
+    
+    dlgUserLogin .QFrame{
+        background-image: url(:/images/res/passwd-bg.png);
+        background-repeat:no-repeat;
+        margin:0;
+        padding:0;
+    }
+    QMainWindow > .QDockWidget, QMainWindow > .QDockWidget .QWidget {
+        background-color:#5677FF;
+    }
+    QDockWidget::title {
+        text-align: left; 
+        background: lightgray;
+        margin:0;
+        padding: 5px;
+    }
+    QToolBox::tab {
+        background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+        border-radius: 5px;
+        
+    }
+    QToolBox .QWidget{
+        background-color:transparent;
+    }
 
+    """)
     if "--inventario" in sys.argv:
         app.setApplicationName( "Inventario" )
         from inventario.mainwindow import MainWindow

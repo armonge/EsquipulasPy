@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/user.ui'
 #
-# Created: Sun Aug  8 17:36:07 2010
+# Created: Sun Aug  8 18:09:44 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,13 +18,7 @@ class Ui_dlgUserLogin(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/res/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         dlgUserLogin.setWindowIcon(icon)
-        dlgUserLogin.setStyleSheet(".QFrame{\n"
-"    background-image: url(:/images/res/passwd-bg.png);\n"
-"    background-repeat:no-repeat;\n"
-"    margin:0;\n"
-"    padding:0;\n"
-"}\n"
-"")
+        dlgUserLogin.setStyleSheet("None")
         self.horizontalLayout = QtGui.QHBoxLayout(dlgUserLogin)
         self.horizontalLayout.setMargin(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -35,21 +29,21 @@ class Ui_dlgUserLogin(object):
         self.gridLayout = QtGui.QGridLayout(self.frame)
         self.gridLayout.setMargin(0)
         self.gridLayout.setObjectName("gridLayout")
-        self.label = QtGui.QLabel(self.frame)
+        self.txtApplication = QtGui.QLabel(self.frame)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(self.txtApplication.sizePolicy().hasHeightForWidth())
+        self.txtApplication.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setWeight(75)
         font.setBold(True)
-        self.label.setFont(font)
-        self.label.setAutoFillBackground(False)
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setObjectName("label")
-        self.gridLayout.addWidget(self.label, 1, 0, 1, 5)
+        self.txtApplication.setFont(font)
+        self.txtApplication.setAutoFillBackground(False)
+        self.txtApplication.setAlignment(QtCore.Qt.AlignCenter)
+        self.txtApplication.setObjectName("txtApplication")
+        self.gridLayout.addWidget(self.txtApplication, 1, 0, 1, 5)
         self.formLayout = QtGui.QFormLayout()
         self.formLayout.setFieldGrowthPolicy(QtGui.QFormLayout.ExpandingFieldsGrow)
         self.formLayout.setObjectName("formLayout")
@@ -103,7 +97,7 @@ class Ui_dlgUserLogin(object):
 
     def retranslateUi(self, dlgUserLogin):
         dlgUserLogin.setWindowTitle(QtGui.QApplication.translate("dlgUserLogin", "Iniciar Sesión", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("dlgUserLogin", "Llantera Esquipulas", None, QtGui.QApplication.UnicodeUTF8))
+        self.txtApplication.setText(QtGui.QApplication.translate("dlgUserLogin", "Llantera Esquipulas", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("dlgUserLogin", "&Usuario", None, QtGui.QApplication.UnicodeUTF8))
         self.txtUser.setWhatsThis(QtGui.QApplication.translate("dlgUserLogin", "Escriba aca su usuario", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("dlgUserLogin", "&Contraseña", None, QtGui.QApplication.UnicodeUTF8))

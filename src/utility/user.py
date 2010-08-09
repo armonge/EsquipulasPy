@@ -22,7 +22,7 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
 
         self.setupUi(self)
 
-        self.setWindowTitle( qApp.applicationName() )
+        self.txtApplication.setText(self.txtApplication.text() +": "+ qApp.applicationName() )
         self.txtUser.setText('root')
         
         self.setWindowFlags(Qt.FramelessWindowHint)

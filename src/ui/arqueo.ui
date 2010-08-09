@@ -43,19 +43,13 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Arqueo Numero: </string>
+             <string>&lt;b&gt;Arqueo Numero: &lt;/b&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="lblPrintedDocumentNumber">
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="txt" stdset="0">
+           <widget class="QLineEdit" name="lblPrintedDocumentNumber">
+            <property name="readOnly">
              <bool>true</bool>
             </property>
            </widget>
@@ -69,22 +63,13 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Arqueado por:</string>
+             <string>&lt;b&gt;Arqueado por:&lt;/b&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="lblUserName">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="txt" stdset="0">
+           <widget class="QLineEdit" name="lblUserName">
+            <property name="readOnly">
              <bool>true</bool>
             </property>
            </widget>
@@ -305,7 +290,7 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>&amp;Buscar</string>
+             <string>&lt;b&gt;&amp;Buscar&lt;/b&gt;</string>
             </property>
             <property name="buddy">
              <cstring>txtSearch</cstring>

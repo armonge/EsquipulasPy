@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/arqueo.ui'
 #
-# Created: Sat Aug  7 13:54:32 2010
+# Created: Sun Aug  8 19:38:06 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -34,10 +34,8 @@ class Ui_frmArqueo(object):
         self.label_3.setSizePolicy(sizePolicy)
         self.label_3.setObjectName("label_3")
         self.horizontalLayout_2.addWidget(self.label_3)
-        self.lblPrintedDocumentNumber = QtGui.QLabel(self.tabdetails)
-        self.lblPrintedDocumentNumber.setStyleSheet("None")
-        self.lblPrintedDocumentNumber.setText("")
-        self.lblPrintedDocumentNumber.setProperty("txt", True)
+        self.lblPrintedDocumentNumber = QtGui.QLineEdit(self.tabdetails)
+        self.lblPrintedDocumentNumber.setReadOnly(True)
         self.lblPrintedDocumentNumber.setObjectName("lblPrintedDocumentNumber")
         self.horizontalLayout_2.addWidget(self.lblPrintedDocumentNumber)
         self.label_2 = QtGui.QLabel(self.tabdetails)
@@ -48,14 +46,8 @@ class Ui_frmArqueo(object):
         self.label_2.setSizePolicy(sizePolicy)
         self.label_2.setObjectName("label_2")
         self.horizontalLayout_2.addWidget(self.label_2)
-        self.lblUserName = QtGui.QLabel(self.tabdetails)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblUserName.sizePolicy().hasHeightForWidth())
-        self.lblUserName.setSizePolicy(sizePolicy)
-        self.lblUserName.setText("")
-        self.lblUserName.setProperty("txt", True)
+        self.lblUserName = QtGui.QLineEdit(self.tabdetails)
+        self.lblUserName.setReadOnly(True)
         self.lblUserName.setObjectName("lblUserName")
         self.horizontalLayout_2.addWidget(self.lblUserName)
         self.dtPicker = QtGui.QDateTimeEdit(self.tabdetails)
@@ -271,15 +263,15 @@ class Ui_frmArqueo(object):
 
     def retranslateUi(self, frmArqueo):
         frmArqueo.setWindowTitle(QtGui.QApplication.translate("frmArqueo", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("frmArqueo", "Arqueo Numero: ", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("frmArqueo", "Arqueado por:", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("frmArqueo", "<b>Arqueo Numero: </b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("frmArqueo", "<b>Arqueado por:</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("frmArqueo", "Observaciones", None, QtGui.QApplication.UnicodeUTF8))
         self.label_11.setText(QtGui.QApplication.translate("frmArqueo", "Total Arqueo: ", None, QtGui.QApplication.UnicodeUTF8))
         self.lblTotalArqueo.setText(QtGui.QApplication.translate("frmArqueo", "US$0.0000", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("frmArqueo", "Total Sesión", None, QtGui.QApplication.UnicodeUTF8))
         self.lblTotalSesion.setText(QtGui.QApplication.translate("frmArqueo", "US$0.0000", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), None)
-        self.label.setText(QtGui.QApplication.translate("frmArqueo", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("frmArqueo", "<b>&Buscar</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmArqueo", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setText(QtGui.QApplication.translate("frmArqueo", "Nuevo", None, QtGui.QApplication.UnicodeUTF8))

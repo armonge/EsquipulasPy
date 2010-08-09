@@ -30,13 +30,7 @@
     <normaloff>:/icons/res/logo.png</normaloff>:/icons/res/logo.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">.QFrame{
-	background-image: url(:/images/res/passwd-bg.png);
-	background-repeat:no-repeat;
-	margin:0;
-	padding:0;
-}
-</string>
+   <string notr="true"/>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="margin">
@@ -55,7 +49,7 @@
        <number>0</number>
       </property>
       <item row="1" column="0" colspan="5">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="txtApplication">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
           <horstretch>0</horstretch>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/kardex.ui'
 #
-# Created: Sat Aug  7 13:55:52 2010
+# Created: Sun Aug  8 19:02:53 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -209,14 +209,14 @@ class Ui_frmKardex(object):
 
     def retranslateUi(self, frmKardex):
         frmKardex.setWindowTitle(QtGui.QApplication.translate("frmKardex", "Kardex", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("frmKardex", "Documento: ", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("frmKardex", "Kardex: ", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_7.setText(QtGui.QApplication.translate("frmKardex", "Bodega", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("frmKardex", "&Fecha", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("frmKardex", "Observaciones del Documento", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("frmKardex", "Observaciones de Kardex", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("frmKardex", "<b>Documento: </b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setText(QtGui.QApplication.translate("frmKardex", "<b>Kardex: </b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_7.setText(QtGui.QApplication.translate("frmKardex", "<b>Bodega</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("frmKardex", "<b>&Fecha</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtGui.QApplication.translate("frmKardex", "<b>Observaciones del Documento</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_4.setText(QtGui.QApplication.translate("frmKardex", "<b>Observaciones de Kardex</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), None)
-        self.label.setText(QtGui.QApplication.translate("frmKardex", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("frmKardex", "<b>&Buscar</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmKardex", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setText(QtGui.QApplication.translate("frmKardex", "Confirmar", None, QtGui.QApplication.UnicodeUTF8))
