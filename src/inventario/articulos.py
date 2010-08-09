@@ -5,7 +5,7 @@ Created on 28/05/2010
 @author: armonge
 '''
 from PyQt4.QtCore import SIGNAL, SLOT, pyqtSlot, Qt , QVariant, pyqtSlot
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from utility.catgeneric import Ui_frmCatGeneric
 from ui.Ui_articulos import Ui_frmArticlesNew
@@ -20,17 +20,22 @@ class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
         """
         super( frmArticulos, self ).__init__( parent )
         self.setupUi( self )
-        self.database = QSqlDatabase.database()
         self.user = user
-        self.__status = True
+        
+        self.database = QSqlDatabase.database()
+        
+#        self.__status = True
         self.backmodel = ArticlesModel()
         self.updateModels()
-        self.tableview.addActions( ( self.actionEdit, self.actionNew ) )
+#        self.tableview.addActions( ( self.actionEdit, self.actionNew ) )
         self.tableview.setColumnHidden( 0, True )
         self.tableview.resizeColumnsToContents()
         self.setWindowTitle( "Catalogo de Articulos" )
         self.tableview.setEditTriggers( QAbstractItemView.AllEditTriggers )
         self.actionEdit.setVisible( True )
+        self.actionSave.setVisible( False )
+        self.actionCancel.setVisible(False)
+        
 
     def updateModels( self ):
         """
@@ -44,6 +49,8 @@ class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
                 SELECT idarticulo, descripcion, dai, isc, comision, ganancia, activo
                 FROM vw_articulosconcostosactuales v
             """ )
+            if self.backmodel.rowCount()==0:
+                self.actionEdit.setEnabled(False)
             self.filtermodel = QSortFilterProxyModel()
             self.filtermodel.setSourceModel( self.backmodel )
             self.filtermodel.setFilterKeyColumn( -1 )
@@ -88,7 +95,10 @@ class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
         self.nuevoarticulo = frmArticlesNew( self.user )
         if self.nuevoarticulo.exec_() == QDialog.Accepted:
             self.updateModels()
+            
+    
 
+        
 class ArticlesModel( QSqlQueryModel ):
     def __init__( self, parent = None ):
         """
@@ -286,14 +296,10 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
         self.categoriesview.setColumnHidden(1,True)
         self.categoriesview.resizeColumnToContents(0)
         
-        if not QSqlDatabase.database().isOpen():
-            if not QSqlDatabase.database().open():
-                raise Exception("No se pudo abrir la base de datos")
         self.brandsmodel = QSqlQueryModel()
-        self.brandsmodel.setQuery("""
-        SELECT idmarca, nombre 
-        FROM marcas
-        """)
+        
+        self.cargarMarcas()
+        
         self.brandsproxymodel = QSortFilterProxyModel()
         self.brandsproxymodel.setSourceModel(self.brandsmodel)
         self.brandsproxymodel.setFilterKeyColumn(1)
@@ -310,6 +316,19 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
         self.connect(self.buttonBox, SIGNAL("rejected()"), self, SLOT("reject()"))
         self.connect(self.categoriesview.selectionModel(), SIGNAL("selectionChanged(QItemSelection, QItemSelection)"), self.updateCategory)
         self.connect(self.brandsview.selectionModel(), SIGNAL("selectionChanged(QItemSelection, QItemSelection)"), self.updateBrand)
+
+    def cargarMarcas(self):
+        if not QSqlDatabase.database().isOpen():
+            if not QSqlDatabase.database().open():
+                raise Exception("No se pudo abrir la base de datos")
+        
+        self.brandsmodel.setQuery("""
+        SELECT idmarca, nombre 
+        FROM marcas
+        """)
+        if  QSqlDatabase.database().isOpen():
+            QSqlDatabase.database().close()
+        
 
     @pyqtSlot()
     def on_buttonBox_accepted(self):
@@ -349,6 +368,8 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
             print query.lastError().text()
             print inst
             return False
+        
+        
     @pyqtSlot("QString")
     def on_txtCategorySearch_textChanged(self, text):
         self.catproxymodel.setFilterFixedString(text)
@@ -360,6 +381,37 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
     @property
     def valid(self):
         return self.catvalid and self.brandId != 0
+
+    @pyqtSlot( )
+    def on_btnAgregarMarca_pressed(self):
+        marca =["",True]
+        while marca[0]=="" and marca[1]==True:
+            marca = QInputDialog.getText(self,"Agregar Marca","Ingrese la Marca")
+            if marca[0]!="":
+                proxy = self.brandsproxymodel
+                proxy.setFilterRegExp("^" + marca[0] + "$")
+    
+                if proxy.rowCount()>0:
+                    QMessageBox.information(None,"Crear Marca","La marca " + marca[0] + " ya existe")
+                    marca = ["",True]
+        
+        self.brandsproxymodel.setFilterRegExp("")
+        
+        if marca[1]:
+            if QMessageBox.question(None,"Crear Marca",u"¿Está seguro que desea crear la marca " + marca[0] + "?", QMessageBox.Yes | QMessageBox.No)==QMessageBox.Yes:
+                if not QSqlDatabase.database().isOpen():
+                    if not QSqlDatabase.database().open():
+                
+                        raise Exception("No se pudo abrir la base de datos")
+                query = QSqlQuery()
+                query.prepare("INSERT INTO marcas(nombre) VALUES (:marca)")
+                query.bindValue(":marca",marca[0])
+                if not query.exec_():
+                    print query.lastError().text()
+                    QMessageBox.warning(None,"Error al crear la marca","No se pudo insertar la marca")
+                else:
+                    self.cargarMarcas()
+        
     
     @pyqtSlot("QString")
     def on_txtDAI_textChanged(self, text):
@@ -392,7 +444,8 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
             self.profit = 0
     
     def updateBrand(self, selected, deselected):            
-        self.brandId =  self.brandsmodel.index(selected.indexes()[0].row(),0).data().toInt()[0]
+        if self.brandsproxymodel.rowCount()>=0:
+            self.brandId =  self.brandsmodel.index(selected.indexes()[0].row(),0).data().toInt()[0]
         
         
     def updateCategory(self, selected, deselected):

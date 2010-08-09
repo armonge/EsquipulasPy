@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/articulos.ui'
+# Form implementation generated from reading ui file 'c:\workspace\EsquipulasPy\src\ui\articulos.ui'
 #
-# Created: Sat Aug  7 13:55:04 2010
+# Created: Mon Aug 09 11:56:47 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,6 +23,8 @@ class Ui_frmArticlesNew(object):
         self.label_5.setSizePolicy(sizePolicy)
         self.label_5.setObjectName("label_5")
         self.gridLayout.addWidget(self.label_5, 0, 0, 1, 1)
+        self.horizontalLayout_3 = QtGui.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.label_6 = QtGui.QLabel(frmArticlesNew)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -30,7 +32,20 @@ class Ui_frmArticlesNew(object):
         sizePolicy.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
         self.label_6.setSizePolicy(sizePolicy)
         self.label_6.setObjectName("label_6")
-        self.gridLayout.addWidget(self.label_6, 0, 1, 1, 1)
+        self.horizontalLayout_3.addWidget(self.label_6)
+        self.btnAgregarMarca = QtGui.QPushButton(frmArticlesNew)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btnAgregarMarca.sizePolicy().hasHeightForWidth())
+        self.btnAgregarMarca.setSizePolicy(sizePolicy)
+        self.btnAgregarMarca.setText("")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/icons/res/list-add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnAgregarMarca.setIcon(icon)
+        self.btnAgregarMarca.setObjectName("btnAgregarMarca")
+        self.horizontalLayout_3.addWidget(self.btnAgregarMarca)
+        self.gridLayout.addLayout(self.horizontalLayout_3, 0, 1, 1, 1)
         self.formLayout = QtGui.QFormLayout()
         self.formLayout.setFieldGrowthPolicy(QtGui.QFormLayout.ExpandingFieldsGrow)
         self.formLayout.setObjectName("formLayout")
@@ -60,7 +75,7 @@ class Ui_frmArticlesNew(object):
         self.formLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.txtProfit)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.formLayout.setItem(0, QtGui.QFormLayout.LabelRole, spacerItem)
-        self.gridLayout.addLayout(self.formLayout, 0, 2, 3, 1)
+        self.gridLayout.addLayout(self.formLayout, 0, 2, 2, 1)
         self.categoriesview = QtGui.QTreeView(frmArticlesNew)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(1)
@@ -71,7 +86,7 @@ class Ui_frmArticlesNew(object):
         self.categoriesview.setAlternatingRowColors(True)
         self.categoriesview.setSelectionBehavior(QtGui.QAbstractItemView.SelectItems)
         self.categoriesview.setObjectName("categoriesview")
-        self.gridLayout.addWidget(self.categoriesview, 1, 0, 2, 1)
+        self.gridLayout.addWidget(self.categoriesview, 1, 0, 1, 1)
         self.brandsview = QtGui.QListView(frmArticlesNew)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(1)
@@ -81,7 +96,7 @@ class Ui_frmArticlesNew(object):
         self.brandsview.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.brandsview.setAlternatingRowColors(True)
         self.brandsview.setObjectName("brandsview")
-        self.gridLayout.addWidget(self.brandsview, 1, 1, 2, 1)
+        self.gridLayout.addWidget(self.brandsview, 1, 1, 1, 1)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.label_7 = QtGui.QLabel(frmArticlesNew)
@@ -90,7 +105,7 @@ class Ui_frmArticlesNew(object):
         self.txtCategorySearch = QtGui.QLineEdit(frmArticlesNew)
         self.txtCategorySearch.setObjectName("txtCategorySearch")
         self.horizontalLayout.addWidget(self.txtCategorySearch)
-        self.gridLayout.addLayout(self.horizontalLayout, 3, 0, 1, 1)
+        self.gridLayout.addLayout(self.horizontalLayout, 2, 0, 1, 1)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.label_8 = QtGui.QLabel(frmArticlesNew)
@@ -99,11 +114,11 @@ class Ui_frmArticlesNew(object):
         self.txtBrandSearch = QtGui.QLineEdit(frmArticlesNew)
         self.txtBrandSearch.setObjectName("txtBrandSearch")
         self.horizontalLayout_2.addWidget(self.txtBrandSearch)
-        self.gridLayout.addLayout(self.horizontalLayout_2, 3, 1, 1, 1)
+        self.gridLayout.addLayout(self.horizontalLayout_2, 2, 1, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(frmArticlesNew)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
-        self.gridLayout.addWidget(self.buttonBox, 3, 2, 1, 1)
+        self.gridLayout.addWidget(self.buttonBox, 2, 2, 1, 1)
         self.label.setBuddy(self.txtComission)
         self.label_3.setBuddy(self.txtISC)
         self.label_2.setBuddy(self.txtDAI)
@@ -118,6 +133,7 @@ class Ui_frmArticlesNew(object):
         frmArticlesNew.setWindowTitle(QtGui.QApplication.translate("frmArticlesNew", "Añadir Articulos", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("frmArticlesNew", "<b>Categoria</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.label_6.setText(QtGui.QApplication.translate("frmArticlesNew", "<b>Marca</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnAgregarMarca.setToolTip(QtGui.QApplication.translate("frmArticlesNew", "Agregar Marca", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("frmArticlesNew", "<b>Comisión</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.txtComission.setText(QtGui.QApplication.translate("frmArticlesNew", "0", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("frmArticlesNew", "<b>ISC</b>", None, QtGui.QApplication.UnicodeUTF8))
@@ -129,13 +145,4 @@ class Ui_frmArticlesNew(object):
         self.label_7.setText(QtGui.QApplication.translate("frmArticlesNew", "Buscar", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("frmArticlesNew", "Buscar", None, QtGui.QApplication.UnicodeUTF8))
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    frmArticlesNew = QtGui.QDialog()
-    ui = Ui_frmArticlesNew()
-    ui.setupUi(frmArticlesNew)
-    frmArticlesNew.show()
-    sys.exit(app.exec_())
-
+import res_rc
