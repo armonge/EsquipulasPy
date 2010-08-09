@@ -19,9 +19,10 @@ from document.kardex.lineakardex import LineaKardex
 from document.kardex.kardexdelegate import KardexDelegate
 
 
-
+#DETAILS
 IDARTICULO, DESCRIPCION, UNIDADES, AJUSTE, IDDOCUMENTOT = range(5)
-IDDOCUMENTO, NDOCIMPRESO,NKARDEX, NOMBREBODEGA, FECHA, OBSERVACION, BODEGA = range(7) 
+#NAVIGATION
+IDDOCUMENTO, NDOCIMPRESO,NKARDEX, NOMBREBODEGA, FECHA,  OBSERVACIONK ,OBSERVACION, BODEGA = range(8)
 class frmKardex(QMainWindow, Ui_frmKardex, Base):
     '''
     classdocs
@@ -66,14 +67,15 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning(u"Existen problemas de conexión con la base de datos")
-            self.navigationmodel.setQuery((QSqlQuery(u"""
-            SELECT 
-                d.iddocumento, 
+            query = u"""
+            SELECT
+                d.iddocumento,
                 CONCAT_WS(' ',tdc.descripcion, d.ndocimpreso) as 'Documento Referencia',
                 kx.ndocimpreso as 'Numero Kardex',
-                b.nombrebodega as 'Bodega',        
-                d.fechacreacion as 'Fecha', 
-                d.observacion, 
+                b.nombrebodega as 'Bodega',
+                d.fechacreacion as 'Fecha',
+                kx.observacion as 'Observacion Kardex',
+                d.observacion as 'Observacion Doc',
                 d.idbodega
             FROM documentos d
             JOIN tiposdoc tdc ON tdc.idtipodoc = d.idtipodoc
@@ -82,7 +84,9 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             JOIN documentos kx ON kx.iddocumento = dpd.idhijo AND kx.idtipodoc = 27
             WHERE d.idtipodoc IN (%s)
             GROUP BY d.iddocumento
-            """ % self.tiposdoc)))
+            """ % self.tiposdoc
+            self.navigationmodel.setQuery(query )
+
             
             self.detailsModel.setQuery(u"""
             SELECT 
@@ -104,6 +108,9 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             self.mapper.addMapping(self.txtPrintedDocumentNumber, NKARDEX)
             self.mapper.addMapping(self.dtPicker, FECHA)
             self.mapper.addMapping(self.txtWarehouse, NOMBREBODEGA)
+            self.mapper.addMapping(self.txtKardexObservation, OBSERVACIONK, "plainText")
+            self.mapper.addMapping(self.txtDocObservation, OBSERVACION, "plainText")
+            
             
             self.tabledetails.horizontalHeader().setStretchLastSection(True)
         except UserWarning as inst:
@@ -149,6 +156,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
         
         self.tablenavigation.setColumnHidden(IDDOCUMENTO, True)
         self.tablenavigation.setColumnHidden(OBSERVACION, True)
+        self.tablenavigation.setColumnHidden(OBSERVACIONK, True)
         self.tablenavigation.setColumnHidden(BODEGA, True)
         
         self.tabledetails.setColumnHidden(AJUSTE, not self.edit)
