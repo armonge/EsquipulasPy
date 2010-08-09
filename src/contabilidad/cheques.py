@@ -390,7 +390,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                     WHERE idtipocosto IN (%d,%d) AND 
                     activo=1 
                     ORDER BY valorcosto desc; 
-                    """ % (constantes.RETENCION10, constantes.RETENCION2))
+                    """ % (constantes.RETENCIONPROFESIONALES, constantes.RETENCIONFUENTE))
     
             self.cboretencion.setModel( self.retencionModel )
             self.cboretencion.setCurrentIndex(-1)

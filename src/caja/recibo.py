@@ -20,7 +20,7 @@ from document.recibo.recibomodel import ReciboModel
 from document.recibo.abonomodel import AbonoModel,LineaAbono, AbonoDelegate
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
-from utility import constantes
+from utility.constantes import RETENCIONFUENTE,RETENCIONPROFESIONALES 
 #from PyQt4.QtGui import QMainWindow
 
 #controles
@@ -1044,10 +1044,10 @@ class DatosRecibo(object):
                         FORMAT(valorcosto,0) as tasa
                     FROM costosagregados 
                     WHERE 
-                    (idtipocosto=10 OR idtipocosto = 8) AND 
+                    (idtipocosto=%d OR idtipocosto =%d) AND 
                     activo=1 
                     ORDER BY valorcosto desc; 
-                    """ )
+                    """ %(RETENCIONPROFESIONALES,RETENCIONFUENTE) )
 
             cbtasaret.setModel( self.retencionModel )
             cbtasaret.setModelColumn( 1 )
