@@ -17,7 +17,7 @@ from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorL
 from utility import constantes
 from utility.widgets.searchpanel import SearchPanel
 from utility.reports import frmReportes
-IDDOCUMENTO,NCHEQUE,NOMBRE,FECHA,CONCEPTO,USUARIO,TOTAL,OBSERVACIONES,ANULADO,OBSERVACIONESRETENCION,TASARETENCION,TOTALRETENCION,TIPOCAMBIO,SUBTOTAL,IVA,CUENTABANCARIA=range(16)
+IDDOCUMENTO,NCHEQUE,CUENTABANCARIA,NOMBRE,FECHA,CONCEPTO,TOTAL,ANULADO,TASARETENCION,TOTALRETENCION,TIPOCAMBIO,SUBTOTAL,IVA=range(13)
 #accounts model
 IDDOC, IDCUENTA,CODIGO,DESCRIPCION, MONTO= range( 5 )
 class frmCheques( Ui_frmCheques, QMainWindow,Base ):
@@ -49,8 +49,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
         self.editmodel = None  
 
-        self.exchangeRate=Decimal(0)
-        self.exchangeRateId=0
         self.status = True
         #las acciones deberian de estar ocultas
         
@@ -73,20 +71,17 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             
         self.navmodel.setQuery(u"""SELECT  padre.iddocumento,
         padre.ndocimpreso as 'No. Cheque',
+        cb.descripcion as 'Cuenta Bancaria',
         p.nombre,
         DATE(padre.fechacreacion) as 'El dia',
         c.descripcion as 'En concepto de',
-        (SELECT pi.nombre FROM personas pi , personasxdocumento pxdi
-        WHERE pi.idpersona =  pxdi.idpersona AND pxdi.iddocumento = padre.iddocumento AND pi.tipopersona = %d) as 'Hecho Por',
-        CONCAT(tm.simbolo,padre.total) as 'Total',
-        padre.observacion AS Observacion,padre.anulado AS Anulado,
-        padre.observacion as 'Recibimos de',
+        IF (tm.simbolo="C$",CONCAT(tm.simbolo,padre.total*tc.tasa),CONCAT(tm.simbolo,padre.total)) as Total,
+        padre.anulado AS Anulado,
         CONCAT(valorcosto, '%s') as 'Retencion',
         IF(hijo.total IS NULL, '-' ,CONCAT(tm.simbolo,hijo.total))   as 'Total Ret C$',
         tc.tasa as TipoCambio,
         IF(hijo.total='-',@subtotal:=padre.total/1.15,@subtotal:=(padre.total+hijo.total)/1.15) as 'subtotal',
-        concat(tm.simbolo,padre.total+hijo.total- @subtotal) as IVA,
-        cb.descripcion as 'Cuenta Bancaria'
+        concat(tm.simbolo,format(padre.total+hijo.total- @subtotal,4)) as IVA
         FROM documentos padre
         JOIN tiposcambio tc on padre.idtipocambio=tc.idtc
         JOIN personasxdocumento pd ON padre.iddocumento=pd.iddocumento
@@ -105,7 +100,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         GROUP BY padre.iddocumento
         ORDER BY CAST(padre.ndocimpreso AS SIGNED)
 
-        """ % (constantes.USUARIO,'%',constantes.IDCHEQUE,constantes.PROVEEDOR))
+        """ % ('%',constantes.IDCHEQUE,constantes.PROVEEDOR))
 #        El modelo que filtra a self.navmodel
                 
         
@@ -137,7 +132,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.mapper.addMapping( self.lblncheque, NCHEQUE,"text" )
         self.mapper.addMapping( self.dtPicker, FECHA,"date" )
         self.mapper.addMapping( self.lblbeneficiario, NOMBRE,"text")
-        self.mapper.addMapping( self.txtobservaciones, OBSERVACIONES,"plainText" )       
         self.mapper.addMapping( self.total, TOTAL,"text" )
         self.mapper.addMapping( self.lblconcepto, CONCEPTO,"text" )
         self.mapper.addMapping( self.retencion, TOTALRETENCION, "text" )
@@ -211,8 +205,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                              self.cuentabancaria.record( index ).value( "descripcion" ).toString()])
             self.accountseditdelegate.accounts.setFilterRegExp("[^%d]"%self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0])
             
-            self.editmodel.moneda=self.cuentabancaria.record( index ).value( "simbolo" ).toString()
-            
+            self.editmodel.moneda=self.cuentabancaria.record( index ).value( "IDMONEDA" ).toInt()[0]
+            self.editmodel.simbolo=self.cuentabancaria.record( index ).value( "simbolo" ).toString()
             # Cargar el numero del cheque actual
             if index>-1:
                 query = QSqlQuery( """
@@ -224,23 +218,16 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     
                 self.lblncheque.setText( n )
                 self.editmodel.printedDocumentNumber = n            
-                
-                if self.editmodel.moneda=="C$" and self.cboretencion.currentIndex()>-1:
-                    self.updateTotals(False)
-                elif self.editmodel.moneda=="US$" and self.cboretencion.currentIndex()>-1:
-                    self.updateTotals(True)
-                if self.editmodel.moneda!="":
-                    self.lblsub.setText("Subtotal  "+self.editmodel.moneda)
-                    self.lbliva.setText("IVA  "+self.editmodel.moneda)
-                    self.lbltotal.setText("Total  "+self.editmodel.moneda)
-                    self.lblret.setText(u"Retención  "+self.editmodel.moneda)
-                    
+               
+                self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.totalCordobas)                
+                self.updateTotals()
                 
     @pyqtSlot( "int" )
     def on_cboretencion_currentIndexChanged( self, index ):
         if not self.editmodel is None:
             self.editmodel.retencionId = self.retencionModel.record( index ).value( "idcostoagregado" ).toInt()[0]
-            if index>=0:self.updateTotals()
+            self.editmodel.retencionPorcentaje=Decimal(self.cboretencion.currentText()) if self.cboretencion.currentText()!="" else 0
+            self.updateTotals()
             
     @pyqtSlot( "int" )
     def on_cbobeneficiario_currentIndexChanged( self, index ):
@@ -251,62 +238,33 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     def on_subtotal_valueChanged(self,index):
               
         if not self.editmodel is None:
-            if self.editmodel.moneda=="US$":
-                self.updateTotals(True)
-            elif self.editmodel.moneda=="C$":
-                self.updateTotals(False)
+           self.updateTotals()
+           self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.totalCordobas)
+               
                 
-    def updateTotals(self,bool=None,): 
-#FIXME: Que significa bool? por que es de tipo None?        
-#FIXME: El codigo para calcular los totales y el iva deberia estar en el modelo no en la interfaz        
-        if bool:
-            if self.subtotal.value()>1000:
-            
-                if self.cboretencion.currentText()!="":
-                    self.retencion.setText(str(Decimal(str(self.subtotal.value()))* Decimal(self.cboretencion.currentText())/100))
-                
-                else:
-                    self.retencion.setText("0.0")
-                              
-                self.iva.setText(str(Decimal(str(self.subtotal.value()))*self.editmodel.ivaRate/100))    
-                self.total.setText(str(Decimal(str(self.subtotal.value()))+ Decimal(str(self.subtotal.value()))*Decimal(self.editmodel.ivaRate/100) -Decimal(self.retencion.text()) ))
-                self.editmodel.setData(self.editmodel.index(0,3), Decimal(str(self.subtotal.value()))*Decimal(self.lbltipocambio.text()))
-            
-            elif self.subtotal.value()<=1000:
-                self.retencion.setText("0.0")
-                self.iva.setText(str(Decimal(str(self.subtotal.value()))*self.editmodel.ivaRate/100))
-                self.total.setText(str(Decimal(str(self.subtotal.value()))+ Decimal(str(self.subtotal.value()))* Decimal(self.editmodel.ivaRate/100)))
-                self.editmodel.setData(self.editmodel.index(0,3), Decimal(str(self.subtotal.value()))*Decimal(self.lbltipocambio.text()))
+    def updateTotals(self):
+        self.editmodel.subtotal=Decimal(str(self.subtotal.value()))
         
-        elif not bool:
-        
-            if self.subtotal.value()>1000:
-                self.iva.setText(str(Decimal(str(self.subtotal.value()))*self.editmodel.ivaRate/100))
+        if self.editmodel.moneda==constantes.IDCORDOBAS:
+                        
+            self.total.setText(moneyfmt(self.editmodel.totalCordobas,4,self.editmodel.simbolo))
+            self.iva.setText(moneyfmt(self.editmodel.iva,4,self.editmodel.simbolo))
+            self.retencion.setText(moneyfmt(self.editmodel.retencion,4,self.editmodel.simbolo))
             
-                if self.cboretencion.currentText()!="":
-                    self.retencion.setText(str(Decimal(str(self.subtotal.value()))*Decimal(self.cboretencion.currentText())/Decimal("100")))
-                else:
-                    self.retencion.setText("0.0")
-                
-                self.total.setText(str(Decimal(str(self.subtotal.value()))+ Decimal(str(self.subtotal.value()))*Decimal(self.editmodel.ivaRate/100) -Decimal(self.retencion.text()) ))
-                self.editmodel.setData(self.editmodel.index(0,3),Decimal(str(self.subtotal.value())))        
+            self.total.setToolTip(moneyfmt(self.editmodel.totalDolares,4,"US$"))
+            self.iva.setToolTip(moneyfmt(self.editmodel.iva,4,"US$"))
+            self.retencion.setToolTip(moneyfmt(self.editmodel.retencion,4,"US$"))
             
-            elif self.subtotal.value()<=1000:
-                self.retencion.setText("0.0")
-                self.iva.setText(str(Decimal(str(self.subtotal.value()))*self.editmodel.ivaRate/100))
-                self.total.setText(str(Decimal(str(self.subtotal.value()))+ Decimal(str(self.subtotal.value()))*Decimal(self.editmodel.ivaRate/100)))
-                self.editmodel.setData(self.editmodel.index(0,3),Decimal(str(self.subtotal.value())))
-        
-#        elif bool==None:       
-#            self.retencion.setText("0.0")
-#            self.total.setText("0.0")
-#            self.iva.setText("0.0")
-#                
-        self.editmodel.retencionNumero=Decimal(self.retencion.text())
-        self.editmodel.iva=self.iva.text()
-        self.editmodel.total=Decimal(self.total.text())        
-    
-    @pyqtSlot(  )
+        elif self.editmodel.moneda==constantes.IDDOLARES:
+            self.total.setText(moneyfmt(self.editmodel.totalDolares,4,"US$"))
+            self.iva.setText(moneyfmt(self.editmodel.iva,4,"US$"))
+            self.retencion.setText(moneyfmt(self.editmodel.retencion,4,"US$"))
+            
+            self.total.setToolTip(moneyfmt(self.editmodel.totalCordobas,4,"C$"))
+            self.iva.setToolTip(moneyfmt(self.editmodel.iva,4,"C$"))
+            self.retencion.setToolTip(moneyfmt(self.editmodel.retencion,4,"C$"))
+            
+#    @pyqtSlot(  )
     def on_actionCancel_activated( self ):
         """
         Aca se cancela la edicion del documento
@@ -357,7 +315,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             #Crea modelo para edicion            
             self.editmodel = ChequeModel()
             
-            #Sacar valor del IVA
+            #Sacar valor porcentaje del IVA
             query=QSqlQuery( """SELECT 
                 valorcosto
             FROM costosagregados c 
@@ -369,6 +327,10 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                 raise UserWarning( "No se pudieron obtener los valores de los impuestos" )
             query.first()
             self.editmodel.ivaRate=Decimal(query.value(0).toString())
+            
+            self.dtPicker.setDateTime(QDateTime.currentDateTime())
+            self.lbltipocambio.setText(str(self.editmodel.exchangeRate))
+            
                         
     #        Crea un edit delegate para las cuentas
             self.accountseditdelegate=ChequesFiltroDelegate(QSqlQuery("""SELECT c.idcuenta, c.codigo, c.descripcion 
@@ -444,7 +406,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             
             self.cuentabancaria.setQuery( """
                SELECT idcuentacontable,cc.codigo,concat(cc.descripcion,"  Moneda: ",tm.moneda) as Descripcion,tm.moneda as Moneda,
-               tm.simbolo as simbolo
+               tm.simbolo as simbolo,tm.idtipomoneda as IDMONEDA
                FROM cuentasbancarias c 
                JOIN cuentascontables cc ON cc.idcuenta=c.idcuentacontable
                JOIN tiposmoneda tm ON tm.idtipomoneda=c.idtipomoneda;
@@ -478,9 +440,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             self.cuentawidget.setCurrentIndex(1)
             
             
-            
-            self.dtPicker.setDateTime(QDateTime.currentDateTime())
-            self.lbltipocambio.setText(str(self.editmodel.exchangeRate))
             
             self.lblretencion.setText("")
             

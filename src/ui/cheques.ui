@@ -24,7 +24,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabdetails">
        <attribute name="icon">
@@ -89,6 +89,9 @@
               <horstretch>0</horstretch>
               <verstretch>18</verstretch>
              </sizepolicy>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -423,9 +426,6 @@
            </item>
            <item row="3" column="2">
             <widget class="QLabel" name="iva">
-             <property name="frameShape">
-              <enum>QFrame::Box</enum>
-             </property>
              <property name="text">
               <string>0.0000</string>
              </property>
@@ -440,9 +440,6 @@
            </item>
            <item row="4" column="2">
             <widget class="QLabel" name="retencion">
-             <property name="frameShape">
-              <enum>QFrame::Box</enum>
-             </property>
              <property name="text">
               <string>0.0000</string>
              </property>
@@ -457,9 +454,6 @@
            </item>
            <item row="5" column="2">
             <widget class="QLabel" name="total">
-             <property name="frameShape">
-              <enum>QFrame::Box</enum>
-             </property>
              <property name="text">
               <string>0.0000</string>
              </property>
@@ -696,8 +690,18 @@
   </action>
  </widget>
  <tabstops>
-  <tabstop>tablenavigation</tabstop>
+  <tabstop>dtPicker</tabstop>
+  <tabstop>cbobeneficiario</tabstop>
+  <tabstop>ckretencion</tabstop>
+  <tabstop>cboretencion</tabstop>
+  <tabstop>cbocuenta</tabstop>
+  <tabstop>cboconcepto</tabstop>
+  <tabstop>subtotal</tabstop>
+  <tabstop>txtobservaciones</tabstop>
+  <tabstop>tabledetails</tabstop>
+  <tabstop>tabWidget</tabstop>
   <tabstop>txtSearch</tabstop>
+  <tabstop>tablenavigation</tabstop>
  </tabstops>
  <resources>
   <include location="res.qrc"/>

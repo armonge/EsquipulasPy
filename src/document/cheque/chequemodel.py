@@ -8,10 +8,11 @@ from PyQt4.QtGui import QMessageBox
 from PyQt4 import QtGui
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
-from decimal import Decimal
+from decimal import Decimal,InvalidOperation
 from utility.moneyfmt import moneyfmt
 from utility.accountselector import AccountsSelectorModel
 from utility import constantes
+from math import ceil
 IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, TOTALPROD, MONEDA = range( 6 )
 class ChequeModel( AccountsSelectorModel ):
     """
@@ -36,11 +37,6 @@ class ChequeModel( AccountsSelectorModel ):
         @ivar: Las observaciones que podria tener el documento
         @type: string
         """ 
-        self.total=Decimal(0)
-        """
-        @ivar: El total del documento
-        @type: Decimal
-        """
         self.printedDocumentNumber = ""
         """
         @ivar: El numero de documento impreso
@@ -61,23 +57,25 @@ class ChequeModel( AccountsSelectorModel ):
         @ivar: El id del concepto de este documento
         @type: int
         """ 
+        
+        self.simbolo = ""
+        """
+        @ivar: El simbolo de la moneda del documento
+        @type: String
+        """
+
 
         self.retencionId = 0
         """
         @ivar: El id de la retención de este documento
         @type: int
         """
-        self.retencionNumero = 0
+        self.retencionPorcentaje = 0
         """
-        @ivar: El numero de retención de este documento
+        @ivar: El porcentaje de retención de este documento
         @type: int
         """
         
-        self.iva=Decimal(0)
-        """
-        @ivar: El iva de este documento
-        @type: Decimal
-        """ 
         self.ivaRate=Decimal(0)
         """
         @ivar: El porcentaje del iva a aplicar en este documento
@@ -111,6 +109,11 @@ class ChequeModel( AccountsSelectorModel ):
         @ivar: Para verificar si tiene retencion o no
         @type: Boolean
         """
+        self.subtotal=Decimal(0)
+        """
+        @ivar: El subtotal del documento
+        @type: Decimal
+        """
         
     @property
     def valid( self ):
@@ -129,7 +132,7 @@ class ChequeModel( AccountsSelectorModel ):
         elif int( self.proveedorId ) < 1:
             self.validError = "No ha seleccionado ningun cliente" 
             return False
-        elif int( self.total ) <=0:
+        elif Decimal( self.subtotal ) <=0:
             self.validError = "Escriba una cantidad para el documento" 
             return False
         elif int( self.uid ) == 0:
@@ -141,8 +144,8 @@ class ChequeModel( AccountsSelectorModel ):
         elif self.exchangeRateId == 0:
             self.validError = "no hay un tipo de cambio para la fecha" + self.datetime 
             return False
-        elif self.hasretencion==True and self.retencionNumero=="":
-            self.validError = "no hay un tipo de cambio para la fecha" + self.datetime 
+        elif self.hasretencion==True and self.retencionPorcentaje==0:
+            self.validError = "NO existe un porcentaje de Retencion seleccionado" 
             return False
         elif not super(ChequeModel, self).valid :
             self.validError ="Hay un error en sus cuentas contables"
@@ -179,7 +182,7 @@ class ChequeModel( AccountsSelectorModel ):
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":anulado", 0 )
             query.bindValue( ":observacion", self.observations )
-            query.bindValue( ":total", self.total.to_eng_string())
+            query.bindValue( ":total", self.totalDolares.to_eng_string())
             query.bindValue( ":idtc", self.exchangeRateId )
             query.bindValue( ":concepto", self.conceptoId )
             
@@ -200,9 +203,7 @@ class ChequeModel( AccountsSelectorModel ):
             if not query.exec_():
                 raise UserWarning( "No se pudo insertar el beneficiario del cheque" )
             
-            if self.retencionNumero<=0 and self.retencionId>=0 and self.hasretencion==True:
-                print "retenido"
-                return
+            if self.retencion<=0 and self.retencionId>=0 and self.hasretencion==True:
                 #INSERTAR EL DOCUMENTO RETENCION            
                 query.prepare( """
                 INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado, observacion,total,escontado,idtipocambio,idconcepto) 
@@ -213,7 +214,7 @@ class ChequeModel( AccountsSelectorModel ):
                 query.bindValue( ":idtipodoc", constantes.IDRETENCION )
                 query.bindValue( ":anulado", 0 )
                 query.bindValue( ":observacion", self.observations )
-                query.bindValue( ":total", self.retencionNumero.to_eng_string())
+                query.bindValue( ":total", self.editmodel.retencionDolares.to_eng_string())
                 query.bindValue( ":escontado", 1 )
                 query.bindValue( ":idtc", self.exchangeRateId )
                 query.bindValue( ":concepto", self.conceptoId )
@@ -277,7 +278,49 @@ class ChequeModel( AccountsSelectorModel ):
             QSqlDatabase.database().rollback()
             return False
             
-    
+    @property
+    def totalCordobas( self ):
+        """
+        El total neto del documento, despues de haber aplicado IVA y Retencion en Cordobas
+        @rtype: Decimal
+        """
+        subtotalcordobas=self.subtotal if self.moneda==constantes.IDCORDOBAS else self.subtotal*self.exchangeRate
+        retencion=self.retencion
+        return subtotalcordobas+(subtotalcordobas*self.ivaRate/100) - (retencion if self.moneda==constantes.IDCORDOBAS else retencion*self.exchangeRate)
+            
+    @property
+    def totalDolares( self ):
+        """
+        El total neto del documento, despues de haber aplicado IVA y Retencion en Dolares
+        @rtype: Decimal
+        """
+        try:
+            return self.totalCordobas/self.exchangeRate
+        except InvalidOperation as ins:
+            return Decimal(0)
+         
+            
+    @property
+    def iva( self ):
+        """
+        El valor del IVA en Cordobas
+        @rtype: Decimal
+        """
+        return self.subtotal*(self.ivaRate/100)
+        
+       
+    @property
+    def retencion( self ):
+        """
+        El valor de la retencion en cordobas
+        @rtype: Decimal
+        """
+        subtotalcordobas=self.subtotal if self.moneda==constantes.IDCORDOBAS else self.subtotal*self.exchangeRate
+        if subtotalcordobas>1000:
+            return self.subtotal*(self.retencionPorcentaje/100)
+        else:
+            return Decimal(0)
+        
     def flags( self, index ):
         if not index.isValid():
             return Qt.ItemIsEnabled
