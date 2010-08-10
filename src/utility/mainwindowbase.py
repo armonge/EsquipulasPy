@@ -5,7 +5,7 @@ Created on 11/06/2010
 @author: Andrés Reyes Monge
 '''
 from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot
-from PyQt4.QtGui import QDialog, QMessageBox
+from PyQt4.QtGui import QDialog, QMessageBox, QIcon
 from utility.user import dlgUserLogin, User
 
 class MainWindowBase( object ):
@@ -16,6 +16,10 @@ class MainWindowBase( object ):
         '''
         Constructor
         '''
+        dockaction  = self.dockWidget.toggleViewAction()
+        dockaction.setIcon(QIcon(":/icons/res/utilities-desktop-extra.png"))
+        self.toolBar.addAction(dockaction)
+        
         settings = QSettings()
         self.restoreGeometry( settings.value( "MainWindow/Geometry" ).toByteArray() )
         self.connect( self.mdiArea, SIGNAL( "subWindowActivated(QMdiSubWindow *)" ), self.showtoolbar )

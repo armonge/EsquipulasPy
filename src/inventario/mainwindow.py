@@ -4,8 +4,8 @@
 Module implementing MainWindow.
 """
 
-from PyQt4.QtGui import QMainWindow
-from PyQt4.QtCore import pyqtSlot, Qt
+from PyQt4.QtGui import QMainWindow, QIcon
+from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, SLOT
 from entradacompra import frmEntradaCompra
 from devolucion import frmDevolucion
 from catalogos import frmCatProveedores, frmCatMarcas,  frmCatConceptos
@@ -33,6 +33,8 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         MainWindowBase.__init__( self )
 
 
+
+        
     def closeEvent( self, event ):
         u"""
         Guardar el tamaño, la posición en la pantalla y la posición de la barra de tareas

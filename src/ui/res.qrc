@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>res/utilities-desktop-extra.png</file>
     <file>res/arrow-left.png</file>
     <file>res/dialog-ok-apply.png</file>
     <file>res/format-add-node.png</file>

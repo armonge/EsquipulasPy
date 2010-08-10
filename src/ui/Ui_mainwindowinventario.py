@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/mainwindowinventario.ui'
 #
-# Created: Sun Aug  8 16:28:28 2010
+# Created: Tue Aug 10 06:59:59 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -49,7 +49,7 @@ class Ui_MainWindow(object):
         self.toolBox = QtGui.QToolBox(self.dockWidgetContents_2)
         self.toolBox.setObjectName("toolBox")
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 214, 540))
+        self.page.setGeometry(QtCore.QRect(0, 0, 196, 300))
         self.page.setObjectName("page")
         self.gridLayout_2 = QtGui.QGridLayout(self.page)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -116,7 +116,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.btnProviders, 3, 0, 1, 1)
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtGui.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 540))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 205, 300))
         self.page_2.setObjectName("page_2")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page_2)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
