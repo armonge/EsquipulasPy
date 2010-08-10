@@ -8,7 +8,7 @@
 
 from PyQt4.QtGui import QMainWindow, QDialog, QMessageBox
 from PyQt4.QtCore import pyqtSlot, Qt,QDate
-from PyQt4.QtSql import QSqlDatabase
+from PyQt4.QtSql import QSqlDatabase,QSqlQuery
 from factura import frmFactura
 from recibo import frmRecibo
 from ui.Ui_mainwindowcaja import Ui_MainWindow
@@ -39,23 +39,9 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         MainWindowBase.__init__( self )
         self.user = user
         
-        DatosSesion = namedtuple('DatosSesion','usuarioId sesionId tipoCambioId tipoCambioOficial tipoCambioBanco fecha')
         
-        self.datosSesion = DatosSesion(1,1,30,Decimal('21.4138'),Decimal('21.50'),QDate.currentDate())
-        
-
-#        self.date =None
-#        self.sesion = 0
-#        self.exchangeRateId = 0
-#        self.exchangeRate = 0
-#        self.bankExchangeRate = 0
-        
-        self.sesion = 1
-        self.exchangeRateId = 213
-        self.exchangeRate = Decimal("21.3537")
-        self.date =QDate.currentDate()
-    
-        self.status = True
+        self.datosSesion = None
+        self.status = False
     
 #    def closeEvent( self, event ):
 #        u"""
@@ -76,39 +62,23 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param state: false = bloqueado        true = desbloqueado
         """
-        if self.datosSesion.sesionId != 0:
-            self.btnApertura.setEnabled( state )
+        if state:
+            self.btnApertura.setText("Cierre de Caja")
+        else:
+            self.btnApertura.setText("Abrir Caja")
+        
+        if self.datosSesion!= None:
             self.actionUnlockSession.setVisible( not state )
 
         self.btnArqueo.setEnabled( state )
         self.btnClients.setEnabled( state )
         self.btnrecibo.setEnabled( state )
         self.btnfactura.setEnabled( state )
-        self.btnAnnulments.setEnabled( state )
+
         self.mdiArea.setEnabled( state )
         self.mdiArea.setVisible( state )
         self.actionLockSession.setVisible( state )
 
-    @pyqtSlot(  )
-    def on_btnAnnulments_clicked( self ):
-        """
-        Slot documentation goes here.
-        """
-        dlguser = dlgUserLogin()
-        if dlguser.exec_() == QDialog.Accepted:
-            user = User( dlguser.txtUser.text(), dlguser.txtPassword.text() )
-    
-            if user.valid:
-                if user.hasRole( 'root' ):            
-                    anulacion=frmAnulaciones( self.user, user)
-                    self.mdiArea.addSubWindow(anulacion)
-                    anulacion.show()
-            
-            else:
-                QMessageBox.critical( None,
-                    "Llantera Esquipulas",
-                    str( user.error ),
-                    QMessageBox.StandardButtons( QMessageBox.Ok ) )
 
     @pyqtSlot(  )
     def on_btnConceptos_clicked( self ):
@@ -123,25 +93,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow( arqueo )
         arqueo.show()
 
-    @pyqtSlot(  )
-    def on_btnBanks_clicked( self ):
-        """
-        Slot documentation goes here.
-        """
-        bancos = frmBanks( self )
-        self.mdiArea.addSubWindow( bancos )
-        bancos.show()
-
-    @pyqtSlot(  )
-    def on_btnpos_clicked( self ):
-        """
-        Slot documentation goes here.
-        """
-        cajas = frmCajas( self )
-        self.mdiArea.addSubWindow( cajas )
-        cajas.show()
-
-
+  
     @pyqtSlot(  )
     def on_btnrecibo_clicked( self ):
         """
@@ -157,41 +109,65 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        db = QSqlDatabase.database()
-        try:
-#            if not db.isOpen():
-#                db.open()
-#            query = QSqlQuery( """
-#               SELECT d.iddocumento FROM documentos d
-#               LEFT JOIN docpadrehijos dp ON dp.idpadre=d.iddocumento
-#               LEFT JOIN documentos hijo ON dp.idhijo=hijo.iddocumento and hijo.idtipodoc=17
-#               where d.idtipodoc=22 and d.idusuario=""" +str(self.user.uid)+ """ AND hijo.iddocumento IS  NULL""")
-#            if not query.exec_():
-#                raise Exception("No se pudo preparar la Query")                                   
-#    # Si existe al menos una sesion abierta no muestra el dialogo de iniciar caja    
-#            if query.size()>0:
-#                reply=QMessageBox.question(None, 'Message',"Tiene sesion de caja abierta continuar?", QMessageBox.Yes, QMessageBox.No)                        
-#                if reply == QMessageBox.Yes:
-#                    self.btnApertura.setEnabled(False)
-#                    query.first()
-#                    self.sesion= query.value(0).toInt()[0]
-#                    self.setControls(True)                            
-#                return None                                      
-#    #Si query.size no es mayor que cero Ejecutara esto                     
-#                        
-                AperturaCaja = frmApertura( self.user )
-                if AperturaCaja.exec_() == QDialog.Accepted:
-                    self.setControls( True )
-                    self.sesion=AperturaCaja.sesion
-                    self.exchangeRate=AperturaCaja.exchangeRate
-                    self.exchangeRateId= AperturaCaja.exchangeRateId
-                    self.bankExchangeRate= AperturaCaja.bankExchangeRate
-                    self.date=AperturaCaja.fecha
-        except Exception, e:
-            print e
-        finally:
+        if self.status:
+        
+            
+            db = QSqlDatabase.database()
+    #        try:
+            if not db.isOpen():
+                db.open()
+            query = QSqlQuery( """
+            SELECT 
+                apertura.iddocumento,
+                apertura.idtipocambio,
+                tc.fecha, 
+                tc.tasa,
+                tc.tasabanco
+                FROM `esquipulasdb`.`documentos` apertura
+                JOIN tiposcambio tc ON tc.idtc = apertura.idtipocambio
+                JOIN personasxdocumento pd ON pd.iddocumento = apertura.iddocumento AND pd.autoriza=0
+                LEFT JOIN docpadrehijos ph ON apertura.iddocumento=ph.idpadre
+                LEFT JOIN documentos cierre ON cierre.iddocumento = ph.idhijo AND cierre.idtipodoc=17
+                WHERE apertura.idtipodoc=22 AND pd.idpersona=1 
+                AND cierre.iddocumento IS NULL;
+               """)
+            if not query.exec_():
+                raise Exception("No se pudo preparar la Query")                                   
+    # Si existe al menos una sesion abierta no muestra el dialogo de iniciar caja    
+            if query.size()>0:
+                reply=QMessageBox.question(None, 'Abrir Caja',u"Usted tiene una sesión de caja abierta. Desea continuar?", QMessageBox.Yes, QMessageBox.No)                        
+                if reply == QMessageBox.Yes:
+                    
+                    query.first()
+                    
+                    DatosSesion = namedtuple('DatosSesion','usuarioId sesionId tipoCambioId tipoCambioOficial tipoCambioBanco fecha')
+                        
+                    sesionId = query.value(0).toInt()[0]
+                    tipoCambioId = query.value(1).toInt()[0]
+                    fecha = query.value(2).toDate()
+                    
+                    tipoCambio = Decimal (query.value(3).toString())
+                    tipoBanco =  Decimal (query.value(4).toString())  
+                    
+                    self.datosSesion = DatosSesion(self.user.uid,sesionId,tipoCambioId,tipoCambio,tipoBanco,fecha)
+                         
+                    self.setControls(True)
+    #        except Exception, e:
+    #            print e
+    #        finally:
             if db.isOpen():
-                db.close()
+                db.close()                    
+                                       
+            return None                                      
+        #Si query.size no es mayor que cero Ejecutara esto                     
+                            
+            apertura = frmApertura( self )
+            if apertura.exec_() == QDialog.Accepted:
+                self.setControls( True )
+                
+        else:
+            
+
     
     @pyqtSlot(  )
     def on_btnfactura_clicked( self ):

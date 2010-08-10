@@ -12,17 +12,16 @@ from ui.Ui_frmApertura import Ui_frmApertura
 from utility.user import User
 
 class frmApertura ( QDialog, Ui_frmApertura ):
-    def __init__( self, user,  parent = None ):
+    def __init__( self,parent):
         """
         Constructor para agregar un nuevo articulo
         @param user: El id del usuario que ha creado este documento
         """
         super( frmApertura, self ).__init__( parent )
         self.setupUi( self )
-        self.user = user
+        self.datosSesion = parent.datosSesion
         
-        
-        self.txtUsuario.setText( self.user.user )
+        self.txtUsuario.setText( parent.user.user )
         self.txtUsuario.setReadOnly( True )
 
         self.txtUser.setFocus()

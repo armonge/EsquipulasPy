@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\factura.ui'
+# Form implementation generated from reading ui file 'c:\workspace\EsquipulasPy\src\ui\factura.ui'
 #
-# Created: Fri Aug 06 22:51:41 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Tue Aug 10 06:44:59 2010
+#      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -204,6 +204,7 @@ class Ui_frmFactura(object):
         self.tabledetails.setSizePolicy(sizePolicy)
         self.tabledetails.setMinimumSize(QtCore.QSize(0, 100))
         self.tabledetails.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tabledetails.setAlternatingRowColors(True)
         self.tabledetails.setObjectName("tabledetails")
         self.verticalLayout_3.addWidget(self.tabledetails)
         self.label_7 = QtGui.QLabel(self.tabdetails)
@@ -442,7 +443,7 @@ class Ui_frmFactura(object):
         self.label_4.setBuddy(self.txtSearch)
 
         self.retranslateUi(frmFactura)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.swcliente.setCurrentIndex(1)
         self.swvendedor.setCurrentIndex(1)
         self.swbodega.setCurrentIndex(1)
