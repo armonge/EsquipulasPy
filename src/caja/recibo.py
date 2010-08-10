@@ -20,11 +20,11 @@ from document.recibo.recibomodel import ReciboModel
 from document.recibo.abonomodel import AbonoModel,LineaAbono, AbonoDelegate
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
-from utility.constantes import RETENCIONFUENTE,RETENCIONPROFESIONALES,IDRECIBO,IDRETENCION,IDRECIBO,CLIENTE,IDFACTURA
+from utility.constantes import RETENCIONFUENTE,RETENCIONPROFESIONALES,IDRECIBO,IDRETENCION,CLIENTE,IDFACTURA
 #from PyQt4.QtGui import QMainWindow
 
 #controles
-IDDOCUMENTO,FECHA, NDOCIMPRESO,CLIENTE,TOTAL,  CONCEPTO, NRETENCION, TASARETENCION, TOTALRETENCION,TOTALPAGADO, OBSERVACION, CONRETENCION = range( 12 )
+IDDOCUMENTO,FECHA, NDOCIMPRESO,NOMBRECLIENTE,TOTAL,  CONCEPTO, NRETENCION, TASARETENCION, TOTALRETENCION,TOTALPAGADO, OBSERVACION, CONRETENCION = range( 12 )
 
 #table
 IDDOCUMENTOT, DESCRIPCION, REFERENCIA, MONTO,MONTODOLAR,IDMONEDA = range( 6 )
@@ -554,9 +554,33 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             WHERE padre.idtipodoc=%d
             AND p.tipopersona=%d
             ORDER BY padre.iddocumento
-            ;
-            """ % ('%',IDRECIBO , CLIENTE))
+            """%('%',IDRECIBO,CLIENTE))
     #        El modelo que filtra a self.navmodel
+            print          """               SELECT
+                            padre.iddocumento,
+                            DATE(padre.fechacreacion) as 'Fecha',
+                            padre.ndocimpreso as 'No. Recibo',
+                            p.nombre as 'Cliente',
+                            padre.total as 'Total',
+                            c.descripcion as 'En cocepto de',
+                            IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
+                            IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%s')) as 'Retencion',
+                            IFNULL(hijo.total,'-') as 'Total Ret C$',
+                            padre.total - IFNULL(hijo.total,0) as 'Total Pagado', 
+                           padre.observacion ,
+                           IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion'
+            FROM documentos padre
+            JOIN personasxdocumento pxd ON pxd.iddocumento = padre.iddocumento
+            JOIN personas p ON p.idpersona = pxd.idpersona
+            JOIN conceptos c ON  c.idconcepto=padre.idconcepto
+            LEFT JOIN costosxdocumento cd ON cd.iddocumento=padre.iddocumento
+            LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
+            LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
+            LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
+            WHERE padre.idtipodoc=%d
+            AND p.tipopersona=%d
+            ORDER BY padre.iddocumento
+            """%('%',IDRECIBO,CLIENTE)
             self.navproxymodel = RONavigationModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )
             self.navproxymodel.setFilterKeyColumn( -1 )
@@ -610,7 +634,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
             self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
             self.mapper.addMapping( self.dtPicker, FECHA )
-            self.mapper.addMapping( self.txtcliente, CLIENTE, "text" )
+            self.mapper.addMapping( self.txtcliente, NOMBRECLIENTE, "text" )
             self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
             self.mapper.addMapping( self.lbltotalreten, TOTALRETENCION, "text" )
             self.mapper.addMapping( self.txttasaret, TASARETENCION, "text" )
