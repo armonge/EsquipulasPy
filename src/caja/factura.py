@@ -20,6 +20,7 @@ from utility.reports import frmReportes
 from recibo import dlgRecibo
 from utility.user import dlgUserLogin,User
 from utility.movimientos import movFacturaCredito
+from utility import constantes
 #controles
 IDDOCUMENTO, NDOCIMPRESO, CLIENTE,VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, FECHA, BODEGA, TASA,TASAIVA,ANULADO,ESCONTADO = range( 14 )
 
@@ -94,8 +95,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.clientesModel.setQuery( """
                     SELECT idpersona , nombre AS cliente 
                     FROM personas
-                    WHERE tipopersona = 1
-                """ )
+                    WHERE tipopersona = %d
+                """ %CLIENTE )
     
     #Verificar si existen clientes            
                 if self.clientesModel.rowCount() == 0:
@@ -105,10 +106,10 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
     #            Rellenar el combobox de los vendedores
                 self.vendedoresModel = QSqlQueryModel()
                 self.vendedoresModel.setQuery( """
-                    SELECT idpersona , nombre AS cliente 
+                    SELECT idpersona , nombre AS Vendedor 
                     FROM personas
-                    WHERE tipopersona = 3
-                """ )
+                    WHERE tipopersona = %d
+                """%constantes.VENDEDOR )
     
     #Verificar si existen clientes            
                 if self.vendedoresModel.rowCount() == 0:
@@ -118,22 +119,15 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
     #Crear el delegado con los articulo y verificar si existen articulos
                 query = QSqlQuery("""
                     SELECT
-            a.idarticulo,
-            a.descripcion,
-            c.valor*(1+a.ganancia/100) as precio,
-            c.valor as costodolar,
-            c.valor * tc.tasa as costo,
-            SUM(ad.unidades) as Existencia,
-            b.idbodega
-        FROM vw_articulosdescritos a
-        JOIN costosarticulo c ON a.idarticulo=c.idarticulo
-        JOIN articulosxdocumento ad ON ad.idarticulo=a.idarticulo
-        JOIN documentos d ON d.iddocumento = ad.iddocumento
-        JOIN bodegas b ON b.idbodega=d.idbodega
-        JOIN tiposcambio tc ON tc.idtc= c.idtc
-        WHERE c.activo=1
-        GROUP BY ad.idarticulo,b.idbodega
-        HAVING SUM(ad.unidades) >0
+            idarticulo,
+            descripcion,
+            precio,
+            costodolar,
+            costo,
+            Existencia,
+            idbodega
+        FROM vw_articulosenbodegas
+         WHERE existencia >0
                 """)           
                 self.accounts = QSqlQueryModel()
                 self.accounts.setQuery(query)
