@@ -60,6 +60,10 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
 
         self.mdiArea.setEnabled( state )
         self.mdiArea.setVisible( state )
+        
+        self.btnKEntries.setEnabled(state)
+        self.btnKExits.setEnabled(state)
+        self.btnKOther.setEnabled(state)
 
         self.actionLockSession.setVisible( state )
         self.actionUnlockSession.setVisible( not state )

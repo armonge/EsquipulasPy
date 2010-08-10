@@ -41,6 +41,15 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 
     def setControls( self, status ):
         self.btnMovements.setEnabled( status )
+        self.btnAccounts.setEnabled(status)
+        self.btnBalance.setEnabled(status)
+        self.btnNotasCD.setEnabled(status)
+        self.btnCheques.setEnabled(status)
+        self.btnConciliacion.setEnabled(status)
+        self.btnEstado.setEnabled(status)
+        
+        self.mdiArea.setEnabled(status)
+        self.mdiArea.setVisible(status)
 
         self.actionLockSession.setVisible( status )
         self.actionUnlockSession.setVisible( not status )
@@ -99,9 +108,9 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
 
     @pyqtSlot()
     def on_btnAccounts_clicked( self ):
-    	accounts = frmAccounts( self.user, self )
-    	self.mdiArea.addSubWindow( accounts )
-    	accounts.show()
+        accounts = frmAccounts( self.user, self )
+        self.mdiArea.addSubWindow( accounts )
+        accounts.show()
 
     @pyqtSlot()
     def on_btnNotasCD_clicked( self ):

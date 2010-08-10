@@ -4,8 +4,8 @@ Created on 11/06/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot
-from PyQt4.QtGui import QDialog, QMessageBox, QIcon
+from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot, QSize, QUrl
+from PyQt4.QtGui import QDialog, QMessageBox, QIcon, QWidget, QVBoxLayout, QPushButton, qApp, QDesktopServices
 from utility.user import dlgUserLogin, User
 
 class MainWindowBase( object ):
@@ -20,10 +20,57 @@ class MainWindowBase( object ):
         dockaction.setIcon(QIcon(":/icons/res/utilities-desktop-extra.png"))
         self.toolBar.addAction(dockaction)
         
+        
+        self.woptions = QWidget()
+        
+        self.btnPasswd = QPushButton(u"Cambiar Contraseña")
+        self.btnPasswd.setMinimumSize(QSize(0, 70))
+        
+        self.btnHelp = QPushButton( QIcon(":/icons/res/system-help.png"), u"Ayuda")
+        self.btnHelp.setMinimumSize(QSize(0, 70))
+        self.btnHelp.setIconSize(QSize(64, 64))
+        
+        self.btnAbout = QPushButton("Acerca de")
+        self.btnAbout.setMinimumSize(QSize(0, 70))
+        
+        
+        
+        layout = QVBoxLayout()
+        layout.addWidget(self.btnPasswd)
+        layout.addWidget(self.btnHelp)
+        layout.addWidget(self.btnAbout)
+        
+        self.woptions.setLayout(layout)
+        self.toolBox.addItem(self.woptions, "Opciones")
+        
+        
         settings = QSettings()
         self.restoreGeometry( settings.value( "MainWindow/Geometry" ).toByteArray() )
         self.connect( self.mdiArea, SIGNAL( "subWindowActivated(QMdiSubWindow *)" ), self.showtoolbar )
+        self.connect(self.btnAbout, SIGNAL("clicked()"), self.about)
+        self.connect(self.btnHelp, SIGNAL("clicked()"), self.help)
+        self.connect(self.btnPasswd, SIGNAL("clicked()"), self.changePassword)
+    
+    def about(self):
+        QMessageBox.about(self, "Llantera Esquipulas", u"""
+Llantera Esquipulas: %s
 
+Este programa ha sido desarrollado por Cusuco Software y se distribuye 
+bajo una licencia GPL, usted deberia de haber recibido una copia de esta licencia
+con el programa.
+        """ % qApp.applicationName())
+        
+    def help(self):
+        settings = QSettings()
+        base = settings.value( "Reports/base" ).toString()
+        
+        ds = QDesktopServices()
+        ds.openUrl(QUrl(base + "../help/"))
+        
+    def changePassword(self):
+        print "password"
+    
+    
     def showtoolbar( self, *args ):
         """
         mostrar la toolbar de la ventana que se acaba de mostrar

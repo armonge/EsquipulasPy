@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from PyQt4.QtGui import  QPrinter, QPrintPreviewDialog,  QLineEdit, QMessageBox, QProgressBar, QPrintPreviewWidget
-from PyQt4.QtWebKit import QWebPage, QWebView
-from PyQt4.QtCore import pyqtSlot, QUrl, QSettings, SIGNAL, QThread, SLOT
+from PyQt4.QtWebKit import QWebView
+from PyQt4.QtCore import  QUrl, QSettings
 
 
         
