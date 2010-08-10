@@ -211,8 +211,8 @@ class KardexModel( QAbstractTableModel ):
                 raise Exception( u"No se puedo comenzar la transacción" )
 
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado, observacion,total, idtipocambio)
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total, :idtipocambio)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado, observacion,total, idtipocambio, idbodega)
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total, :idtipocambio, :idbodega)
             """ ):
                 raise Exception("No se pudo preparar la consulta para insertar el kardex")
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
@@ -222,6 +222,7 @@ class KardexModel( QAbstractTableModel ):
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.ajusteTotalC.to_eng_string() )
             query.bindValue( ":idtipocambio", self.exchangeRateId )
+            query.bindValue(":idbodega", self.warehouseId)
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
