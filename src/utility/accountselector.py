@@ -17,6 +17,7 @@ from utility.widgets.searchpanel import SearchPanel
 from utility.moneyfmt import moneyfmt
 from utility.singleselectionmodel import SingleSelectionModel
 
+
 IDCUENTA, CODCUENTA, NCUENTA, MONTO = range( 4 )
 
 
@@ -35,7 +36,7 @@ class AccountsSelectorModel( QAbstractTableModel ):
     @property
     def currentSum( self ):
         currentsum = sum( [line.amount for line in  self.lines if line.valid ] )
-        return currentsum if currentsum != 0 else Decimal( 0 )
+        return currentsum.quantize( Decimal('0.0001') ) if currentsum != 0 else Decimal( 0 )
 
     def columnCount( self, index = QModelIndex() ):
         return 4
@@ -102,7 +103,8 @@ class AccountsSelectorModel( QAbstractTableModel ):
             if not self.valid and self.lines[-1].valid:
                 self.insertRow( len( self.lines ) )
             elif not self.valid and not self.lines[-1].valid:
-                self.lines[-1].amount = self.currentSum * -1
+                self.lines[-1].amount =  self.currentSum * -1 
+                print self.lines[-1].amount
             elif self.valid and not self.lines[-1].valid:
                 if len( self.lines ) > 1:
                     self.removeRows( len( self.lines ) - 1, 1 )
@@ -166,8 +168,8 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
             return sp
         elif index.column() == MONTO:
             doublespinbox = QDoubleSpinBox( parent )
-            doublespinbox.setMinimum( -1000000 )
-            doublespinbox.setMaximum( 1000000 )
+            doublespinbox.setMinimum( -100000000000 )
+            doublespinbox.setMaximum( 100000000000 )
             doublespinbox.setDecimals( 4 )
 
             return doublespinbox
