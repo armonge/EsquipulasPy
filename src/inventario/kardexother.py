@@ -10,6 +10,8 @@ from PyQt4.QtCore import QTimer,pyqtSlot, QDateTime
 from utility.base import Base
 from ui.Ui_kardexother import Ui_frmKardexOther
 
+from document.kardexother.kardexothermodel import KardexOtherModel 
+
 from utility import constantes
 class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
     '''
@@ -59,6 +61,8 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         self.actionSave.setVisible(not status)
         
         self.swConcept.setCurrentIndex(0 if status else 1)
+        self.tabnavigation.setEnabled(status)
+        
         if not status:
             self.tabWidget.setCurrentIndex(0)
         
@@ -67,7 +71,8 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open:
                     raise UserWarning("No se pudo conectar con la base datos")
-            self.navigationmodel.setQuery("""
+            
+            query = """
             SELECT 
                 d.iddocumento, 
                 d.ndocimpreso, 
@@ -79,7 +84,20 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             JOIN bodegas b ON b.idbodega = d.idbodega
             LEFT JOIN docpadrehijos dph ON dph.idhijo = d.iddocumento
             WHERE d.idtipodoc = %d AND dph.idhijo IS NULL
-            """ % constantes.IDKARDEX)
+            """ % constantes.IDKARDEX
+            
+            self.navigationmodel.setQuery(query)
+            
+            query = """
+            SELECT * 
+            FROM articulosxdocumento axd
+            JOIN documentos d ON d.iddocumento = axd.iddocumento AND d.idtipodoc = %d
+            LEFT JOIN docpadrehijos dph ON dph.idhijo = d.iddocumento
+            WHERE dph.idhijo IS NULL
+            """ % constantes.IDKARDEX
+            self.detailsModel.setQuery(query)
+            
+            
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
         except Exception as inst:
@@ -91,6 +109,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
                 if not QSqlDatabase.database().open:
                     raise UserWarning("No se pudo conectar con la base de datos")
             
+            self.editmodel = KardexOtherModel()
             
             
             conceptosmodel = QSqlQueryModel()
@@ -114,7 +133,8 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
 
             self.dtPicker.setDateTime(QDateTime.currentDateTime())
-
+            
+            self.tabledetails.setModel(self.editmodel)
             self.status = False
         except UserWarning as inst:
             QMessageBox.critical(self,"Llantera Esquipulas", str(inst))
@@ -124,3 +144,12 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             print inst
         
         
+    @pyqtSlot(  )
+    def on_actionCancel_activated( self ):
+        """
+        Borrar todos los modelos que se hallan creado para el modo edición, asignar los modelos de navegación a las 
+        vistas
+        """
+        self.editmodel = None
+        self.tabledetails.setModel(self.detailsproxymodel)
+        self.status = True    

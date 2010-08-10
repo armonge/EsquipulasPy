@@ -9,16 +9,15 @@ from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 
 from decimal import Decimal
 from document.kardex.lineakardex import LineaKardex
-from utility.moneyfmt import moneyfmt
-import utility
+from utility import constantes
 from utility.movimientos import movKardex
 
 IDARTICULO, DESCRIPCION, NUMDOC, NUMAJUSTE, NUMTOTAL = range( 5 )
 class KardexModel( QAbstractTableModel ):
     """
-    Esta clase es el modelo utilizado en la tabla en la que se editan los documentos
+    Esta clase es el modelo utilizado en la tabla en la que se editan los documentos kardex
     """
-    __documentType = utility.constantes.IDKARDEX
+    __documentType = constantes.IDKARDEX
     """
     @cvar: El id del tipo de documento
     @type: int
@@ -141,7 +140,8 @@ class KardexModel( QAbstractTableModel ):
                 return line.numfinal
         elif role == Qt.EditRole:
             if column == NUMAJUSTE:
-                return line.numajuste 
+                return line.numajuste
+             
     def flags( self, index ):
         if not index.isValid():
             return Qt.ItemIsEnabled

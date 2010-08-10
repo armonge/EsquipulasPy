@@ -4,12 +4,13 @@ Created on 15/07/2010
 
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel
+from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel, QPrinter
 from ui.Ui_balancegeneral import Ui_frmBalanceGeneral
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QDate,pyqtSlot,QAbstractItemModel, SIGNAL, QModelIndex, Qt
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
+from utility.reports import frmReportes
 import locale
 
 CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, IDCUENTA, ACUMULADO = range( 8 )
@@ -18,7 +19,7 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
     """
     Formulario para crear nuevas conciliaciones bancarias
     """
-    def __init__( self,  parent = None ):
+    def __init__( self, user,  parent = None ):
         """
         Constructor
         """
@@ -27,12 +28,15 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
 #        self.dtPicker.setCalendarPopup(True)
         self.dtPicker.setMaximumDate(QDate.currentDate())
         self.dtPicker.setDate(QDate.currentDate())
+        
+        self.user = user
 
     def updateModel(self):
         try:
 
             if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
+                if not QSqlDatabase.database().open():
+                    raise UserWarning("No se pudo abrir la base de datos")
         
             self.model = CuentasModel(self.dtPicker.date())
             self.activofiltermodel = QSortFilterProxyModel()
@@ -110,6 +114,14 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
         Asignar la fecha al objeto __document
         """
         self.updateModel()
+        
+    @pyqtSlot()
+    def on_actionPreview_activated(self):
+        printer = QPrinter()
+        printer.setPageSize(QPrinter.Letter)
+        web = "balancegeneral.php?date=%d+%d" % ( self.dtPicker.date().month() ,self.dtPicker.date().year() ) 
+        report = frmReportes( web , self.user, printer, self )
+        report.exec_()
         
 
 class CuentasModel( QAbstractItemModel ):

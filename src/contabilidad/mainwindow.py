@@ -77,7 +77,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        balance = frmBalanceGeneral( self )
+        balance = frmBalanceGeneral(self.user, self )
         self.mdiArea.addSubWindow( balance )
         balance.show()
 

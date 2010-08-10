@@ -16,7 +16,7 @@ from document.entradacompra.entradacompradelegate import EntradaCompraDelegate
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
 from utility.singleselectionmodel import SingleSelectionModel
-import utility.constantes
+from utility import constantes
 
 
 #controles
@@ -115,7 +115,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
             WHERE d.idtipodoc = %d
             GROUP BY d.iddocumento
-            """ % (utility.constantes.PROVEEDOR, utility.constantes.IDENTRADALOCAL) )
+            """ % (constantes.PROVEEDOR, constantes.IDENTRADALOCAL) )
     #        El modelo que filtra a self.navmodel
             self.navproxymodel = RONavigationModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )
@@ -141,7 +141,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
                 JOIN categorias c ON subc.padre = c. idcategoria  
                 JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
                 WHERE d.idtipodoc = %d
-            """  % utility.constantes.IDENTRADALOCAL)
+            """  % constantes.IDENTRADALOCAL)
     #        Este es el filtro del modelo anterior
             self.detailsproxymodel = QSortFilterProxyModel( self )
             self.detailsproxymodel.setSourceModel( self.detailsmodel )
@@ -183,7 +183,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
                 WHERE tipopersona = 2
             """ )
             if not self.providersModel.rowCount(QModelIndex()) > 0:
-                raise Exception("No existen proveedores en la base de datos")
+                raise UserWarning("No existen proveedores en la base de datos")
             self.cbProvider.setModel( self.providersModel )
             self.cbProvider.setModelColumn( 1 )
 
@@ -239,14 +239,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
-                    raise Exception( u"No se pudo establecer la conexión con la base de datos" )
-
-                QMessageBox.warning( None,
-                "Llantera Esquipulas",
-                """Hubo un error al conectarse con la base de datos""",
-                QMessageBox.StandardButtons( \
-                    QMessageBox.Ok ),
-                QMessageBox.Ok )
+                    raise UserWarning( u"No se pudo establecer la conexion con la base de datos" )
 
             self.status = False
 
@@ -257,12 +250,15 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.tabledetails.setItemDelegate( self.delegate )
             
             query = QSqlQuery( """
-            SELECT idcostoagregado, valorcosto FROM costosagregados c WHERE idtipocosto = 1 AND activo = 1 LIMIT 1
-            """ )
+            SELECT idcostoagregado, valorcosto 
+            FROM costosagregados c 
+            WHERE idtipocosto = %d AND activo = 1 
+            LIMIT 1
+            """ % constantes.IVA)
             if not query.exec_():
-                raise Exception("No se pudo obtener el valor del IVA")
+                raise UserWarning("No se pudo obtener el valor del IVA para iniciar la entrada compra")
             if not query.size() == 1:
-                raise Exception("No se pudo obtener el valor del IVA")
+                raise UserWarning("No se pudo obtener el valor del IVA para iniciar la entrada compra")
             query.first()
             self.editmodel.idIVA = query.value( 0 ).toInt()[0]
             self.editmodel.rIVA = Decimal( query.value( 1 ).toString() )
@@ -277,10 +273,12 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.dtPicker.setDateTime( QDateTime.currentDateTime() )
             self.editmodel.providerId = self.providersModel.record( self.cbProvider.currentIndex() ).value( "idpersona" ).toInt()[0]
             self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            self.status = True
         except Exception as e:
             print e
-            self.on_actionCancel_activated()
-            QMessageBox.critical(self, "Llantera Esquipulas", str(e), QMessageBox.Ok)
+            self.status = True
 
         if QSqlDatabase.database().isOpen():
             QSqlDatabase.database().close()

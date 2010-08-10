@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\balancegeneral.ui'
+# Form implementation generated from reading ui file 'src/ui/balancegeneral.ui'
 #
-# Created: Thu Jul 15 23:57:21 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Mon Aug  9 22:37:25 2010
+#      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_frmBalanceGeneral(object):
     def setupUi(self, frmBalanceGeneral):
         frmBalanceGeneral.setObjectName("frmBalanceGeneral")
-        frmBalanceGeneral.resize(800, 600)
+        frmBalanceGeneral.resize(800, 634)
         self.centralwidget = QtGui.QWidget(frmBalanceGeneral)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.centralwidget)
@@ -31,6 +31,7 @@ class Ui_frmBalanceGeneral(object):
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.activoTree = QtGui.QTreeView(self.groupBox_2)
         self.activoTree.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.activoTree.setAlternatingRowColors(True)
         self.activoTree.setObjectName("activoTree")
         self.verticalLayout_4.addWidget(self.activoTree)
         self.splitter = QtGui.QSplitter(self.splitter_2)
@@ -48,6 +49,7 @@ class Ui_frmBalanceGeneral(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.pasivoTree = QtGui.QTreeView(self.groupBox_3)
         self.pasivoTree.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.pasivoTree.setAlternatingRowColors(True)
         self.pasivoTree.setObjectName("pasivoTree")
         self.verticalLayout.addWidget(self.pasivoTree)
         self.horizontalLayout_6 = QtGui.QHBoxLayout()
@@ -84,6 +86,7 @@ class Ui_frmBalanceGeneral(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.capitalTree = QtGui.QTreeView(self.groupBox)
         self.capitalTree.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.capitalTree.setAlternatingRowColors(True)
         self.capitalTree.setObjectName("capitalTree")
         self.verticalLayout_2.addWidget(self.capitalTree)
         self.horizontalLayout_8 = QtGui.QHBoxLayout()
@@ -157,6 +160,12 @@ class Ui_frmBalanceGeneral(object):
         self.toolBar = QtGui.QToolBar(frmBalanceGeneral)
         self.toolBar.setObjectName("toolBar")
         frmBalanceGeneral.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        self.actionPreview = QtGui.QAction(frmBalanceGeneral)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/icons/res/document-preview.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionPreview.setIcon(icon)
+        self.actionPreview.setObjectName("actionPreview")
+        self.toolBar.addAction(self.actionPreview)
 
         self.retranslateUi(frmBalanceGeneral)
         QtCore.QMetaObject.connectSlotsByName(frmBalanceGeneral)
@@ -172,5 +181,16 @@ class Ui_frmBalanceGeneral(object):
         self.lbltotallibro.setText(QtGui.QApplication.translate("frmBalanceGeneral", "Total Activo:", None, QtGui.QApplication.UnicodeUTF8))
         self.lbltotalbanco.setText(QtGui.QApplication.translate("frmBalanceGeneral", "Total Pasivo más Capital", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmBalanceGeneral", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionPreview.setText(QtGui.QApplication.translate("frmBalanceGeneral", "Previsualizar", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    frmBalanceGeneral = QtGui.QMainWindow()
+    ui = Ui_frmBalanceGeneral()
+    ui.setupUi(frmBalanceGeneral)
+    frmBalanceGeneral.show()
+    sys.exit(app.exec_())
+

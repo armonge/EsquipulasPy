@@ -155,6 +155,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.tableaccounts.setColumnHidden( IDCUENTA, True )
         self.tableaccounts.setColumnHidden( IDDOCUMENTOC, True )
         
+        self.tabnavigation.setEnabled( status )
         
         if not status: #editando
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
@@ -300,7 +301,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
         self.tableaccounts.setModel( self.accountsProxyModel )
 
-        self.tabnavigation.setEnabled( True )
+        
         
         self.status = True
         self.navigate( 'last' )
@@ -373,7 +374,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
             warehouseModel = QSqlQueryModel()
             warehouseModel.setQuery( """
-            SELECT idbodega, nombrebodega FROM bodegas b 
+            SELECT idbodega, nombrebodega 
+            FROM bodegas b
+            ORDER BY idbodega  
             """ )
             if not warehouseModel.rowCount() > 0:
                 raise UserWarning("No existen bodegas en el sistema")

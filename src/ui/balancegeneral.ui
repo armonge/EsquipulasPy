@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>610</height>
+    <height>634</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -288,7 +288,17 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionPreview"/>
   </widget>
+  <action name="actionPreview">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icons/res/document-preview.png</normaloff>:/icons/res/document-preview.png</iconset>
+   </property>
+   <property name="text">
+    <string>Previsualizar</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="res.qrc"/>
