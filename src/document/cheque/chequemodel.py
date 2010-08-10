@@ -179,7 +179,7 @@ class ChequeModel( AccountsSelectorModel ):
             
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
-            query.bindValue( ":idtipodoc", self.__documentType )
+            query.bindValue( ":idtipodoc",self.__documentType )
             query.bindValue( ":anulado", 0 )
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.totalDolares.to_eng_string())
@@ -203,7 +203,7 @@ class ChequeModel( AccountsSelectorModel ):
             if not query.exec_():
                 raise UserWarning( "No se pudo insertar el beneficiario del cheque" )
             
-            if self.retencion<=0 and self.retencionId>=0 and self.hasretencion==True:
+            if self.retencion>=0 and self.retencionId>=0 and self.hasretencion==True:
                 #INSERTAR EL DOCUMENTO RETENCION            
                 query.prepare( """
                 INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado, observacion,total,escontado,idtipocambio,idconcepto) 
@@ -214,14 +214,13 @@ class ChequeModel( AccountsSelectorModel ):
                 query.bindValue( ":idtipodoc", constantes.IDRETENCION )
                 query.bindValue( ":anulado", 0 )
                 query.bindValue( ":observacion", self.observations )
-                query.bindValue( ":total", self.editmodel.retencionDolares.to_eng_string())
+                query.bindValue( ":total", self.retencion.to_eng_string())
                 query.bindValue( ":escontado", 1 )
                 query.bindValue( ":idtc", self.exchangeRateId )
                 query.bindValue( ":concepto", self.conceptoId )
                 if not query.exec_():
                     raise UserWarning( "No se Inserto la retencion" )
                 idret = query.lastInsertId().toInt()[0]
-                
                 #INSERTAR EL BENEFICIARIO Y USUARIO DE LA RETENCION
                 query.prepare("INSERT INTO personasxdocumento(iddocumento,idpersona) VALUES(:iddocumento,:idusuario)")
                 query.bindValue( ":iddocumento", idret )
@@ -265,15 +264,13 @@ class ChequeModel( AccountsSelectorModel ):
             for lineid, line in enumerate( self.lines ):
                 if line.valid:
                     line.save( insertedId, lineid + 1 )
-    
+                    
             if not QSqlDatabase.database().commit():
                 raise UserWarning( "No se pudo realizar la Transaccion" )
             
             return True
+        
         except UserWarning as inst:
-            self.status = True
-            #QMessageBox.warning(self, "Llantera Esquipulas", str(inst))
-            print   inst
             self.status = True
             QSqlDatabase.database().rollback()
             return False
