@@ -20,7 +20,7 @@ from document.recibo.recibomodel import ReciboModel
 from document.recibo.abonomodel import AbonoModel,LineaAbono, AbonoDelegate
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
-from utility.constantes import RETENCIONFUENTE,RETENCIONPROFESIONALES 
+from utility.constantes import RETENCIONFUENTE,RETENCIONPROFESIONALES,IDRECIBO,IDRETENCION,IDRECIBO,CLIENTE,IDFACTURA
 #from PyQt4.QtGui import QMainWindow
 
 #controles
@@ -555,7 +555,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             AND p.tipopersona=%d
             ORDER BY padre.iddocumento
             ;
-            """ % ('%',constantes.IDRECIBO , constantes.CLIENTE))
+            """ % ('%',IDRECIBO , CLIENTE))
     #        El modelo que filtra a self.navmodel
             self.navproxymodel = RONavigationModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )
@@ -596,7 +596,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             WHERE padre.idtipodoc=%d and d.monto is not null
             ORDER BY d.nlinea
 ;
-            """ % constantes.IDFACTURA)
+            """ % IDFACTURA)
 
     #        Este es el filtro del modelo anterior
             self.abonosproxymodel.setSourceModel( self.abonosmodel )
@@ -990,7 +990,7 @@ class DatosRecibo(object):
                 """ )
                 query.bindValue( ":ndocimpreso", self.retencionNumeroImpreso )
                 query.bindValue( ":fechacreacion", fechaCreacion)
-                query.bindValue( ":idtipodoc", constantes.IDRETENCION )
+                query.bindValue( ":idtipodoc", IDRETENCION )
                 query.bindValue( ":total", self.obtenerRetencion.to_eng_string() )
                 query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
                 query.bindValue( ":concepto", self.conceptoId )
@@ -1056,8 +1056,8 @@ class DatosRecibo(object):
 
     def cargarNumeros(self,recibo):
 #            Cargar el numero de el Recibo actual
-        idrec= str(constantes.IDRECIBO)
-        idret = str(constantes.IDRETENCION)
+        idrec= str(IDRECIBO)
+        idret = str(IDRETENCION)
         query = QSqlQuery( "CALL spConsecutivo(" + idrec +",null)")
         if not query.exec_():
             print( query.lastError().text() )
