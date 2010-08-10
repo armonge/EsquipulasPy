@@ -322,8 +322,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 raise Exception("NO se pudo abrir la Base de datos")
         
         nimpreso=self.navmodel.record( self.mapper.currentIndex() ).value( "No. Factura" ).toInt()[0]
-        iddoc=self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
-                    
+        iddoc=self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]            
         
         query=QSqlQuery("""SELECT d.iddocumento,d.ndocimpreso,d.total,d.fechacreacion,d.observacion,d.escontado,dph.idhijo 
                         FROM documentos d join docpadrehijos dph on d.iddocumento=dph.idpadre 
@@ -394,21 +393,27 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                                     raise Exception("No se puedo insertar la relacion UsuarioAutorizo-Anulacion")                   
                                 
                                 #Insertar el documento anulacion como hijo de la factura
-                                if not query.prepare( """INSERT INTO docpadrehijos(idpadre,idhijo)
-                                VALUES(:idpadre,:idhijo)""" ):
-                                    raise Exception( query.lastError().text() )
-                                query.bindValue( ":idpadre", iddoc )
-                                query.bindValue( ":idhijo", iddocumento)
+                                query=QSqlQuery("""Select
+                                        @subtotal:=d.total/(1+ca.valorcosto/100) as subtotal,
+                                        sum(unidades*costounit*tc.tasa) as totalcosto,
+                                        IF(ca.valorcosto IS NULL,0,@subtotal*ca.valorcosto/100) as IVA                                        
+                                        from articulosxdocumento ad
+                                        join documentos d on d.iddocumento=ad.iddocumento
+                                        join tiposcambio tc on tc.idtc=d.idtipocambio
+                                        JOIN costosxdocumento cd on cd.iddocumento=d.iddocumento
+                                        JOIN costosagregados ca on ca.idcostoagregado=cd.idcostoagregado
+                                        where d.iddocumento=%d and ca.idtipocosto=%d""" % (iddoc, constantes.IVA))
                                 
                                 if not query.exec_():
-                                    raise Exception("No se puedo insertar la relacion Usuario-Anulacion")
+                                    raise Exception("No se pudo ejecutar la consulta de los totales de Factura")
                                 
-                                self.tipocambio=Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( "Tipo de Cambio Oficial" ).toString())                                
-                                self.subtotal=Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( "subtotal" ).toString())*Decimal(self.tipocambio)
-                                self.iva=Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( "iva" ).toString())*Decimal(self.tipocambio)
-                                self.total=Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( "total" ).toString())*Decimal(self.tipocambio)            
+                                query.first()
                                 
-                                movFacturaCredito(iddocumento, self.subtotal*Decimal("-1"),self.iva*Decimal("-1"),self.total*Decimal("-1") )                   
+                                subtotal=Decimal(query.value(0).toString())
+                                totalcosto=Decimal(query.value(1).toString())
+                                iva=Decimal(query.value(2).toString())                                            
+
+                                movFacturaCredito(iddocumento, subtotal*Decimal("-1"),iva*Decimal("-1"),totalcosto*Decimal("-1") )                   
                                 
                                 if not self.database.commit():
                                     raise Exception("NO se hizo el commit para la Anulacion")
@@ -422,13 +427,23 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 else:
                     anulardialog.close()
                     print "Cancelar"   
-
+    
     @pyqtSlot(  )
     def on_btnrecibo_clicked( self ):
         self.recibo.show()
         
-        
-
+    @pyqtSlot( "int" )
+    def on_cboFiltro_currentIndexChanged( self, index ):
+        """
+        asignar la bodega al objeto self.editmodel
+        """
+        self.navproxymodel.setFilterKeyColumn(ANULADO)
+        if index==0:        
+            self.navproxymodel.setFilterRegExp("")
+        elif index==1:
+            self.navproxymodel.setFilterRegExp("1")
+        else:
+            self.navproxymodel.setFilterRegExp("0")
     @pyqtSlot( "int" )
     def on_cbbodega_currentIndexChanged( self, index ):
         """
@@ -794,6 +809,7 @@ class Anular( QDialog ):
         self.cboConceptos.setCurrentIndex( -1 )
         self.cboConceptos.setModelColumn( 1 )
         self.numero=numero
+    
     def updateFilter( self, string ):
         self.filtermodel.setFilterWildcard( string )
-        
+                
