@@ -66,4 +66,5 @@ class LineaKardex(object):
         query.bindValue(":unidades", self.numajuste)
         
         if not query.exec_():
+            print query.lastError().text()
             raise Exception("No se pudo insertar una linea")
