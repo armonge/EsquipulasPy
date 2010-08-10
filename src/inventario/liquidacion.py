@@ -90,10 +90,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
+        self.detailsproxymodel.setFilterRegExp( "^"+self.navmodel.record( index ).value( "iddocumento" ).toString()+"$" )
 
         self.accountsProxyModel.setFilterKeyColumn( IDDOCUMENTOC )
-        self.accountsProxyModel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
+        self.accountsProxyModel.setFilterRegExp( "^"+self.navmodel.record( index ).value( "iddocumento" ).toString()+"$" )
 
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
         

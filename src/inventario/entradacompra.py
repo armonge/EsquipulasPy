@@ -164,7 +164,6 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.tabledetails.setModel( self.detailsproxymodel )
 
 
-            self.navigate( 'last' )
 
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", str(inst))            
@@ -301,7 +300,8 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
+        print self.navmodel.record( index ).value( "iddocumento" ).toString()
+        self.detailsproxymodel.setFilterRegExp( "^"+ self.navmodel.record( index ).value( "iddocumento" ).toString()+ "$" )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
         paytype = self.navmodel.record( index ).value( "tipopago" ).toInt()[0]

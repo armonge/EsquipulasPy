@@ -85,23 +85,26 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             WHERE d.idtipodoc IN (%s)
             GROUP BY d.iddocumento
             """ % self.tiposdoc
+            print query
             self.navigationmodel.setQuery(query )
-
             
-            self.detailsModel.setQuery(u"""
-            SELECT 
+            query = u"""
+           SELECT 
                 axd.idarticulo, 
                 ad.descripcion as 'Articulo', 
                 axd.unidades as 'Unidades',
-                IF(akx.unidades > 0, CONCAT('+',akx.unidades), IFNULL(akx.unidades,0)) as 'Ajuste', 
+                IF(akx.unidades > 0,    CONCAT('+',akx.unidades),     IFNULL(akx.unidades,0)) as 'Ajuste', 
                 axd.iddocumento
             FROM articulosxdocumento axd
             JOIN vw_articulosdescritos ad ON ad.idarticulo = axd.idarticulo
-            JOIN documentos d ON axd.iddocumento = d.iddocumento AND d.idtipodoc IN (%s)
-            JOIN docpadrehijos dph ON axd.iddocumento = dph.idpadre
-            LEFT JOIN articulosxdocumento akx ON akx.iddocumento = dph.idhijo
-            GROUP BY dph.idpadre, axd.idarticulo
-            """ % self.tiposdoc)
+            JOIN documentos d ON axd.iddocumento = d.iddocumento AND d.idtipodoc IN ( %s)
+            JOIN docpadrehijos dph ON dph.idpadre = d.iddocumento
+            JOIN documentos kardex ON kardex.iddocumento = dph.idhijo AND kardex.idtipodoc = %d
+            LEFT JOIN articulosxdocumento akx ON akx.iddocumento = kardex.iddocumento
+            GROUP BY ad.idarticulo, kardex.iddocumento
+            """ % ( self.tiposdoc , constantes.IDKARDEX )
+            print query
+            self.detailsModel.setQuery(query)
             
             self.mapper.setModel( self.navproxymodel )
             self.mapper.addMapping(self.txtParentPrintedDocumentNumber, NDOCIMPRESO)
@@ -119,7 +122,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             print inst
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.detailsproxymodel.setFilterRegExp( self.navigationmodel.record( index ).value( "iddocumento" ).toString() )
+        self.detailsproxymodel.setFilterRegExp("^"+ self.navigationmodel.record( index ).value( "iddocumento" ).toString()+ "$")
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
     @pyqtSlot("int")
