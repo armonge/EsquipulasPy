@@ -98,7 +98,7 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             self.tableNavigation.setColumnWidth( FECHACREACION, 200 )
             self.tableNavigation.setColumnWidth( CONCEPTO, 250 )
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as e:
             print e
 
@@ -187,7 +187,7 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             self.tableDetails.resizeColumnsToContents()
         except UserWarning as inst:
             self.status = False
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
             print inst
             self.status = False

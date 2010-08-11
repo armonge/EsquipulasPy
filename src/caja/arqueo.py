@@ -98,7 +98,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
             
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
             print inst
         finally:
@@ -220,7 +220,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 #            self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.updateLabels )
             self.status = False
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             self.status = True
         except Exception  as e:
             print e

@@ -34,12 +34,14 @@
     <file>res/list-add.png</file>
     <file>res/table.png</file>
     <file>res/checkbox.png</file>
-    <file>res/system-help.png</file>
   </qresource>
   <qresource prefix="images">
+  	<file>res/help-about.png</file>	
+  	<file>res/system-help.png</file>	
     <file>res/passwd-bg.png</file>
     <file>res/reconcile.png</file>
     <file>res/account-types-checking.png</file>
+    <file>res/dialog-password.png</file>
     <file>res/view-pim-tasks.png</file>
     <file>res/marca.png</file>
     <file>res/llanta.png</file>

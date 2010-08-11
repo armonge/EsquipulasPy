@@ -285,7 +285,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tablenavigation.resizeColumnsToContents()
             self.tabledetails.setModel( self.detailsproxymodel )
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
             print inst
 
@@ -424,7 +424,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabledetails.setColumnHidden( IDDOCUMENTOT, False )
         except UserWarning as inst:
             self.status = True
-            QMessageBox.warning(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
             self.status = True
             print inst

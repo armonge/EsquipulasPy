@@ -166,7 +166,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
 
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))            
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))            
         except Exception as e:
             print e
         finally:
@@ -273,7 +273,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.editmodel.providerId = self.providersModel.record( self.cbProvider.currentIndex() ).value( "idpersona" ).toInt()[0]
             self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             self.status = True
         except Exception as e:
             print e

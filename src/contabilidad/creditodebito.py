@@ -134,7 +134,7 @@ class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
                 self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
                 self.status =  False 
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             self.status = True
         except Exception as inst:
             print inst

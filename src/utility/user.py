@@ -6,8 +6,8 @@ import hashlib
 import functools
 
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
-from PyQt4.QtCore import QObject, SIGNAL, SLOT, Qt, QTimer
-from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap
+from PyQt4.QtCore import  SIGNAL, SLOT, Qt, QTimer
+from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap, QDialogButtonBox, QFormLayout, QVBoxLayout, QLineEdit, qApp, QMessageBox, QLabel
 
 from ui import res_rc
 from ui.Ui_user import Ui_dlgUserLogin
@@ -56,8 +56,70 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
             self.lblError.setVisible(True)
             self.attempts+=1
             QTimer.singleShot(3000, functools.partial(self.lblError.setVisible, False))
+
+class dlgPasswordChange(QDialog):
+    def __init__(self, user):
+        super(dlgPasswordChange, self).__init__()
+        self.setupUi(self)
+        
+        
+        self.user = user
+        
+        self.connect(self.buttonBox, SIGNAL("accepted()"), self, SLOT("accept()"))
+        self.connect(self.buttonBox, SIGNAL("rejected()"), self, SLOT("reject()"))
+        
+    def accept(self):
+        oldp = self.txtOldPassword.text()
+        newp = self.txtNewPassword.text()
+        repeatp = self.txtRepeatPassword.text()
+        
+        try:
+            if self.user.changePassword(oldp, newp, repeatp):
+                super(dlgPasswordChange, self).accept()
+        except UserWarning as inst:
+            self.lblError.setText(unicode(inst) )
+            self.lblError.setVisible(True)
+            QTimer.singleShot(3000, functools.partial(self.lblError.setVisible, False))
             
+            
+    def setupUi(self, parent):
+        
+        
+        self.setWindowTitle(qApp.organizationName() + ": " +qApp.applicationName())
+        
+        self.txtOldPassword = QLineEdit()
+        self.txtOldPassword.setEchoMode(QLineEdit.Password)
+        
+        self.txtNewPassword = QLineEdit()
+        self.txtNewPassword.setEchoMode(QLineEdit.Password)
+        
+        self.txtRepeatPassword = QLineEdit()
+        self.txtRepeatPassword.setEchoMode(QLineEdit.Password)
+        
+        self.form = QFormLayout()
+        self.form.addRow(u"Contraseña anterior", self.txtOldPassword)
+        self.form.addRow(u"Nueva contraseña", self.txtNewPassword)
+        self.form.addRow(u"Repita la nueva contraseña", self.txtRepeatPassword)
+        
+        self.layout = QVBoxLayout()
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
+        
+        self.lblError = QLabel()
+        self.lblError.setAlignment(Qt.AlignHCenter)
+        self.lblError.setProperty("error", True)
+        self.lblError.setVisible(False)
+        
+        self.layout.addLayout(self.form)
+        self.layout.addWidget(self.lblError)
+        self.layout.addWidget(self.buttonBox)
+        
+        self.setLayout(self.layout)
+        
+        
+        
+        
 class User:
+#    TODO:Crear o utilizar algún algoritmo para determinar que tan buena es una contraseña
     secret = '7/46u23opA)P231popas;asdf3289AOP23'
     u"""
     @cvar: El hash usado en esta aplicación para los usuarios
@@ -176,9 +238,25 @@ class User:
         """
         return self.__roles if self.valid else []
 
+    @property
+    def fullname( self ):
+        """
+        El nombre completo del usuario según lo definido en la base de datos
+        @rtype: string
+        """
+        return self.__fullname
+    
+    @property
+    def uid( self ):
+        """
+        El id del usuario en la base de datos
+        @rtype: int
+        """
+        return self.__uid
+    
     def hasRole( self, role ):
         """
-        Esta funcion comprueba si  un usuario tiene determinado permiso
+        Esta función comprueba si  un usuario tiene determinado permiso
         @param role: este parametro es el rol que se quiere comprobar
         @rtype: bool 
         """
@@ -189,36 +267,58 @@ class User:
                 return role in self.__roles
         return False
 
-    @property
-    def fullname( self ):
-        """
-        El nombre completo del usuario según lo definido en la base de datos
+    def __createPassword(self, password):
+        u"""
+        Esta función crea la contraseña nueva a ingresar al servidor de bases de datos
+        @param password: La contraseña a partir de la cual se crea la nueva contraseña
+        @type password: string
+        @return: La contraseña lista para usarse en la consulta
         @rtype: string
         """
-        return self.__fullname
-    @property
-    def uid( self ):
+        return hashlib.sha1(password + self.secret ).hexdigest()
+        
+    def changePassword(self, old, new, repeat):
+        u"""
+        Esta función cambia la contraseña del usuario
+        @param old: La contraseña anterior del usuario
+        @param new: La nueva contraseña del usuario
+        @param repeat: La nueva contraseña del usuario 
+        
+        @type old:string
+        @type new:string
+        @type repeat: string
+        
+        @return: Si se pudo o no cambiar la contraseña
+        @rtype:bool
         """
-        El id del usuario en la base de datos
-        @rtype: int
-        """
-        return self.__uid
-if __name__=="__main__":
-    import sys
-    from PyQt4.QtGui import *
-    from PyQt4.QtCore import *
-    from utility import database
-
-    app = QApplication(sys.argv)
-
-    db = database.Database.getDatabase()
-    db.open()
-    dlg = dlgUserLogin()
-
-
-    #QObject.connect(dlg, SIGNAL("accepted()"), sys.exit)
-    QObject.connect(dlg, SIGNAL("rejected()"), sys.exit)
-    
-    dlg.exec_()
-
-    app.exec_()
+        if not old == self.password:
+            raise UserWarning(u"La contraseña anterior que escribio no es correcta")
+        elif not new == repeat:
+            raise UserWarning(u"Las contraseñas no coinciden")
+        
+        if not self.db.isOpen():
+            if not self.db.open():
+                raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
+            
+        query = QSqlQuery()
+        if not query.prepare("""
+        UPDATE usuarios SET password = :password WHERE idusuario = :id LIMIT 1
+        """):
+            raise Exception(u"No se pudo preparar la consulta para cambiar la contraseña")
+        
+        query.bindValue(":password" , self.__createPassword(new) )
+        query.bindValue(":id" , self.uid )
+        
+        if not query.exec_():
+            raise Exception("No se pudo cambiar la contraseña")
+        
+        self.__password = new
+        
+        return True
+        
+        
+        
+        
+        
+        
+        

@@ -99,7 +99,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             
             
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
             print inst
     @pyqtSlot()
@@ -137,7 +137,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             self.tabledetails.setModel(self.editmodel)
             self.status = False
         except UserWarning as inst:
-            QMessageBox.critical(self,"Llantera Esquipulas", str(inst))
+            QMessageBox.critical(self,"Llantera Esquipulas", unicode(inst))
             self.status = True
         except Exception as inst:
             self.status = True

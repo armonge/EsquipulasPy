@@ -63,7 +63,7 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
                                                  1 if dlg.cbEsdebe.checkState() == Qt.CheckState else 0
                                                    )
             except UserWarning as inst:
-                QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+                QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             except Exception as inst:
                 print inst
 

@@ -235,7 +235,7 @@ class ArqueoModel( QAbstractTableModel ):
                 raise Exception( "No se pudo hacer commit" )
             return True
         except UserWarning as inst:
-            self.saveError = str(inst)
+            self.saveError = unicode(inst)
             print query.lastError().text()
             self.database.rollback()
             return False

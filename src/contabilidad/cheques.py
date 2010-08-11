@@ -445,7 +445,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             
             self.status = False
         except UserWarning as inst:
-            QMessageBox.warning(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
             self.status = True
         except Exception as inst:
             print inst

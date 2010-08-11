@@ -117,7 +117,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             
             self.tabledetails.horizontalHeader().setStretchLastSection(True)
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", str(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
             print inst
     def updateDetailFilter( self, index ):
