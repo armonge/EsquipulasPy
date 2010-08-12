@@ -12,12 +12,11 @@ from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
      QLineEdit,QMessageBox
 
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
-
 from ui.Ui_creditodebito import Ui_frmCreditoDebito
 from utility.base import Base
 from decimal import Decimal
 from utility import constantes
-from document.creditodebito.creditodebitomodel import creditodebitomodel
+from document.creditodebito import creditoDebitoModel
 
 class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
     """
@@ -66,7 +65,7 @@ class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
             
             dlgbill = dlgSelectBill()
             if dlgbill.exec_() == QDialog.Accepted:
-                self.editmodel = creditodebitomodel()
+                self.editmodel = creditoDebitoModel()
                 self.editmodel.invoiceId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 0 ).data().toInt()[0]
                 self.editmodel.clientId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 5 ).data().toInt()[0]
                 self.editmodel.uid = self.user.uid
