@@ -18,6 +18,7 @@ from estadoresultado import frmEstadoResultado
 from movimientosbancarios import frmMovimientosBancarios
 from balancegeneral import frmBalanceGeneral
 from cheques import frmCheques
+from creditodebito import frmCreditoDebito
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     def __init__( self, user, parent = None ):
         """
@@ -117,4 +118,9 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         mov = frmMovimientosBancarios( self.user, self )
         self.mdiArea.addSubWindow( mov )
         mov.show()
+    @pyqtSlot()
+    def on_btnCreditoDebito_clicked( self ):
+        ncd = frmCreditoDebito( self.user, self )
+        self.mdiArea.addSubWindow( ncd )
+        ncd.show()
         

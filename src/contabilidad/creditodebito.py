@@ -17,6 +17,7 @@ from ui.Ui_creditodebito import Ui_frmCreditoDebito
 from utility.base import Base
 from decimal import Decimal
 from utility import constantes
+from document.creditodebito.creditodebitomodel import creditodebitomodel
 
 class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
     """
@@ -65,15 +66,12 @@ class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
             
             dlgbill = dlgSelectBill()
             if dlgbill.exec_() == QDialog.Accepted:
-                self.editmodel = DevolucionModel()
+                self.editmodel = creditodebitomodel()
                 self.editmodel.invoiceId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 0 ).data().toInt()[0]
                 self.editmodel.clientId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 5 ).data().toInt()[0]
                 self.editmodel.uid = self.user.uid
                 self.editmodel.clientName = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 3 ).data().toString()
                 self.editmodel.billPrinted = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 1 ).data().toString()
-    
-                self.editmodel.ivaRate = Decimal( dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 6 ).data().toString() )
-                self.editmodel.ivaRateId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 7 ).data().toInt()[0]
     
                 self.editmodel.exchangeRate = Decimal( dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 8 ).data().toString() )
                 self.editmodel.exchangeRateId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 9 ).data().toInt()[0]
@@ -213,7 +211,7 @@ class dlgSelectBill( QDialog ):
             LEFT JOIN costosagregados ca ON ca .idcostoagregado = cxd.idcostoagregado
             WHERE d.idtipoDoc = %d and p.tipopersona=%d
             GROUP BY d.iddocumento    
-        """ % (constantes.IDFACTURA,constantes.CLIENTE) )
+        """ % (constantes.IDDEVOLUCION,constantes.CLIENTE) )
 
 
 

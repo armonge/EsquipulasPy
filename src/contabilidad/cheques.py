@@ -72,8 +72,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.navmodel.setQuery(u"""SELECT  padre.iddocumento,
         padre.ndocimpreso as 'No. Cheque',
         cb.descripcion as 'Cuenta Bancaria',
-        p.nombre,
-        DATE(padre.fechacreacion) as 'El dia',
+        p.nombre AS Nombre,
+        DATE(padre.fechacreacion) as 'Fecha',
         c.descripcion as 'En concepto de',
         IF (tm.simbolo="C$",CONCAT(tm.simbolo,padre.total*tc.tasa),CONCAT(tm.simbolo,padre.total)) as Total,
         padre.anulado AS Anulado,
@@ -147,7 +147,14 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.tabledetails.setColumnHidden( IDCUENTA, True )
         self.tabledetails.setColumnHidden( IDDOC, True )
 
-        
+        self.tablenavigation.setColumnHidden( ANULADO, True )
+        self.tablenavigation.setColumnHidden( TIPOCAMBIO, True )
+        self.tablenavigation.setColumnHidden( SUBTOTAL, True )
+        self.tablenavigation.setColumnHidden( IVA, True )
+        self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
+        self.tablenavigation.setColumnHidden( CONCEPTO, True )
+
+        self.tablenavigation.resizeColumnsToContents()
     def setControls( self, status ):
         """
         @param status false = editando        true = navegando

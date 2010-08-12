@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/mainwindowcontabilidad.ui'
+# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/mainwindowcontabilidad.ui'
 #
-# Created: Fri Aug  6 15:15:59 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -49,7 +48,7 @@ class Ui_MainWindow(object):
         self.toolBox = QtGui.QToolBox(self.dockWidgetContents_2)
         self.toolBox.setObjectName("toolBox")
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 163, 78))
+        self.page.setGeometry(QtCore.QRect(0, 0, 214, 570))
         self.page.setObjectName("page")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -75,7 +74,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.btnAccounts)
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtGui.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 567))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 570))
         self.page_2.setObjectName("page_2")
         self.gridLayout = QtGui.QGridLayout(self.page_2)
         self.gridLayout.setObjectName("gridLayout")
@@ -191,6 +190,24 @@ class Ui_MainWindow(object):
         self.btnNotasCD.setFlat(False)
         self.btnNotasCD.setObjectName("btnNotasCD")
         self.gridLayout.addWidget(self.btnNotasCD, 5, 0, 1, 1)
+        self.btnCreditoDebito = QtGui.QPushButton(self.page_2)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btnCreditoDebito.sizePolicy().hasHeightForWidth())
+        self.btnCreditoDebito.setSizePolicy(sizePolicy)
+        self.btnCreditoDebito.setMinimumSize(QtCore.QSize(0, 70))
+        font = QtGui.QFont()
+        font.setWeight(75)
+        font.setBold(True)
+        self.btnCreditoDebito.setFont(font)
+        self.btnCreditoDebito.setIcon(icon1)
+        self.btnCreditoDebito.setIconSize(QtCore.QSize(48, 48))
+        self.btnCreditoDebito.setAutoDefault(False)
+        self.btnCreditoDebito.setDefault(False)
+        self.btnCreditoDebito.setFlat(False)
+        self.btnCreditoDebito.setObjectName("btnCreditoDebito")
+        self.gridLayout.addWidget(self.btnCreditoDebito, 6, 0, 1, 1)
         self.toolBox.addItem(self.page_2, "")
         self.verticalLayout.addWidget(self.toolBox)
         self.dockWidget.setWidget(self.dockWidgetContents_2)
@@ -240,6 +257,9 @@ class Ui_MainWindow(object):
         self.btnNotasCD.setText(QtGui.QApplication.translate("MainWindow", "Movimientos\n"
 "Bancarios", None, QtGui.QApplication.UnicodeUTF8))
         self.btnNotasCD.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnCreditoDebito.setText(QtGui.QApplication.translate("MainWindow", "Notas \n"
+"Credito-Debito", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnCreditoDebito.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), QtGui.QApplication.translate("MainWindow", "Operaciones", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionLockSession.setText(QtGui.QApplication.translate("MainWindow", "Bloquear Sesión", None, QtGui.QApplication.UnicodeUTF8))
