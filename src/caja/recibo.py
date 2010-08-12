@@ -1007,10 +1007,10 @@ class DatosRecibo(object):
     #VERIFICO SI se aplicara la retencion                     
             if self.aplicarRet :
     
-    #INSERTAR EL DOCUMENTO RETENCION            
+    #INSERTAR EL DOCUMENTO RETENCION CON EL TOTAL EN NEGATIVO, PORQUE ESTA SALIENDO DE CAJA            
                 query.prepare( """
                 INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,total,idtipocambio,idconcepto) 
-                VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:total,:idtc,:concepto)
+                VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,-:total,:idtc,:concepto)
                 """ )
                 query.bindValue( ":ndocimpreso", self.retencionNumeroImpreso )
                 query.bindValue( ":fechacreacion", fechaCreacion)

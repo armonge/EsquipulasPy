@@ -11,14 +11,15 @@ from ui.Ui_frmApertura import Ui_frmApertura
 
 from utility.user import User
 
-class frmApertura ( QDialog, Ui_frmApertura ):
-    def __init__( self,parent):
+class dlgApertura ( QDialog, Ui_frmApertura ):
+    def __init__( self,parent,cerrar=False):
         """
         Constructor para agregar un nuevo articulo
         @param user: El id del usuario que ha creado este documento
         """
-        super( frmApertura, self ).__init__( parent )
+        super( dlgApertura, self ).__init__( parent )
         self.setupUi( self )
+        
         self.datosSesion = parent.datosSesion
         
         self.txtUsuario.setText( parent.user.user )
@@ -28,39 +29,33 @@ class frmApertura ( QDialog, Ui_frmApertura ):
         self.txtPassword.setEchoMode( QLineEdit.Password )
         self.setWindowIcon( QIcon( ":/icons/res/logo.png" ) )
         
-        self.model = QSqlQueryModel()
-        try:
-
-            if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
-            self.model.setQuery( "SELECT idcaja, descripcion from cajas" )
-        except Exception, e:
-            print e
-            self.reject()
-
-        finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
-                
-        self.cboCaja.setModel( self.model )
-        self.cboCaja.setModelColumn( 1 )
-        
-        self.dtFechaTime.setDateTime( QDateTime.currentDateTime() )
         self.dtFechaTime.setReadOnly( True )
-        self.sesion=0
-
-        self.idCaja = 1
         
-        self.usuario = User( self.txtUser.text(), self.txtPassword.text())
-        print self.usuario.uid
-        if self.usuario.valid:
-            if not self.usuario.hasRole( 'root' ):               
-                QMessageBox.Critical("Autenticacion","Usuario Invalido")
+        if cerrar:
+            self.swcaja.setCurrentIndex(1)
+            self.txtcaja.setText("Caja 1")
+            self.txtcaja.setReadOnly(True)
+
+            
+        else:
+            self.swcaja.setCurrentIndex(0)
+            self.cajamodel = QSqlQueryModel()
+            try:
+                if not QSqlDatabase.database().isOpen():
+                    QSqlDatabase.database().open()
+                    self.cajamodel.setQuery( "SELECT idcaja, descripcion from cajas" )
+            except Exception, e:
+                print e
                 self.reject()
 
-        self.exchangeRateId = 0
-        self.exchangeRate = 0
-        self.bankExchangeRate = 0
+            finally:
+                if QSqlDatabase.database().isOpen():
+                    QSqlDatabase.database().close()
+                
+            self.cbcaja.setModel( self.cajamodel )
+            self.cbcaja.setModelColumn( 1 )
+            self.dtFechaTime.setDateTime( QDateTime.currentDateTime() )
+        
 
                 
     @pyqtSlot( "int" )
@@ -70,25 +65,60 @@ class frmApertura ( QDialog, Ui_frmApertura ):
         """
         self.idCaja = self.model.record( index ).value( "idcaja" ).toInt()[0]
 
-    @pyqtSlot(  )
-    def on_buttonBox_accepted( self ):
-        """
-        Agrega una apertura de caja        
-        """
+#    @pyqtSlot(  )
+#    def on_buttonBox_accepted( self ):
+#        """
+#        Agrega una apertura de caja        
+#        """
+#        
+    def accept(self):
+        supervisor = User( self.txtUser.text(), self.txtPassword.text())
+        if supervisor.valid:
+            if not self.usuario.hasRole( 'root' ):               
+                QMessageBox.Critical("Autenticacion","Usuario Invalido")
+                self.reject()
+#        if not self.editmodel.save():
+#            QMessageBox.warning( None, u"La sesión no fue abierta", self.editmodel.mensajeError())
+#        else:
+            QDialog.accept(self)
+            
+        
 
+    def on_buttonBox_cancelled( self ):
+        """
+        Cancela la apertura de caja        
+        """
+        self.reject()
+
+    @property
+    def idsesion(self):
+        return self.sesion
+    
+    @property
+    def fecha(self):
+        return self.dtFechaTime.date()
+    
+class AperturaModel(object):
+    def __init__(self,datosSesion):
+        self.datosSesion = datosSesion        
+        self.monto = Decimal(0)
+        self.cajaId = 0
+        self.supervisorId = 0
+        self.mensajeError = None
+
+    def save(self):
         try:
-
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
 
             #extraer el tipo de cambio de acuerdo a la fecha junto con su id
-            query = QSqlQuery( "SELECT idtc,tasa,tasabanco FROM tiposcambio t where fecha=DATE('" + self.fecha.toString("yyyyMMdd") + "')")
+            query = QSqlQuery( "SELECT idtc,tasa,tasabanco FROM tiposcambio t where fecha=DATE('" + self.datosSesion.fecha.toString("yyyyMMdd") + "')")
             if not query.exec_():
-                raise Exception("No existe una tasa de cambio para la fecha " + self.fecha.toString("yyyyMMdd"))
+                raise Exception("No existe una tasa de cambio para la fecha " + self.datosSesion.fecha.toString("yyyyMMdd"))
             
             if query.size()==0:
-                QMessageBox.warning( None, u"La sesión no fue abierta", u"La sesión no fue abierta porque no existe un tipo de cambio para la fecha actual")
-                self.reject()
+                self.mensajeError=u"La sesión no fue abierta porque no existe un tipo de cambio para la fecha actual"
+#                self.reject()
                 return ""
                 
             
@@ -148,16 +178,4 @@ class frmApertura ( QDialog, Ui_frmApertura ):
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
 
-    def on_buttonBox_cancelled( self ):
-        """
-        Cancela la apertura de caja        
-        """
-        self.reject()
-
-    @property
-    def idsesion(self):
-        return self.sesion
-    
-    @property
-    def fecha(self):
-        return self.dtFechaTime.date()
+        

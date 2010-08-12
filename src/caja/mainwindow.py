@@ -12,7 +12,7 @@ from PyQt4.QtSql import QSqlDatabase,QSqlQuery
 from factura import frmFactura
 from recibo import frmRecibo
 from ui.Ui_mainwindowcaja import Ui_MainWindow
-from apertura import frmApertura
+from apertura import dlgApertura
 from utility.user import dlgUserLogin, User
 from utility.mainwindowbase import MainWindowBase
 from inventario.catalogos import frmCatConceptos
@@ -109,9 +109,8 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        if self.status:
-        
-            
+        estado = not self.status
+        if estado:
             db = QSqlDatabase.database()
     #        try:
             if not db.isOpen():
@@ -138,36 +137,41 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 reply=QMessageBox.question(None, 'Abrir Caja',u"Usted tiene una sesión de caja abierta. Desea continuar?", QMessageBox.Yes, QMessageBox.No)                        
                 if reply == QMessageBox.Yes:
                     
-                    query.first()
-                    
-                    DatosSesion = namedtuple('DatosSesion','usuarioId sesionId tipoCambioId tipoCambioOficial tipoCambioBanco fecha')
-                        
+                    query.first()        
                     sesionId = query.value(0).toInt()[0]
                     tipoCambioId = query.value(1).toInt()[0]
                     fecha = query.value(2).toDate()
                     
                     tipoCambio = Decimal (query.value(3).toString())
                     tipoBanco =  Decimal (query.value(4).toString())  
-                    
+
+                    DatosSesion = namedtuple('DatosSesion','usuarioId sesionId tipoCambioId tipoCambioOficial tipoCambioBanco fecha')
                     self.datosSesion = DatosSesion(self.user.uid,sesionId,tipoCambioId,tipoCambio,tipoBanco,fecha)
-                         
-                    self.setControls(True)
+
+
+                    self.status = estado
     #        except Exception, e:
     #            print e
-    #        finally:
-            if db.isOpen():
-                db.close()                    
-                                       
-            return None                                      
-        #Si query.size no es mayor que cero Ejecutara esto                     
-                            
-            apertura = frmApertura( self )
-            if apertura.exec_() == QDialog.Accepted:
-                self.setControls( True )
+    #        finally:                       
+            else:                                                        
+                apertura = dlgApertura( self )
+                if apertura.exec_() == QDialog.Accepted:
+                    self.status = estado
                 
+            if db.isOpen():
+                db.close()
+            
+            if self.datosSesion != None:
+                print self.datosSesion.sesionId                     
+                            
         else:
+            cierre = dlgApertura( self,True )
+            if cierre.exec_() == QDialog.Accepted:
+                self.status = estado
+
             
 
+    
     
     @pyqtSlot(  )
     def on_btnfactura_clicked( self ):
