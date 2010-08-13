@@ -23,7 +23,6 @@ from anulaciones import frmAnulaciones
 from arqueo import frmArqueo
 from cierrecaja import frmCierreCaja
 from decimal import Decimal
-from collections import namedtuple
 
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     """
@@ -40,7 +39,8 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.user = user
         
         
-        self.datosSesion = None
+        self.datosSesion = DatosSesion()
+        self.cajaNombre = ""
         self.status = False
     
 #    def closeEvent( self, event ):
@@ -123,7 +123,8 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 apertura.idtipocambio,
                 tc.fecha, 
                 tc.tasa,
-                tc.tasabanco
+                tc.tasabanco,
+                apertura.idcaja
                 FROM `esquipulasdb`.`documentos` apertura
                 JOIN tiposcambio tc ON tc.idtc = apertura.idtipocambio
                 JOIN personasxdocumento pd ON pd.iddocumento = apertura.iddocumento AND pd.autoriza=0
@@ -140,15 +141,14 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 if reply == QMessageBox.Yes:
                     
                     query.first()        
-                    sesionId = query.value(0).toInt()[0]
-                    tipoCambioId = query.value(1).toInt()[0]
-                    fecha = query.value(2).toDate()
-                    
-                    tipoCambio = Decimal (query.value(3).toString())
-                    tipoBanco =  Decimal (query.value(4).toString())  
+    
+                    self.datosSesion.sesionId = query.value(0).toInt()[0]
+                    self.datosSesion.tipoCambioId = query.value(1).toInt()[0]
+                    self.datosSesion.fecha = query.value(2).toDate()
+                    self.datosSesion.tipoCambio = Decimal (query.value(3).toString())
+                    self.datosSesion.tipoBanco =  Decimal (query.value(4).toString()) 
+                    self.datosSesion.cajaId =  query.value(1).toInt()[0]
 
-                    DatosSesion = namedtuple('DatosSesion','usuarioId sesionId tipoCambioId tipoCambioOficial tipoCambioBanco fecha')
-                    self.datosSesion = DatosSesion(self.user.uid,sesionId,tipoCambioId,tipoCambio,tipoBanco,fecha)
 
 
                     self.status = estado
@@ -193,6 +193,14 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow( clientes )
         clientes.show()
 
-
+class DatosSesion():
+    def __init__(self):
+        self.usuarioId=0
+        self.sesionId=0
+        self.tipoCambioId=0
+        self.tipoCambioOficial = Decimal(0)
+        self.tipoCambioBanco  = Decimal(0)
+        self.fecha = None
+        self.cajaId = 0
     
         

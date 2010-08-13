@@ -6,9 +6,9 @@ Created on 02/06/2010
 '''
 from PyQt4.QtGui import QMessageBox, QDialog, QLineEdit, QIcon
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
-from PyQt4.QtCore import pyqtSlot, pyqtSignature, QDateTime
+from PyQt4.QtCore import pyqtSlot, pyqtSignature, QDateTime,Qt
 from ui.Ui_frmApertura import Ui_frmApertura
-
+from decimal import Decimal
 from utility.user import User
 
 class dlgApertura ( QDialog, Ui_frmApertura ):
@@ -20,7 +20,9 @@ class dlgApertura ( QDialog, Ui_frmApertura ):
         super( dlgApertura, self ).__init__( parent )
         self.setupUi( self )
         
-        self.datosSesion = parent.datosSesion
+        self.editmodel = AperturaModel(parent.datosSesion)
+        self.cerrar = cerrar
+        
         
         self.txtUsuario.setText( parent.user.user )
         self.txtUsuario.setReadOnly( True )
@@ -30,45 +32,49 @@ class dlgApertura ( QDialog, Ui_frmApertura ):
         self.setWindowIcon( QIcon( ":/icons/res/logo.png" ) )
         
         self.dtFechaTime.setReadOnly( True )
+        self.txtMonto.setAlignment(Qt.AlignRight)
         self.supervisor = None
         
         if cerrar:
             self.swcaja.setCurrentIndex(1)
-            self.txtcaja.setText("Caja 1")
+            self.txtcaja.setText(parent.cajaNombre)
             self.txtcaja.setReadOnly(True)
-
+            self.editmodel.cajaId = parent.datosSesion.cajaId
             
         else:
             self.swcaja.setCurrentIndex(0)
-            self.cajamodel = QSqlQueryModel()
+            self.cajasmodel = QSqlQueryModel()
             try:
                 if not QSqlDatabase.database().isOpen():
                     if not QSqlDatabase.database().open():
                         raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
-                    self.cajamodel.setQuery( "SELECT idcaja, descripcion from cajas" )
+                    
+                self.cajasmodel.setQuery( "SELECT idcaja, descripcion from cajas" )
+                if self.cajasmodel.rowCount()==0:
+                    QMessageBox.critical(self, "Abrir Caja","No existe ninguna caja en la base de datos")
             except UserWarning as inst:
                 QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
                 self.reject()
             except Exception as e:
                 print e
                 self.reject()
-
             finally:
                 if QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().close()
                 
-            self.cbcaja.setModel( self.cajamodel )
+            self.cbcaja.setModel( self.cajasmodel )
             self.cbcaja.setModelColumn( 1 )
+            self.cbcaja.setCurrentIndex(-1)
             self.dtFechaTime.setDateTime( QDateTime.currentDateTime() )
         
 
-                
-    @pyqtSlot( "int" )
-    def on_cboCaja_currentIndexChanged( self, index ):
-        """
-        @param index: El CurrentIndex del comboBox para la caja seleccionada
-        """
-        self.idCaja = self.model.record( index ).value( "idcaja" ).toInt()[0]
+#                
+#    @pyqtSlot( "int" )
+#    def on_cboCaja_currentIndexChanged( self, index ):
+#        """
+#        @param index: El CurrentIndex del comboBox para la caja seleccionada
+#        """
+#        self.idCaja = self.model.record( index ).value( "idcaja" ).toInt()[0]
 
 #    @pyqtSlot(  )
 #    def on_buttonBox_accepted( self ):
@@ -77,15 +83,35 @@ class dlgApertura ( QDialog, Ui_frmApertura ):
 #        """
 #        
     def accept(self):
-        self.supervisor = User( self.txtUser.text(), self.txtPassword.text())
-        if self.supervisor.valid:
-            if not self.supervisor.hasRole( 'root' ):
-                QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación","Usuario Invalido")
-                self.reject()
+        if not self.cerrar:
+            self.editmodel.datosSesion.cajaId =  self.cajasmodel.record( self.cbcaja.currentIndex() ).value( "idcaja" ).toInt()[0]
+            
+        if self.editmodel.valid:
+            supervisor = User( self.txtUser.text(), self.txtPassword.text())
+            if supervisor.valid:
+                if not supervisor.hasRole( 'root' ):
+                    QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación","El usuario no tiene permisos para autorizar la apertura de caja")
+                    self.reject()
+                
+                
+                QDialog.accept(self)
+            else:
+                QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación",u"El nombre de usuario o contraseña son incorrectos")
+                self.txtUser.setFocus()
+                self.txtPassword.setText("")
+        else:
+            if self.editmodel.errorId==1:
+                self.cbcaja.setFocus()
+                QMessageBox.warning( None, u"La sesión no fue abierta", u"Por favor seleccione la caja en la que se abrirá la sesión")
+                self.editmodel.errorId =0
+            
+                
 #        if not self.editmodel.save():
-#            QMessageBox.warning( None, u"La sesión no fue abierta", self.editmodel.mensajeError())
+#            QMessageBox.warning( None, u"La sesión no fue abierta", self.editmodel.error[1])
+#            if self.editmodel.errorId == 2:
+#                QMessageBox.warning( None, u"La sesión no fue abierta", u"La sesión no fue abierta porque no existe un tipo de cambio para la fecha actual")
 #        else:
-            QDialog.accept(self)
+           
             
         
 
@@ -109,8 +135,16 @@ class AperturaModel(object):
         self.monto = Decimal(0)
         self.cajaId = 0
         self.supervisorId = 0
-        self.mensajeError = None
-
+        self.errorId=0
+    
+    @property
+    def valid(self):
+        
+        if self.datosSesion.cajaId == 0:
+            self.errorId = 1
+        else:
+            return True
+        return False
     def save(self):
         try:
             if not QSqlDatabase.database().isOpen():
@@ -122,7 +156,7 @@ class AperturaModel(object):
                 raise Exception("No existe una tasa de cambio para la fecha " + self.datosSesion.fecha.toString("yyyyMMdd"))
             
             if query.size()==0:
-                self.mensajeError=u"La sesión no fue abierta porque no existe un tipo de cambio para la fecha actual"
+                self.errorId = 2
 #                self.reject()
                 return ""
                 
