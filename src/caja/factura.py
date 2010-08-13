@@ -96,7 +96,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     SELECT idpersona , nombre AS cliente 
                     FROM personas
                     WHERE tipopersona = %d
-                """ %CLIENTE )
+                """ %constantes.CLIENTE )
     
     #Verificar si existen clientes            
                 if self.clientesModel.rowCount() == 0:

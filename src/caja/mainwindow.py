@@ -142,6 +142,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                     
                     query.first()        
     
+                    self.datosSesion.usuarioId = self.user.uid
                     self.datosSesion.sesionId = query.value(0).toInt()[0]
                     self.datosSesion.tipoCambioId = query.value(1).toInt()[0]
                     self.datosSesion.fecha = query.value(2).toDate()
