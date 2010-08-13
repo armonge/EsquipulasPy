@@ -123,7 +123,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 apertura.idtipocambio,
                 tc.fecha, 
                 tc.tasa,
-                tc.tasabanco,
+                IFNULL(tc.tasabanco,tc.tasa) as tasabanco,
                 apertura.idcaja
                 FROM `esquipulasdb`.`documentos` apertura
                 JOIN tiposcambio tc ON tc.idtc = apertura.idtipocambio
@@ -146,13 +146,15 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                     self.datosSesion.sesionId = query.value(0).toInt()[0]
                     self.datosSesion.tipoCambioId = query.value(1).toInt()[0]
                     self.datosSesion.fecha = query.value(2).toDate()
-                    self.datosSesion.tipoCambio = Decimal (query.value(3).toString())
-                    self.datosSesion.tipoBanco =  Decimal (query.value(4).toString()) 
+                    self.datosSesion.tipoCambioOficial = Decimal (query.value(3).toString())
+                    self.datosSesion.tipoCambioBanco =  Decimal (query.value(4).toString()) 
                     self.datosSesion.cajaId =  query.value(1).toInt()[0]
 
-
-
-                    self.status = estado
+                    if self.datosSesion.valid:
+                        self.status = estado
+                    else:
+                        QMessageBox.critical( None, u"La sesión no fue abierta", u"No fue posible abrir la sesión anterior. Por favor contacte al administrador del sistema")
+                        
     #        except Exception, e:
     #            print e
     #        finally:                       
@@ -203,5 +205,28 @@ class DatosSesion():
         self.tipoCambioBanco  = Decimal(0)
         self.fecha = None
         self.cajaId = 0
+    
+    @property
+    def valid(self):
+        mensaje = u"La sesión no fue abierta porque no se cargo "
+        if self.usuarioId==0:
+            mensaje+= "el id de usuario"
+        elif self.sesionId==0:
+            mensaje+= "el id de sesion"
+        elif self.tipoCambioId==0:
+            mensaje+= "el id del tipo de cambio"
+        elif self.tipoCambioOficial ==0:
+            mensaje+= "la tasa de cambio oficial"
+        elif self.tipoCambioBanco  == 0:
+            mensaje+= "la tasa de cambio del banco"
+        elif self.fecha == None:
+            mensaje+= "la fecha"
+        elif self.cajaId == 0:
+            mensaje+= "el id de la caja"
+        else:
+            return True
+        
+        print mensaje
+        return False
     
         

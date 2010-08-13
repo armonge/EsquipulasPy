@@ -17,6 +17,8 @@ class ReciboModel( AccountsSelectorModel ):
         AccountsSelectorModel.__init__( self )
         self.total =Decimal(0) 
         self.tipoCambio = Decimal(tipocambio)
+        if self.tipoCambio == 0:
+            raise Exception("el tipo de cambio del banco es 0")
         self.lines = lineas
         
     def asignarTotal(self,valor):     
