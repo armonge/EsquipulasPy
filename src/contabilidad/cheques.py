@@ -155,6 +155,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.tablenavigation.setColumnHidden( CONCEPTO, True )
 
         self.tablenavigation.resizeColumnsToContents()
+        
     def setControls( self, status ):
         """
         @param status false = editando        true = navegando
@@ -168,6 +169,12 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.actionNew.setVisible( status)
         self.actionPreview.setVisible( status)
         self.ckretencion.setEnabled(not status)
+
+
+        self.conceptowidget.setCurrentIndex(1 if not status else 0)
+        self.beneficiariowidget.setCurrentIndex(1 if not status else 0)
+        self.cuentawidget.setCurrentIndex(1 if not status else 0)
+        
         if not status:
             self.total.setText("0.0")
             self.subtotal.setValue(0)
@@ -196,38 +203,39 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     
     @pyqtSlot( "int" )
     def on_cbocuenta_currentIndexChanged( self, index ):
-        if not self.editmodel is None:
-            if not QSqlDatabase.database().isOpen():
-                if not QSqlDatabase.database().open():
-                    QMessageBox.warning( None,
-                    "Llantera Esquipulas",
-                    """Hubo un error al conectarse con la base de datos""",
-                    QMessageBox.StandardButtons( \
-                        QMessageBox.Ok ),
-                    QMessageBox.Ok )
-            
-            self.editmodel.setData(self.editmodel.index(0,2),
-                            [self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0],
-                             self.cuentabancaria.record( index ).value( "codigo" ).toString(),
-                             self.cuentabancaria.record( index ).value( "descripcion" ).toString()])
-            self.accountseditdelegate.accounts.setFilterRegExp("[^%d]"%self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0])
-            
-            self.editmodel.moneda=self.cuentabancaria.record( index ).value( "IDMONEDA" ).toInt()[0]
-            self.editmodel.simbolo=self.cuentabancaria.record( index ).value( "simbolo" ).toString()
-            # Cargar el numero del cheque actual
-            if index>-1:
-                query = QSqlQuery( """
-                CALL spConsecutivo(12,"""+self.cuentabancaria.record( index ).value( "idcuentacontable").toString()+")")
-                if not query.exec_():
-                    raise UserWarning("No se pudo obtener el numero consecutivo del cheque")
-                query.first()    
-                n = query.value( 0 ).toString()
-    
-                self.lblncheque.setText( n )
-                self.editmodel.printedDocumentNumber = n            
-               
-                self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.totalCordobas)                
-                self.updateTotals()
+        try:
+            if not self.editmodel is None:
+                if not QSqlDatabase.database().isOpen():
+                    if not QSqlDatabase.database().open():
+                        raise UserWarning("Hubo un error al conectarse con la base de datos")
+
+                self.editmodel.setData(self.editmodel.index(0,2),
+                                [self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0],
+                                 self.cuentabancaria.record( index ).value( "codigo" ).toString(),
+                                 self.cuentabancaria.record( index ).value( "descripcion" ).toString()])
+                self.accountseditdelegate.accounts.setFilterRegExp("[^%d]"%self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0])
+
+                self.editmodel.moneda=self.cuentabancaria.record( index ).value( "IDMONEDA" ).toInt()[0]
+                self.editmodel.simbolo=self.cuentabancaria.record( index ).value( "simbolo" ).toString()
+                # Cargar el numero del cheque actual
+                if index>-1:
+                    query = QSqlQuery( """
+                    CALL spConsecutivo(12,"""+self.cuentabancaria.record( index ).value( "idcuentacontable").toString()+")")
+                    if not query.exec_():
+                        raise UserWarning("No se pudo obtener el numero consecutivo del cheque")
+                    query.first()
+                    n = query.value( 0 ).toString()
+
+                    self.lblncheque.setText( n )
+                    self.editmodel.printedDocumentNumber = n
+
+                    self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.totalCordobas)
+                    self.updateTotals()
+                    
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+        except Exception as inst:
+            print inst
                 
     @pyqtSlot( "int" )
     def on_cboretencion_currentIndexChanged( self, index ):
@@ -243,7 +251,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
 
     @pyqtSlot( "double" )
     def on_subtotal_valueChanged(self,index):
-              
         if not self.editmodel is None:
            self.updateTotals()
            self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.totalCordobas)
@@ -288,7 +295,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.retencion.setText("0.0")
         
         self.status = True
-        self.tabWidget.setCurrentIndex(1)               
 
 
     @pyqtSlot(  )
@@ -311,12 +317,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
-                    QMessageBox.warning( None,
-                    "Llantera Esquipulas",
-                    """Hubo un error al conectarse con la base de datos""",
-                    QMessageBox.StandardButtons( \
-                        QMessageBox.Ok ),
-                    QMessageBox.Ok )
                     raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
             
             #Crea modelo para edicion            
@@ -442,9 +442,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             completercuenta.setModel( self.cuentabancaria )
             completercuenta.setCompletionColumn( 1 )
             
-            self.conceptowidget.setCurrentIndex(1)
-            self.beneficiariowidget.setCurrentIndex(1)
-            self.cuentawidget.setCurrentIndex(1)
+
             
             
             

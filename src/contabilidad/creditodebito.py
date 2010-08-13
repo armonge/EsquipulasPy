@@ -16,7 +16,7 @@ from ui.Ui_creditodebito import Ui_frmCreditoDebito
 from utility.base import Base
 from decimal import Decimal
 from utility import constantes
-from document.creditodebito import creditoDebitoModel
+#from document.creditodebito import creditoDebitoModel
 
 class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
     """

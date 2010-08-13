@@ -217,13 +217,14 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
             self.lblUserName.setText( self.user.fullname )
             self.editmodel.dataChanged[QModelIndex,QModelIndex].connect(self.updateLabels)
-#            self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.updateLabels )
             self.status = False
+            
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             self.status = True
         except Exception  as e:
             print e
+            QMessageBox.critical(self, "Llantera Esquipulas", "El sistema no pudo iniciar un nuevo arqueo")
             self.status = True
         finally:
             if self.database.isOpen():

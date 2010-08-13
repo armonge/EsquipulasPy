@@ -43,8 +43,12 @@ class Base( object ):
         Preguntar si realmente se desea cerrar la pestaña cuando se esta en modo edición
         """
         if not self.status:
-            if not QMessageBox.question(self, "Llantera Esquipulas", u"¿Está seguro que desea salir?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+            if not QMessageBox.question(self,
+            "Llantera Esquipulas",
+            u"¿Está seguro que desea salir?",
+            QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
                 event.ignore()
+                
         settings = QSettings()
         settings.setValue( self.windowTitle() + "/Geometry", self.saveGeometry() )
         settings.setValue( self.windowTitle() + "/State", self.saveState() )

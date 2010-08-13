@@ -4,13 +4,14 @@
 Module implementing frmLiquidacion.
 """
 from decimal import Decimal
-import functools
-from PyQt4.QtGui import QMainWindow, QAbstractItemView, QDoubleValidator, QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, QPrinter
-from PyQt4.QtCore import pyqtSlot, SIGNAL, QDateTime, Qt, QTimer
+from PyQt4.QtGui import QMainWindow, QAbstractItemView, QDoubleValidator,\
+QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, QPrinter
+from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from ui.Ui_liquidacion import Ui_frmLiquidacion
 
 import utility.constantes
+from utility import movimientos
 from utility.reports import frmReportes
 from utility.base import Base
 from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorLine
@@ -19,10 +20,12 @@ from document.liquidacion.liquidaciondelegate import LiquidacionDelegate
 
 
 #navigation model
-IDDOCUMENTO, NDOCIMPRESO, FECHA, PROCEDENCIA, AGENCIA, ALMACEN, FLETE, SEGURO, OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO = range( 16 )
+IDDOCUMENTO, NDOCIMPRESO, FECHA, PROCEDENCIA, AGENCIA, ALMACEN, FLETE, SEGURO,\
+OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO = range( 16 )
 
 #details model
-IDARTICULO, DESCRIPCION, UNIDADES, COSTOCOMPRA, FOB, FLETEP, SEGUROP, OTROSP, CIF, IMPUESTOSP, COMISION, AGENCIAP, ALMACENP, PAPELERIAP, TRANSPORTEP, IDDOCUMENTOT = range( 16 )
+IDARTICULO, DESCRIPCION, UNIDADES, COSTOCOMPRA, FOB, FLETEP, SEGUROP, OTROSP, \
+CIF, IMPUESTOSP, COMISION, AGENCIAP, ALMACENP, PAPELERIAP, TRANSPORTEP, IDDOCUMENTOT = range( 16 )
 
 #accounts model
 IDCUENTA, CODCUENTA, NCUENTA, MONTOCUENTA, IDDOCUMENTOC = range( 5 )
@@ -189,7 +192,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
-                    raise UserWarning( "No se pudo conectar con la base de datos para recuperar los documentos" )
+                    raise UserWarning( "No se pudo conectar con la base de datos "+  \
+                "para recuperar los documentos" )
 
             self.navmodel.setQuery( u"""
                 SELECT 
@@ -404,15 +408,15 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             SELECT c.idcuenta, c.codigo, c.descripcion 
             FROM cuentascontables c 
             JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
-            WHERE c.padre != 1 AND c.idcuenta != 22
-            """ ),True )
+            WHERE c.padre != 1 AND c.idcuenta != %s
+            """ % movimientos.INVENTARIO ),True )
             self.tableaccounts.setItemDelegate( self.accountseditdelegate )
             self.tableaccounts.setModel( self.editmodel.accountsModel )
             
             self.editmodel.accountsModel.insertRows( 0 )
 
             line = AccountsSelectorLine()
-            line.itemId = 22
+            line.itemId = int(movimientos.INVENTARIO)
             line.code = "110 003 001 000 000"
             line.name = "INV Inventario de Bodega"
             

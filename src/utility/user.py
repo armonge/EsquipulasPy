@@ -7,7 +7,8 @@ import functools
 
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from PyQt4.QtCore import  SIGNAL, SLOT, Qt, QTimer
-from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap, QDialogButtonBox, QFormLayout, QVBoxLayout, QLineEdit, qApp, QMessageBox, QLabel
+from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap, QDialogButtonBox,\
+QFormLayout, QVBoxLayout, QLineEdit, qApp, QMessageBox, QLabel
 
 from ui import res_rc
 from ui.Ui_user import Ui_dlgUserLogin
@@ -53,6 +54,7 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
         if self.user.valid or self.attempts == self.max -1:
             super(dlgUserLogin, self).accept()
         else:
+            self.txtPassword.setText("")
             self.lblError.setVisible(True)
             self.attempts+=1
             QTimer.singleShot(3000, functools.partial(self.lblError.setVisible, False))

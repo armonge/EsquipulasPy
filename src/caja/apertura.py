@@ -30,6 +30,7 @@ class dlgApertura ( QDialog, Ui_frmApertura ):
         self.setWindowIcon( QIcon( ":/icons/res/logo.png" ) )
         
         self.dtFechaTime.setReadOnly( True )
+        self.supervisor = None
         
         if cerrar:
             self.swcaja.setCurrentIndex(1)
@@ -42,9 +43,13 @@ class dlgApertura ( QDialog, Ui_frmApertura ):
             self.cajamodel = QSqlQueryModel()
             try:
                 if not QSqlDatabase.database().isOpen():
-                    QSqlDatabase.database().open()
+                    if not QSqlDatabase.database().open():
+                        raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
                     self.cajamodel.setQuery( "SELECT idcaja, descripcion from cajas" )
-            except Exception, e:
+            except UserWarning as inst:
+                QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+                self.reject()
+            except Exception as e:
                 print e
                 self.reject()
 
@@ -72,10 +77,10 @@ class dlgApertura ( QDialog, Ui_frmApertura ):
 #        """
 #        
     def accept(self):
-        supervisor = User( self.txtUser.text(), self.txtPassword.text())
-        if supervisor.valid:
-            if not self.usuario.hasRole( 'root' ):               
-                QMessageBox.Critical("Autenticacion","Usuario Invalido")
+        self.supervisor = User( self.txtUser.text(), self.txtPassword.text())
+        if self.supervisor.valid:
+            if not self.supervisor.hasRole( 'root' ):
+                QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación","Usuario Invalido")
                 self.reject()
 #        if not self.editmodel.save():
 #            QMessageBox.warning( None, u"La sesión no fue abierta", self.editmodel.mensajeError())

@@ -114,7 +114,9 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
             db = QSqlDatabase.database()
     #        try:
             if not db.isOpen():
-                db.open()
+                if not db.open():
+                    raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
+                #Deberian utilizarse constantes aca, no hay manejo de excepciones
             query = QSqlQuery( """
             SELECT 
                 apertura.iddocumento,

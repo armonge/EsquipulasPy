@@ -12,7 +12,7 @@ if __name__ == '__main__':
     sip.setapi( 'QString', 2 )
 
 
-    from PyQt4 import QtGui, QtCore 
+    from PyQt4 import QtGui, QtCore
     from utility.database import Database
     from utility.user import dlgUserLogin, User
     from ui import res_rc
