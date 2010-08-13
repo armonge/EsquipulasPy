@@ -14,7 +14,7 @@ from utility.movimientos import movFacturaCredito
 from utility import constantes
 
 DESCRIPCION, PRECIO, CANTIDADMAX, CANTIDAD, TOTALPROD = range( 5 )
-class DevolucionModel( QAbstractTableModel ):
+class creditoDebitoModel( QAbstractTableModel ):
     """
     Esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
@@ -24,7 +24,7 @@ class DevolucionModel( QAbstractTableModel ):
     @type: int
     """
     def __init__( self ):
-        super( DevolucionModel, self ).__init__()
+        super( creditoDebitoModel, self ).__init__()
         self.observations = ""
         """
         @ivar:Las observaciones del documento
