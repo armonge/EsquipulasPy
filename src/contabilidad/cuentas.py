@@ -13,6 +13,7 @@ QVBoxLayout, QHBoxLayout, QDialogButtonBox, QCheckBox, QLabel, QRegExpValidator,
 QMessageBox
 from ui.Ui_cuentas import Ui_frmAccounts
 from utility.moneyfmt import moneyfmt
+from utility.treefilterproxymodel import TreeFilterProxyModel
 
 CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, IDCUENTA, ACUMULADO = range( 8 )
 headers = [ "Codigo", u"Descripción", "Es Debe", "hijos", "Monto", "Padre", "Id", "Acumulado"]
@@ -29,9 +30,10 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
 
         self.model = AccountsModel( 1 )
 
-        self.filtermodel = QSortFilterProxyModel()
+        self.filtermodel = TreeFilterProxyModel()
+        self.filtermodel.setShowAllChildren(True)
         self.filtermodel.setSourceModel( self.model )
-        self.filtermodel.setFilterKeyColumn( -1 )
+        self.filtermodel.setFilterKeyColumn( DESCRIPCION )
         self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
 
         self.accountsTree.setModel( self.filtermodel )
@@ -77,12 +79,6 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
         for id, code in enumerate(codes):
             dlg.txtCodes[id].setText(code)
         
-        
-        
-        
-        
-        
-        
         dlg.txtDescription.setText( self.accountsTree.model().index( row, DESCRIPCION, index.parent() ).data().toString() )
         dlg.cbEsdebe.setCheckState( Qt.Checked if self.accountsTree.model().index( row, ESDEBE, index.parent() ).data().toInt()[0] else Qt.Unchecked )
         if dlg.exec_() == QDialog.Accepted:
@@ -92,8 +88,8 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
 
 
     @pyqtSlot( "QString" )
-    def on_txtSearch_textChanged( self, text ):
-        self.filtermodel.setFilterRegExp( text )
+    def on_txtSearch_textEdited( self ,text):
+        self.filtermodel.setFilterRegExp( text)
 
 
 
@@ -230,18 +226,11 @@ class AccountsModel( QAbstractItemModel ):
 
 class Account( object ):
     def __init__( self, parent, id = 0 , code = "", description = "", monto = Decimal(0), esdebe = 0, childCount = 0 ):
-        self.parentItem = parent
-        self.id = id
-        self.code = code
-        self.description = description
-        self.monto = monto
-        self.esdebe = esdebe
-        self.__childCount = childCount
 
-
+        self.itemData = [code, description, esdebe, childCount, monto, parent, id ,0]
         self.childItems = []
 
-        if self.__childCount > 0 and self.id != 0:
+        if self.itemData[HIJOS] > 0 and self.itemData[IDCUENTA] != 0:
             query = """
             SELECT                 
                 cc.codigo,
@@ -263,7 +252,7 @@ class Account( object ):
             ) cc
             LEFT JOIN cuentascontables ch ON cc.idcuenta = ch.padre
             GROUP BY cc.idcuenta
-            """ % self.id
+            """ % self.itemData[IDCUENTA]
             query = QSqlQuery( query )
             query.exec_()
             while query.next():
@@ -276,17 +265,17 @@ class Account( object ):
                  query.value( ESDEBE ).toInt()[0],
                  query.value( HIJOS ).toInt()[0] ,
                 ) )
-        elif self.id == 0:
+        elif self.itemData[IDCUENTA] == 0:
             query = QSqlQuery()
             if not query.prepare( """
             INSERT INTO cuentascontables (padre, codigo, descripcion, esdebe) 
             VALUES (:padre, :codigo, :descripcion, :esdebe)
             """ ):
                 raise Exception( "No se pudo preparar la consulta" )
-            query.bindValue( ":padre", self.parentItem.id )
-            query.bindValue( ":codigo", self.code )
-            query.bindValue( ":descripcion", self.description )
-            query.bindValue( ":esdebe", self.esdebe )
+            query.bindValue( ":padre", self.itemData[PADRE].itemData[IDCUENTA] )
+            query.bindValue( ":codigo", self.itemData[CODIGO])
+            query.bindValue( ":descripcion", self.itemData[DESCRIPCION] )
+            query.bindValue( ":esdebe", self.itemData[ESDEBE] )
             if not query.exec_():
                 print query.lastError().text()
                 raise UserWarning( "No se pudo insertar la cuenta contable" )
@@ -294,7 +283,7 @@ class Account( object ):
 
     @property
     def acumulado( self ):
-        total = self.monto
+        total = self.itemData[MONTO]
         for child in self.childItems:
             total += child.acumulado
 
@@ -332,31 +321,33 @@ class Account( object ):
         elif column == ESDEBE:
             return self.updateEsdebe( value.toInt()[0] )
 
-        return True
-
     def updateEsdebe( self, esdebe ):
-        if self.id == 0:
-            return False
+        if self.itemData[IDCUENTA] == 0:
+            raise UserWarning("No se pudo cambiar el estado \"Es debe \" de la cuenta")
+            
         query = QSqlQuery()
         if not query.prepare( """
         UPDATE cuentascontables 
         SET esdebe = :esdebe WHERE idcuenta = :id LIMIT 1
         """ ):
             print query.lastError().text()
-            return False
+            raise UserWarning("No se pudo cambiar el estado \"Es debe \" de la cuenta")
+            
+
         query.bindValue( ":esdebe", esdebe )
-        query.bindValue( ":id", self.id )
+        query.bindValue( ":id", self.itemData[IDCUENTA])
         if not query.exec_():
             print query.lastError().text()
-            return False
-        if query.numRowsAffected() < 1:
-            return False
+            raise UserWarning("No se pudo cambiar el estado \"Es debe \" de la cuenta")
 
-        self.esdebe = esdebe
+        if query.numRowsAffected() < 1:
+            raise UserWarning("No se pudo cambiar el estado \"Es debe \" de la cuenta")
+
+        self.itemData[ESDEBE] = esdebe
         return True
 
     def updateCode( self, code ):
-        if self.id == 0:
+        if self.itemData[IDCUENTA] == 0:
             return False
         query = QSqlQuery()
         if not query.prepare( """
@@ -364,20 +355,23 @@ class Account( object ):
         SET codigo = :code WHERE idcuenta = :id LIMIT 1
         """ ):
             print query.lastError().text()
-            return False
+            raise UserWarning("No se pudo cambiar el codigo de la cuenta")
+
         query.bindValue( ":code", code.strip() )
-        query.bindValue( ":id", self.id )
+        query.bindValue( ":id", self.itemData[IDCUENTA] )
         if not query.exec_():
             print query.lastError().text()
-            return False
-        if query.numRowsAffected() < 1:
-            return False
+            raise UserWarning("No se pudo cambiar el codigo de la cuenta")
 
-        self.code = code
+        if query.numRowsAffected() < 1:
+            raise UserWarning("No se pudo cambiar el codigo de la cuenta")
+
+
+        self.itemData[CODIGO] = code
         return True
 
     def updateDescription( self, description ):
-        if self.id == 0:
+        if self.itemData[IDCUENTA] == 0:
             return False
         query = QSqlQuery()
         if not query.prepare( """
@@ -386,7 +380,7 @@ class Account( object ):
             print query.lastError().text()
             return False
         query.bindValue( ":desc", description.strip() )
-        query.bindValue( ":id", self.id )
+        query.bindValue( ":id", self.itemData[IDCUENTA] )
         if not query.exec_():
             print query.lastError().text()
             return False
@@ -400,36 +394,24 @@ class Account( object ):
 
     def data( self, column, role ):
         if role == Qt.DisplayRole :
-            if column == IDCUENTA:
-                self.id
-            elif column == CODIGO:
-                return self.code
-            elif column == DESCRIPCION:
-                return self.description
+            if not column in (ACUMULADO, MONTO, HIJOS):
+                return self.itemData[column]
             elif column == MONTO:
-                return moneyfmt(self.monto, 4, 'C$')
+                return moneyfmt(self.itemData[MONTO], 4, 'C$')
             elif column == ACUMULADO:
                 return moneyfmt(self.acumulado,4,"C$")
-            elif column == ESDEBE:
-                return self.esdebe
-            elif column == PADRE:
-                return self.parent().id
             elif column == HIJOS:
                 return self.childCount()
+
         elif role == Qt.EditRole:
-            if column == CODIGO:
-                return self.code
-            elif column == DESCRIPCION:
-                return self.description
-            elif column == ESDEBE:
-                return self.esdebe
+            return self.itemData[column]
 
     def parent( self ):
-        return self.parentItem
+        return self.itemData[PADRE]
 
     def row( self ):
-        if self.parentItem:
-            return self.parentItem.childItems.index( self )
+        if self.itemData[PADRE]:
+            return self.itemData[PADRE].childItems.index( self )
         return None
 
 
@@ -490,7 +472,7 @@ class dlgAccountMod( QDialog ):
                 if validator.validate(self.txtCodes[index].text(),3)[0] != QValidator.Acceptable:
                     QMessageBox.warning(self, "Llantera Esquipulas", "Verifique el codigo de la cuenta")
                     result = False
-                    break   
-        if result:
+                    break
             super(dlgAccountMod, self).accept()
-    
+
+

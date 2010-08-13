@@ -9,7 +9,7 @@ from PyQt4.QtCore import  Qt, SIGNAL, SLOT, pyqtSlot
 from PyQt4.QtSql import  QSqlDatabase
 
 from ui.Ui_categorias import Ui_frmCategorias
-
+from utility.treefilterproxymodel import TreeFilterProxyModel
 from categoriesmodel import CategoriesModel
 
 class frmCategorias(QMainWindow, Ui_frmCategorias):
@@ -26,11 +26,15 @@ class frmCategorias(QMainWindow, Ui_frmCategorias):
         QSqlDatabase.database().open()
 
         self.model = CategoriesModel()
-        self.view.setModel(self.model)
+
+        self.catproxymodel = TreeFilterProxyModel()
+        self.catproxymodel.setSourceModel(self.model)
+        self.catproxymodel.setFilterKeyColumn(0)
+        self.catproxymodel.setFilterCaseSensitivity(Qt.CaseInsensitive)
+
+        self.view.setModel(self.catproxymodel)
         self.view.setColumnWidth(0, 200)
         self.view.setColumnHidden(1,True)
-        self.filtermodel = QSortFilterProxyModel()
-
     
     @pyqtSlot()
     def on_actionAddSub_triggered(self):
@@ -85,6 +89,10 @@ No se pudo borrar la categoria
 tenga en cuenta que no podra borrar categorias que el sistema ya este utilizando
             """)
 
+    @pyqtSlot( "QString" )
+    def on_txtSearch_textEdited( self ,text):
+        self.catproxymodel.setFilterRegExp( text)
+        
 class dlgCategoriesMod( QDialog ):
     def __init__( self, parent = None ):
         super( dlgCategoriesMod, self ).__init__( parent )

@@ -10,6 +10,7 @@ from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from utility.catgeneric import Ui_frmCatGeneric
 from ui.Ui_articulos import Ui_frmArticlesNew
 from categoriesmodel import CategoriesModel
+from utility.treefilterproxymodel import TreeFilterProxyModel
 
 ID, DESCRIPCION, DAI, ISC, COMISION, GANANCIA, ACTIVO = range( 7 )
 
@@ -276,7 +277,7 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
         self.setupUi(self)
         self.catmodel = CategoriesModel()
         
-        self.catproxymodel = QSortFilterProxyModel()
+        self.catproxymodel = TreeFilterProxyModel()
         self.catproxymodel.setSourceModel(self.catmodel)
         self.catproxymodel.setFilterKeyColumn(0)
         self.catproxymodel.setFilterCaseSensitivity(Qt.CaseInsensitive)
