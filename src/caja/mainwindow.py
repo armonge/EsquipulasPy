@@ -23,7 +23,7 @@ from anulaciones import frmAnulaciones
 from arqueo import frmArqueo
 from cierrecaja import frmCierreCaja
 from decimal import Decimal
-
+from utility import constantes
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     """
     Esta clase implementa el MainWindow de Caja
@@ -130,10 +130,12 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 JOIN tiposcambio tc ON tc.idtc = apertura.idtipocambio
                 JOIN personasxdocumento pd ON pd.iddocumento = apertura.iddocumento AND pd.autoriza=0
                 LEFT JOIN docpadrehijos ph ON apertura.iddocumento=ph.idpadre
-                LEFT JOIN documentos cierre ON cierre.iddocumento = ph.idhijo AND cierre.idtipodoc=17
-                WHERE apertura.idtipodoc=22 AND pd.idpersona=1 
-                AND cierre.iddocumento IS NULL;
-               """)
+                LEFT JOIN documentos cierre ON cierre.iddocumento = ph.idhijo AND cierre.idtipodoc=%d
+                WHERE apertura.idtipodoc=%d AND pd.idpersona=%d 
+                GROUP BY apertura.iddocumento
+                HAVING SUM(IFNULL(cierre.idtipodoc,0)) = 0
+                ;
+               """%(constantes.IDARQUEO,constantes.IDAPERTURA, self.datosSesion.usuarioId))
             if not query.exec_():
                 raise Exception("No se pudo preparar la Query")                                   
     # Si existe al menos una sesion abierta no muestra el dialogo de iniciar caja    
@@ -149,8 +151,8 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                     self.datosSesion.fecha = query.value(2).toDate()
                     self.datosSesion.tipoCambioOficial = Decimal (query.value(3).toString())
                     self.datosSesion.tipoCambioBanco =  Decimal (query.value(4).toString()) 
-                    self.datosSesion.cajaId =  query.value(1).toInt()[0]
-
+                    self.datosSesion.cajaId =  query.value(5).toInt()[0]
+                    
                     if self.datosSesion.valid:
                         self.status = estado
                     else:

@@ -220,8 +220,8 @@ class FacturaModel( QAbstractTableModel ):
 
 
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,observacion,total,idbodega,escontado,idtipocambio) 
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:bodega,:escontado,:idtc)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,observacion,total,idbodega,escontado,idtipocambio,idcaja) 
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:bodega,:escontado,:idtc,:caja)
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
@@ -232,7 +232,9 @@ class FacturaModel( QAbstractTableModel ):
             query.bindValue( ":bodega", self.bodegaId )
             query.bindValue( ":escontado", self.escontado )
             query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
-
+            query.bindValue( ":caja", self.datosSesion.cajaId)
+            print "cja"
+            print self.datosSesion.cajaId
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
 
@@ -294,14 +296,15 @@ class FacturaModel( QAbstractTableModel ):
             # el costo no se multiplica porque ya esta en cordobas
             movFacturaCredito( insertedId, self.subtotal * self.datosSesion.tipoCambioOficial , self.IVA * self.datosSesion.tipoCambioOficial, self.costototal )
             
-        
+            
+            guardar = True
             if datosRecibo!=None:
                 datosRecibo.lineasAbonos[0].idFac= insertedId
-                datosRecibo.save()
+                guardar = datosRecibo.save(False)
 
 
-            if not QSqlDatabase.database().commit():
-                raise Exception( "No se pudo hacer commit" )
+            if not guardar or not QSqlDatabase.database().commit():
+                raise Exception( "No se pudo guardar la factura" )
         except Exception as inst:
             print  query.lastError().databaseText()
             print query.lastError().driverText()

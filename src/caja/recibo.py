@@ -607,7 +607,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
     #        Este es el filtro del modelo anterior
             self.detailsproxymodel = QSortFilterProxyModel( self )
             self.detailsproxymodel.setSourceModel( self.detailsmodel )
-
+            self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
+            self.detailsproxymodel.setFilterRegExp( '^0$' )
 # ESTE ES EL MODELO CON LOS DATOS DE Los ABONOS PARA NAVEGAR
             self.abonosmodel = QSqlQueryModel( self )
             self.abonosmodel.setQuery( """
@@ -929,7 +930,7 @@ class DatosRecibo(object):
             if line.valid:foo += 1
         return foo
     
-    def save( self):
+    def save( self,sinFactura = True):
         """
         Este metodo guarda el documento actual en la base de datos
         """
@@ -940,15 +941,16 @@ class DatosRecibo(object):
         query = QSqlQuery()
 
         try:
-
-            if not QSqlDatabase.database().transaction():
-                raise Exception( u"No se pudo comenzar la transacción" )
+            
+            if sinFactura:
+                if not QSqlDatabase.database().transaction():
+                    raise Exception( u"No se pudo comenzar la transacción" )
             
             fechaCreacion = self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString("hhmmss")
     #INSERTAR RECIBO
             query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc, observacion,total,idtipocambio,idconcepto) 
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:idtc,:concepto)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc, observacion,total,idtipocambio,idconcepto,idcaja) 
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:idtc,:concepto,:caja)
             """ )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", fechaCreacion )
@@ -957,6 +959,7 @@ class DatosRecibo(object):
             query.bindValue( ":total", self.total.to_eng_string() )
             query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
             query.bindValue( ":concepto", self.conceptoId )
+            query.bindValue( ":caja", self.datosSesion.cajaId )
             
             if not query.exec_():
                 print query.lastError().text()
@@ -993,13 +996,21 @@ class DatosRecibo(object):
                 raise Exception( "No se Inserto la relacion entre el recibo y las personas" )
     
     #INSERTAR LOS TIPOS DE PAGO
+            
+            if len(self.lineas)==0:
+                raise Exception("Deben existir pagos")
+            
             i = 0
             for linea in self.lineas:
 #                    print insertedId + "-" + str(linea.pagoId) + "-" + str(linea.monedaId)
                 linea.save( insertedId, i )
                 i = i + 1
     #INSERTAR los abonos
-            i = 0        
+            i = 0   
+            
+            if len(self.lineasAbonos)==0:
+                raise Exception("Deben existir abonos")
+                 
             for l in self.lineasAbonos:
                 l.save( insertedId,i )
                 i = i + 1
@@ -1021,15 +1032,14 @@ class DatosRecibo(object):
                 if not query.exec_():
                     raise Exception( "No se Inserto la retencion" )
     
-                idret = query.lastInsertId().toInt()[0]
+                idret = query.lastInsertId().toString()
     
-                query.prepare( """
-                INSERT INTO docpadrehijos (idpadre,idhijo)
-                VALUES (:idrecibo,:idretencion)
-                """ )
+                query.prepare( "INSERT INTO docpadrehijos (idpadre,idhijo) VALUES" +  
+                "(:idsesion," + idret + ")," +
+                "(:idrecibo," + idret + ")" )
     
+                query.bindValue( ":idsesion", self.datosSesion.sesionId )
                 query.bindValue( ":idrecibo", insertedId )
-                query.bindValue( ":idretencion", idret )
     
                 if not query.exec_():
                     raise Exception( "No se Inserto la relacion entre la retencion y el recibo" )
@@ -1049,8 +1059,9 @@ class DatosRecibo(object):
             tasa = self.datosSesion.tipoCambioOficial
             movAbonoDeCliente( insertedId, self.total * tasa, self.obtenerRetencion * tasa, self.obtenerGanancia)
     
-            if not QSqlDatabase.database().commit():
-                raise Exception( "No se pudo hacer commit" )
+            if sinFactura:
+                if not QSqlDatabase.database().commit():
+                    raise Exception( "No se pudo hacer commit" )
         except Exception as inst:
             print  query.lastError().databaseText()
             print inst.args
