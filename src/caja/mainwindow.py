@@ -40,6 +40,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         
         
         self.datosSesion = DatosSesion()
+        self.datosSesion.usuarioId = self.user.uid
         self.cajaNombre = ""
         self.status = False
     
@@ -170,10 +171,9 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 print self.datosSesion.sesionId                     
                             
         else:
-            cierre = dlgApertura( self,True )
-            if cierre.exec_() == QDialog.Accepted:
-                self.status = estado
-
+            arqueo = frmArqueo( self.user, self )
+            self.mdiArea.addSubWindow( arqueo )
+            arqueo.show()
             
 
     

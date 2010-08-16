@@ -4,11 +4,11 @@ Created on 11/06/2010
 
 @author: Administrator
 '''
-from ui.Ui_frmApertura import Ui_frmApertura
+from ui.Ui_apertura import Ui_dlgApertura
 from PyQt4.QtGui import *
 from PyQt4.QtSql import *
 from PyQt4.QtCore import *
-class frmCierreCaja ( QDialog, Ui_frmApertura ):
+class frmCierreCaja ( QDialog, Ui_dlgApertura ):
     def __init__( self, user, user2,sesion, parent = None ):
         super( frmCierreCaja, self ).__init__( parent )
         self.setupUi( self )

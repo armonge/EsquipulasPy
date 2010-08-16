@@ -7,11 +7,12 @@ Created on 02/06/2010
 from PyQt4.QtGui import QMessageBox, QDialog, QLineEdit, QIcon
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 from PyQt4.QtCore import pyqtSlot, pyqtSignature, QDateTime,Qt
-from ui.Ui_frmApertura import Ui_frmApertura
+from ui.Ui_apertura import Ui_dlgApertura
 from decimal import Decimal
 from utility.user import User
+from utility import constantes
 
-class dlgApertura ( QDialog, Ui_frmApertura ):
+class dlgApertura ( QDialog, Ui_dlgApertura ):
     def __init__( self,parent,cerrar=False):
         """
         Constructor para agregar un nuevo articulo
@@ -32,7 +33,8 @@ class dlgApertura ( QDialog, Ui_frmApertura ):
         self.setWindowIcon( QIcon( ":/icons/res/logo.png" ) )
         
         self.dtFechaTime.setReadOnly( True )
-        self.txtMonto.setAlignment(Qt.AlignRight)
+        self.txtSaldoC.setAlignment(Qt.AlignRight)
+        self.txtSaldoD.setAlignment(Qt.AlignRight)
         self.supervisor = None
         
         if cerrar:
@@ -92,9 +94,20 @@ class dlgApertura ( QDialog, Ui_frmApertura ):
                 if not supervisor.hasRole( 'root' ):
                     QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación","El usuario no tiene permisos para autorizar la apertura de caja")
                     self.reject()
+                          
+                self.editmodel.supervisorId = supervisor.uid
+                self.editmodel.datosSesion.fecha = self.dtFechaTime.date()
                 
-                
-                QDialog.accept(self)
+                if not self.editmodel.save():
+                    if self.editmodel.errorId == 1:
+                        QMessageBox.warning( None, u"La sesión no fue abierta","")
+                    elif self.editmodel.errorId == 2:
+                        QMessageBox.warning( None, u"La sesión no fue abierta", u"La sesión no fue abierta porque no existe un tipo de cambio para la fecha actual")
+                    else:
+                        QMessageBox.warning( None, u"La sesión no fue abierta", u"La sesión no fue abierta. Por favor Contacte al administrador del sistema")
+                else:
+                    QMessageBox.information(None,u"Sesión Abierta", u"La sesión fue abierta exitosamente")
+                    QDialog.accept(self)
             else:
                 QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación",u"El nombre de usuario o contraseña son incorrectos")
                 self.txtUser.setFocus()
@@ -105,12 +118,17 @@ class dlgApertura ( QDialog, Ui_frmApertura ):
                 QMessageBox.warning( None, u"La sesión no fue abierta", u"Por favor seleccione la caja en la que se abrirá la sesión")
                 self.editmodel.errorId =0
             
-                
-#        if not self.editmodel.save():
-#            QMessageBox.warning( None, u"La sesión no fue abierta", self.editmodel.error[1])
-#            if self.editmodel.errorId == 2:
-#                QMessageBox.warning( None, u"La sesión no fue abierta", u"La sesión no fue abierta porque no existe un tipo de cambio para la fecha actual")
-#        else:
+    @pyqtSlot()
+    def on_txtSaldoC_editingFinished(self):
+        if self.editmodel != None:
+            self.editmodel.saldoCordoba = Decimal(str(self.txtSaldoC.value()))
+            print self.editmodel.saldoCordoba
+               
+    @pyqtSlot( )
+    def on_txtSaldoD_editingFinished(self):
+        if self.editmodel != None:
+            self.editmodel.saldoDolar = Decimal(str(self.txtSaldoD.value()))
+            print self.editmodel.saldoDolar                
            
             
         
@@ -132,10 +150,11 @@ class dlgApertura ( QDialog, Ui_frmApertura ):
 class AperturaModel(object):
     def __init__(self,datosSesion):
         self.datosSesion = datosSesion        
-        self.monto = Decimal(0)
-        self.cajaId = 0
+    
         self.supervisorId = 0
         self.errorId=0
+        self.saldoCordoba = Decimal(0)
+        self.saldoDolar = Decimal(0)
     
     @property
     def valid(self):
@@ -145,76 +164,109 @@ class AperturaModel(object):
         else:
             return True
         return False
+    @property
+    def total(self):
+        print self.datosSesion.tipoCambioBanco
+        total = (self.saldoCordoba / self.datosSesion.tipoCambioBanco) + self.saldoDolar
+        return total
+    
     def save(self):
         try:
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
 
+            if not QSqlDatabase.database().transaction():
+                raise Exception( u"No se pudo comenzar la transacción" )
+            
+            fecha = self.datosSesion.fecha.toString("yyyyMMdd") 
             #extraer el tipo de cambio de acuerdo a la fecha junto con su id
-            query = QSqlQuery( "SELECT idtc,tasa,tasabanco FROM tiposcambio t where fecha=DATE('" + self.datosSesion.fecha.toString("yyyyMMdd") + "')")
+            query = QSqlQuery( "SELECT idtc,tasa,IFNULL(tasabanco,tasa) as tasabanco FROM tiposcambio t where fecha=DATE('" + fecha + "')")
             if not query.exec_():
-                raise Exception("No existe una tasa de cambio para la fecha " + self.datosSesion.fecha.toString("yyyyMMdd"))
+                raise Exception("No existe una tasa de cambio para la fecha " + fecha)
+            
             
             if query.size()==0:
                 self.errorId = 2
 #                self.reject()
-                return ""
+                return False
                 
             
             query.first()
-            self.exchangeRateId = query.value(0).toInt()[0]
-            self.exchangeRate = query.value(1).toString()
-            self.bankExchangeRate = query.value(2).toString()
         
+            self.datosSesion.tipoCambioId = query.value(0).toInt()[0]
+            self.datosSesion.tipoCambioOficial = Decimal(query.value(1).toString())
+            self.datosSesion.tipoCambioBanco = Decimal(query.value(2).toString())
+            
+            
 
-            query.prepare("""
-            SELECT
-            MAX(CAST(ndocimpreso AS SIGNED))+1
-            FROM documentos d
-            WHERE idtipodoc=22
-            ;
-            """ )
-            query.exec_()
+            query = QSqlQuery("CALL spConsecutivo(22,NULL);")
+            
+            if not query.exec_():
+                raise Exception("No pudo ser cargado el consecutivo del documento")
+            
             query.first()
+            
             ndocimpreso = query.value( 0 ).toString()
+           
             
-            if ndocimpreso == "0":
-                ndocimpreso = "1" 
+            query.prepare( """INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,idcaja,idtipocambio)
+            VALUES (:ndocimpreso,:total,:fecha,:tipodoc,:caja,:tipocambio)""" )
             
-            if not query.prepare( """INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,idcaja,observacion,idtipocambio)
-            VALUES(:ndocimpreso,:total,:fecha,:tipodoc,:caja,:observacion,:tipocambio)""" ):
-                raise Exception( query.lastError().text() )
+            total = self.total
+            
             query.bindValue( ":ndocimpreso", ndocimpreso )
-            query.bindValue( ":total", self.txtMonto.text() )
-            query.bindValue( ":fecha", self.dtFechaTime.dateTime().toString( "yyyyMMddhhmmss" ) )
-            query.bindValue( ":tipodoc", 22 )
-            query.bindValue( ":usuario", self.user.uid )
-            query.bindValue( ":caja", self.idCaja )
-            query.bindValue( ":observacion", self.usuario.user )
-            query.bindValue( ":tipocambio", self.exchangeRateId )
+            
+            query.bindValue( ":total", total.to_eng_string() )
+            query.bindValue( ":fecha", fecha + QDateTime.currentDateTime().toString("hhmmss"))
+            query.bindValue( ":tipodoc", constantes.IDAPERTURA )
+            query.bindValue( ":caja", self.datosSesion.cajaId )
+            query.bindValue( ":tipocambio", self.datosSesion.tipoCambioId)
 
             if not query.exec_():
                 raise Exception( query.lastError().text() )
             
-            self.sesion=query.lastInsertId().toInt()[0]
-                        
-            if not query.prepare( """INSERT INTO personasxdocumento (idpersona,iddocumento)
-            VALUES(:usuario,:documento)""" ):
+            self.datosSesion.sesionId=query.lastInsertId().toInt()[0]
+            insertedId = str(self.datosSesion.sesionId)             
+            
+            if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,autoriza) VALUES" + 
+            "(:usuario," + insertedId + ",0), "
+            "(:supervisor," + insertedId + ",1)"):
                 raise Exception( query.lastError().text() )
-            query.bindValue( ":usuario", self.user.uid )
-            query.bindValue( ":documento", self.sesion )
+            
+
+            query.bindValue( ":usuario", self.datosSesion.usuarioId )
+            query.bindValue (":supervisor", self.supervisorId)
 
             if not query.exec_():
                 raise Exception( query.lastError().text() )
             
-            self.accept() 
-                       
-        except Exception, e:
-            print e
-            self.reject()
+            
+            if not query.prepare( "INSERT INTO pagos(recibo,tipopago,tipomoneda,monto) VALUES " + 
+            "(" + insertedId + ",1,1,:totalCordoba), "
+            "(" + insertedId + ",1,2,:totalDolar)"):
+                
+                raise Exception( query.lastError().text() )
+            
+            query.bindValue( ":totalCordoba", self.saldoCordoba.to_eng_string() )
+            query.bindValue (":totalDolar", self.saldoDolar.to_eng_string())
 
+            if not query.exec_():
+                raise Exception( query.lastError().text() )
+            
+            
+            if not QSqlDatabase.database().commit():
+                raise Exception( "No se pudo hacer commit" )
+            
+            resultado = True
+        except Exception as inst:
+            print  query.lastError().databaseText()
+            print query.lastError().driverText()
+            print inst.args
+            QSqlDatabase.database().rollback()
+            resultado = False
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
-
-        
+        return resultado
+#
+#        
