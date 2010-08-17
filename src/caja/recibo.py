@@ -718,7 +718,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             linea.tasaIva = factura.editmodel.ivaTasa
             linea.monto= factura.editmodel.total
             self.totalFactura = factura.editmodel.total
-            
+            self.editmodel.total = self.totalFactura
             
             self.datosRecibo.lineasAbonos.append(linea)
      
