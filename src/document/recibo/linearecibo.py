@@ -48,7 +48,7 @@ class LineaRecibo:
         query.bindValue( ":iddocumento", iddocumento )
         query.bindValue( ":idpago", self.pagoId )
         query.bindValue( ":idmoneda", self.monedaId )
-        query.bindValue( ":monto", self.montoDolar.to_eng_string() )
+        query.bindValue( ":monto", self.monto.to_eng_string() )
         query.bindValue( ":ref", self.referencia )
         query.bindValue( ":linea", linea )
 

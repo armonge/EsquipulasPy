@@ -555,32 +555,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             AND p.tipopersona=%d
             ORDER BY padre.iddocumento
             """%('%',IDRECIBO,CLIENTE))
-    #        El modelo que filtra a self.navmodel
-            print          """               SELECT
-                            padre.iddocumento,
-                            DATE(padre.fechacreacion) as 'Fecha',
-                            padre.ndocimpreso as 'No. Recibo',
-                            p.nombre as 'Cliente',
-                            padre.total as 'Total',
-                            c.descripcion as 'En cocepto de',
-                            IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
-                            IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%s')) as 'Retencion',
-                            IFNULL(hijo.total,'-') as 'Total Ret C$',
-                            padre.total - IFNULL(hijo.total,0) as 'Total Pagado', 
-                           padre.observacion ,
-                           IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion'
-            FROM documentos padre
-            JOIN personasxdocumento pxd ON pxd.iddocumento = padre.iddocumento
-            JOIN personas p ON p.idpersona = pxd.idpersona
-            JOIN conceptos c ON  c.idconcepto=padre.idconcepto
-            LEFT JOIN costosxdocumento cd ON cd.iddocumento=padre.iddocumento
-            LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
-            LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
-            LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
-            WHERE padre.idtipodoc=%d
-            AND p.tipopersona=%d
-            ORDER BY padre.iddocumento
-            """%('%',IDRECIBO,CLIENTE)
+  
             self.navproxymodel = RONavigationModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )
             self.navproxymodel.setFilterKeyColumn( -1 )
@@ -593,8 +568,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 p.recibo as iddocumento,
                 CONCAT(tp.descripcion, ' ' , tm.moneda) as 'Tipo de Pago',
                  p.refexterna as 'No. Referencia',
-                 CONCAT(tm.simbolo,' ',FORMAT(monto * IF(p.tipomoneda=2,1,IFNULL(tc.tasaBanco,tc.tasa)),4)) as 'Monto',
-                 CONCAT('US$ ',FORMAT(monto,4)) as 'Monto US$'
+                 CONCAT(tm.simbolo,' ',FORMAT(monto,4)) as 'Monto',
+                 CONCAT('US$ ',FORMAT(monto / IF(p.tipomoneda=2,1,IFNULL(tc.tasaBanco,tc.tasa)),4)) as 'Monto US$'
             FROM pagos p
             JOIN documentos d ON d.iddocumento=p.recibo
             JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
@@ -1021,7 +996,7 @@ class DatosRecibo(object):
     #INSERTAR EL DOCUMENTO RETENCION CON EL TOTAL EN NEGATIVO, PORQUE ESTA SALIENDO DE CAJA            
                 query.prepare( """
                 INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,total,idtipocambio,idconcepto) 
-                VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,-:total,:idtc,:concepto)
+                VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:total,:idtc,:concepto)
                 """ )
                 query.bindValue( ":ndocimpreso", self.retencionNumeroImpreso )
                 query.bindValue( ":fechacreacion", fechaCreacion)

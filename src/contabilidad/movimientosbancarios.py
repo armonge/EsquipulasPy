@@ -57,6 +57,112 @@ class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
 
         QTimer.singleShot( 0, self.loadModels )
                 
+    
+    @pyqtSlot(  )
+    def on_actionNew_activated( self ):
+        """
+        activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
+        """
+        if not QSqlDatabase.database().open():
+            raise Exception( u"No se pudo establecer una conexión con la base de datos" )
+
+        self.editmodel = MovimientosBancariosModel(self.user.uid)
+        self.editmodel.datos.dateTime = self.dtPicker.dateTime()
+        self.editmodel.setConceptos(self.cbconcepto,self.swconcepto)
+        
+        
+        self.editmodel.setCuentasBancarias(self.cbcuenta,self.swcuenta)
+        self.connect(self.cbcuenta, SIGNAL("currentIndexChanged( int )"), self.on_cbcuenta_currentIndexChanged)
+        
+        self.editmodel.setTiposDoc(self.cbtipodoc, self.swtipodoc)
+#        self.tabledetails.setModel(None)
+#        self.tabledetails.setModel(self.detailsmodel)
+        self.editmodel.setAccountTable(self.tabledetails)
+        self.status = False
+        
+        if QSqlDatabase.database().isOpen():
+            QSqlDatabase.database().close()
+
+    @pyqtSlot(  )
+    def on_actionSave_activated( self ):
+        if self.editmodel !=None:
+            
+            self.editmodel.datos.observaciones = self.txtobservaciones.toPlainText()
+            if self.editmodel.save():
+                self.editmodel = None
+                self.updateModels()
+                self.status = True
+    
+    @pyqtSlot( "QDateTime" )
+    def on_dtPicker_dateTimeChanged( self, datetime ):
+        """
+        Asignar la fecha al objeto __document
+        """
+        if self.editmodel !=None:
+            self.editmodel.datos.dateTime = datetime
+
+    @pyqtSignature( "int" )
+    def on_cbconcepto_currentIndexChanged( self, index ):
+        """
+        asignar la concepto al objeto self.editmodel
+        """
+        self.editmodel.conceptoChanged(index)        
+        
+    def on_cbcuenta_currentIndexChanged( self, index ):
+        """
+        asignar la concepto al objeto self.editmodel
+        """
+#        self.btnguardar.setEnabled(True)
+        self.editmodel.cuentaBancariaChanged(self.tabledetails,index,self.dtPicker,self.cbconcepto,self.cbtipodoc)
+        
+    @pyqtSignature( "int" )
+    def on_cbtipodoc_currentIndexChanged( self, index ):
+        """
+        asignar la concepto al objeto self.editmodel
+        """
+        self.editmodel.tipoDocChanged(self.cbconcepto,index)
+        
+    def setControls( self, status ):
+        """
+        @param status: false = editando        true = navegando
+        """
+        self.dtPicker.setReadOnly( status )
+        self.dtPicker.setMinimumDate(QDate(1772,1,1))
+        self.dtPicker.setMaximumDate(QDate(7999,12,31))
+        self.txtobservaciones.setReadOnly( status )
+        
+
+        self.actionSave.setVisible( not status )
+        self.actionCancel.setVisible( not status )
+        self.tabnavigation.setEnabled( status )
+        self.actionNew.setVisible( status )
+        self.actionGoFirst.setVisible( status )
+        self.actionGoPrevious.setVisible( status )
+        self.actionGoNext.setVisible( status )
+        self.actionGoLast.setVisible( status )
+        self.actionPreview.setVisible( status )
+        
+        if status:
+#            self.navigate( 'last' )
+            self.swcuenta.setCurrentIndex( 1 )
+            self.swconcepto.setCurrentIndex( 1 )
+            self.swtipodoc.setCurrentIndex( 1 )
+            self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
+        else:
+            self.tabWidget.setCurrentIndex( 0 )
+            self.txtobservaciones.setPlainText( "" )
+            self.swcuenta.setCurrentIndex( 0 )
+            self.swconcepto.setCurrentIndex( 0 )
+            self.swtipodoc.setCurrentIndex( 0 )
+            self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
+
+    def updateDetailFilter( self, index ):
+        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTO )
+        fecha=QDate.fromString(self.navmodel.record( self.mapper.currentIndex() ).value( "Fecha" ).toString(),"dd/MM/yyyy") 
+        self.dtPicker.setDate(fecha)
+        self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
+        self.tablenavigation.selectRow( self.mapper.currentIndex() )
+
     def updateModels( self ):
         """
         Recargar todos los modelos
@@ -133,123 +239,6 @@ class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close
-    
-    def setControls( self, status ):
-        """
-        @param status: false = editando        true = navegando
-        """
-        self.dtPicker.setReadOnly( status )
-        self.dtPicker.setMinimumDate(QDate(1772,1,1))
-        self.dtPicker.setMaximumDate(QDate(7999,12,31))
-        self.txtobservaciones.setReadOnly( status )
-        
-
-        self.actionSave.setVisible( not status )
-        self.actionCancel.setVisible( not status )
-        self.tabnavigation.setEnabled( status )
-        self.actionNew.setVisible( status )
-        self.actionGoFirst.setVisible( status )
-        self.actionGoPrevious.setVisible( status )
-        self.actionGoNext.setVisible( status )
-        self.actionGoLast.setVisible( status )
-        self.actionPreview.setVisible( status )
-        
-        if status:
-            self.navigate( 'last' )
-            self.swcuenta.setCurrentIndex( 1 )
-            self.swconcepto.setCurrentIndex( 1 )
-            self.swtipodoc.setCurrentIndex( 1 )
-            self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
-        else:
-            self.tabWidget.setCurrentIndex( 0 )
-            self.txtobservaciones.setPlainText( "" )
-            self.swcuenta.setCurrentIndex( 0 )
-            self.swconcepto.setCurrentIndex( 0 )
-            self.swtipodoc.setCurrentIndex( 0 )
-            self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
-
-    def updateDetailFilter( self, index ):
-        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTO )
-        fecha=QDate.fromString(self.navmodel.record( self.mapper.currentIndex() ).value( "Fecha" ).toString(),"dd/MM/yyyy") 
-        self.dtPicker.setDate(fecha)
-        self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
-        self.tablenavigation.selectRow( self.mapper.currentIndex() )
-
-    @pyqtSlot(  )
-    def on_actionNew_activated( self ):
-        """
-        activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
-        """
-        if not QSqlDatabase.database().open():
-            raise Exception( u"No se pudo establecer una conexión con la base de datos" )
-
-        self.editmodel = MovimientosBancariosModel(self.user.uid)
-        self.editmodel.datos.dateTime = self.dtPicker.dateTime()
-        self.editmodel.setConceptos(self.cbconcepto,self.swconcepto)
-        
-        
-        self.editmodel.setCuentasBancarias(self.cbcuenta,self.swcuenta)
-        self.connect(self.cbcuenta, SIGNAL("currentIndexChanged( int )"), self.on_cbcuenta_currentIndexChanged)
-        
-        self.editmodel.setTiposDoc(self.cbtipodoc, self.swtipodoc)
-#        self.tabledetails.setModel(None)
-#        self.tabledetails.setModel(self.detailsmodel)
-        self.editmodel.setAccountTable(self.tabledetails)
-        self.status = False
-        
-        if QSqlDatabase.database().isOpen():
-            QSqlDatabase.database().close()
-
-    @pyqtSlot(  )
-    def on_actionSave_activated( self ):
-        if self.editmodel !=None:
-            
-            self.editmodel.datos.observaciones = self.txtobservaciones.toPlainText()
-            if self.editmodel.save():
-                self.editmodel = None
-                self.updateModels()
-                self.status = True
-    
-#    @pyqtSlot( "" )
-#    def on_txtobservaciones_textChanged( self ):
-#        """
-#        Asignar las observaciones al objeto __document
-#        """
-#        
-#        if not self.editmodel is None:
-#            self.editmodel.datos.observaciones = self.txtobservaciones.toPlainText()
-            
-
-    @pyqtSlot( "QDateTime" )
-    def on_dtPicker_dateTimeChanged( self, datetime ):
-        """
-        Asignar la fecha al objeto __document
-        """
-        if self.editmodel !=None:
-            self.editmodel.datos.dateTime = datetime
-        
-    
-    @pyqtSignature( "int" )
-    def on_cbtipodoc_currentIndexChanged( self, index ):
-        """
-        asignar la concepto al objeto self.editmodel
-        """
-        self.editmodel.tipoDocChanged(self.cbconcepto,index)
-        
-    def on_cbcuenta_currentIndexChanged( self, index ):
-        """
-        asignar la concepto al objeto self.editmodel
-        """
-#        self.btnguardar.setEnabled(True)
-        self.editmodel.cuentaBancariaChanged(self.tabledetails,index,self.dtPicker,self.cbconcepto,self.cbtipodoc)
-
-    @pyqtSignature( "int" )
-    def on_cbconcepto_currentIndexChanged( self, index ):
-        """
-        asignar la concepto al objeto self.editmodel
-        """
-        self.editmodel.conceptoChanged(index)        
-
 
 class dlgMovimientosBancarios( QDialog,Ui_dlgMovimientosBancarios):
 
