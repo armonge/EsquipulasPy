@@ -22,7 +22,7 @@ class SearchPanel( QComboBox ):
         self.completer.setCompletionMode( QCompleter.UnfilteredPopupCompletion ) # always show all completions
         self.pFilterModel = QSortFilterProxyModel( self )
         self.pFilterModel.setFilterCaseSensitivity( Qt.CaseInsensitive )
-        
+        self.showTable = showTable
         if model !=None:
             self.setModel(model )
 #        self.pFilterModel.setSourceModel( model );
@@ -32,7 +32,7 @@ class SearchPanel( QComboBox ):
         self.completerTable = SearchPanelView()
         self.completer.setPopup( self.completerTable )
 #Mostrar el Popup en forma de Tabla        
-        if showTable:
+        if self.showTable:
             self.tabla = SearchPanelView()
             self.setView(self.tabla)
             
@@ -63,7 +63,8 @@ class SearchPanel( QComboBox ):
     
     def setColumnHidden(self,col):
         self.completerTable.hiddenColumns.append(col)
-        self.tabla.hiddenColumns.append(col)
+        if self.showTable:
+            self.tabla.hiddenColumns.append(col)
 
 
 

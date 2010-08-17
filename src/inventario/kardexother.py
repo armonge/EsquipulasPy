@@ -4,13 +4,14 @@ Created on 23/07/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, QAbstractItemView
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QTimer,pyqtSlot, QDateTime
 from utility.base import Base
 from ui.Ui_kardexother import Ui_frmKardexOther
 
-from document.kardexother.kardexothermodel import KardexOtherModel 
+from document.kardexother.kardexothermodel import KardexOtherModel
+from document.kardexother.kardexotherdelegate import KardexOtherDelegate
 
 from utility import constantes
 class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
@@ -62,7 +63,8 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         
         self.swConcept.setCurrentIndex(0 if status else 1)
         self.tabnavigation.setEnabled(status)
-        
+
+        self.tabledetails.setEditTriggers(QAbstractItemView.NoEditTriggers if status else QAbstractItemView.AllEditTriggers)
         if not status:
             self.tabWidget.setCurrentIndex(0)
         
@@ -85,7 +87,6 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             LEFT JOIN docpadrehijos dph ON dph.idhijo = d.iddocumento
             WHERE d.idtipodoc = %d AND dph.idhijo IS NULL
             """ % constantes.IDKARDEX
-            
             self.navigationmodel.setQuery(query)
             
             query = """
@@ -123,7 +124,9 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             
             self.cbConcept.setModel(conceptosmodel)
             self.cbConcept.setModelColumn(1)
-            
+
+
+            #Calcular el numero de kardex
             query = QSqlQuery( """
             CALL spConsecutivo(%d,NULL);
             """ % constantes.IDKARDEX )
@@ -131,15 +134,29 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
                 raise UserWarning( "No se pudo calcular el numero del kardex" )
             query.first()
             self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
+            self.txtPrintedDocumentNumber.setText(self.editmodel.printedDocumentNumber)
 
-            self.dtPicker.setDateTime(QDateTime.currentDateTime())
             
+            self.dtPicker.setDateTime(QDateTime.currentDateTime())
+            articlesmodel = QSqlQueryModel()
+            articlesmodel.setQuery("""
+            SELECT
+                idarticulo,
+                descripcion
+            FROM vw_articulosdescritos
+            """)
+            
+            delegate = KardexOtherDelegate(articlesmodel)
+            self.tabledetails.setItemDelegate(delegate)
             self.tabledetails.setModel(self.editmodel)
+
+            self.addLine()
             self.status = False
         except UserWarning as inst:
             QMessageBox.critical(self,"Llantera Esquipulas", unicode(inst))
             self.status = True
         except Exception as inst:
+            QMessageBox.critical(self,"Llantera Esquipulas", "El sistema no pudo iniciar una nueva entrada de kardex")
             self.status = True
             print inst
         

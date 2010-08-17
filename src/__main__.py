@@ -5,6 +5,8 @@ El modulo de entrada a la aplicación
 
 G{importgraph}
 '''
+
+
 if __name__ == '__main__':
     import sip
     import sys
@@ -16,7 +18,7 @@ if __name__ == '__main__':
     from utility.database import Database
     from utility.user import dlgUserLogin, User
     from ui import res_rc
-
+    
     app = QtGui.QApplication( sys.argv )
     app.setOrganizationName( "Llantera Esquipulas" )
     app.setOrganizationDomain( "grupoeltriunfo.com.ni" )

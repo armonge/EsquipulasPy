@@ -5,14 +5,16 @@ Created on 07/06/2010
 @author: Andrés Reyes Monge
 '''
 from document import arqueo
-from PyQt4.QtGui import QStyledItemDelegate, QSpinBox, QDoubleSpinBox, QComboBox
+from PyQt4.QtGui import QStyledItemDelegate, QSpinBox, QDoubleSpinBox
 from PyQt4.QtCore import Qt
+from utility.widgets.searchpanel import SearchPanel
 
 CANTIDAD, DENOMINACION, TOTAL = range( 3 )
 class ArqueoDelegate( QStyledItemDelegate ):
     def __init__( self, denominations, parent = None ):
         super( ArqueoDelegate, self ).__init__( parent )
         self.denominationsmodel = denominations
+        
     def createEditor( self, parent, option, index ):
         if index.column() == CANTIDAD:
             spinbox = QSpinBox( parent )
@@ -21,16 +23,23 @@ class ArqueoDelegate( QStyledItemDelegate ):
             return spinbox
         elif index.column() == DENOMINACION:
             if index.data() != "":
+                row = index.model().mapToSource(index).row()
+                model = index.model().sourceModel()
                 self.denominationsmodel.items.append( [
-                                         index.model().lines[index.row()].denominationId,
-                                         index.model().lines[index.row()].denomination,
-                                         index.model().lines[index.row()].value,
-                                         index.model().lines[index.row()].currencyId
+                                         model.lines[row].denominationId,
+                                         model.lines[row].denomination,
+                                         model.lines[row].value.to_eng_string(),
+                                         model.lines[row].currencyId,
+                                         model.lines[row].symbol
                                          ] )
-            combo = QComboBox( parent )
-            combo.setModel( self.denominationsmodel )
-            combo.setModelColumn( 1 )
-            return combo
+            sp= SearchPanel(self.denominationsmodel, parent )
+            #sp.setColumnHidden(0)
+            #sp.setColumnHidden(2)
+            #sp.setColumnHidden(3)
+            sp.setEditable(True)
+            sp.setModel( self.denominationsmodel )
+            sp.setModelColumn( 1 )
+            return sp
         else:
             return QStyledItemDelegate.createEditor( self, parent, option, index )
 
@@ -48,9 +57,11 @@ class ArqueoDelegate( QStyledItemDelegate ):
 
     def setModelData( self, editor, model, index ):
         if index.column() == DENOMINACION:
-            print editor.rootModelIndex().data().toString()
-            model.setData( index, self.denominationsmodel.items[editor.currentIndex()] )
-            del self.denominationsmodel.items[editor.currentIndex()]
+            try:
+                model.setData( index, self.denominationsmodel.items[editor.currentIndex()] )
+                del self.denominationsmodel.items[editor.currentIndex()]
+            except IndexError as inst:
+                print inst
         else:
             QStyledItemDelegate.setModelData( self, editor, model, index )
 

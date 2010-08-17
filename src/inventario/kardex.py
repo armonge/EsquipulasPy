@@ -85,7 +85,6 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             WHERE d.idtipodoc IN (%s)
             GROUP BY d.iddocumento
             """ % self.tiposdoc
-            print query
             self.navigationmodel.setQuery(query )
             
             query = u"""
@@ -103,7 +102,6 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             LEFT JOIN articulosxdocumento akx ON akx.iddocumento = kardex.iddocumento
             GROUP BY ad.idarticulo, kardex.iddocumento
             """ % ( self.tiposdoc , constantes.IDKARDEX )
-            print query
             self.detailsModel.setQuery(query)
             
             self.mapper.setModel( self.navproxymodel )

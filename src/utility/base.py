@@ -127,7 +127,7 @@ class Base( object ):
                 self.mapper.toLast()
         else:
             self.mapper.toLast()()
-
+        
         self.tabledetails.resizeColumnsToContents()
         self.tabledetails.horizontalHeader().setStretchLastSection(True)
         self.tablenavigation.selectRow( self.mapper.currentIndex() )

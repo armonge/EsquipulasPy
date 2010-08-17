@@ -15,20 +15,16 @@ class LineaArqueo( object ):
         self.denominationId = 0
         self.denomination = ""
         self.currencyId = 0
+        self.symbol = ""
 
 
     @property
     def total( self ):
-        try:
-            return self.value * self.quantity / self.parent.exchangeRate if self.currencyId == 1 else self.value * self.quantity
-        except DivisionByZero:
-            return Decimal(0)
-        except InvalidOperation:
-            return Decimal(0)
+        return self.value * self.quantity 
 
     @property
     def valid( self ):
-        return self.value > 0 and self.quantity > 0
+        return self.total > 0 and self.currencyId != 0
 
     def save( self, iddocumento ):
         if not self.valid:

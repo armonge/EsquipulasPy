@@ -105,10 +105,13 @@ class KardexModel( QAbstractTableModel ):
         if not len(self.lines) != 0:
             self.validError = "No existen lineas en el kardex"
             return False
-        if not self.exchangeRateId != 0:
+        elif not self.exchangeRateId != 0:
             self.validError = "No esta definido un tipo de cambio"
             return False
-        
+        elif not self.uid != 0:
+            self.validError = "No se ha especificado el usuario que realiza este kardex"
+            return False
+            
         return True
 
     #Clases especificas del modelo

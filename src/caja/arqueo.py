@@ -13,13 +13,13 @@ from ui.Ui_arqueo import Ui_frmArqueo
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
 from utility.singleselectionmodel import  SingleSelectionModel
-from document.arqueo.arqueomodel import ArqueoModel
+from document.arqueo.arqueomodel import ArqueoModel, ArqueoProxyModel
 from document.arqueo.arqueodelegate import ArqueoDelegate
 
 from utility import constantes
 from utility.reports import frmReportes
 #navmodel
-IDDOCUMMENTO, NDOCIMPRESO, FECHA, NOMBRE, TOTAL, TOTALSESION = range( 6 )
+IDDOCUMMENTO, FECHA, NOMBRE, TOTAL, TOTALSESION = range( 5 )
 #detailsmodel
 CANTIDAD, DENOMINACION, MONEDA, TOTALP, IDDOCUMMENTOT = range( 5 )
 class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
@@ -63,7 +63,6 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.navmodel.setQuery( """
             SELECT
                 d.iddocumento, 
-                d.ndocimpreso AS 'Numero de Arqueo', 
                 d.fechacreacion AS 'Fecha', 
                 p.nombre AS 'Arqueador', 
                 CONCAT('US$',FORMAT(d.total,4))  as 'Total US$'
@@ -91,10 +90,9 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
             self.mapper.setModel( self.navproxymodel )
-            self.mapper.addMapping( self.lblPrintedDocumentNumber, NDOCIMPRESO, "text" )
             self.mapper.addMapping( self.dtPicker, FECHA )
             self.mapper.addMapping( self.lblUserName, NOMBRE, "text" )
-            self.mapper.addMapping( self.lblTotalArqueo, TOTAL, "text" )
+            ##self.mapper.addMapping( self.lblTotalArqueo, TOTAL, "text" )
 
             
         except UserWarning as inst:
@@ -122,22 +120,53 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
         self.actionCancel.setVisible( not status )
         self.actionSave.setVisible( not status )
+
+        self.txtCkD.setReadOnly(status)
+        self.txtCkC.setReadOnly(status)
+        self.txtCardD.setReadOnly(status)
+        self.txtCardC.setReadOnly(status)
+        self.txtDepositD.setReadOnly(status)
+        self.txtDepositC.setReadOnly(status)
+        
+
+        
         if not self.status:
-            self.tabledetails.setEditTriggers( QTableView.AllEditTriggers )
-            self.tabledetails.addAction( self.actionDeleteRow )
+            self.tabledetailsC.setEditTriggers( QTableView.AllEditTriggers )
+            self.tabledetailsC.setColumnHidden( IDDOCUMMENTOT, False )
+            self.tabledetailsD.setEditTriggers( QTableView.AllEditTriggers )
+            self.tabledetailsD.setColumnHidden( IDDOCUMMENTOT, False )
             self.tabWidget.setCurrentIndex( 0 )
-            self.tabledetails.setColumnHidden( IDDOCUMMENTOT, False )
             self.tablenavigation.setColumnHidden( IDDOCUMMENTO, False )
-            self.lblTotalArqueo.setText( "US$0.0000" )
+
+            self.tabledetailsC.setColumnHidden( MONEDA, True )
+            self.tabledetailsD.setColumnHidden( MONEDA, True )
         else:
-            self.tabledetails.removeAction( self.actionDeleteRow )
-            self.tabledetails.setModel( self.detailsproxymodel )
+            self.tabledetailsC.setModel( self.detailsproxymodel )
+            self.tabledetailsC.setColumnHidden( IDDOCUMMENTOT, True )
+            
+            
+            self.tabledetailsD.setModel( self.detailsproxymodel )
+            self.tabledetailsD.setColumnHidden( IDDOCUMMENTOT, True )
+            
+            
             self.tablenavigation.setModel( self.navproxymodel )
             self.tablenavigation.setColumnHidden( IDDOCUMMENTO, True )
-            self.tabledetails.setColumnHidden( IDDOCUMMENTOT, True )
+
+
+        
 
     def updateLabels( self ):
-        self.lblTotalArqueo.setText( moneyfmt( self.editmodel.total, 4, "US$" ) )
+        self.lblCashC.setText(  moneyfmt( self.editmodel.totalCashC, 4, "C$" ) + " / " + moneyfmt(self.editmodel.expectedCashC, 4, "C$"))
+        self.lblCashD.setText( moneyfmt( self.editmodel.totalCashD, 4, "US$" ) + " / " + moneyfmt(self.editmodel.expectedCashD, 4, "US$") )
+
+        self.lblCkC.setText( moneyfmt( self.editmodel.totalCkC, 4, "C$" ) + " / " + moneyfmt(self.editmodel.expectedCkC, 4, "C$") )
+        self.lblCkD.setText( moneyfmt( self.editmodel.totalCkD, 4, "US$" ) + " / " + moneyfmt(self.editmodel.expectedCkD, 4, "US$") )
+
+        self.lblCardC.setText( moneyfmt( self.editmodel.totalCardC, 4, "C$" ) + " / " + moneyfmt(self.editmodel.expectedCardC, 4, "C$") )
+        self.lblCardD.setText( moneyfmt( self.editmodel.totalCardD, 4, "US$" ) + " / " + moneyfmt(self.editmodel.expectedCardD, 4, "US$") )
+
+        self.lblDepositC.setText( moneyfmt( self.editmodel.totalDepositC, 4, "C$" ) + " / " + moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
+        self.lblDepositD.setText( moneyfmt( self.editmodel.totalDepositD, 4, "US$" ) + " / " + moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
 
     @pyqtSlot( )
     def on_actionNew_activated( self ):
@@ -147,8 +176,23 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         try:
             self.editmodel = ArqueoModel()
             self.editmodel.uid = self.user.uid
-            self.tabledetails.setModel( self.editmodel )
 
+
+            self.dolarproxy = ArqueoProxyModel()
+            self.dolarproxy.setSourceModel(self.editmodel)
+            self.dolarproxy.setFilterKeyColumn(MONEDA)
+            self.dolarproxy.setFilterRegExp(r"^%d$"%constantes.IDDOLARES)
+            self.dolarproxy.setDynamicSortFilter(True)
+            
+            self.cordobaproxy = ArqueoProxyModel()
+            self.cordobaproxy.setSourceModel(self.editmodel)
+            self.cordobaproxy.setFilterKeyColumn(MONEDA)
+            self.cordobaproxy.setFilterRegExp(r"^%d$"%constantes.IDCORDOBAS)
+            self.cordobaproxy.setDynamicSortFilter(True)
+
+            self.tabledetailsC.setModel( self.cordobaproxy )
+            self.tabledetailsD.setModel( self.dolarproxy)
+            
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( "No se pudo conectar con la base de datos" )
@@ -156,74 +200,110 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
             #Obtener los datos de la sesión
             query = QSqlQuery( """
-            SELECT 
-                IF(SUM(d.total) IS NOT NULL, SUM(d.total), 0) + p.total as 'totalsesion' 
-            FROM documentos p
-            LEFT JOIN docpadrehijos dpd ON dpd.idpadre = p.iddocumento
-            LEFT JOIN documentos d ON dpd.idhijo = d.iddocumento
-            JOIN tiposcambio tc ON tc.idtc = p.idtipocambio
-            WHERE d.escontado = 1 AND p.iddocumento = %d
-            """ % self.parent.datosSesion.sesionId )
-
-
+            CALL spConsecutivo( %d, NULL )
+            """ % constantes.IDARQUEO)
             if not query.exec_() or not query.size() > 0:
-                raise UserWarning( u"Error al obtener el total de la sesión")
+                raise UserWarning( u"Error al obtener el numero del arqueo")
             query.first()
-            self.editmodel.expectedTotal = Decimal( query.value( 0 ).toString() )
-
+            
+            self.editmodel.printedDocumentNumber = query.value(0).toString()
             self.editmodel.exchangeRateId = self.parent.datosSesion.tipoCambioId
             self.editmodel.exchangeRate = self.parent.datosSesion.tipoCambioOficial
             
             self.editmodel.datetime = self.parent.datosSesion.fecha
             
             query = QSqlQuery( """
-            CALL spConsecutivo(%d,NULL);
-            """ % constantes.IDARQUEO )
+            CALL spTotalesSesion(%d);
+            """ % self.parent.datosSesion.sesionId )
             if not query.exec_():
-                raise UserWarning( "No se pudo calcular el numero del arqueo" )
-            query.first()
-            self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
+                raise UserWarning( u"No se pudieron calcular los totales de la sesión" )
+            while query.next():
+                if query.value(0).toInt()[0]  == constantes.IDPAGOEFECTIVO and query.value(2).toInt()[0] == constantes.IDDOLARES:
+                    self.editmodel.expectedCashD = Decimal(query.value(5).toString())
+                elif query.value(0).toInt()[0] == constantes.IDPAGOEFECTIVO and query.value(2).toInt()[0] == constantes.IDCORDOBAS:
+                    self.editmodel.expectedCashC = Decimal(query.value(5).toString())
+                elif query.value(0).toInt()[0] == constantes.IDPAGOCHEQUE and query.value(2).toInt()[0] == constantes.IDDOLARES:
+                    self.editmodel.expectedCkD = Decimal(query.value(5).toString())
+                elif query.value(0).toInt()[0] == constantes.IDPAGOCHEQUE and query.value(2).toInt()[0] == constantes.IDCORDOBAS:
+                    self.editmodel.expectedCkC = Decimal(query.value(5).toString())
+                elif query.value(0).toInt()[0] == constantes.IDPAGODEPOSITO and query.value(2).toInt()[0] == constantes.IDDOLARES:
+                    self.editmodel.expectedDepositD = Decimal(query.value(5).toString())
+                elif query.value(0).toInt()[0] == constantes.IDPAGODEPOSITO  and query.value(2).toInt()[0] == constantes.IDCORDOBAS:
+                    self.editmodel.expectedDepositC = Decimal(query.value(5).toString())
+                elif query.value(0).toInt()[0] == constantes.IDPAGOTRANSFERENCIA  and query.value(2).toInt()[0] == constantes.IDDOLARES:
+                    self.editmodel.expectedTransferD = Decimal(query.value(5).toString())
+                elif query.value(0).toInt()[0] == constantes.IDPAGOTRANSFERENCIA  and query.value(2).toInt()[0] == constantes.IDCORDOBAS:
+                    self.editmodel.expectedTransferC = Decimal(query.value(5).toString())
+                elif query.value(0).toInt()[0] == constantes.IDPAGOTARJETA  and query.value(2).toInt()[0] == constantes.IDDOLARES:
+                    self.editmodel.expectedCardD = Decimal(query.value(5).toString())
+                elif query.value(0).toInt()[0] == constantes.IDPAGOTARJETA  and query.value(2).toInt()[0] == constantes.IDCORDOBAS:
+                    self.editmodel.expectedCardC = Decimal(query.value(5).toString())
 
-            self.lblTotalSesion.setText( moneyfmt( self.editmodel.expectedTotal, 4, "US$" ) )
-            self.lblPrintedDocumentNumber.setText( self.editmodel.printedDocumentNumber )
-
+                    
             query = QSqlQuery( """
             SELECT 
                 d.iddenominacion, 
                 CONCAT_WS( ' ',d.valor, m.moneda), 
                 d.valor, 
-                d.idtipomoneda
+                d.idtipomoneda,
+                m.simbolo
             FROM denominaciones d
             JOIN tiposmoneda m ON d.idtipomoneda = m.idtipomoneda
             WHERE d.activo = 1
-            ORDER BY d.idtipomoneda
+            ORDER BY d.idtipomoneda, d.valor
             """ )
             if not query.exec_():
                 raise UserWarning( "No se pudo recuperar la lista de denominaciones" )
-            denominationsmodel = SingleSelectionModel()
+            denominationsmodelC = SingleSelectionModel()
+            denominationsmodelC.headers = ["Id", u"Denominación", "Valor", "Id Moneda", "Simbolo"]
+            denominationsmodelD = SingleSelectionModel()
+            denominationsmodelD.headers = denominationsmodelC.headers
+
+            
             while query.next():
-                denominationsmodel.items.append( [
+                if query.value(3).toInt()[0] == constantes.IDDOLARES:
+                    denominationsmodelD.items.append( [
                                                   query.value( 0 ).toInt()[0], #el id del tipo de denominacion
                                                   query.value( 1 ).toString(), #La descripción de la denominación
-                                                  Decimal( query.value( 2 ).toString() ), # el valor de la denominación
-                                                  query.value( 3 ).toInt()[0] #El id del tipo de moneda
+                                                  query.value( 2 ).toString(), # el valor de la denominación
+                                                  query.value( 3 ).toInt()[0], #El id del tipo de moneda
+                                                  query.value( 4 ).toString() #El simbolo de la moneda
+                                                  ] )
+                else:
+                    denominationsmodelC.items.append( [
+                                                  query.value( 0 ).toInt()[0], #el id del tipo de denominacion
+                                                  query.value( 1 ).toString(), #La descripción de la denominación
+                                                  query.value( 2 ).toString() , # el valor de la denominación
+                                                  query.value( 3 ).toInt()[0], #El id del tipo de moneda
+                                                  query.value( 4 ).toString() #El simbolo de la moneda
                                                   ] )
 
-            delegate = ArqueoDelegate(denominationsmodel)
-            self.tabledetails.setItemDelegate( delegate )
+            delegateC = ArqueoDelegate(denominationsmodelC)
+            self.tabledetailsC.setItemDelegate( delegateC )
+
+            delegateD = ArqueoDelegate(denominationsmodelD)
+            self.tabledetailsD.setItemDelegate( delegateD )
 
             self.addLine()
-            self.dtPicker.setDateTime( QDateTime.currentDateTime() )
+            self.addLine()
+            self.editmodel.setData(self.editmodel.index(0, MONEDA), constantes.IDDOLARES)
+            self.editmodel.setData(self.editmodel.index(1, MONEDA), constantes.IDCORDOBAS)
+            
+            self.dtPicker.setDate( self.parentWindow.datosSesion.fecha)
 
             self.lblUserName.setText( self.user.fullname )
             self.editmodel.dataChanged[QModelIndex,QModelIndex].connect(self.updateLabels)
+
+            self.tabledetailsC.setColumnWidth(DENOMINACION, 200)
+            self.tabledetailsD.setColumnWidth(DENOMINACION, 200)
+            self.updateLabels()
             self.status = False
             
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             self.status = True
-        except Exception  as e:
-            print e
+        except Exception  as inst:
+            print inst
             QMessageBox.critical(self, "Llantera Esquipulas", "El sistema no pudo iniciar un nuevo arqueo")
             self.status = True
         finally:
@@ -238,8 +318,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
     @pyqtSlot(  )
     def on_actionCancel_activated( self ):
         self.editmodel = None
-        self.tablenavigation.setModel( self.navproxymodel )
-        self.tabledetails.setModel( self.detailsproxymodel )
+        
         self.status = True
         self.navigate( 'last' )
 
@@ -262,3 +341,31 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         report = frmReportes( web , self.parentWindow.user, printer, self )
         report.exec_()
 
+    def navigate( self, to ):
+        """
+        Esta funcion se encarga de navegar entro los distintos documentos
+        @param to: es una string que puede tomar los valores 'next' 'previous' 'first' 'last'
+        """
+        if self.mapper.currentIndex != -1:
+            row = self.mapper.currentIndex()
+            if to == "next":
+                row += 1
+                if row >= self.navproxymodel.rowCount():
+                    row = self.navproxymodel.rowCount() - 1
+                self.mapper.setCurrentIndex( row )
+            elif to == "previous":
+                if row <= 1: row = 0
+                else: row = row - 1
+                self.mapper.setCurrentIndex( row )
+            elif to == "first":
+                self.mapper.toFirst()
+            elif to == "last":
+                self.mapper.toLast()
+        else:
+            self.mapper.toLast()()
+
+        self.tabledetailsC.resizeColumnsToContents()
+        self.tabledetailsC.horizontalHeader().setStretchLastSection(True)
+        self.tabledetailsD.resizeColumnsToContents()
+        self.tabledetailsD.horizontalHeader().setStretchLastSection(True)
+        self.tablenavigation.selectRow( self.mapper.currentIndex() )
