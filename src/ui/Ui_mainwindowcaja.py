@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\workspace\EsquipulasPy\src\ui\mainwindowcaja.ui'
+# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\mainwindowcaja.ui'
 #
-# Created: Tue Aug 10 06:46:55 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created: Tue Aug 17 19:48:04 2010
+#      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -51,7 +51,7 @@ class Ui_MainWindow(object):
         self.toolBox.setObjectName("toolBox")
         self.page_2 = QtGui.QWidget()
         self.page_2.setEnabled(True)
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 577))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 574))
         self.page_2.setObjectName("page_2")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page_2)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -104,6 +104,22 @@ class Ui_MainWindow(object):
         self.btnrecibo.setFlat(False)
         self.btnrecibo.setObjectName("btnrecibo")
         self.verticalLayout_2.addWidget(self.btnrecibo)
+        self.btnpago = QtGui.QPushButton(self.page_2)
+        self.btnpago.setEnabled(False)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btnpago.sizePolicy().hasHeightForWidth())
+        self.btnpago.setSizePolicy(sizePolicy)
+        self.btnpago.setMinimumSize(QtCore.QSize(0, 70))
+        font = QtGui.QFont()
+        font.setWeight(75)
+        font.setBold(True)
+        self.btnpago.setFont(font)
+        self.btnpago.setIconSize(QtCore.QSize(32, 32))
+        self.btnpago.setFlat(False)
+        self.btnpago.setObjectName("btnpago")
+        self.verticalLayout_2.addWidget(self.btnpago)
         self.btnArqueo = QtGui.QPushButton(self.page_2)
         self.btnArqueo.setEnabled(False)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
@@ -124,7 +140,7 @@ class Ui_MainWindow(object):
         self.toolBox.addItem(self.page_2, "")
         self.page = QtGui.QWidget()
         self.page.setEnabled(True)
-        self.page.setGeometry(QtCore.QRect(0, 0, 230, 577))
+        self.page.setGeometry(QtCore.QRect(0, 0, 142, 88))
         self.page.setObjectName("page")
         self.gridLayout = QtGui.QGridLayout(self.page)
         self.gridLayout.setObjectName("gridLayout")
@@ -178,6 +194,8 @@ class Ui_MainWindow(object):
         self.btnfactura.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+2", None, QtGui.QApplication.UnicodeUTF8))
         self.btnrecibo.setText(QtGui.QApplication.translate("MainWindow", "Recibos", None, QtGui.QApplication.UnicodeUTF8))
         self.btnrecibo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnpago.setText(QtGui.QApplication.translate("MainWindow", "Pagos en Efectivo", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnpago.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
         self.btnArqueo.setText(QtGui.QApplication.translate("MainWindow", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
         self.btnArqueo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+5", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), QtGui.QApplication.translate("MainWindow", "Movimientos", None, QtGui.QApplication.UnicodeUTF8))

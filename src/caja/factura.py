@@ -593,8 +593,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     d.ndocimpreso as 'No. Factura',
                     GROUP_CONCAT(IF(p.tipopersona=1,p.nombre,"") SEPARATOR '') as Cliente,
                     GROUP_CONCAT(IF(p.tipopersona=3,p.nombre,"") SEPARATOR '') as Vendedor,
-                    ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as subtotal,
-                    d.total- ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4)  as iva,
+                    CONCAT('US$ ',FORMAT(ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4),4))  as subtotal,
+                    CONCAT('US$ ',FORMAT(d.total- ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4),4))  as iva,
                     CONCAT('US$ ',FORMAT(d.Total,4)) as Total,
                     d.observacion,
                     DATE_FORMAT(d.fechacreacion,'%d/%m/%Y') as Fecha,
@@ -700,7 +700,6 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         else:
             return True
         return False
-
 
 #class RONavigationModel( QSortFilterProxyModel ):
 #    """
