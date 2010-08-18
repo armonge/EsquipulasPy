@@ -189,11 +189,12 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         """
         if not self.editmodel is None:
             
-            self.editmodel.hasretencion=True
             if on :
                 self.retencionwidget.setCurrentIndex(1)
+                self.editmodel.hasretencion=True
             else:
                 self.retencionwidget.setCurrentIndex(0)
+                self.editmodel.hasretencion=False
             #self.cboretencion.    
         
     @pyqtSlot( "int" )
