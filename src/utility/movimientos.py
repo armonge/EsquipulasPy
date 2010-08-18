@@ -205,7 +205,7 @@ def movAbonoDeCliente( iddoc, total, retencion,ganancia ):
     query = QSqlQuery()
     query.prepare( "INSERT INTO cuentasxdocumento (idcuenta,iddocumento,monto) values " +
     "(" + CXCCLIENTE + "," + iddoc + ",-:total)," +
-    "(" + PRODUCTOSFINANCIEROS + "," + iddoc + ",-:ganancia)," +
+    ("" if ganancia == 0  else "(" + PRODUCTOSFINANCIEROS + "," + iddoc + ",-:ganancia)," )+
     ( "" if retencion == 0 else "(" + RETENCIONPAGADA + "," + iddoc + ",:retencion)," ) +
     "(" + CAJAGENERAL + "," + iddoc + ",:totalpagar)" )
 
