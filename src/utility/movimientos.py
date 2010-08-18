@@ -9,13 +9,13 @@ from PyQt4.QtSql import QSqlQuery
 
 PERDIDAS = "334"
 """
-El id de la cuenta OG Robos o Perdidas, 650 001 000 000
+El id de la cuenta OG Robos o Perdidas, 650 001 006 000 000
 @type: string 
 """
 
 OTROSINGRESOS = "356"
 """
-El id de la cuenta OTROS INGRESOS, 420 000 000 000
+El id de la cuenta Otros Ingresos no Especificados, 420 004 000 000 000
 @type: string 
 """
 
@@ -57,7 +57,7 @@ PA Impuestos Anticipados (IR), 110 005 004 000 000
 
 CAJAGENERAL = "5"
 """
-El id de la cuenta Caja genera, 110 001 001 000
+El id de la cuenta Caja genera, 110 001 001 000 000
 @type:string
 """
 
@@ -362,3 +362,30 @@ def movKardex(iddoc, total):
     if not query.exec_():
         print query.lastError().text()
         raise Exception("No se pudo ejecutar la consulta para el movimiento contable de kardex")
+
+def movArqueo(iddoc, difference):
+    """
+    MOVIMIENTO CONTABLE PARA UN ARQUEO
+    @param iddoc: El id del documento arqueo que genera estos movimientos
+    @type iddoc: int
+    @param difference: La diferencia que existe entre el arqueo y el total de la sesión
+    @type difference: Decimal
+    """
+
+    query = QSqlQuery()
+    iddoc = str(iddoc)
+    if difference == 0:
+        raise Exception("Se trato de hacer un movimiento contable de arqueo de monto 0")
+    elif difference > 0:
+        query.prepare("INSERT INTO cuentasxdocumento ( idcuenta, iddocumento, monto) VALUES " +
+                      " ( " + CAJAGENERAL + " , " + iddoc + " , " + difference.to_eng_string() + " ) , " +
+                      " ( " + OTROSINGRESOS + " , " + iddoc + " , -" + difference.to_eng_string() + " )  "
+                      )
+    else:
+        query.prepare("INSERT INTO cuentasxdocumento ( idcuenta, iddocumento, monto) VALUES " +
+                      " ( " + CAJAGENERAL + " , " + iddoc + " , " + difference.to_eng_string() + " ) , " +
+                      " ( " + PERDIDAS + " , " + iddoc + " , -" + difference.to_eng_string() + " )  "
+                      )
+    if not query.exec_():
+        print query.lastError().text()
+        raise Exception("No se pudo ejecutar la consulta para el movimiento contable de arqueo")

@@ -241,7 +241,7 @@ class AperturaModel(object):
                 raise Exception( query.lastError().text() )
             
             
-            if not query.prepare( "INSERT INTO pagos(recibo,tipopago,tipomoneda,monto) VALUES " + 
+            if not query.prepare( "INSERT INTO movimientoscaja(iddocumento,idtipomovimiento,idtipomoneda,monto) VALUES " +
             "(" + insertedId + ",1,1,:totalCordoba), "
             "(" + insertedId + ",1,2,:totalDolar)"):
                 

@@ -33,9 +33,10 @@ class ArqueoDelegate( QStyledItemDelegate ):
                                          model.lines[row].symbol
                                          ] )
             sp= SearchPanel(self.denominationsmodel, parent )
-            #sp.setColumnHidden(0)
-            #sp.setColumnHidden(2)
-            #sp.setColumnHidden(3)
+            sp.setColumnHidden(0)
+            sp.setColumnHidden(2)
+            sp.setColumnHidden(3)
+            
             sp.setEditable(True)
             sp.setModel( self.denominationsmodel )
             sp.setModelColumn( 1 )

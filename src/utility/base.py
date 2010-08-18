@@ -198,9 +198,6 @@ class Base( object ):
         """
         if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
             if self.editmodel.valid:
-                if not QSqlDatabase.database().isOpen():
-                    QSqlDatabase.database().open()
-    
                 if self.editmodel.save():
                     QMessageBox.information( None,
                          "Llantera Esquipulas" ,
@@ -214,24 +211,12 @@ class Base( object ):
                         "Llantera Esquipulas" ,
                          """Ha ocurrido un error al guardar el documento""" ) 
     
-                if QSqlDatabase.database().isOpen():
-                    QSqlDatabase.database().close()
     
             else:
                 try:
-                    QMessageBox.warning( None,
-                        "Llantera Esquipulas" ,
-                        self.editmodel.validError,
-                        QMessageBox.StandardButtons( \
-                            QMessageBox.Ok ),
-                        QMessageBox.Ok )
+                    QMessageBox.warning( self,"Llantera Esquipulas" ,self.editmodel.validError)
                 except AttributeError:
-                    QMessageBox.warning( None,
-                        "Llantera Esquipulas" ,
-                        u"""El documento no puede guardarse ya que la información no esta completa""",
-                        QMessageBox.StandardButtons( \
-                            QMessageBox.Ok ),
-                        QMessageBox.Ok )
+                    QMessageBox.warning( self,"Llantera Esquipulas" ,u"El documento no puede guardarse ya que la información no esta completa")
 
     def setControls( self, status):
         """
@@ -300,5 +285,5 @@ class Base( object ):
         Asignar las observaciones al editmodel
         """
         if not self.editmodel is None:
-            self.editmodel.observations = self.txtObservations.toPlainText()
+            self.editmodel.observations = self.txtObservations.toPlainText().strip()
 

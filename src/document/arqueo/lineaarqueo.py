@@ -10,17 +10,45 @@ from decimal import Decimal, DivisionByZero, InvalidOperation
 class LineaArqueo( object ):
     def __init__( self , parent ):
         self.quantity = 0
+        """
+        @ivar: La cantidad de unidades de esta denominación en el arqueo
+        @type: int
+        """
         self.parent = parent
+        """
+        @ivar: El objeto arqueo al que pertenece esta linea
+        @type: ArqueoModel
+        """
         self.value = Decimal( 0 )
+        """
+        @ivar: El valor de esta denominación
+        @type: Decimal
+        """
         self.denominationId = 0
+        """
+        @ivar: El id de la denominación
+        @type: int
+        """
         self.denomination = ""
+        """
+        @ivar: La descripción de la denominación
+        @type:string
+        """
         self.currencyId = 0
+        """
+        @ivar: El id de la moneda
+        @type: int
+        """
         self.symbol = ""
+        """
+        @ivar: El simbolo de la moneda
+        @type: string
+        """
 
 
     @property
     def total( self ):
-        return self.value * self.quantity 
+        return self.value * self.quantity
 
     @property
     def valid( self ):

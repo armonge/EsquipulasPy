@@ -368,7 +368,7 @@ class DevolucionModel( QAbstractTableModel ):
             query.bindValue(":iddocumento", insertedId)
 
             if not query.exec_():
-                raise Exception(u"No se pudo aniadir el usuario")
+                raise Exception(u"No se pudo añadir el usuario")
 
             for linea in self.lines:
                 if linea.valid:
@@ -386,7 +386,7 @@ class DevolucionModel( QAbstractTableModel ):
             if not query.prepare( """
             INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (:idpadre, :idhijo)
             """ ):
-                raise Exception(u"No se pudo preparar la consulta para insertar la relación de la deovulución con la factura")
+                raise Exception(u"No se pudo preparar la consulta para insertar la relación de la devolución con la factura")
             
             query.bindValue( ":idpadre", self.invoiceId )
             query.bindValue( ":idhijo", insertedId )

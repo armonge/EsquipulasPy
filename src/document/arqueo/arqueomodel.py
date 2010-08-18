@@ -13,6 +13,7 @@ from document.arqueo.lineaarqueo import LineaArqueo
 from utility.moneyfmt import moneyfmt
 from decimal import Decimal
 from  utility import constantes
+from utility import movimientos
 
 CANTIDAD, DENOMINACION, MONEDA, TOTAL = range( 4 )
 class ArqueoModel( QAbstractTableModel ):
@@ -126,11 +127,85 @@ class ArqueoModel( QAbstractTableModel ):
         self.totalDepositC = Decimal(0)
         self.totalDepositD = Decimal(0)
 
+        self.totalTransferC = Decimal(0)
+        self.totalTransferD = Decimal(0)
+
+    @property
+    def differenceD(self):
+        """
+        La diferencia en dolares entre el arqueo y la sesión
+        @rtype:Decimal
+        """
+        tmp = Decimal(0)
+        tmp += self.totalCardD - self.expectedCardD
+        tmp += self.totalCardD - self.expectedCashD
+        tmp += self.totalDepositD - self.expectedDepositD
+        tmp += self.totalTransferD -self.expectedTransferD
+        tmp += self.totalCkD - self.expectedCkD
+
+        return tmp
+
+    @property
+    def differenceC(self):
+        """
+        La diferencia en cordobas entre el arqueo y la sesión
+        @rtype:Decimal
+        """
+        tmp = 0
+        tmp += self.totalCardC - self.expectedCardC
+        tmp += self.totalCashC - self.expectedCashC
+        tmp += self.totalDepositC - self.expectedDepositC
+        tmp += self.totalTransferC - self.expectedTransferC
+        tmp += self.totalCkC - self.expectedCkC
+
+        return tmp
+
+    @property
+    def totalDifferenceC(self):
+        """
+        La diferencia total en cordobas, es decir la suma de las diferencias en cordobas más
+        las diferencias en dolares multiplicadas por el tipo de cambio
+        @rtype:Decimal
+        """
+        return self.differenceC + self.differenceD * self.exchangeRate
+
+    @property
+    def subtotalC(self):
+        """
+        El subtotal en cordobas de este arqueo
+        @rtype:Decimal
+        """
+        return self.totalCardC + self.totalCashC + self.totalDepositC + self.totalTransferC + self.totalCkC
+
+    @property
+    def subtotalD(self):
+        """
+        El subtotal en dolares de este arqueo
+        @rtype:Decimal
+        """
+        return self.totalCardD + self.totalCashD + self.totalDepositD + self.totalTransferD + self.totalCkD
+
+    @property
+    def totalC(self):
+        """
+        El total en cordobas de este arqueo
+        @rtype:Decimal
+        """
+        return self.subtotalC + self.subtotalD * self.exchangeRate
+
+    @property
+    def totalD(self):
+        """
+        El total en cordobas de este arqueo
+        @rtype:Decimal
+        """
+        return self.subtotalD + self.subtotalC / self.exchangeRate
+    
     @property
     def totalCashC ( self ):
         """
         El total en el modelo
-        
+
         M{TOTAL = S{sum}TOTALLINEA, LINEA.VALID = True}
         @rtype: Decimal
         """
@@ -162,7 +237,7 @@ class ArqueoModel( QAbstractTableModel ):
         Si un documento es valido
         @rtype: bool
         """
-        return self.validLines > 0 and self.exchangeRateId != 0 and self.printedDocumentNumber != ""
+        return self.exchangeRateId != 0 and self.printedDocumentNumber != ""
 
     def data( self, index, role = Qt.DisplayRole ):
         """
@@ -251,7 +326,7 @@ class ArqueoModel( QAbstractTableModel ):
         El numero de columnas en el modelo
         @rtype: int
         """
-        return 3
+        return 4
 
     def save( self ):
         """
@@ -271,7 +346,7 @@ class ArqueoModel( QAbstractTableModel ):
                 
             if not self.database.transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
-
+            #Insertar el documento
             if not query.prepare( """
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,  observacion,total,  idtipocambio) 
             VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total, :idtc)
@@ -282,14 +357,14 @@ class ArqueoModel( QAbstractTableModel ):
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":anulado", 0 )
             query.bindValue( ":observacion", self.observations )
-            query.bindValue( ":total", self.total.to_eng_string() )
+            query.bindValue( ":total", self.totalD.to_eng_string() )
             query.bindValue( ":idtc", self.exchangeRateId )
 
             if not query.exec_():
                 raise  Exception( "No se pudo guardar el arqueo" )
 
-            insertedId = query.lastInsertId()
-
+            insertedId = query.lastInsertId().toInt()[0]
+            #Insertar el usuario
             if not query.prepare( """
             INSERT INTO personasxdocumento (idpersona, iddocumento)
             VALUES (:idpersona, :iddocumento) 
@@ -300,7 +375,36 @@ class ArqueoModel( QAbstractTableModel ):
             if not query.exec_():
                 raise Exception( "No se pudo guardar el usuario" )
 
+            #Insertar los totales
+            if not query.prepare(
+            " INSERT INTO movimientoscaja (iddocumento, idtipomovimiento, idtipomoneda, monto)" +
+            " VALUES ( " + insertedId +" , " + constantes.IDPAGOEFECTIVO + " , " + constantes.IDDOLARES + " , :cashD )," +
+            " ( " + insertedId +" , " + constantes.IDPAGOEFECTIVO + " , " + constantes.IDCORDOBAS + " , :cashC )," +
+            " ( " + insertedId +" , " + constantes.IDPAGOCHEQUE+ " , " + constantes.IDDOLARES + " , :ckD )," +
+            " ( " + insertedId +" , " + constantes.IDPAGOCHEQUE+ " , " + constantes.IDCORDOBAS + " , :ckC )," +
+            " ( " + insertedId +" , " + constantes.IDPAGODEPOSITO + " , " + constantes.IDDOLARES + " , :depositD )," +
+            " ( " + insertedId +" , " + constantes.IDPAGODEPOSITO + " , " + constantes.IDCORDOBAS + " , :depositC )," +
+            " ( " + insertedId +" , " + constantes.IDPAGOTRANSFERENCIA + " , " + constantes.IDDOLARES + " , :transferD )," +
+            " ( " + insertedId +" , " + constantes.IDPAGOTRANSFERENCIA + " , " + constantes.IDCORDOBAS + " , :transferC )," +
+            " ( " + insertedId +" , " + constantes.IDPAGOTARJETA + " , " + constantes.IDDOLARES + " , :cardD )," +
+            " ( " + insertedId +" , " + constantes.IDPAGOTARJETA + " , " + constantes.IDCORDOBAS + " , :cardC )" 
+            ):
+                raise Exception("No se pudo preparar la consulta para guardar los totales del arqueo")
 
+            query.bindValue(":cashD", self.totalCashD.to_eng_string())
+            query.bindValue(":cashC", self.totalCashC.to_eng_string())
+            query.bindValue(":ckD", self.totalCkD.to_eng_string())
+            query.bindValue(":depositC", self.totalCkC.to_eng_string())
+            query.bindValue(":depositD", self.totalDepositD.to_eng_string())
+            query.bindValue(":depositC", self.totalDepositC.to_eng_string())
+            query.bindValue(":cardD", self.totalCardD.to_eng_string())
+            query.bindValue(":cardC", self.totalCardC.to_eng_string())
+
+            if not query.exec_():
+                raise Exception("No se pudieron insertar los pagos")
+            
+            movimientos.movArqueo(insertedId, self.differenceC)
+            
             for line in self.lines:
                 if line.valid:
                     line.save( insertedId )

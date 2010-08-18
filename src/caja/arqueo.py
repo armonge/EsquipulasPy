@@ -5,8 +5,8 @@ Created on 07/06/2010
 @author: Andrés Reyes Monge
 '''
 #FIXME: EL arqueo no muestra todavia el total de la sesión
-from decimal import  Decimal
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter
+from decimal import  Decimal, InvalidOperation
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator
 from PyQt4.QtCore import pyqtSlot, SIGNAL, QDateTime, QTimer, QModelIndex
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 from ui.Ui_arqueo import Ui_frmArqueo
@@ -121,12 +121,16 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         self.actionCancel.setVisible( not status )
         self.actionSave.setVisible( not status )
 
-        self.txtCkD.setReadOnly(status)
-        self.txtCkC.setReadOnly(status)
-        self.txtCardD.setReadOnly(status)
-        self.txtCardC.setReadOnly(status)
-        self.txtDepositD.setReadOnly(status)
-        self.txtDepositC.setReadOnly(status)
+        self.sbCkD.setReadOnly(status)
+        self.sbCkC.setReadOnly(status)
+        self.sbCardD.setReadOnly(status)
+        self.sbCardC.setReadOnly(status)
+        self.sbDepositD.setReadOnly(status)
+        self.sbDepositC.setReadOnly(status)
+        self.sbTransferD.setReadOnly(status)
+        self.sbTransferC.setReadOnly(status)
+
+        self.txtObservations.setReadOnly(status)
         
 
         
@@ -140,6 +144,9 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
             self.tabledetailsC.setColumnHidden( MONEDA, True )
             self.tabledetailsD.setColumnHidden( MONEDA, True )
+
+            doublevalidator = QDoubleValidator(0, 99999999, 4, self)
+            
         else:
             self.tabledetailsC.setModel( self.detailsproxymodel )
             self.tabledetailsC.setColumnHidden( IDDOCUMMENTOT, True )
@@ -156,17 +163,17 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         
 
     def updateLabels( self ):
-        self.lblCashC.setText(  moneyfmt( self.editmodel.totalCashC, 4, "C$" ) + " / " + moneyfmt(self.editmodel.expectedCashC, 4, "C$"))
-        self.lblCashD.setText( moneyfmt( self.editmodel.totalCashD, 4, "US$" ) + " / " + moneyfmt(self.editmodel.expectedCashD, 4, "US$") )
+        self.lblCashC.setText(   moneyfmt(self.editmodel.totalCashC, 4, "C$") + " / " + moneyfmt(self.editmodel.expectedCashC, 4, "C$"))
+        self.lblCashD.setText( moneyfmt(self.editmodel.totalCashD, 4, "US$") + " / " +  moneyfmt(self.editmodel.expectedCashD, 4, "US$") )
 
-        self.lblCkC.setText( moneyfmt( self.editmodel.totalCkC, 4, "C$" ) + " / " + moneyfmt(self.editmodel.expectedCkC, 4, "C$") )
-        self.lblCkD.setText( moneyfmt( self.editmodel.totalCkD, 4, "US$" ) + " / " + moneyfmt(self.editmodel.expectedCkD, 4, "US$") )
+        self.lblCkC.setText( moneyfmt(self.editmodel.expectedCkC, 4, "C$") )
+        self.lblCkD.setText( moneyfmt(self.editmodel.expectedCkD, 4, "US$") )
 
-        self.lblCardC.setText( moneyfmt( self.editmodel.totalCardC, 4, "C$" ) + " / " + moneyfmt(self.editmodel.expectedCardC, 4, "C$") )
-        self.lblCardD.setText( moneyfmt( self.editmodel.totalCardD, 4, "US$" ) + " / " + moneyfmt(self.editmodel.expectedCardD, 4, "US$") )
+        self.lblCardC.setText( moneyfmt(self.editmodel.expectedCardC, 4, "C$") )
+        self.lblCardD.setText(  moneyfmt(self.editmodel.expectedCardD, 4, "US$") )
 
-        self.lblDepositC.setText( moneyfmt( self.editmodel.totalDepositC, 4, "C$" ) + " / " + moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
-        self.lblDepositD.setText( moneyfmt( self.editmodel.totalDepositD, 4, "US$" ) + " / " + moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
+        self.lblDepositC.setText( moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
+        self.lblDepositD.setText(  moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
 
     @pyqtSlot( )
     def on_actionNew_activated( self ):
@@ -177,6 +184,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.editmodel = ArqueoModel()
             self.editmodel.uid = self.user.uid
 
+            self.editmodel.datetime.setDate(self.parentWindow.datosSesion.fecha)
 
             self.dolarproxy = ArqueoProxyModel()
             self.dolarproxy.setSourceModel(self.editmodel)
@@ -327,8 +335,29 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         """
         Redefiniendo el metodo save de Base para mostrar advertencias si el arqueo no concuerda
         """
-        if self.editmodel.total == self.editmodel.expectedTotal or QMessageBox.question( self, "Llantera Esquipulas: Caja", u"El total de la sesión no coincide con el total del arqueo\n ¿Desea continuar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
-            super(frmArqueo, self).on_actionSave_activated()
+        try:
+            if not self.editmodel.totalCashC == self.editmodel.expectedCashC:
+                raise UserWarning(u"El total de efectivo en cordobas del arqueo no coincide con el de la sesión")
+            elif not self.editmodel.totalCashD == self.editmodel.expectedCashD:
+                raise UserWarning(u"El total de efectivo en dolares del arqueo no coincide con el de la sesión")
+            elif not self.editmodel.totalCkD == self.editmodel.expectedCkD:
+                raise UserWarning(u"El total de cheques en dolares del arqueo no coincide con el de la sesión")
+            elif not self.editmodel.totalCkC == self.editmodel.expectedCkC:
+                raise UserWarning(u"El total de cheques en cordobas del arqueo no coincide con el de la sesión")
+            elif not self.editmodel.totalTransferD == self.editmodel.expectedTransferD:
+                raise UserWarning(u"El total de transferencias en dolares del arqueo no coincide con el de la sesión")
+            elif not self.editmodel.totalTransferC == self.editmodel.expectedTransferC:
+                raise UserWarning(u"El total de transferencias en cordobas del arqueo no coincide con el de la sesión")
+            elif not self.editmodel.totalDepositD== self.editmodel.expectedDepositD:
+                raise UserWarning(u"El total de depositos en dolares del arqueo no coincide con el de la sesión")
+            elif not self.editmodel.totalDepositC== self.editmodel.expectedDepositC:
+                raise UserWarning(u"El total de depositos en cordobas del arqueo no coincide con el de la sesión")
+        except UserWarning as inst:
+            if not self.editmodel.observations == "":
+                if QMessageBox.question(self, "Llantera Esquipulas", unicode(inst) + u"\n¿Desea Continuar?", QMessageBox.Yes| QMessageBox.No) == QMessageBox.Yes:
+                    super(frmArqueo, self).on_actionSave_activated()
+            else:
+                QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst) + u"\n Por favor especifique el motivo de la diferencia")
 
     @pyqtSlot(  )
     def on_actionPreview_activated( self ):
@@ -369,3 +398,71 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         self.tabledetailsD.resizeColumnsToContents()
         self.tabledetailsD.horizontalHeader().setStretchLastSection(True)
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
+
+
+
+            
+    @pyqtSlot("QString")
+    def on_sbCkD_valueChanged(self, text):
+        if not self.editmodel is None:
+            try:
+                self.editmodel.totalCkD = Decimal(text)
+            except InvalidOperation:
+                self.editmodel.totalCkD = Decimal(0)
+            print self.editmodel.totalCkD
+            
+    @pyqtSlot("QString")
+    def on_sbCkC_valueChanged(self, text):
+        if not self.editmodel is None:
+            try:
+                self.editmodel.totalCkC = Decimal(text)
+            except InvalidOperation:
+                self.editmodel.totalCkC = Decimal(0)
+            
+    @pyqtSlot("QString")
+    def on_sbCardD_valueChanged(self, text):
+        if not self.editmodel is None:
+            try:
+                self.editmodel.totalCardD = Decimal(text)
+            except InvalidOperation:
+                self.editmodel.totalCardD = Decimal(0)
+            
+    @pyqtSlot("QString")
+    def on_sbCardC_valueChanged(self, text):
+        if not self.editmodel is None:
+            try:
+                self.editmodel.totalCardC = Decimal(text)
+            except InvalidOperation:
+                self.editmodel.totalCardC = Decimal(0)
+            
+    @pyqtSlot("QString")
+    def on_sbDepositD_valueChanged(self, text):
+        if not self.editmodel is None:
+            try:
+                self.editmodel.totalDepositD = Decimal(text)
+            except InvalidOperation:
+                self.editmodel.totalDepositD = Decimal(0)
+            
+    @pyqtSlot("QString")
+    def on_sbDepositC_valueChanged(self, text):
+        if not self.editmodel is None:
+            try:
+                self.editmodel.totalDepositC = Decimal(text)
+            except InvalidOperation:
+                self.editmodel.totalDepositC = Decimal(0)
+
+    @pyqtSlot("QString")
+    def on_sbTransferD_valueChanged(self, text):
+        if not self.editmodel is None:
+            try:
+                self.editmodel.totalTransferD = Decimal(text)
+            except InvalidOperation:
+                self.editmodel.totalTransferD = Decimal(0)
+
+    @pyqtSlot("QString")
+    def on_sbTransferC_valueChanged(self, text):
+        if not self.editmodel is None:
+            try:
+                self.editmodel.totalTransferC = Decimal(text)
+            except InvalidOperation:
+                self.editmodel.totalTransferC = Decimal(0)
