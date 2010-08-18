@@ -142,10 +142,10 @@ class ChequeModel( AccountsSelectorModel ):
             self.validError = "No hay un concepto seleccionado" 
             return False
         elif self.exchangeRateId == 0:
-            self.validError = "no hay un tipo de cambio para la fecha" + self.datetime 
+            self.validError = "No hay un tipo de cambio para la fecha" + self.datetime 
             return False
         elif self.hasretencion==True and self.retencionPorcentaje==0:
-            self.validError = "NO existe un porcentaje de Retencion seleccionado" 
+            self.validError = "No existe un porcentaje de Retencion seleccionado" 
             return False
         elif not super(ChequeModel, self).valid :
             self.validError ="Hay un error en sus cuentas contables"
