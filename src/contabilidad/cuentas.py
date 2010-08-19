@@ -5,6 +5,7 @@ Created on 03/07/2010
 @author: Andrés Reyes Monge
 '''
 from decimal import Decimal
+import logging
 
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSlot, SIGNAL, SLOT, QRegExp
@@ -65,9 +66,10 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
                                                  1 if dlg.cbEsdebe.checkState() == Qt.CheckState else 0
                                                    )
             except UserWarning as inst:
+                logging.error(inst)
                 QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             except Exception as inst:
-                print inst
+                logging.critical(inst)
 
     @pyqtSlot(  )
     def on_btnModify_clicked( self ):
@@ -277,7 +279,7 @@ class Account( object ):
             query.bindValue( ":descripcion", self.itemData[DESCRIPCION] )
             query.bindValue( ":esdebe", self.itemData[ESDEBE] )
             if not query.exec_():
-                print query.lastError().text()
+                logging.critical(query.lastError().text())
                 raise UserWarning( "No se pudo insertar la cuenta contable" )
             self.id = query.lastInsertId().toInt()[0]
 

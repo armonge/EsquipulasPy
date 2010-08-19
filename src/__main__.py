@@ -12,7 +12,13 @@ if __name__ == '__main__':
     import sys
     import os
     sip.setapi( 'QString', 2 )
-
+    
+    import logging
+    LOG_FILENAME = "esquipulas.log"
+    logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)s %(module)s %(funcName)s %(lineno)d %(message)s',
+                    filename=LOG_FILENAME,
+                    )
 
     from PyQt4 import QtGui, QtCore
     from utility.database import Database

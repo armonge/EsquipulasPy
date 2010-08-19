@@ -4,8 +4,9 @@
 
 Modulo que contendra las funciones para insertar los movimientos contables a la base de datos
 '''
-
+import logging
 from PyQt4.QtSql import QSqlQuery
+
 
 PERDIDAS = "334"
 """
@@ -360,7 +361,7 @@ def movKardex(iddoc, total):
                       " ( " + PERDIDAS + " , " + iddoc + " , -" + total.to_eng_string() + " )  ")
         
     if not query.exec_():
-        print query.lastError().text()
+        logging.critical(query.lastError().text())
         raise Exception("No se pudo ejecutar la consulta para el movimiento contable de kardex")
 
 def movArqueo(iddoc, difference):
@@ -387,5 +388,5 @@ def movArqueo(iddoc, difference):
                       " ( " + PERDIDAS + " , " + iddoc + " , -" + difference.to_eng_string() + " )  "
                       )
     if not query.exec_():
-        print query.lastError().text()
+        logging.critical(query.lastError().text())
         raise Exception("No se pudo ejecutar la consulta para el movimiento contable de arqueo")

@@ -352,6 +352,8 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                 raise UserWarning(u"El total de depositos en dolares del arqueo no coincide con el de la sesión")
             elif not self.editmodel.totalDepositC== self.editmodel.expectedDepositC:
                 raise UserWarning(u"El total de depositos en cordobas del arqueo no coincide con el de la sesión")
+
+            super(frmArqueo, self).on_actionSave_activated()
         except UserWarning as inst:
             if not self.editmodel.observations == "":
                 if QMessageBox.question(self, "Llantera Esquipulas", unicode(inst) + u"\n¿Desea Continuar?", QMessageBox.Yes| QMessageBox.No) == QMessageBox.Yes:

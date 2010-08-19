@@ -4,6 +4,8 @@
 Module implementing frmLiquidacion.
 """
 from decimal import Decimal
+import logging
+
 from PyQt4.QtGui import QMainWindow, QAbstractItemView, QDoubleValidator,\
 QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, QPrinter
 from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer
@@ -290,8 +292,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabledetails.setModel( self.detailsproxymodel )
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(inst)
         except Exception as inst:
-            print inst
+            logging.critical(inst)
 
 
 
@@ -429,9 +432,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         except UserWarning as inst:
             self.status = True
             QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(inst)
         except Exception as inst:
             self.status = True
-            print inst
+            logging.critical(inst)
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()

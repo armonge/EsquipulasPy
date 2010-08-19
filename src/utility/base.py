@@ -99,8 +99,9 @@ class Base( object ):
             except UserWarning  as inst :
                 QMessageBox.critical( self, "Llantera Esquipulas", str( inst ), QMessageBox.Ok )
                 self.dtPicker.setDateTime( self.editmodel.datetime )
+                logging.error(inst)
             except Exception as inst:
-                print inst
+                logging.critical(inst)
                 self.dtPicker.setDateTime( self.editmodel.datetime )
 
 

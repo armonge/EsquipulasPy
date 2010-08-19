@@ -4,6 +4,8 @@ Created on 28/05/2010
 
 @author: Andrés Reyes Monge
 '''
+import logging
+
 from PyQt4.QtCore import SIGNAL, SLOT, pyqtSlot, Qt , QVariant, pyqtSlot
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
@@ -45,7 +47,7 @@ class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise Exception("No se pudo abrir la base de datos")
+                    raise UserWarning("No se pudo abrir la base de datos")
             self.backmodel.setQuery( """
                 SELECT idarticulo, descripcion, dai, isc, comision, ganancia, activo
                 FROM vw_articulosconcostosactuales v
@@ -57,10 +59,12 @@ class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
             self.filtermodel.setFilterKeyColumn( -1 )
             self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
             self.tableview.setModel( self.filtermodel )
-            
+        except UserWarning as inst:
+            logging.error(inst)
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst)
         except Exception as inst:
-            print inst
-            return False
+            loggin.critical(inst)
+            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al cargar la lista de articulos")
         finally:
             if self.database.isOpen():
                 self.database.close()
@@ -125,7 +129,7 @@ class ArticlesModel( QSqlQueryModel ):
             try:
                 if not QSqlDatabase.database().isOpen():
                     if not QSqlDatabase.open():
-                        raise Exception("No se pudo abrir la base de datos")
+                        raise UserWarning("No se pudo abrir la base de datos")
                 if index.column() == DAI:
                     self.queries.append( self.setDAI( value.toString(), primarykey ) )
                 elif index.column() == ISC:
@@ -140,9 +144,12 @@ class ArticlesModel( QSqlQueryModel ):
                 self.dirty = True
                 self.emit( SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), index, index )
                 return True
+            except UserWarning as inst:
+                QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+                logging.error(inst)
             except Exception as inst:
-                print inst
-                return False
+                logging.critical(inst)
+                QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al guardar su cambio")
         return False
             
     def setACTIVO( self, value, id ):

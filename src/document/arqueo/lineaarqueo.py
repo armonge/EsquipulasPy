@@ -69,5 +69,5 @@ class LineaArqueo( object ):
         query.bindValue( ":denominacion", self.denominationId )
 
         if not query.exec_():
-            print query.lastError().text()
+            logging.critical(query.lastError().text())
             raise Exception( "No se pudo insertar una linea" )

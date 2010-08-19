@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
 '''
 Created on 03/06/2010
 
 @author: Administrator
 '''
+import logging
+
 from PyQt4.QtGui import QMainWindow, QMessageBox, QAbstractItemView, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QStyledItemDelegate, QTextDocument, QIntValidator
 from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QTimer, QSize, QRegExp, QVariant
 from PyQt4.QtSql import QSqlTableModel, QSqlDatabase
@@ -53,27 +56,24 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise Exception( "No se pudo abrir la base de datos" )
+                    raise UserWarning( "No se pudo abrir la base de datos" )
                 
             self.backmodel.setTable( self.table )
             self.backmodel.select()
 
-            if self.database.isOpen():
-                self.database.close()
-
-
-            return True
-
+        except UserWarning as inst:
+            logging.error(inst)
         except Exception as inst:
-            print inst
-
+            logging.critical(inst)
+            return False
+        finally:
             if self.database.isOpen():
                 self.database.close()
 
-            return False
+        return True
     @pyqtSlot( )
     def on_actionDelete_triggered( self ):
-        print self.backmodel.removeRows( self.tableview.currentIndex().row(), 1 )
+        self.backmodel.removeRows( self.tableview.currentIndex().row(), 1 )
 
     @pyqtSlot( "QString" )
     def on_txtSearch_textChanged( self, text ):
@@ -90,8 +90,7 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise Exception( "No se pudo abrir la conexion con la base de datos para guardar los cambios" )
-            print "here"
+                    raise UserWarning( u"No se pudo abrir la conexión con la base de datos para guardar los cambios" )
             result = self.backmodel.submitAll()
             if not result:
                 raise Exception( self.backmodel.lastError().text() )
@@ -101,12 +100,15 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
                  """Sus cambios han sido guardados""" ) 
                 self.status = False
                 self.updateModels()
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(inst)
         except Exception as ins:
-            QMessageBox.critical( None,
+            QMessageBox.critical( self,
                      "Llantera Esquipulas" ,
                      """Hubo un error al guardar sus cambios""" ) 
-            print ins
-            print self.backmodel.lastError().text()
+            logging.critical(inst)
+            logging.critical(self.backmodel.lastError().text())
         finally:
             if self.database.isOpen():
                 self.database.close()

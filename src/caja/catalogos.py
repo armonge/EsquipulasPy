@@ -4,7 +4,9 @@ Created on 03/06/2010
 
 @author: Administrator
 '''
-from PyQt4.QtGui import  QStyledItemDelegate, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, QTextDocument
+import logging
+
+from PyQt4.QtGui import  QStyledItemDelegate, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, QTextDocument, QMessageBox
 from PyQt4.QtCore import  Qt, QRegExp, QSize, QVariant
 from PyQt4.QtSql import QSqlTableModel
 from utility.catgeneric import frmCatGeneric, PeopleDelegate
@@ -24,7 +26,9 @@ class frmCatClientes( frmCatGeneric ):
 
     def updateModels( self ):
         try:
-            self.database.open()
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning(u"No se pudo conectar con la base de datos")
             self.backmodel.setTable( self.table )
             self.backmodel.setFilter( "tipopersona=1" )
             self.backmodel.select()
@@ -45,15 +49,18 @@ class frmCatClientes( frmCatGeneric ):
             self.backmodel.setHeaderData( NOMBRE, Qt.Horizontal, "Nombre", Qt.DisplayRole );
             self.backmodel.setHeaderData( TELEFONO, Qt.Horizontal, u"Telefóno", Qt.DisplayRole );
             self.backmodel.setHeaderData( EMAIL, Qt.Horizontal, "e-mail", Qt.DisplayRole );
-            return True
-
+        except UserWarning as inst:
+            logging.error(inst)
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            return False
         except Exception as inst:
-            print inst
-
+            logging.critical(inst)
+            return False
+        finally:
             if self.database.isOpen():
                 self.database.close()
-
-            return False
+        return True
+            
 
     def new( self ):
         super( frmCatClientes, self ).new()

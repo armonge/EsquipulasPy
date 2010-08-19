@@ -5,7 +5,7 @@ Created on 11/07/2010
 @author: Andrés Reyes Monge
 '''
 from decimal import Decimal
-
+import logging
 from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel, QVBoxLayout, QDialogButtonBox, QFormLayout, QLineEdit, QDialog, QTableView, QAbstractItemView, QMessageBox
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
 from PyQt4.QtCore import QTimer, Qt, pyqtSlot, SIGNAL, SLOT, QDateTime
@@ -116,8 +116,9 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             self.tabledetails.horizontalHeader().setStretchLastSection(True)
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(inst)
         except Exception as inst:
-            print inst
+            logging.critical(inst)
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
         self.detailsproxymodel.setFilterRegExp("^"+ self.navigationmodel.record( index ).value( "iddocumento" ).toString()+ "$")
@@ -179,7 +180,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
         query = QSqlQuery()
         try:
             if not QSqlDatabase.database().open():
-                raise Exception( u"No se pudo establecer una conexión con la base de datos" )
+                raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
     
             dlgdoc = dlgSelectDoc(self.tiposdoc)
             if dlgdoc.exec_() == QDialog.Accepted:
@@ -254,10 +255,14 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
 #                self.dtPicker.emit( SIGNAL( "dateTimeChanged( QDateTime )" ), QDateTime.currentDateTime() )
                 self.dtPicker.setDateTime( QDateTime.currentDateTime() )
                 self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
-                
+
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.warning(inst)
+            self.on_actionCancel_activated()
         except Exception as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", "No se pudo iniciar el documento kardex")
-            print inst
+            logging.critical(inst)
             self.on_actionCancel_activated()
         finally:
             if self.database.isOpen():
@@ -291,7 +296,6 @@ class dlgSelectDoc( QDialog ):
         GROUP BY d.iddocumento
         HAVING SUM(h.idtipodoc) IS NULL
         """ % ( constantes.IDKARDEX , tiposdoc)
-        print query
         self.model.setQuery( query)
 
 

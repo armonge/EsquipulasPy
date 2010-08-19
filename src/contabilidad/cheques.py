@@ -4,12 +4,15 @@ Created on 03/07/2010
 
 @author: Administrator
 '''
-from utility.base import Base
+from decimal import Decimal, InvalidOperation
+import functools
+import logging
+
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase,QSqlQuery
 from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, SIGNAL, QModelIndex, QTimer,QSize
 from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, QPrinter
-from decimal import Decimal, InvalidOperation
-import functools
+
+from utility.base import Base
 from utility.moneyfmt import moneyfmt
 from ui.Ui_cheques import Ui_frmCheques
 from document.cheque.chequemodel import ChequeModel
@@ -234,9 +237,10 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                     self.updateTotals()
                     
         except UserWarning as inst:
+            logging.error(inst)
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
-            print inst
+            logging.critical(inst)
                 
     @pyqtSlot( "int" )
     def on_cboretencion_currentIndexChanged( self, index ):

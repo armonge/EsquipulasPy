@@ -4,6 +4,8 @@ Modulo en el que se maneja la logica de usuarios
 """
 import hashlib
 import functools
+import logging
+
 
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from PyQt4.QtCore import  SIGNAL, SLOT, Qt, QTimer
@@ -66,9 +68,9 @@ class dlgPasswordChange(QDialog):
         
         
         self.user = user
-        
-        self.connect(self.buttonBox, SIGNAL("accepted()"), self, SLOT("accept()"))
-        self.connect(self.buttonBox, SIGNAL("rejected()"), self, SLOT("reject()"))
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
         
     def accept(self):
         oldp = self.txtOldPassword.text()
@@ -77,7 +79,10 @@ class dlgPasswordChange(QDialog):
         
         try:
             if self.user.changePassword(oldp, newp, repeatp):
+                logging.info(u"La contraseña del usuario %s ha sido cambiada" % self.user.user)
                 super(dlgPasswordChange, self).accept()
+            else:
+                logging.warning(u"Intento fallido de cambiar la contraseña del usuario %s" % self.user.user)
         except UserWarning as inst:
             self.lblError.setText(unicode(inst) )
             self.lblError.setVisible(True)
@@ -187,11 +192,12 @@ class User:
                 query.bindValue( ":password", self.password + self.secret )
 
                 if not query.exec_():
-                    raise UserWarning( "La consulta no se pudo ejecutar" )
+                    raise Exception( "La consulta no se pudo ejecutar" )
 
                 if query.size() == 0:
                     raise UserWarning( "El usuario no es valido" )
                 else:
+                    logging.info(u"El usuario %s ha iniciado sesión" % self.user)
                     while query.next():
                         self.__valid = True
                         self.__uid = query.value( UID ).toInt()[0]
@@ -199,8 +205,9 @@ class User:
                         self.__roles.append( query.value( ROLE ).toString() )
         except UserWarning as inst:
             self.error = str( inst )
+            logging.error(inst)
         except Exception as e:
-            print e
+            logging.critical(inst)
         finally:
             if self.db.isOpen():
                 self.db.close()

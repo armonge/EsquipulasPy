@@ -300,7 +300,6 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        print self.navmodel.record( index ).value( "iddocumento" ).toString()
         self.detailsproxymodel.setFilterRegExp( "^"+ self.navmodel.record( index ).value( "iddocumento" ).toString()+ "$" )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 

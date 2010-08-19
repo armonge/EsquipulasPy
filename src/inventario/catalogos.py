@@ -2,6 +2,7 @@
 """
 Module implementing frmCatProveedores.
 """
+import logging
 
 from PyQt4.QtGui import QStyledItemDelegate, QAbstractItemView, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, QTextDocument
 from PyQt4.QtCore import  Qt, QRegExp, QSize, QVariant
@@ -17,7 +18,9 @@ class frmCatMarcas( frmCatGeneric ):
         self.setWindowTitle( "Catalogo de Marcas" )
     def updateModels( self ):
         try:
-            self.database.open()
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning(u"No se pudo conectar con la base de datos")
             self.backmodel.setTable( self.table )
             self.backmodel.select()
             self.filtermodel = QSortFilterProxyModel()
@@ -29,10 +32,12 @@ class frmCatMarcas( frmCatGeneric ):
 
             self.tableview.setColumnHidden( 0, True )
             return True
-
+        except UserWarning as inst:
+            logging.error(inst)
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
-            print inst
-
+            logging.critical(inst)
+        finally:
             if self.database.isOpen():
                 self.database.close()
 

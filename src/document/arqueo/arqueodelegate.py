@@ -62,7 +62,7 @@ class ArqueoDelegate( QStyledItemDelegate ):
                 model.setData( index, self.denominationsmodel.items[editor.currentIndex()] )
                 del self.denominationsmodel.items[editor.currentIndex()]
             except IndexError as inst:
-                print inst
+                logging.error(inst)
         else:
             QStyledItemDelegate.setModelData( self, editor, model, index )
 

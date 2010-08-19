@@ -138,7 +138,7 @@ class ArqueoModel( QAbstractTableModel ):
         """
         tmp = Decimal(0)
         tmp += self.totalCardD - self.expectedCardD
-        tmp += self.totalCardD - self.expectedCashD
+        tmp += self.totalCashD - self.expectedCashD
         tmp += self.totalDepositD - self.expectedDepositD
         tmp += self.totalTransferD -self.expectedTransferD
         tmp += self.totalCkD - self.expectedCkD
@@ -157,7 +157,6 @@ class ArqueoModel( QAbstractTableModel ):
         tmp += self.totalDepositC - self.expectedDepositC
         tmp += self.totalTransferC - self.expectedTransferC
         tmp += self.totalCkC - self.expectedCkC
-
         return tmp
 
     @property
@@ -360,6 +359,7 @@ class ArqueoModel( QAbstractTableModel ):
             query.bindValue( ":total", self.totalD.to_eng_string() )
             query.bindValue( ":idtc", self.exchangeRateId )
 
+            
             if not query.exec_():
                 raise  Exception( "No se pudo guardar el arqueo" )
 
@@ -378,16 +378,16 @@ class ArqueoModel( QAbstractTableModel ):
             #Insertar los totales
             if not query.prepare(
             " INSERT INTO movimientoscaja (iddocumento, idtipomovimiento, idtipomoneda, monto)" +
-            " VALUES ( " + insertedId +" , " + constantes.IDPAGOEFECTIVO + " , " + constantes.IDDOLARES + " , :cashD )," +
-            " ( " + insertedId +" , " + constantes.IDPAGOEFECTIVO + " , " + constantes.IDCORDOBAS + " , :cashC )," +
-            " ( " + insertedId +" , " + constantes.IDPAGOCHEQUE+ " , " + constantes.IDDOLARES + " , :ckD )," +
-            " ( " + insertedId +" , " + constantes.IDPAGOCHEQUE+ " , " + constantes.IDCORDOBAS + " , :ckC )," +
-            " ( " + insertedId +" , " + constantes.IDPAGODEPOSITO + " , " + constantes.IDDOLARES + " , :depositD )," +
-            " ( " + insertedId +" , " + constantes.IDPAGODEPOSITO + " , " + constantes.IDCORDOBAS + " , :depositC )," +
-            " ( " + insertedId +" , " + constantes.IDPAGOTRANSFERENCIA + " , " + constantes.IDDOLARES + " , :transferD )," +
-            " ( " + insertedId +" , " + constantes.IDPAGOTRANSFERENCIA + " , " + constantes.IDCORDOBAS + " , :transferC )," +
-            " ( " + insertedId +" , " + constantes.IDPAGOTARJETA + " , " + constantes.IDDOLARES + " , :cardD )," +
-            " ( " + insertedId +" , " + constantes.IDPAGOTARJETA + " , " + constantes.IDCORDOBAS + " , :cardC )" 
+            " VALUES ( " + str(insertedId) +" , " + str(constantes.IDPAGOEFECTIVO) + " , " + str(constantes.IDDOLARES )+ " , :cashD )," +
+            " ( " + str(insertedId) +" , " + str(constantes.IDPAGOEFECTIVO )+ " , " + str(constantes.IDCORDOBAS )+ " , :cashC )," +
+            " ( " + str(insertedId) +" , " + str(constantes.IDPAGOCHEQUE)+ " , " + str(constantes.IDDOLARES )+ " , :ckD )," +
+            " ( " + str(insertedId) +" , " + str(constantes.IDPAGOCHEQUE)+ " , " + str(constantes.IDCORDOBAS )+ " , :ckC )," +
+            " ( " + str(insertedId) +" , " + str(constantes.IDPAGODEPOSITO )+ " , " + str(constantes.IDDOLARES )+ " , :depositD )," +
+            " ( " + str(insertedId) +" , " + str(constantes.IDPAGODEPOSITO )+ " , " + str(constantes.IDCORDOBAS )+ " , :depositC )," +
+            " ( " + str(insertedId) +" , " + str(constantes.IDPAGOTRANSFERENCIA )+ " , " + str(constantes.IDDOLARES )+ " , :transferD )," +
+            " ( " + str(insertedId) +" , " + str(constantes.IDPAGOTRANSFERENCIA )+ " , " + str(constantes.IDCORDOBAS )+ " , :transferC )," +
+            " ( " + str(insertedId) +" , " + str(constantes.IDPAGOTARJETA )+ " , " + str(constantes.IDDOLARES )+ " , :cardD )," +
+            " ( " + str(insertedId) +" , " + str(constantes.IDPAGOTARJETA )+ " , " + str(constantes.IDCORDOBAS )+ " , :cardC )" 
             ):
                 raise Exception("No se pudo preparar la consulta para guardar los totales del arqueo")
 
@@ -402,8 +402,10 @@ class ArqueoModel( QAbstractTableModel ):
 
             if not query.exec_():
                 raise Exception("No se pudieron insertar los pagos")
-            
-            movimientos.movArqueo(insertedId, self.differenceC)
+
+
+            if self.totalDifferenceC != 0:
+                movimientos.movArqueo(insertedId, self.totalDifferenceC)
             
             for line in self.lines:
                 if line.valid:
@@ -415,12 +417,13 @@ class ArqueoModel( QAbstractTableModel ):
             return True
         except UserWarning as inst:
             self.saveError = unicode(inst)
-            print query.lastError().text()
+            logging.error(inst)
+            logging.error(query.lastError().text())
             self.database.rollback()
             return False
         except Exception as inst:
-            print inst
-            print query.lastError().text()
+            logging.critical(inst)
+            logging.critical(query.lastError().text())
             self.database.rollback()
             return False
         finally:

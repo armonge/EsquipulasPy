@@ -4,6 +4,8 @@ Created on 01/07/2010
 
 @author: Andrés Reyes Monge
 '''
+import logging
+
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QItemSelectionModel, QDataWidgetMapper, QMessageBox
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 from PyQt4.QtCore import pyqtSlot, QDateTime, SIGNAL, QTimer, QModelIndex
@@ -98,9 +100,10 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             self.tableNavigation.setColumnWidth( FECHACREACION, 200 )
             self.tableNavigation.setColumnWidth( CONCEPTO, 250 )
         except UserWarning as inst:
+            logging.error(inst)
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
-        except Exception as e:
-            print e
+        except Exception as inst:
+            logging.critical(inst)
 
     def updateDetails( self, selected, deselected ):
         if len( selected.indexes() ) > 0:
@@ -205,11 +208,11 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
     
         try:
             if not self.editModel.valid:
-                raise Exception( "El documento no es valido, no se puede guardar")
+                raise UserWarning( "El documento no es valido, no se puede guardar")
 
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise Exception( "No se pudo conectar con la base de datos" )
+                    raise UserWarning( "No se pudo conectar con la base de datos" )
 
             if not self.database.transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
@@ -264,10 +267,13 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             self.updateModels()
 
             self.status = False
-        except Exception as e:
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(inst)
+        except Exception as inst:
             self.database.rollback()
-            print e
-            print query.lastError().text()
+            logging.critical(inst)
+            logging.critical(query.lastError().text())
         finally:
             if self.database.isOpen():
                 self.database.close()

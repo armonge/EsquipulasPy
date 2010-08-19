@@ -10,6 +10,8 @@ a un QTableView, el delegado necesita como parametro una consulta SQL que retorn
 IDCUENTA, CODIGO, DESCRIPCION
 '''
 from decimal import  Decimal
+import logging
+
 from PyQt4.QtGui import  QStyledItemDelegate, QDoubleSpinBox
 from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex, QVariant, SIGNAL, QSize
 from PyQt4.QtSql import QSqlQuery
@@ -104,7 +106,6 @@ class AccountsSelectorModel( QAbstractTableModel ):
                 self.insertRow( len( self.lines ) )
             elif not self.valid and not self.lines[-1].valid:
                 self.lines[-1].amount =  self.currentSum * -1 
-                print self.lines[-1].amount
             elif self.valid and not self.lines[-1].valid:
                 if len( self.lines ) > 1:
                     self.removeRows( len( self.lines ) - 1, 1 )
@@ -245,7 +246,8 @@ class AccountsSelectorLine(object):
         query.bindValue( ":nlinea", linea )
 
         if not query.exec_():
-            print query.lastError().text()
+            logging.critical(query.lastError().text())
+            
             raise Exception( "Error al insertar uno de los movimientos" )
                 
 
