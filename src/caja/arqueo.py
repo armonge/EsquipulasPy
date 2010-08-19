@@ -336,23 +336,31 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         Redefiniendo el metodo save de Base para mostrar advertencias si el arqueo no concuerda
         """
         try:
+            errors = []
+            
             if not self.editmodel.totalCashC == self.editmodel.expectedCashC:
-                raise UserWarning(u"El total de efectivo en cordobas del arqueo no coincide con el de la sesión")
-            elif not self.editmodel.totalCashD == self.editmodel.expectedCashD:
-                raise UserWarning(u"El total de efectivo en dolares del arqueo no coincide con el de la sesión")
-            elif not self.editmodel.totalCkD == self.editmodel.expectedCkD:
-                raise UserWarning(u"El total de cheques en dolares del arqueo no coincide con el de la sesión")
-            elif not self.editmodel.totalCkC == self.editmodel.expectedCkC:
-                raise UserWarning(u"El total de cheques en cordobas del arqueo no coincide con el de la sesión")
-            elif not self.editmodel.totalTransferD == self.editmodel.expectedTransferD:
-                raise UserWarning(u"El total de transferencias en dolares del arqueo no coincide con el de la sesión")
-            elif not self.editmodel.totalTransferC == self.editmodel.expectedTransferC:
-                raise UserWarning(u"El total de transferencias en cordobas del arqueo no coincide con el de la sesión")
-            elif not self.editmodel.totalDepositD== self.editmodel.expectedDepositD:
-                raise UserWarning(u"El total de depositos en dolares del arqueo no coincide con el de la sesión")
-            elif not self.editmodel.totalDepositC== self.editmodel.expectedDepositC:
-                raise UserWarning(u"El total de depositos en cordobas del arqueo no coincide con el de la sesión")
-
+                errors.append(u"El total de efectivo en cordobas del arqueo no coincide con el de la sesión")
+            if not self.editmodel.totalCashD == self.editmodel.expectedCashD:
+                errors.append(u"El total de efectivo en dolares del arqueo no coincide con el de la sesión")
+            if not self.editmodel.totalCkD == self.editmodel.expectedCkD:
+                errors.append(u"El total de cheques en dolares del arqueo no coincide con el de la sesión")
+            if not self.editmodel.totalCkC == self.editmodel.expectedCkC:
+                errors.append(u"El total de cheques en cordobas del arqueo no coincide con el de la sesión")
+            if not self.editmodel.totalTransferD == self.editmodel.expectedTransferD:
+                errors.append(u"El total de transferencias en dolares del arqueo no coincide con el de la sesión")
+            if not self.editmodel.totalTransferC == self.editmodel.expectedTransferC:
+                errors.append(u"El total de transferencias en cordobas del arqueo no coincide con el de la sesión")
+            if not self.editmodel.totalDepositD== self.editmodel.expectedDepositD:
+                errors.append(u"El total de depositos en dolares del arqueo no coincide con el de la sesión")
+            if not self.editmodel.totalDepositC== self.editmodel.expectedDepositC:
+                errors.append(u"El total de depositos en cordobas del arqueo no coincide con el de la sesión")
+            if not self.editmodel.totalCardD== self.editmodel.expectedDepositD:
+                errors.append(u"El total de pagos en tarjetas en dolares del arqueo no coincide con el de la sesión")
+            if not self.editmodel.totalCardD== self.editmodel.expectedDepositC:
+                errors.append(u"El total de pagos en tarjetas en cordobas del arqueo no coincide con el de la sesión")
+            print errors, self.editmodel.totalCkD
+            if len(errors)>0:
+                raise UserWarning( "\n".join(errors))
             super(frmArqueo, self).on_actionSave_activated()
         except UserWarning as inst:
             if not self.editmodel.observations == "":
@@ -404,67 +412,66 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
 
             
-    @pyqtSlot("QString")
-    def on_sbCkD_valueChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbCkD_valueChanged(self, value):
         if not self.editmodel is None:
             try:
-                self.editmodel.totalCkD = Decimal(text)
+                self.editmodel.totalCkD = Decimal(str(value))
             except InvalidOperation:
                 self.editmodel.totalCkD = Decimal(0)
-            print self.editmodel.totalCkD
             
-    @pyqtSlot("QString")
-    def on_sbCkC_valueChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbCkC_valueChanged(self, value):
         if not self.editmodel is None:
             try:
-                self.editmodel.totalCkC = Decimal(text)
-            except InvalidOperation:
+                self.editmodel.totalCkC = Decimal(str(value))
+            except InvalidOperation as inst:
                 self.editmodel.totalCkC = Decimal(0)
             
-    @pyqtSlot("QString")
-    def on_sbCardD_valueChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbCardD_valueChanged(self, value):
         if not self.editmodel is None:
             try:
-                self.editmodel.totalCardD = Decimal(text)
+                self.editmodel.totalCardD = Decimal(str(value))
             except InvalidOperation:
                 self.editmodel.totalCardD = Decimal(0)
             
-    @pyqtSlot("QString")
-    def on_sbCardC_valueChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbCardC_valueChanged(self, value):
         if not self.editmodel is None:
             try:
-                self.editmodel.totalCardC = Decimal(text)
+                self.editmodel.totalCardC = Decimal(str(value))
             except InvalidOperation:
                 self.editmodel.totalCardC = Decimal(0)
             
-    @pyqtSlot("QString")
-    def on_sbDepositD_valueChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbDepositD_valueChanged(self, value):
         if not self.editmodel is None:
             try:
-                self.editmodel.totalDepositD = Decimal(text)
+                self.editmodel.totalDepositD = Decimal(str(value))
             except InvalidOperation:
                 self.editmodel.totalDepositD = Decimal(0)
             
-    @pyqtSlot("QString")
-    def on_sbDepositC_valueChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbDepositC_valueChanged(self, value):
         if not self.editmodel is None:
             try:
-                self.editmodel.totalDepositC = Decimal(text)
+                self.editmodel.totalDepositC = Decimal(str(value))
             except InvalidOperation:
                 self.editmodel.totalDepositC = Decimal(0)
 
-    @pyqtSlot("QString")
-    def on_sbTransferD_valueChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbTransferD_valueChanged(self, value):
         if not self.editmodel is None:
             try:
-                self.editmodel.totalTransferD = Decimal(text)
+                self.editmodel.totalTransferD = Decimal(str(value))
             except InvalidOperation:
                 self.editmodel.totalTransferD = Decimal(0)
 
-    @pyqtSlot("QString")
-    def on_sbTransferC_valueChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbTransferC_valueChanged(self, value):
         if not self.editmodel is None:
             try:
-                self.editmodel.totalTransferC = Decimal(text)
+                self.editmodel.totalTransferC = Decimal(str(value))
             except InvalidOperation:
                 self.editmodel.totalTransferC = Decimal(0)

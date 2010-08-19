@@ -97,14 +97,14 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.navmodel.setQuery( """
             SELECT  
                 d.iddocumento,
-                d.ndocimpreso,
-                d.fechacreacion,
+                d.ndocimpreso AS 'Numero de Entrada',
+                d.fechacreacion AS 'Fecha',
                 p.nombre as Proveedor,
                 d.observacion,
-                (@subtotalc:=( ( d.total / (1 + (ca.valorcosto / 100)  ) ) )  * tc.tasa  ) AS subtotalC ,
-                ( @subtotalc * (  (ca.valorcosto / 100) ) )  AS ivaC,
-                d.total * tc.tasa AS totalC,
-                d.total AS totalD,
+                (@subtotalc:=( ( d.total / (1 + (ca.valorcosto / 100)  ) ) )  * tc.tasa  ) AS 'Subtotal C$',
+                ( @subtotalc * (  (ca.valorcosto / 100) ) )  AS 'IVA',
+                d.total * tc.tasa AS 'Total C$',
+                d.total AS 'Total US$',
                 escontado as tipopago
             FROM documentos d  
             JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento 

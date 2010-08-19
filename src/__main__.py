@@ -16,7 +16,7 @@ if __name__ == '__main__':
     import logging
     LOG_FILENAME = "esquipulas.log"
     logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s %(module)s %(funcName)s %(lineno)d %(message)s',
+                    format='%(asctime)s %(levelname)s modulo:%(module)s funcion:%(funcName)s linea:%(lineno)d %(message)s',
                     filename=LOG_FILENAME,
                     )
 
@@ -90,9 +90,9 @@ if __name__ == '__main__':
     db = Database.getDatabase( "--dbconfig" in sys.argv )
 
     if "--reportconfig" in sys.argv:
-        text, result = QtGui.QInputDialog.getText( None, u"Configuración del servidor de reportes", "Url base de los reportes", QtGui.QLineEdit.Normal )
+        settings = QtCore.QSettings()
+        text, result = QtGui.QInputDialog.getText( None, u"Configuración del servidor de reportes", "Url base de los reportes", QtGui.QLineEdit.Normal, settings.value( "Reports/Base", "" ).toString() )
         if result:
-            settings = QtCore.QSettings()
             settings.setValue( "Reports/Base", text )
 
 
