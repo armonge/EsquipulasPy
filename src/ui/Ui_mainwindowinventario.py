@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/mainwindowinventario.ui'
 #
-# Created: Tue Aug 10 08:48:20 2010
+# Created: Thu Aug 19 10:06:54 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!

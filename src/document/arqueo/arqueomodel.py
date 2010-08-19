@@ -15,7 +15,7 @@ from decimal import Decimal
 from  utility import constantes
 from utility import movimientos
 
-CANTIDAD, DENOMINACION, MONEDA, TOTAL = range( 4 )
+CANTIDAD, DENOMINACION,  TOTAL, MONEDA, IDDOCUMMENTOT = range( 5 )
 class ArqueoModel( QAbstractTableModel ):
     """
     Esta clase es el modelo utilizado para crear nuevos arqueos
@@ -399,6 +399,8 @@ class ArqueoModel( QAbstractTableModel ):
             query.bindValue(":depositC", self.totalDepositC.to_eng_string())
             query.bindValue(":cardD", self.totalCardD.to_eng_string())
             query.bindValue(":cardC", self.totalCardC.to_eng_string())
+            query.bindValue(":transferD", self.totalTransferD.to_eng_string())
+            query.bindValue(":transferC", self.totalTransferC.to_eng_string())
 
             if not query.exec_():
                 raise Exception("No se pudieron insertar los pagos")

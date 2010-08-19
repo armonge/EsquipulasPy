@@ -16,7 +16,7 @@ if __name__ == '__main__':
     import logging
     LOG_FILENAME = "esquipulas.log"
     logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s modulo:%(module)s funcion:%(funcName)s linea:%(lineno)d %(message)s',
+                    format='%(levelname)s -- %(asctime)s --En %(module)s funcion:%(funcName)s linea:%(lineno)d -- %(message)s',
                     filename=LOG_FILENAME,
                     )
 

@@ -4,8 +4,9 @@ Created on 07/06/2010
 
 @author: Andrés Reyes Monge
 '''
-#FIXME: EL arqueo no muestra todavia el total de la sesión
 from decimal import  Decimal, InvalidOperation
+import logging
+
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator
 from PyQt4.QtCore import pyqtSlot, SIGNAL, QDateTime, QTimer, QModelIndex
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
@@ -19,9 +20,9 @@ from document.arqueo.arqueodelegate import ArqueoDelegate
 from utility import constantes
 from utility.reports import frmReportes
 #navmodel
-IDDOCUMMENTO, FECHA, NOMBRE, TOTAL, TOTALSESION = range( 5 )
+IDDOCUMMENTO, FECHA, NOMBRE, EFECTIVOC, EFECTIVOD, CHEQUEC, CHEQUED, DEPOSITOC, DEPOSITOD, TRANSFERENCIAC, TRANSFERENCIAD, TARJETAC, TARJETAD = range( 13 )
 #detailsmodel
-CANTIDAD, DENOMINACION, MONEDA, TOTALP, IDDOCUMMENTOT = range( 5 )
+CANTIDAD, DENOMINACION,  TOTAL, MONEDA, IDDOCUMMENTOT = range( 5 )
 class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
     '''
     Esta clase implementa el formulario arqueo
@@ -52,6 +53,18 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         self.detailsproxymodel = QSortFilterProxyModel( self )
         self.detailsproxymodel.setSourceModel( self.detailsModel )
 
+        #filtrar en dolares y en cordobas
+        self.detailsproxymodelD = QSortFilterProxyModel(self)
+        self.detailsproxymodelD.setSourceModel(self.detailsproxymodel)
+        self.detailsproxymodelD.setFilterKeyColumn(MONEDA)
+        self.detailsproxymodelD.setFilterRegExp("^%d$" % constantes.IDDOLARES)
+
+        self.detailsproxymodelC = QSortFilterProxyModel(self)
+        self.detailsproxymodelC.setSourceModel(self.detailsproxymodel)
+        self.detailsproxymodelC.setFilterKeyColumn(MONEDA)
+        self.detailsproxymodelC.setFilterRegExp("^%d$" % constantes.IDCORDOBAS)
+
+        
         self.status = True
         QTimer.singleShot( 0, self.loadModels )
 
@@ -60,27 +73,39 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( "No se pudo abrir la base de datos" )
-            self.navmodel.setQuery( """
+            query = """
             SELECT
-                d.iddocumento, 
-                d.fechacreacion AS 'Fecha', 
-                p.nombre AS 'Arqueador', 
-                CONCAT('US$',FORMAT(d.total,4))  as 'Total US$'
-            FROM documentos d  
-            JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
+                d.iddocumento,
+                d.fechacreacion ,
+                p.nombre AS 'Arqueador',
+                FORMAT(SUM(IF(mc.idtipomovimiento = """ + str(constantes.IDPAGOEFECTIVO) + """ AND mc.idtipomoneda = """ + str(constantes.IDCORDOBAS) + """, mc.monto, 0)),4) AS 'efectivoc',
+                FORMAT(SUM(IF(mc.idtipomovimiento = """ + str(constantes.IDPAGOEFECTIVO) + """ AND mc.idtipomoneda = """ + str(constantes.IDDOLARES) + """, mc.monto, 0)),4) AS 'efectivod',
+                FORMAT(SUM(IF(mc.idtipomovimiento = """ + str(constantes.IDPAGOCHEQUE) + """ AND mc.idtipomoneda = """ + str(constantes.IDCORDOBAS) + """, mc.monto, 0)),4) AS 'chequec',
+                FORMAT(SUM(IF(mc.idtipomovimiento = """ + str(constantes.IDPAGOCHEQUE) + """ AND mc.idtipomoneda = """ + str(constantes.IDDOLARES) + """, mc.monto, 0)),4) AS 'chequed',
+                FORMAT(SUM(IF(mc.idtipomovimiento = """ + str(constantes.IDPAGODEPOSITO) + """ AND mc.idtipomoneda = """ + str(constantes.IDCORDOBAS) + """, mc.monto, 0)),4) AS 'depositoc',
+                FORMAT(SUM(IF(mc.idtipomovimiento = """ + str(constantes.IDPAGODEPOSITO) + """ AND mc.idtipomoneda = """ + str(constantes.IDDOLARES) + """, mc.monto, 0)),4) AS 'depositod',
+                FORMAT(SUM(IF(mc.idtipomovimiento = """ + str(constantes.IDPAGOTRANSFERENCIA) + """ AND mc.idtipomoneda = """ + str(constantes.IDCORDOBAS) + """, mc.monto, 0)),4) AS 'transferenciac',
+                FORMAT(SUM(IF(mc.idtipomovimiento = """ + str(constantes.IDPAGOTRANSFERENCIA) + """ AND mc.idtipomoneda = """ + str(constantes.IDDOLARES) + """, mc.monto, 0)),4) AS 'transferenciad',
+                FORMAT(SUM(IF(mc.idtipomovimiento = """ + str(constantes.IDPAGOTARJETA) + """ AND mc.idtipomoneda = """ + str(constantes.IDCORDOBAS) + """, mc.monto, 0)),4) AS 'tarjetac',
+                FORMAT(SUM(IF(mc.idtipomovimiento = """ + str(constantes.IDPAGOTARJETA) + """ AND mc.idtipomoneda = """ + str(constantes.IDDOLARES) + """, mc.monto, 0)),4) AS 'tarjetad'
+            FROM documentos d
+            JOIN movimientoscaja mc ON mc.iddocumento = d.iddocumento
+            JOIN tiposmoneda tm ON mc.idtipomoneda = tm.idtipomoneda
             JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
-            JOIN personas p ON p.idpersona = pxd.idpersona AND p.tipopersona = %d
-            WHERE d.idtipodoc = %d
-            """ % ( constantes.USUARIO, constantes.IDARQUEO))
+            JOIN personas p ON p.idpersona = pxd.idpersona AND p.tipopersona =  %d
+            WHERE d.idtipodoc =  %d
+            GROUP BY d.iddocumento
+            """ % ( constantes.USUARIO, constantes.IDARQUEO)
+            print query
+            self.navmodel.setQuery(query)
             
-            #FIXME: El simbolo de la moneda deberia de venir de la tabla tiposmoneda
             self.detailsModel.setQuery( u"""
-            SELECT 
-                l.cantidad AS 'Cantidad',
-                CONCAT_WS(' ', tm.simbolo, de.valor) as 'Denominación',
-                tm.moneda as 'Moneda',
-                CONCAT("US$", FORMAT(l.cantidad * IF(de.idtipomoneda = 1, de.valor * tc.tasa, de.valor), 4)) as 'Total US$',
-                l.iddocumento
+            SELECT
+            l.cantidad AS 'Cantidad',
+            CONCAT_WS(' ',tm.simbolo, CAST(de.valor AS CHAR)) as 'Denominación',
+            FORMAT(l.cantidad * de.valor, 4) as 'Total',
+            de.idtipomoneda,
+            l.iddocumento
             FROM lineasarqueo l
             JOIN denominaciones de ON de.iddenominacion = l.iddenominacion
             JOIN tiposmoneda tm ON de.idtipomoneda = tm.idtipomoneda
@@ -91,14 +116,23 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
             self.mapper.setModel( self.navproxymodel )
             self.mapper.addMapping( self.dtPicker, FECHA )
-            self.mapper.addMapping( self.lblUserName, NOMBRE, "text" )
-            ##self.mapper.addMapping( self.lblTotalArqueo, TOTAL, "text" )
+            self.mapper.addMapping( self.lblUserName, NOMBRE, "value" )
+            self.mapper.addMapping(self.sbCkC, CHEQUEC, "value")
+            self.mapper.addMapping(self.sbCkD, CHEQUED, "value")
+            self.mapper.addMapping(self.sbCardC, TARJETAC, "value")
+            self.mapper.addMapping(self.sbCardD, TARJETAD, "value")
+            self.mapper.addMapping(self.sbDepositC, DEPOSITOC, "value")
+            self.mapper.addMapping(self.sbDepositD, DEPOSITOD, "value")
+            self.mapper.addMapping(self.sbTransferC  , TRANSFERENCIAC, "value")
+            self.mapper.addMapping(self.sbTransferD  , TRANSFERENCIAD, "value")
 
+                    
             
         except UserWarning as inst:
+            logging.error(ins)
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
-            print inst
+            logging.critical(inst)
         finally:
             if self.database.isOpen():
                 self.database.close()
@@ -107,6 +141,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMMENTOT )
         self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
+        pass
 
     def setControls( self, status ):
         """
@@ -131,7 +166,10 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         self.sbTransferC.setReadOnly(status)
 
         self.txtObservations.setReadOnly(status)
-        
+
+        self.tabledetailsC.setColumnHidden( MONEDA, True )
+        self.tabledetailsD.setColumnHidden( MONEDA, True )
+
 
         
         if not self.status:
@@ -142,17 +180,15 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.tabWidget.setCurrentIndex( 0 )
             self.tablenavigation.setColumnHidden( IDDOCUMMENTO, False )
 
-            self.tabledetailsC.setColumnHidden( MONEDA, True )
-            self.tabledetailsD.setColumnHidden( MONEDA, True )
 
             doublevalidator = QDoubleValidator(0, 99999999, 4, self)
             
         else:
-            self.tabledetailsC.setModel( self.detailsproxymodel )
+            self.tabledetailsC.setModel( self.detailsproxymodelC )
             self.tabledetailsC.setColumnHidden( IDDOCUMMENTOT, True )
             
             
-            self.tabledetailsD.setModel( self.detailsproxymodel )
+            self.tabledetailsD.setModel( self.detailsproxymodelD )
             self.tabledetailsD.setColumnHidden( IDDOCUMMENTOT, True )
             
             
@@ -166,14 +202,17 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         self.lblCashC.setText(   moneyfmt(self.editmodel.totalCashC, 4, "C$") + " / " + moneyfmt(self.editmodel.expectedCashC, 4, "C$"))
         self.lblCashD.setText( moneyfmt(self.editmodel.totalCashD, 4, "US$") + " / " +  moneyfmt(self.editmodel.expectedCashD, 4, "US$") )
 
-        self.lblCkC.setText( moneyfmt(self.editmodel.expectedCkC, 4, "C$") )
-        self.lblCkD.setText( moneyfmt(self.editmodel.expectedCkD, 4, "US$") )
+        #self.lblCkC.setText( moneyfmt(self.editmodel.expectedCkC, 4, "C$") )
+        #self.lblCkD.setText( moneyfmt(self.editmodel.expectedCkD, 4, "US$") )
 
-        self.lblCardC.setText( moneyfmt(self.editmodel.expectedCardC, 4, "C$") )
-        self.lblCardD.setText(  moneyfmt(self.editmodel.expectedCardD, 4, "US$") )
+        #self.lblCardC.setText( moneyfmt(self.editmodel.expectedCardC, 4, "C$") )
+        #self.lblCardD.setText(  moneyfmt(self.editmodel.expectedCardD, 4, "US$") )
 
-        self.lblDepositC.setText( moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
-        self.lblDepositD.setText(  moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
+        #self.lblDepositC.setText( moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
+        #self.lblDepositD.setText(  moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
+
+        #self.lblTransferC.setText( moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
+        #self.lblTransferD.setText(  moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
 
     @pyqtSlot( )
     def on_actionNew_activated( self ):
@@ -308,10 +347,11 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.status = False
             
         except UserWarning as inst:
+            logging.error(inst)
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             self.status = True
         except Exception  as inst:
-            print inst
+            logging.critical(inst)
             QMessageBox.critical(self, "Llantera Esquipulas", "El sistema no pudo iniciar un nuevo arqueo")
             self.status = True
         finally:
@@ -320,8 +360,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
     @pyqtSlot( "QDateTime" )
     def on_dtPicker_dateTimeChanged( self, datetime ):
-        if not self.editmodel is None:
-            self.editmodel.datetime = datetime
+        pass
 
     @pyqtSlot(  )
     def on_actionCancel_activated( self ):
@@ -358,7 +397,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                 errors.append(u"El total de pagos en tarjetas en dolares del arqueo no coincide con el de la sesión")
             if not self.editmodel.totalCardD== self.editmodel.expectedDepositC:
                 errors.append(u"El total de pagos en tarjetas en cordobas del arqueo no coincide con el de la sesión")
-            print errors, self.editmodel.totalCkD
+
             if len(errors)>0:
                 raise UserWarning( "\n".join(errors))
             super(frmArqueo, self).on_actionSave_activated()
@@ -415,63 +454,41 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
     @pyqtSlot("double")
     def on_sbCkD_valueChanged(self, value):
         if not self.editmodel is None:
-            try:
-                self.editmodel.totalCkD = Decimal(str(value))
-            except InvalidOperation:
-                self.editmodel.totalCkD = Decimal(0)
+            self.editmodel.totalCkD = Decimal(str(value))
             
     @pyqtSlot("double")
     def on_sbCkC_valueChanged(self, value):
         if not self.editmodel is None:
-            try:
-                self.editmodel.totalCkC = Decimal(str(value))
-            except InvalidOperation as inst:
-                self.editmodel.totalCkC = Decimal(0)
+            self.editmodel.totalCkC = Decimal(str(value))
             
     @pyqtSlot("double")
     def on_sbCardD_valueChanged(self, value):
         if not self.editmodel is None:
-            try:
-                self.editmodel.totalCardD = Decimal(str(value))
-            except InvalidOperation:
-                self.editmodel.totalCardD = Decimal(0)
+            self.editmodel.totalCardD = Decimal(str(value))
             
     @pyqtSlot("double")
     def on_sbCardC_valueChanged(self, value):
         if not self.editmodel is None:
-            try:
-                self.editmodel.totalCardC = Decimal(str(value))
-            except InvalidOperation:
-                self.editmodel.totalCardC = Decimal(0)
+            self.editmodel.totalCardC = Decimal(str(value))
             
     @pyqtSlot("double")
     def on_sbDepositD_valueChanged(self, value):
         if not self.editmodel is None:
-            try:
-                self.editmodel.totalDepositD = Decimal(str(value))
-            except InvalidOperation:
-                self.editmodel.totalDepositD = Decimal(0)
+            self.editmodel.totalDepositD = Decimal(str(value))
             
     @pyqtSlot("double")
     def on_sbDepositC_valueChanged(self, value):
         if not self.editmodel is None:
-            try:
-                self.editmodel.totalDepositC = Decimal(str(value))
-            except InvalidOperation:
-                self.editmodel.totalDepositC = Decimal(0)
+            self.editmodel.totalDepositC = Decimal(str(value))
 
     @pyqtSlot("double")
     def on_sbTransferD_valueChanged(self, value):
         if not self.editmodel is None:
-            try:
                 self.editmodel.totalTransferD = Decimal(str(value))
-            except InvalidOperation:
-                self.editmodel.totalTransferD = Decimal(0)
+                print "here2"
 
     @pyqtSlot("double")
     def on_sbTransferC_valueChanged(self, value):
         if not self.editmodel is None:
-            try:
-                self.editmodel.totalTransferC = Decimal(str(value))
-            except InvalidOperation:
-                self.editmodel.totalTransferC = Decimal(0)
+            self.editmodel.totalTransferC = Decimal(str(value))
+            print "herer"

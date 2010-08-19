@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/arqueo.ui'
 #
-# Created: Tue Aug 17 20:28:44 2010
+# Created: Thu Aug 19 11:49:52 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -161,7 +161,7 @@ class Ui_frmArqueo(object):
         self.label_5.setSizePolicy(sizePolicy)
         self.label_5.setAlignment(QtCore.Qt.AlignCenter)
         self.label_5.setObjectName("label_5")
-        self.gridLayout_2.addWidget(self.label_5, 0, 1, 1, 2)
+        self.gridLayout_2.addWidget(self.label_5, 0, 0, 1, 3)
         self.lblCashD = QtGui.QLabel(self.groupBox)
         self.lblCashD.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.lblCashD.setObjectName("lblCashD")
@@ -309,12 +309,12 @@ class Ui_frmArqueo(object):
         self.line_9.setFrameShadow(QtGui.QFrame.Sunken)
         self.line_9.setObjectName("line_9")
         self.gridLayout_2.addWidget(self.line_9, 15, 4, 1, 2)
-        self.lblDepositD_2 = QtGui.QLabel(self.groupBox)
-        self.lblDepositD_2.setObjectName("lblDepositD_2")
-        self.gridLayout_2.addWidget(self.lblDepositD_2, 16, 2, 1, 1)
-        self.lblDepositD_3 = QtGui.QLabel(self.groupBox)
-        self.lblDepositD_3.setObjectName("lblDepositD_3")
-        self.gridLayout_2.addWidget(self.lblDepositD_3, 16, 5, 1, 1)
+        self.lblTransferD = QtGui.QLabel(self.groupBox)
+        self.lblTransferD.setObjectName("lblTransferD")
+        self.gridLayout_2.addWidget(self.lblTransferD, 16, 2, 1, 1)
+        self.lblTransferC = QtGui.QLabel(self.groupBox)
+        self.lblTransferC.setObjectName("lblTransferC")
+        self.gridLayout_2.addWidget(self.lblTransferC, 16, 5, 1, 1)
         self.horizontalLayout_3.addWidget(self.groupBox)
         self.verticalLayout_3.addLayout(self.horizontalLayout_3)
         icon = QtGui.QIcon()
@@ -477,8 +477,8 @@ class Ui_frmArqueo(object):
         self.label_10.setText(QtGui.QApplication.translate("frmArqueo", "<b>Transferencias</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.sbTransferD.setPrefix(QtGui.QApplication.translate("frmArqueo", "US$ ", None, QtGui.QApplication.UnicodeUTF8))
         self.sbTransferC.setPrefix(QtGui.QApplication.translate("frmArqueo", "C$", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblDepositD_2.setText(QtGui.QApplication.translate("frmArqueo", "US$ 0.0000", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblDepositD_3.setText(QtGui.QApplication.translate("frmArqueo", "C$ 0.0000", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblTransferD.setText(QtGui.QApplication.translate("frmArqueo", "US$ 0.0000", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblTransferC.setText(QtGui.QApplication.translate("frmArqueo", "C$ 0.0000", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), None)
         self.label.setText(QtGui.QApplication.translate("frmArqueo", "<b>&Buscar</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)

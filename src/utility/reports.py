@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from PyQt4.QtGui import  QPrinter, QPrintPreviewDialog,  QLineEdit, QMessageBox, QProgressBar, QPrintPreviewWidget
 from PyQt4.QtWebKit import QWebView
 from PyQt4.QtCore import  QUrl, QSettings
@@ -10,27 +12,30 @@ class frmReportes( QPrintPreviewDialog ):
     """
     Este es un formulario generico que muestra los reportes web generados para las 
     """
-    def __init__( self, web, user, printer ,parent = None, ):
+    def __init__( self, web, user, printer = QPrinter() ,parent = None, ):
         """
         @param user: El objeto usuario asociado con esta sesión
         @param web: La dirección web a la que apunta el reporte
+        @param printer: El objeto QPrinter en el que se imprime, esto es usado por si se desea alguna configuración especifica del reporte
         """
         super(frmReportes, self).__init__(printer, parent )
-        self.webview = QWebView()
-
         settings = QSettings()
         base = settings.value( "Reports/base" ).toString()
+        self.report =  base + web + "&uname=" + user.user + "&hash=" + user.hash 
+        self.webview = QWebView()
+
+        
 
         
         self.txtSearch = QLineEdit()
 
         self.loaded = False
+
         
-        self.webview.load( QUrl( base + web + "&uname=" + user.user + "&hash=" + user.hash ) )
+        self.webview.load( QUrl(self.report) )
         self.progressbar = QProgressBar(self)
 
         
-        #self.connect(self, SIGNAL("updatePreview()"), w, SLOT(updatePreview()));
         
         
         self.paintRequested[QPrinter].connect(self.reprint)
@@ -54,6 +59,7 @@ class frmReportes( QPrintPreviewDialog ):
             self.progressbar.hide()
         if not status:
             QMessageBox.critical(self, "Llantera Esquipulas", "El reporte no se pudo cargar")
+            logging.error("No se pudo cargar el reporte: %s" % self.report)
             self.accept()
         
         self.loaded = True
