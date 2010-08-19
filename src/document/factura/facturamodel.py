@@ -218,10 +218,12 @@ class FacturaModel( QAbstractTableModel ):
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
 
-
+#            if not self.escontado:
+#                self.printedDocumentNumber = "S/N"
+#                
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,observacion,total,idbodega,escontado,idtipocambio,idcaja) 
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:bodega,:escontado,:idtc,:caja)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,observacion,total,idbodega,escontado,idtipocambio,idcaja,autorizado) 
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:bodega,:escontado,:idtc,:caja,:autorizado)
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
@@ -233,8 +235,8 @@ class FacturaModel( QAbstractTableModel ):
             query.bindValue( ":escontado", self.escontado )
             query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
             query.bindValue( ":caja", self.datosSesion.cajaId)
-            print "cja"
-            print self.datosSesion.cajaId
+            query.bindValue( ":autorizado", self.escontado)
+
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
 
@@ -294,7 +296,8 @@ class FacturaModel( QAbstractTableModel ):
 
             #manejar las cuentas contables en Cordobas
             # el costo no se multiplica porque ya esta en cordobas
-            movFacturaCredito( insertedId, self.subtotal * self.datosSesion.tipoCambioOficial , self.IVA * self.datosSesion.tipoCambioOficial, self.costototal )
+            if self.escontado:
+                movFacturaCredito( insertedId, self.subtotal * self.datosSesion.tipoCambioOficial , self.IVA * self.datosSesion.tipoCambioOficial, self.costototal )
             
             
             guardar = True
