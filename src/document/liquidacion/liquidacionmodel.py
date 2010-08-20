@@ -6,6 +6,8 @@ Created on 21/05/2010
 '''
 #import math
 from decimal import Decimal, ROUND_CEILING
+import logging
+
 from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt, SIGNAL
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from document.liquidacion.linealiquidacion import LineaLiquidacion
@@ -422,8 +424,8 @@ class LiquidacionModel( QAbstractTableModel ):
 
             #insertar el documento
             if not query.prepare( """
-            INSERT INTO documentos(ndocimpreso, fechacreacion, idtipodoc,anulado,  observacion, idtipocambio, total, idbodega)
-            VALUES( :ndocimpreso, :fechacreacion, :idtipodoc, :anulado, :observacion, :tipocambio, :total, :idbodega)
+            INSERT INTO documentos(ndocimpreso, fechacreacion, idtipodoc,idestado, observacion, idtipocambio, total, idbodega)
+            VALUES( :ndocimpreso, :fechacreacion, :idtipodoc, :estado, :observacion, :tipocambio, :total, :idbodega)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para ingresar el documento" )
 
@@ -435,6 +437,7 @@ class LiquidacionModel( QAbstractTableModel ):
             query.bindValue( ":tipocambio", self.exchangeRateId )
             query.bindValue( "total", self.totalD.to_eng_string() )
             query.bindValue( ":idbodega", self.warehouseId )
+            query.bindValue( ":estado", constantes.INCOMPLETO )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
@@ -549,8 +552,8 @@ class LiquidacionModel( QAbstractTableModel ):
                 raise Exception( "No se pudo hacer commit" )
 
         except Exception as inst:
-            print query.lastError().text()
-            print inst
+            logging.critical( query.lastError().text())
+            logging.critical(unicode(inst))
             QSqlDatabase.database().rollback()
 
             return False

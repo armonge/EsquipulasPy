@@ -100,7 +100,6 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param status: 1 = navegando 2 = añadiendo productos 3 = añadiendo cuentas contables
         """
-        print status == 1 or status == 3, status, self.status
         
         self.txtPolicy.setReadOnly( status == 1 or status == 3 )
         self.txtSource.setReadOnly( status == 1 or status == 3)
@@ -552,6 +551,34 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.updateModels()
         self.navigate( 'last' )
         self.status = 1
+
+    @pyqtSlot(  )
+    def on_actionSave_activated( self ):
+        """
+        Guardar el documento actual
+        """
+        if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+            if self.editmodel.valid:
+                if self.editmodel.save():
+                    QMessageBox.information( None,
+                         "Llantera Esquipulas" ,
+                         """El documento se ha guardado con exito""" )
+                    self.editmodel = None
+                    self.updateModels()
+                    self.navigate( 'last' )
+                    self.status = 1
+                else:
+                    QMessageBox.critical( None,
+                        "Llantera Esquipulas" ,
+                         """Ha ocurrido un error al guardar el documento""" )
+
+
+            else:
+                try:
+                    QMessageBox.warning( self,"Llantera Esquipulas" ,self.editmodel.validError)
+                except AttributeError:
+                    QMessageBox.warning( self,"Llantera Esquipulas" ,u"El documento no puede guardarse ya que la información no esta completa")
+
 
 #self.editmodel.accountsModel.insertRows( 0 )
 
