@@ -10,8 +10,8 @@ from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt, SIGNAL
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from document.liquidacion.linealiquidacion import LineaLiquidacion
 from utility.moneyfmt import moneyfmt
-from utility.accountselector import AccountsSelectorModel
 from utility import constantes
+from utility.accountselector import AccountsSelectorModel
 
 IDARTICULO, ARTICULO, CANTIDAD, COSTOUNIT, FOB, FLETE, SEGURO, OTROS, CIF, IMPUESTOS, COMISION, AGENCIA, ALMACEN, PAPELERIA, TRANSPORTE, TCOSTOD, COSTOD, TCOSTOC, COSTOC = range( 19 )
 class LiquidacionModel( QAbstractTableModel ):
@@ -196,11 +196,6 @@ class LiquidacionModel( QAbstractTableModel ):
         """
 
 
-        self.accountsModel = LiquidacionAccountsModel()
-        """
-        @ivar:El modelo con las cuentas contables de este documento
-        @type:AccountsSelectorModel
-        """
         self.totalsModel = LiquidacionTotalsModel( self )
         """
         @ivar:El modelo con los totales
@@ -240,7 +235,6 @@ class LiquidacionModel( QAbstractTableModel ):
             
             self.tsimId   > 0
             
-            self.accountsmodel.valid
         @rtype: bool
         """
         if not self.printedDocumentNumber.strip() != "":
@@ -266,9 +260,6 @@ class LiquidacionModel( QAbstractTableModel ):
             return False
         elif not int( self.speId ) > 0:
             self.validError = "No existe un valor SPE"
-            return False
-        elif not self.accountsModel.valid:
-            self.validError = "Existe un error  con sus cuentas contables"
             return False
         
         return True
@@ -394,16 +385,6 @@ class LiquidacionModel( QAbstractTableModel ):
         """
         return self.totalD * self.exchangeRate
 
-    @property
-    def accountsTotal( self ):
-        """
-        El total que deberia de haber en los movimientos contables
-        
-        M{TOTALCUENTAS = TOTALCORDOBAS }
-        @rtype: Decimal
-        """
-        return self.totalC
-
     def removeRows( self, position, rows = 1, index = QModelIndex ):
         """
         Borrar filas del modelo
@@ -419,7 +400,6 @@ class LiquidacionModel( QAbstractTableModel ):
                     pass
             self.endRemoveRows()
             self.dirty = True
-            self.accountsModel.setData( self.accountsModel.index( 0, 3 ), self.totalC )
             self.updateFob()
             self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), QModelIndex(), QModelIndex() )
             return True
@@ -563,9 +543,6 @@ class LiquidacionModel( QAbstractTableModel ):
                     line.save( insertedId )
 
 
-            for lineid, line in enumerate( self.accountsModel.lines ):
-                if line.valid:
-                    line.save( insertedId, lineid + 1 )
 
 
             if not QSqlDatabase.database().commit():
@@ -790,7 +767,6 @@ class LiquidacionModel( QAbstractTableModel ):
             if index.row() == len( self.lines ) - 1 and line.valid:
                 self.insertRow( len( self.lines ) )
 
-            self.accountsModel.setData( self.accountsModel.index( 0, 3 ), self.totalC )
 
             self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
 

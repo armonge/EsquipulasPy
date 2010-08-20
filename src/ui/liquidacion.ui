@@ -63,12 +63,6 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>550</width>
-              <height>0</height>
-             </size>
-            </property>
             <property name="title">
              <string>Datos de declaración</string>
             </property>
@@ -272,95 +266,98 @@
               <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
                 <layout class="QFormLayout" name="formLayout_2">
+                 <property name="fieldGrowthPolicy">
+                  <enum>QFormLayout::ExpandingFieldsGrow</enum>
+                 </property>
                  <item row="0" column="0">
                   <widget class="QLabel" name="label_6">
                    <property name="text">
-                    <string>Agencia ( US$ )</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>txtAgency</cstring>
+                    <string>Agencia</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QLineEdit" name="txtAgency">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
+                  <widget class="QDoubleSpinBox" name="sbAgency">
+                   <property name="minimumSize">
+                    <size>
+                     <width>157</width>
+                     <height>0</height>
+                    </size>
                    </property>
-                   <property name="readOnly">
-                    <bool>true</bool>
+                   <property name="prefix">
+                    <string>US$ </string>
+                   </property>
+                   <property name="maximum">
+                    <double>999999999.000000000000000</double>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="label_7">
                    <property name="text">
-                    <string>Almacen ( US$ )</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>txtStore</cstring>
+                    <string>Almacen</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QLineEdit" name="txtStore">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
+                  <widget class="QDoubleSpinBox" name="sbStore">
+                   <property name="minimumSize">
+                    <size>
+                     <width>157</width>
+                     <height>0</height>
+                    </size>
                    </property>
-                   <property name="readOnly">
-                    <bool>true</bool>
+                   <property name="prefix">
+                    <string>US$ </string>
+                   </property>
+                   <property name="maximum">
+                    <double>999999999.000000000000000</double>
                    </property>
                   </widget>
                  </item>
                  <item row="2" column="0">
                   <widget class="QLabel" name="label_8">
                    <property name="text">
-                    <string>Papeleria ( % )</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>txtPaperWork</cstring>
+                    <string>Papeleria</string>
                    </property>
                   </widget>
                  </item>
                  <item row="2" column="1">
-                  <widget class="QLineEdit" name="txtPaperWork">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
+                  <widget class="QDoubleSpinBox" name="sbPaperWork">
+                   <property name="minimumSize">
+                    <size>
+                     <width>157</width>
+                     <height>0</height>
+                    </size>
                    </property>
-                   <property name="readOnly">
-                    <bool>true</bool>
+                   <property name="suffix">
+                    <string> %</string>
+                   </property>
+                   <property name="maximum">
+                    <double>100.000000000000000</double>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="0">
                   <widget class="QLabel" name="label_9">
                    <property name="text">
-                    <string>Transporte ( % )</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>txtTransportation</cstring>
+                    <string>Transporte</string>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="1">
-                  <widget class="QLineEdit" name="txtTransportation">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
+                  <widget class="QDoubleSpinBox" name="sbTransportation">
+                   <property name="minimumSize">
+                    <size>
+                     <width>157</width>
+                     <height>0</height>
+                    </size>
                    </property>
-                   <property name="readOnly">
-                    <bool>true</bool>
+                   <property name="suffix">
+                    <string> %</string>
+                   </property>
+                   <property name="maximum">
+                    <double>100.000000000000000</double>
                    </property>
                   </widget>
                  </item>
@@ -387,16 +384,10 @@
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>276</width>
-              <height>0</height>
-             </size>
             </property>
             <property name="title">
              <string>Totales de declaración</string>
@@ -405,116 +396,92 @@
              <item row="0" column="0">
               <widget class="QLabel" name="label_12">
                <property name="text">
-                <string>Peso ( Kg )</string>
-               </property>
-               <property name="buddy">
-                <cstring>txtWeight</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QLineEdit" name="txtWeight">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
+                <string>Peso</string>
                </property>
               </widget>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_13">
                <property name="text">
-                <string>Flete ( US$ )</string>
-               </property>
-               <property name="buddy">
-                <cstring>txtFreight</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QLineEdit" name="txtFreight">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
+                <string>Flete </string>
                </property>
               </widget>
              </item>
              <item row="2" column="0">
               <widget class="QLabel" name="label_14">
                <property name="text">
-                <string>Seguro ( US$ )</string>
-               </property>
-               <property name="buddy">
-                <cstring>txtInsurance</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLineEdit" name="txtInsurance">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
+                <string>Seguro</string>
                </property>
               </widget>
              </item>
              <item row="3" column="0">
               <widget class="QLabel" name="label_15">
                <property name="text">
-                <string>Otros Gastos ( US$ )</string>
+                <string>Otros Gastos</string>
                </property>
-               <property name="buddy">
-                <cstring>txtOther</cstring>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QDoubleSpinBox" name="sbWeight">
+               <property name="minimumSize">
+                <size>
+                 <width>157</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="suffix">
+                <string> Kg</string>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QDoubleSpinBox" name="sbFreight">
+               <property name="minimumSize">
+                <size>
+                 <width>157</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="prefix">
+                <string>US$ </string>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="sbInsurance">
+               <property name="minimumSize">
+                <size>
+                 <width>157</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="prefix">
+                <string>US$ </string>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
                </property>
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="QLineEdit" name="txtOther">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
+              <widget class="QDoubleSpinBox" name="sbOther">
+               <property name="minimumSize">
                 <size>
-                 <width>100</width>
-                 <height>16777215</height>
+                 <width>157</width>
+                 <height>0</height>
                 </size>
                </property>
-               <property name="readOnly">
-                <bool>true</bool>
+               <property name="prefix">
+                <string>US$ </string>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
                </property>
               </widget>
              </item>
@@ -863,14 +830,6 @@
   <tabstop>txtSource</tabstop>
   <tabstop>cbWarehouse</tabstop>
   <tabstop>ckISO</tabstop>
-  <tabstop>txtAgency</tabstop>
-  <tabstop>txtStore</tabstop>
-  <tabstop>txtPaperWork</tabstop>
-  <tabstop>txtTransportation</tabstop>
-  <tabstop>txtWeight</tabstop>
-  <tabstop>txtFreight</tabstop>
-  <tabstop>txtInsurance</tabstop>
-  <tabstop>txtOther</tabstop>
   <tabstop>tabledetails</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>txtProvider</tabstop>

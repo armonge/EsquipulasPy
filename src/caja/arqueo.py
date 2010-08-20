@@ -347,7 +347,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.status = False
             
         except UserWarning as inst:
-            logging.error(inst)
+            logging.error(unicode(inst))
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             self.status = True
         except Exception  as inst:
@@ -485,10 +485,8 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
     def on_sbTransferD_valueChanged(self, value):
         if not self.editmodel is None:
                 self.editmodel.totalTransferD = Decimal(str(value))
-                print "here2"
 
     @pyqtSlot("double")
     def on_sbTransferC_valueChanged(self, value):
         if not self.editmodel is None:
             self.editmodel.totalTransferC = Decimal(str(value))
-            print "herer"

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-#TODO: confirmar antes de cancelar la edicion de un documento o cerrar la ventana
 """
 Module implementing frmEntradaCompra.
 """
+from decimal import Decimal
+import logging
+
 from PyQt4.QtGui import QMainWindow,  QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter
 from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QTimer, QDateTime, QModelIndex
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
-from decimal import Decimal
-
 
 from utility.base import Base
 from ui.Ui_entradacompra import Ui_frmEntradaCompra
@@ -64,10 +64,9 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         #general events
         self.connect( self.actionEditCell, SIGNAL( "triggered()" ), self.editCell )
 
-
-        self.connect( self.rbCash, SIGNAL( "clicked(bool)" ), self.updatePay )
-        self.connect( self.rbCheck, SIGNAL( "clicked(bool)" ), self.updatePay )
-        self.connect( self.rbCredit, SIGNAL( "clicked(bool)" ), self.updatePay )
+        self.rbcash.clicked[bool].connect(self.updatePay)
+        self.rbCheck.clicked[bool].connect(self.updatePay)
+        self.rbCredit.clicked[bool].connect(self.updatePay)
 
         QTimer.singleShot( 0, self.loadModels )
 
@@ -166,9 +165,11 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
 
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))            
-        except Exception as e:
-            print e
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(unicode(inst))
+        except Exception as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", "No se pudo cargar la lista de entradas locales")
+            logging.critical(unicode(inst))
         finally:
             if self.database.isOpen():
                 self.database.close()
@@ -274,9 +275,11 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(unicode(inst))
             self.status = True
         except Exception as e:
-            print e
+            QMessageBox.critical(self, "Llantera Esquipulas", "No se pudo iniciar una nueva entrada compra")
+            logging.error(unicode(inst))
             self.status = True
 
         if QSqlDatabase.database().isOpen():

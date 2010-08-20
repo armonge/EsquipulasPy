@@ -6,7 +6,7 @@ Module implementing frmLiquidacion.
 from decimal import Decimal
 import logging
 
-from PyQt4.QtGui import QMainWindow, QAbstractItemView, QDoubleValidator,\
+from PyQt4.QtGui import QMainWindow, QAbstractItemView, \
 QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, QPrinter
 from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
@@ -53,17 +53,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
 
         self.xdockWidget.setCollapsed( True )
-        self.status = True
+        self.status = 1
 
-        self.doubleValidator = QDoubleValidator( 0, 10000, 4, self )
-        self.txtAgency.setValidator( self.doubleValidator )
-        self.txtStore.setValidator( self.doubleValidator )
-        self.txtPaperWork.setValidator( self.doubleValidator )
-        self.txtTransportation.setValidator( self.doubleValidator )
-        self.txtWeight.setValidator( self.doubleValidator )
-        self.txtFreight.setValidator( self.doubleValidator )
-        self.txtInsurance.setValidator( self.doubleValidator )
-        self.txtOther.setValidator( self.doubleValidator )
 
         self.xdockWidget.setVisible( False )
 
@@ -107,39 +98,43 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     def setControls( self, status ):
         """
         En esta funcion cambio el estado enabled de todos los items en el formulario
-        @param status: false = editando        true = navegando
+        @param status: 1 = navegando 2 = añadiendo productos 3 = añadiendo cuentas contables
         """
-        self.txtPolicy.setReadOnly( status )
-        self.txtAgency.setReadOnly( status )
-        self.txtFreight.setReadOnly( status )
-        self.txtInsurance.setReadOnly( status )
-        self.txtOther.setReadOnly( status )
-        self.txtSource.setReadOnly( status )
-        self.txtWeight.setReadOnly( status )
-        self.txtPaperWork.setReadOnly( status )
-        self.txtStore.setReadOnly( status )
-        self.txtTransportation.setReadOnly( status )
-        self.ckISO.setEnabled( not status )
-        self.tablenavigation.setEnabled(status)
+        print status == 1 or status == 3, status, self.status
+        
+        self.txtPolicy.setReadOnly( status == 1 or status == 3 )
+        self.txtSource.setReadOnly( status == 1 or status == 3)
+        
+        self.sbAgency.setReadOnly( status == 1 or status == 3)
+        self.sbFreight.setReadOnly( status == 1 or status == 3)
+        self.sbInsurance.setReadOnly( status == 1 or status == 3)
+        self.sbOther.setReadOnly( status == 1 or status == 3)
+        
+        self.sbWeight.setReadOnly( status == 1 or status == 3)
+        self.sbPaperWork.setReadOnly( status == 1 or status == 3)
+        self.sbStore.setReadOnly( status == 1 or status == 3)
+        self.sbTransportation.setReadOnly( status == 1 or status == 3)
+        self.ckISO.setEnabled( not (status == 1 or status == 3 ))
+        self.tablenavigation.setEnabled(status == 1)
 
 
-        self.swProvider.setCurrentIndex( 0 if status else 1 )
-        self.swWarehouse.setCurrentIndex( 1 if status else 0 )
+        self.swProvider.setCurrentIndex( 0 if status == 1 or status == 3 else 1 )
+        self.swWarehouse.setCurrentIndex( 1 if status == 1 or status == 3 else 0 )
 
 
-        self.dtPicker.setReadOnly( status )
-        self.cbWarehouse.setEnabled( not status )
+        self.dtPicker.setReadOnly( status != 2 )
+        self.cbWarehouse.setEnabled( status == 2 )
 
-        self.actionCancel.setVisible( not status )
-        self.actionSave.setVisible( not status )
-        self.actionPreview.setVisible( status )
-        self.actionNew.setVisible( status )
+        self.actionCancel.setVisible( not status == 1)
+        self.actionSave.setVisible( not status == 1)
+        self.actionPreview.setVisible( status == 1 )
+        self.actionNew.setVisible( status == 1 )
 
 
-        self.actionGoFirst.setVisible( status )
-        self.actionGoPrevious.setVisible( status )
-        self.actionGoNext.setVisible( status )
-        self.actionGoLast.setVisible( status )
+        self.actionGoFirst.setVisible( status == 1 )
+        self.actionGoPrevious.setVisible( status == 1)
+        self.actionGoNext.setVisible( status == 1)
+        self.actionGoLast.setVisible( status == 1)
         
         self.tabledetails.setColumnHidden( IDDOCUMENTOT, True )
         self.tabledetails.setColumnHidden( IDARTICULO, True )
@@ -162,21 +157,12 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         
         self.tabnavigation.setEnabled( status )
         
-        if not status: #editando
+        if status == 2: #editando
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
             self.tabledetails.addAction( self.actionDeleteRow )
             
-            self.txtAgency.setText("0")
-            self.txtFreight.setText("0")
-            self.txtInsurance.setText("0")
-            self.txtTransportation.setText("15")
-            self.txtOther.setText("0")
-            self.txtPaperWork.setText("15")
-            self.txtStore.setText("0")
-            self.txtWeight.setText("0")
-            self.txtPolicy.setText('')
-            self.txtSource.setText('')
-            
+        elif status == 3:
+            self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
         else:
             self.tableaccounts.setEditTriggers( QTableView.NoEditTriggers )
             self.tabledetails.removeAction( self.actionDeleteRow )
@@ -196,12 +182,11 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 if not QSqlDatabase.database().open():
                     raise UserWarning( "No se pudo conectar con la base de datos "+  \
                 "para recuperar los documentos" )
-
-            self.navmodel.setQuery( u"""
-                SELECT 
-                    d.iddocumento as iddocumento, 
-                    d.ndocimpreso as 'Número de Liquidación', 
-                    DATE(d.fechacreacion) as 'Fecha', 
+            query = u"""
+                SELECT
+                    d.iddocumento as iddocumento,
+                    d.ndocimpreso as 'Número de Liquidación',
+                    DATE(d.fechacreacion) as 'Fecha',
                     l.procedencia as 'Procedencia',
                     l.totalagencia as 'Agencia',
                     l.totalalmacen as 'Almacén',
@@ -211,20 +196,21 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                     l.porcentajetransporte as 'Transporte',
                     l.porcentajepapeleria as 'Papelería',
                     l.peso as 'Peso',
-                    p.nombre as 'Proveedor', 
+                    p.nombre as 'Proveedor',
                     b.nombrebodega as 'Bodega',
                     SUM(IFNULL(valorcosto,0)) as  'ISO',
                     tc.tasa as 'Tasa de Cambio'
-                FROM documentos d 
+                FROM documentos d
                 JOIN liquidaciones l ON d.iddocumento = l.iddocumento
                 JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
                 JOIN personas p ON p.idpersona = pxd.idpersona AND p.tipopersona = %d
                 JOIN bodegas b ON b.idbodega = d.idbodega
                 LEFT JOIN costosxdocumento cxd ON d.iddocumento = cxd.iddocumento
-                LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = 6 
+                LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = 6
                 JOIN tiposcambio tc ON d.idtipocambio = tc.idtc
                 GROUP BY d.iddocumento
-            """ % utility.constantes.PROVEEDOR )
+            """ % utility.constantes.PROVEEDOR
+            self.navmodel.setQuery( query )
     
             self.detailsmodel.setQuery( u"""
             SELECT 
@@ -273,19 +259,23 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
             self.mapper.setModel( self.navproxymodel )
             self.mapper.addMapping( self.txtPolicy, NDOCIMPRESO )
-            self.mapper.addMapping( self.dtPicker, FECHA )
-            self.mapper.addMapping( self.txtProvider, PROVEEDOR, "text" )
-            self.mapper.addMapping( self.txtAgency, AGENCIA )
-            self.mapper.addMapping( self.txtFreight, FLETE )
-            self.mapper.addMapping( self.txtInsurance, SEGURO )
-            self.mapper.addMapping( self.txtOther, OTROS )
             self.mapper.addMapping( self.txtSource, PROCEDENCIA )
-            self.mapper.addMapping( self.txtTransportation, TRANSPORTE )
-            self.mapper.addMapping( self.txtStore, ALMACEN )
-            self.mapper.addMapping( self.txtWeight, PESO )
-            self.mapper.addMapping( self.txtPaperWork, PAPELERIA )
+            self.mapper.addMapping( self.txtProvider, PROVEEDOR)
             self.mapper.addMapping( self.txtWarehouse, BODEGA )
             self.mapper.addMapping( self.txtExchangeRate, TCAMBIO )
+            
+            self.mapper.addMapping( self.dtPicker, FECHA )
+            
+            self.mapper.addMapping( self.sbAgency, AGENCIA )
+            self.mapper.addMapping( self.sbFreight, FLETE )
+            self.mapper.addMapping( self.sbInsurance, SEGURO )
+            self.mapper.addMapping( self.sbOther, OTROS )
+            
+            self.mapper.addMapping( self.sbTransportation, TRANSPORTE )
+            self.mapper.addMapping( self.sbStore, ALMACEN )
+            self.mapper.addMapping( self.sbWeight, PESO )
+            self.mapper.addMapping( self.sbPaperWork, PAPELERIA )
+            
     
             self.tablenavigation.setModel( self.navproxymodel )
             self.tablenavigation.resizeColumnsToContents()
@@ -310,7 +300,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
         
         
-        self.status = True
+        self.status = 1
         self.navigate( 'last' )
         
 
@@ -334,7 +324,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                     raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
             
             query = QSqlQuery( "SELECT idtc FROM tiposcambio LIMIT 1" )
-            
+
+            query.exec_()
             if not query.first():
                 raise UserWarning( u"No existen tipos de cambio en la base de datos" )
 
@@ -396,7 +387,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 
 
 
-            self.status = False
+
             self.tabnavigation.setEnabled( False )
             self.tabWidget.setCurrentIndex( 0 )
             self.tabledetails.setModel( self.editmodel )
@@ -413,33 +404,44 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
             WHERE c.padre != 1 AND c.idcuenta != %s
             """ % movimientos.INVENTARIO ),True )
-            self.tableaccounts.setItemDelegate( self.accountseditdelegate )
-            self.tableaccounts.setModel( self.editmodel.accountsModel )
             
-            self.editmodel.accountsModel.insertRows( 0 )
 
-            line = AccountsSelectorLine()
-            line.itemId = int(movimientos.INVENTARIO)
-            line.code = "110 003 001 000 000"
-            line.name = "INV Inventario de Bodega"
-            
-            self.editmodel.accountsModel.lines[0] = line
             self.dtPicker.setMaximumDateTime(QDateTime.currentDateTime())
             self.dtPicker.setDateTime(QDateTime.currentDateTime() )
 
             self.tabletotals.setModel( self.editmodel.totalsModel )
             self.tabledetails.setColumnHidden( IDDOCUMENTOT, False )
+
+            self.status = 2
+            print self.status
         except UserWarning as inst:
-            self.status = True
+            self.status = 1
             QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
             logging.error(inst)
         except Exception as inst:
-            self.status = True
+            self.status = 1
             logging.critical(inst)
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
 
+
+
+
+
+
+    @pyqtSlot( "int" )
+    def on_tabWidget_currentChanged( self, id ):
+            self.xdockWidget.setVisible( True if  not id else False )
+
+    @pyqtSlot( "QString" )
+    def on_sbAgency_valueChanged( self, p0 ):
+        """
+        Slot documentation goes here.
+        """
+        if not self.editmodel is None:
+            self.editmodel.agencyTotal = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
+            self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
 
     @pyqtSlot( "QString" )
@@ -453,25 +455,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     @pyqtSlot( "QString" )
     def on_txtSource_textChanged( self, p0 ):
         if not self.editmodel is None:
-            self.editmodel.origin = p0
-
-
-    @pyqtSlot( "int" )
-    def on_tabWidget_currentChanged( self, id ):
-            self.xdockWidget.setVisible( True if  not id else False )
+            self.editmodel.origin = p0            
 
     @pyqtSlot( "QString" )
-    def on_txtAgency_textChanged( self, p0 ):
-        """
-        Slot documentation goes here.
-        """
-        if not self.editmodel is None:
-            self.editmodel.agencyTotal = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
-            self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
-            
-
-    @pyqtSlot( "QString" )
-    def on_txtStore_textChanged( self, p0 ):
+    def on_sbStore_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
@@ -482,7 +469,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
 
     @pyqtSlot( "QString" )
-    def on_txtPaperWork_textChanged( self, p0 ):
+    def on_sbPaperWork_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
@@ -492,7 +479,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
 
     @pyqtSlot( "QString" )
-    def on_txtTransportation_textChanged( self, p0 ):
+    def on_sbTransportation_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
@@ -501,7 +488,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "QString" )
-    def on_txtWeight_textChanged( self, p0 ):
+    def on_sbWeight_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
@@ -510,7 +497,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "QString" )
-    def on_txtFreight_textChanged( self, p0 ):
+    def on_sbFreight_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
@@ -519,7 +506,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "QString" )
-    def on_txtInsurance_textChanged( self, p0 ):
+    def on_sbInsurance_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
@@ -528,7 +515,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "QString" )
-    def on_txtOther_textChanged( self, p0 ):
+    def on_sbOther_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
@@ -557,5 +544,20 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
 
+    def loadModels( self ):
+        """
+        Esta función se ejecuta en el constructor del formulario mediante un QTimer,
+        carga los formularios por primera vez
+        """
+        self.updateModels()
+        self.navigate( 'last' )
+        self.status = 1
 
+#self.editmodel.accountsModel.insertRows( 0 )
 
+#line = AccountsSelectorLine()
+#line.itemId = int(movimientos.INVENTARIO)
+#line.code = "110 003 001 000 000"
+#line.name = "INV Inventario de Bodega"
+
+#self.editmodel.accountsModel.lines[0] = line
