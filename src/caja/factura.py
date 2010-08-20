@@ -22,7 +22,7 @@ from utility.user import dlgUserLogin,User
 from utility.movimientos import movFacturaCredito
 from utility import constantes
 #controles
-IDDOCUMENTO, NDOCIMPRESO, CLIENTE,VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, FECHA, BODEGA, TASA,TASAIVA,ANULADO,ESCONTADO = range( 14 )
+IDDOCUMENTO, NDOCIMPRESO, CLIENTE,VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, FECHA, BODEGA, TASA,TASAIVA,ESTADO,ANULADO,ESCONTADO = range( 15 )
 
 #table
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD, IDDOCUMENTOT = range( 6 )
@@ -331,12 +331,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.navproxymodel.setFilterKeyColumn(ANULADO)
         if index==0:        
             self.navproxymodel.setFilterRegExp("")
-        elif index==1:
-            self.navproxymodel.setFilterRegExp("^1$")
-        elif index == 2:
-            self.navproxymodel.setFilterRegExp("^2$")
-        elif index == 3:
-            self.navproxymodel.setFilterRegExp("^3$")
+        else:
+            self.navproxymodel.setFilterRegExp("^%d$"%index)
             
     @pyqtSlot( "int" )
     def on_cbbodega_currentIndexChanged( self, index ):
@@ -501,9 +497,11 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                         b.nombrebodega as Bodega,
                         tc.tasa as 'Tipo de Cambio Oficial',
                         valorcosto as tasaiva,
-                        d.idestado as estado,
+                        ed.descripcion as Estado,
+                        d.idestado,
                         d.escontado
                     FROM documentos d
+                    JOIN estadosdocumento ed ON ed.idestado = d.idestado
                     JOIN bodegas b ON b.idbodega=d.idbodega
                     JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
                     JOIN personasxdocumento pxd ON pxd.iddocumento=d.iddocumento
@@ -563,6 +561,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.tablenavigation.setColumnHidden( TASAIVA, True )
                 self.tablenavigation.setColumnHidden( TASA, True )
                 self.tablenavigation.setColumnHidden( ESCONTADO, True )
+                self.tablenavigation.setColumnHidden( ANULADO, True )
                 
                 
             else:

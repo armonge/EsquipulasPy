@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\factura.ui'
 #
-# Created: Fri Aug 20 00:15:22 2010
+# Created: Fri Aug 20 02:02:08 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -346,6 +346,8 @@ class Ui_frmFactura(object):
         self.cboFiltro.addItem("")
         self.cboFiltro.addItem("")
         self.cboFiltro.addItem("")
+        self.cboFiltro.addItem("")
+        self.cboFiltro.addItem("")
         self.horizontalLayout.addWidget(self.cboFiltro)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         icon2 = QtGui.QIcon()
@@ -489,9 +491,11 @@ class Ui_frmFactura(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), None)
         self.label_4.setText(QtGui.QApplication.translate("frmFactura", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAnular.setText(QtGui.QApplication.translate("frmFactura", "Anular Factura", None, QtGui.QApplication.UnicodeUTF8))
-        self.cboFiltro.setItemText(0, QtGui.QApplication.translate("frmFactura", "Ambas", None, QtGui.QApplication.UnicodeUTF8))
-        self.cboFiltro.setItemText(1, QtGui.QApplication.translate("frmFactura", "Anuladas", None, QtGui.QApplication.UnicodeUTF8))
-        self.cboFiltro.setItemText(2, QtGui.QApplication.translate("frmFactura", "No Anuladas", None, QtGui.QApplication.UnicodeUTF8))
+        self.cboFiltro.setItemText(0, QtGui.QApplication.translate("frmFactura", "Todas", None, QtGui.QApplication.UnicodeUTF8))
+        self.cboFiltro.setItemText(1, QtGui.QApplication.translate("frmFactura", "Confirmadas", None, QtGui.QApplication.UnicodeUTF8))
+        self.cboFiltro.setItemText(2, QtGui.QApplication.translate("frmFactura", "Anuladas", None, QtGui.QApplication.UnicodeUTF8))
+        self.cboFiltro.setItemText(3, QtGui.QApplication.translate("frmFactura", "Crédito Pendiente", None, QtGui.QApplication.UnicodeUTF8))
+        self.cboFiltro.setItemText(4, QtGui.QApplication.translate("frmFactura", "Anulación pendiente", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmFactura", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setText(QtGui.QApplication.translate("frmFactura", "Nuevo", None, QtGui.QApplication.UnicodeUTF8))

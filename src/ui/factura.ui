@@ -613,7 +613,12 @@ color: rgb(255, 0, 0);</string>
            <widget class="QComboBox" name="cboFiltro">
             <item>
              <property name="text">
-              <string>Ambas</string>
+              <string>Todas</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Confirmadas</string>
              </property>
             </item>
             <item>
@@ -623,7 +628,12 @@ color: rgb(255, 0, 0);</string>
             </item>
             <item>
              <property name="text">
-              <string>No Anuladas</string>
+              <string>Crédito Pendiente</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Anulación pendiente</string>
              </property>
             </item>
            </widget>
