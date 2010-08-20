@@ -7,7 +7,6 @@ Module implementing MainWindow.
 from PyQt4.QtGui import QMainWindow, QIcon
 from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, SLOT
 from entradacompra import frmEntradaCompra
-from devolucion import frmDevolucion
 from catalogos import frmCatProveedores, frmCatMarcas,  frmCatConceptos
 from liquidacion import frmLiquidacion
 from categorias import frmCategorias
@@ -53,7 +52,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.btnArticles.setEnabled( state )
         self.btnBrands.setEnabled( state )
         self.btnCategories.setEnabled( state )
-        self.btnDevolutions.setEnabled( state )
         self.btnEntries.setEnabled( state )
         self.btnLiquidations.setEnabled( state )
         self.btnProviders.setEnabled( state )
@@ -77,16 +75,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow( conceptos )
         conceptos.show()   
     
-    @pyqtSlot( )
-    def on_btnDevolutions_clicked( self ):
-        """
-        Slot documentation goes here.
-        """
-        devolucion = frmDevolucion( self.user, self )
-        devolucion.setAttribute( Qt.WA_DeleteOnClose )
-        self.mdiArea.addSubWindow( devolucion )
-        devolucion.show()
-
     @pyqtSlot(  )
     def on_btnEntries_clicked( self ):
         """
