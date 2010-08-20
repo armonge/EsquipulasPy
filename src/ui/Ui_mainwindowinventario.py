@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/mainwindowinventario.ui'
+# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/mainwindowinventario.ui'
 #
-# Created: Thu Aug 19 10:06:54 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -49,7 +48,7 @@ class Ui_MainWindow(object):
         self.toolBox = QtGui.QToolBox(self.dockWidgetContents_2)
         self.toolBox.setObjectName("toolBox")
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 196, 300))
+        self.page.setGeometry(QtCore.QRect(0, 0, 214, 544))
         self.page.setObjectName("page")
         self.gridLayout_2 = QtGui.QGridLayout(self.page)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -116,7 +115,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addWidget(self.btnProviders, 3, 0, 1, 1)
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtGui.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 205, 300))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 544))
         self.page_2.setObjectName("page_2")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page_2)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -138,21 +137,6 @@ class Ui_MainWindow(object):
         self.btnLiquidations.setFlat(False)
         self.btnLiquidations.setObjectName("btnLiquidations")
         self.verticalLayout_2.addWidget(self.btnLiquidations)
-        self.btnAnnulments = QtGui.QPushButton(self.page_2)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btnAnnulments.sizePolicy().hasHeightForWidth())
-        self.btnAnnulments.setSizePolicy(sizePolicy)
-        self.btnAnnulments.setMinimumSize(QtCore.QSize(0, 70))
-        font = QtGui.QFont()
-        font.setWeight(75)
-        font.setBold(True)
-        self.btnAnnulments.setFont(font)
-        self.btnAnnulments.setIconSize(QtCore.QSize(64, 64))
-        self.btnAnnulments.setFlat(False)
-        self.btnAnnulments.setObjectName("btnAnnulments")
-        self.verticalLayout_2.addWidget(self.btnAnnulments)
         self.btnEntries = QtGui.QPushButton(self.page_2)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -171,24 +155,9 @@ class Ui_MainWindow(object):
         self.btnEntries.setFlat(False)
         self.btnEntries.setObjectName("btnEntries")
         self.verticalLayout_2.addWidget(self.btnEntries)
-        self.btnDevolutions = QtGui.QPushButton(self.page_2)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btnDevolutions.sizePolicy().hasHeightForWidth())
-        self.btnDevolutions.setSizePolicy(sizePolicy)
-        self.btnDevolutions.setMinimumSize(QtCore.QSize(0, 70))
-        font = QtGui.QFont()
-        font.setWeight(75)
-        font.setBold(True)
-        self.btnDevolutions.setFont(font)
-        self.btnDevolutions.setIconSize(QtCore.QSize(32, 32))
-        self.btnDevolutions.setFlat(False)
-        self.btnDevolutions.setObjectName("btnDevolutions")
-        self.verticalLayout_2.addWidget(self.btnDevolutions)
         self.toolBox.addItem(self.page_2, "")
         self.widget = QtGui.QWidget()
-        self.widget.setGeometry(QtCore.QRect(0, 0, 214, 540))
+        self.widget.setGeometry(QtCore.QRect(0, 0, 214, 544))
         self.widget.setObjectName("widget")
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.widget)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -259,7 +228,7 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionUnlockSession)
 
         self.retranslateUi(MainWindow)
-        self.toolBox.setCurrentIndex(2)
+        self.toolBox.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -271,10 +240,7 @@ class Ui_MainWindow(object):
         self.btnProviders.setText(QtGui.QApplication.translate("MainWindow", "Proveedores", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page), QtGui.QApplication.translate("MainWindow", "Catalogos", None, QtGui.QApplication.UnicodeUTF8))
         self.btnLiquidations.setText(QtGui.QApplication.translate("MainWindow", "Liquidaciones", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnAnnulments.setText(QtGui.QApplication.translate("MainWindow", "Anulaciones de\n"
-"Facturas", None, QtGui.QApplication.UnicodeUTF8))
         self.btnEntries.setText(QtGui.QApplication.translate("MainWindow", "Entradas", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnDevolutions.setText(QtGui.QApplication.translate("MainWindow", "Devoluciones", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), QtGui.QApplication.translate("MainWindow", "Movimientos", None, QtGui.QApplication.UnicodeUTF8))
         self.btnKEntries.setText(QtGui.QApplication.translate("MainWindow", "Entradas\n"
 "Locales,\n"

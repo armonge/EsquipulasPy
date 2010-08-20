@@ -77,15 +77,15 @@
      <item>
       <widget class="QToolBox" name="toolBox">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>196</width>
-          <height>300</height>
+          <width>214</width>
+          <height>544</height>
          </rect>
         </property>
         <attribute name="label">
@@ -244,8 +244,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>205</width>
-          <height>300</height>
+          <width>214</width>
+          <height>544</height>
          </rect>
         </property>
         <attribute name="label">
@@ -278,41 +278,6 @@
            <property name="icon">
             <iconset resource="res.qrc">
              <normaloff>:/images/res/simbolo-dolar-300x245.jpg</normaloff>:/images/res/simbolo-dolar-300x245.jpg</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>64</width>
-             <height>64</height>
-            </size>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnAnnulments">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>70</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Anulaciones de
-Facturas</string>
            </property>
            <property name="iconSize">
             <size>
@@ -363,40 +328,6 @@ Facturas</string>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="btnDevolutions">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>70</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Devoluciones</string>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="widget">
@@ -405,7 +336,7 @@ Facturas</string>
           <x>0</x>
           <y>0</y>
           <width>214</width>
-          <height>540</height>
+          <height>544</height>
          </rect>
         </property>
         <attribute name="label">

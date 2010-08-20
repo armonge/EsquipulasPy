@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\mainwindowcaja.ui'
+# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/mainwindowcaja.ui'
 #
-# Created: Tue Aug 17 19:48:04 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -51,10 +50,10 @@ class Ui_MainWindow(object):
         self.toolBox.setObjectName("toolBox")
         self.page_2 = QtGui.QWidget()
         self.page_2.setEnabled(True)
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 574))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 570))
         self.page_2.setObjectName("page_2")
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.page_2)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.gridLayout_2 = QtGui.QGridLayout(self.page_2)
+        self.gridLayout_2.setObjectName("gridLayout_2")
         self.btnApertura = QtGui.QPushButton(self.page_2)
         self.btnApertura.setEnabled(True)
         self.btnApertura.setMinimumSize(QtCore.QSize(0, 70))
@@ -68,7 +67,7 @@ class Ui_MainWindow(object):
         self.btnApertura.setIconSize(QtCore.QSize(64, 64))
         self.btnApertura.setFlat(False)
         self.btnApertura.setObjectName("btnApertura")
-        self.verticalLayout_2.addWidget(self.btnApertura)
+        self.gridLayout_2.addWidget(self.btnApertura, 0, 0, 1, 1)
         self.btnfactura = QtGui.QPushButton(self.page_2)
         self.btnfactura.setEnabled(False)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
@@ -87,7 +86,7 @@ class Ui_MainWindow(object):
         self.btnfactura.setIconSize(QtCore.QSize(64, 64))
         self.btnfactura.setFlat(False)
         self.btnfactura.setObjectName("btnfactura")
-        self.verticalLayout_2.addWidget(self.btnfactura)
+        self.gridLayout_2.addWidget(self.btnfactura, 1, 0, 1, 1)
         self.btnrecibo = QtGui.QPushButton(self.page_2)
         self.btnrecibo.setEnabled(False)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
@@ -103,7 +102,7 @@ class Ui_MainWindow(object):
         self.btnrecibo.setIconSize(QtCore.QSize(32, 32))
         self.btnrecibo.setFlat(False)
         self.btnrecibo.setObjectName("btnrecibo")
-        self.verticalLayout_2.addWidget(self.btnrecibo)
+        self.gridLayout_2.addWidget(self.btnrecibo, 2, 0, 1, 1)
         self.btnpago = QtGui.QPushButton(self.page_2)
         self.btnpago.setEnabled(False)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
@@ -119,7 +118,23 @@ class Ui_MainWindow(object):
         self.btnpago.setIconSize(QtCore.QSize(32, 32))
         self.btnpago.setFlat(False)
         self.btnpago.setObjectName("btnpago")
-        self.verticalLayout_2.addWidget(self.btnpago)
+        self.gridLayout_2.addWidget(self.btnpago, 3, 0, 1, 1)
+        self.btnDevolutions = QtGui.QPushButton(self.page_2)
+        self.btnDevolutions.setEnabled(False)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btnDevolutions.sizePolicy().hasHeightForWidth())
+        self.btnDevolutions.setSizePolicy(sizePolicy)
+        self.btnDevolutions.setMinimumSize(QtCore.QSize(0, 70))
+        font = QtGui.QFont()
+        font.setWeight(75)
+        font.setBold(True)
+        self.btnDevolutions.setFont(font)
+        self.btnDevolutions.setIconSize(QtCore.QSize(32, 32))
+        self.btnDevolutions.setFlat(False)
+        self.btnDevolutions.setObjectName("btnDevolutions")
+        self.gridLayout_2.addWidget(self.btnDevolutions, 4, 0, 1, 1)
         self.btnArqueo = QtGui.QPushButton(self.page_2)
         self.btnArqueo.setEnabled(False)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
@@ -136,11 +151,11 @@ class Ui_MainWindow(object):
         self.btnArqueo.setIconSize(QtCore.QSize(64, 64))
         self.btnArqueo.setFlat(False)
         self.btnArqueo.setObjectName("btnArqueo")
-        self.verticalLayout_2.addWidget(self.btnArqueo)
+        self.gridLayout_2.addWidget(self.btnArqueo, 5, 0, 1, 1)
         self.toolBox.addItem(self.page_2, "")
         self.page = QtGui.QWidget()
         self.page.setEnabled(True)
-        self.page.setGeometry(QtCore.QRect(0, 0, 142, 88))
+        self.page.setGeometry(QtCore.QRect(0, 0, 214, 570))
         self.page.setObjectName("page")
         self.gridLayout = QtGui.QGridLayout(self.page)
         self.gridLayout.setObjectName("gridLayout")
@@ -196,6 +211,7 @@ class Ui_MainWindow(object):
         self.btnrecibo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
         self.btnpago.setText(QtGui.QApplication.translate("MainWindow", "Pagos en Efectivo", None, QtGui.QApplication.UnicodeUTF8))
         self.btnpago.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnDevolutions.setText(QtGui.QApplication.translate("MainWindow", "Devoluciones", None, QtGui.QApplication.UnicodeUTF8))
         self.btnArqueo.setText(QtGui.QApplication.translate("MainWindow", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
         self.btnArqueo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+5", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), QtGui.QApplication.translate("MainWindow", "Movimientos", None, QtGui.QApplication.UnicodeUTF8))
@@ -206,3 +222,13 @@ class Ui_MainWindow(object):
         self.actionUnlockSession.setText(QtGui.QApplication.translate("MainWindow", "Desbloquear Sesión", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    MainWindow = QtGui.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+
