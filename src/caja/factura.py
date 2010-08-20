@@ -197,7 +197,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         
         nimpreso = query.value( 0 ).toString()
         doc=self.navmodel.record( self.mapper.currentIndex()).value( "iddocumento" ).toInt()[0]
-        estado=iddoc=self.navmodel.record( self.mapper.currentIndex() ).value( "estado" ).toInt()[0]
+        estado= self.navmodel.record( self.mapper.currentIndex() ).value( "idestado" ).toInt()[0]
     
         query=QSqlQuery("""SELECT doc.idtipodoc from documentos d
                         JOIN docpadrehijos dph on dph.idpadre=d.iddocumento
@@ -206,14 +206,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                         group by d.iddocumento""" %(constantes.ANULADO, doc))        
         query.exec_()
         query.first()
-        if QDate.currentDate()!=QDate.fromString(self.navmodel.record( self.mapper.currentIndex() ).value( "Fecha" ).toString(),"dd/MM/yyyy"):
-            QMessageBox.information( None, u"Anulacion invalida", "Esta factura no se puede anular porque no es del dia actual" )
-        
-        elif estado==2:
-            QMessageBox.information( None, "Anulacion invalida", "Esta factura ya ha sido anulada" )
-                            
-        elif estado==3:
-            if QMessageBox.question(self, "Llantera Esquipulas", u"Esta factura tiene un estado pendiente, ¿Puede ser eliminada?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+        if estado==3:
+            if QMessageBox.question(self, "Llantera Esquipulas", u"Esta factura no fue confirmada, ¿Desea eliminarla?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
                 
                 #Insertar documento anulacion
                 if not query.prepare( """CALL `esquipulasdb`.`spEliminarFactura`(:doc)""" ):
@@ -225,100 +219,106 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 
                 QMessageBox.information( None, "Eliminacion de Factura", "Factura eliminada correctamente" )
                 self.updateModels()
-                
-        elif query.value(0)==str(constantes.IDRECIBO):            
-            QMessageBox.information( None, "Anulacion invalida", "Esta factura tiene un pago, por lo tanto no se puede anular" )
+        else:
+            if QDate.currentDate()!=QDate.fromString(self.navmodel.record( self.mapper.currentIndex() ).value( "Fecha" ).toString(),"dd/MM/yyyy"):
+                QMessageBox.information( None, u"Anulacion invalida", "Esta factura no se puede anular porque no es del dia actual" )
             
-        else:            
-        
-            if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea anular la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-                dlguser = dlgUserLogin()
-        
-                if dlguser.exec_() == QDialog.Accepted:
-                
-                    supervisor = User( dlguser.txtUser.text(), "cusucosoft" )
-                    if supervisor.valid:
-                        if supervisor.hasRole( 'root' ):    
-                            
-                            try:
-                                if not QSqlDatabase.database().isOpen():
-                                    if not QSqlDatabase.database().open():
-                                        raise Exception("NO se pudo abrir la Base de datos")
-                
-                                anulardialog=Anular(nimpreso)
+            elif estado==2:
+                QMessageBox.information( None, "Anulacion invalida", "Esta factura ya ha sido anulada" )
                                 
-                                if anulardialog.exec_() == QDialog.Accepted:
-                                    if anulardialog.cboConceptos.currentIndex()==-1 and anulardialog.txtObservaciones.toPlainText()=="":
-                                        QMessageBox.critical( self, "Llantera Esquipulas", "No ingreso los datos correctos", QMessageBox.Ok )                                    
-                                    else:
                             
-                                        query = QSqlQuery()
-                                        if not self.database.transaction():
-                                            raise Exception("No se pudo comenzar la transacción" )    
-                                        #Cambiar estado Anulado=1 para documento
-                                        query.prepare("UPDATE documentos d SET idestado=2 where iddocumento=%d LIMIT 1"%doc )
-                                        if not query.exec_():
-                                            raise Exception("No se logro cambiar el estado a el documento")
-                                       
-                                        #Insertar documento anulacion
-                                        if not query.prepare( """INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
-                                        VALUES(:ndocimpreso,:total,:fechacreacion,:idtipodoc,:observacion,:idestado)""" ):
-                                            raise Exception( query.lastError().text() )
-                                        query.bindValue( ":ndocimpreso", nimpreso )
-                                        query.bindValue(":total",self.navmodel.record( self.mapper.currentIndex() ).value( "total" ).toString())
-                                        query.bindValue( ":fechacreacion", QDate.currentDate() )
-                                        query.bindValue( ":idtipodoc", 2 )
-                                        query.bindValue( ":observacion", anulardialog.txtObservaciones.toPlainText() )                        
-                                        query.bindValue( ":idestado", 1 )
-                                        
-                                        if not query.exec_():
-                                            raise Exception("No se pudo insertar el documento Anulacion")
-                                        
-                                        insertedId=query.lastInsertId().toString()
-                                        
-                                        if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,autoriza) VALUES" + 
-                                        "(:usuario," + insertedId + ",0), "
-                                        "(:supervisor," + insertedId + ",1)"):
-                                            raise Exception( query.lastError().text()+"No se inserto el usuario y autoriza" )                                
-                            
-                                        query.bindValue( ":usuario", self.parentWindow.datosSesion.usuarioId )
-                                        query.bindValue (":supervisor", supervisor.uid)
-        
-                                        #Insertar el documento anulacion como hijo de la factura
-                                        query=QSqlQuery("""select
-                                                @subtotal:=(d.total/(1+ca.valorcosto/100))*tc.tasa as subtotal,
-                                                sum(unidades*costounit*tc.tasa*-1) as totalcosto,
-                                                IF(ca.valorcosto IS NULL,0,@subtotal*ca.valorcosto/100)*tc.tasa as IVA                                        
-                                                from articulosxdocumento ad
-                                                join documentos d on d.iddocumento=ad.iddocumento
-                                                join tiposcambio tc on tc.idtc=d.idtipocambio
-                                                JOIN costosxdocumento cd on cd.iddocumento=d.iddocumento
-                                                JOIN costosagregados ca on ca.idcostoagregado=cd.idcostoagregado
-                                                where d.iddocumento=%d and ca.idtipocosto=%d""" % (doc, constantes.IVA))
-                                        
-                                        if not query.exec_():
-                                            raise Exception("No se pudo ejecutar la consulta de los totales de Factura")
-                                        
-                                        query.first()
-                                        
-                                        subtotal=Decimal(query.value(0).toString())
-                                        totalcosto=Decimal(query.value(1).toString())
-                                        iva=Decimal(query.value(2).toString())
-                                        
-                                        movFacturaCredito(insertedId, subtotal*Decimal("-1"),iva*Decimal("-1"),totalcosto*Decimal("-1") )                   
-                                        
-                                        if not self.database.commit():
-                                            raise Exception("NO se hizo el commit para la Anulacion")
-                                        QMessageBox.information( self, "Llantera Esquipulas", "Factura anulada Correctamente", QMessageBox.Ok )                            
-                                        self.updateModels()
+            elif query.value(0)==str(constantes.IDRECIBO):            
+                QMessageBox.information( None, "Anulacion invalida", "Esta factura tiene un pago, por lo tanto no se puede anular" )
+                
+            else:            
+            
+                if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea anular la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+                    dlguser = dlgUserLogin()
+            
+                    if dlguser.exec_() == QDialog.Accepted:
+                    
+                        supervisor = User( dlguser.txtUser.text(), "" )
+                        if supervisor.valid:
+                            if supervisor.hasRole( 'root' ):    
                                 
-                            except Exception as inst:
-                                print inst
-                                print query.lastError().text()
-                                self.database.rollback()
-                        else:
-                            anulardialog.close() 
-
+                                try:
+                                    if not QSqlDatabase.database().isOpen():
+                                        if not QSqlDatabase.database().open():
+                                            raise Exception("NO se pudo abrir la Base de datos")
+                    
+                                    anulardialog=Anular(self.navmodel.record( self.mapper.currentIndex()).value( "No. Factura" ).toString())
+                                    
+                                    if anulardialog.exec_() == QDialog.Accepted:
+                                        if anulardialog.cboConceptos.currentIndex()==-1 and anulardialog.txtObservaciones.toPlainText()=="":
+                                            QMessageBox.critical( self, "Llantera Esquipulas", "No ingreso los datos correctos", QMessageBox.Ok )                                    
+                                        else:
+                                
+                                            query = QSqlQuery()
+                                            if not self.database.transaction():
+                                                raise Exception("No se pudo comenzar la transacción" )    
+                                            #Cambiar estado Anulado=1 para documento
+                                            query.prepare("UPDATE documentos d SET idestado=2 where iddocumento=%d LIMIT 1"%doc )
+                                            if not query.exec_():
+                                                raise Exception("No se logro cambiar el estado a el documento")
+                                           
+                                            #Insertar documento anulacion
+                                            if not query.prepare( """INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
+                                            VALUES(:ndocimpreso,:total,:fechacreacion,:idtipodoc,:observacion,:idestado)""" ):
+                                                raise Exception( query.lastError().text() )
+                                            query.bindValue( ":ndocimpreso", nimpreso )
+                                            query.bindValue(":total",self.navmodel.record( self.mapper.currentIndex() ).value( "total" ).toString())
+                                            query.bindValue( ":fechacreacion", QDate.currentDate() )
+                                            query.bindValue( ":idtipodoc", 2 )
+                                            query.bindValue( ":observacion", anulardialog.txtObservaciones.toPlainText() )                        
+                                            query.bindValue( ":idestado", 1 )
+                                            
+                                            if not query.exec_():
+                                                raise Exception("No se pudo insertar el documento Anulacion")
+                                            
+                                            insertedId=query.lastInsertId().toString()
+                                            
+                                            if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,autoriza) VALUES" + 
+                                            "(:usuario," + insertedId + ",0), "
+                                            "(:supervisor," + insertedId + ",1)"):
+                                                raise Exception( query.lastError().text()+"No se inserto el usuario y autoriza" )                                
+                                
+                                            query.bindValue( ":usuario", self.parentWindow.datosSesion.usuarioId )
+                                            query.bindValue (":supervisor", supervisor.uid)
+            
+                                            #Insertar el documento anulacion como hijo de la factura
+                                            query=QSqlQuery("""select
+                                                    @subtotal:=(d.total/(1+ca.valorcosto/100))*tc.tasa as subtotal,
+                                                    sum(unidades*costounit*tc.tasa*-1) as totalcosto,
+                                                    IF(ca.valorcosto IS NULL,0,@subtotal*ca.valorcosto/100)*tc.tasa as IVA                                        
+                                                    from articulosxdocumento ad
+                                                    join documentos d on d.iddocumento=ad.iddocumento
+                                                    join tiposcambio tc on tc.idtc=d.idtipocambio
+                                                    JOIN costosxdocumento cd on cd.iddocumento=d.iddocumento
+                                                    JOIN costosagregados ca on ca.idcostoagregado=cd.idcostoagregado
+                                                    where d.iddocumento=%d and ca.idtipocosto=%d""" % (doc, constantes.IVA))
+                                            
+                                            if not query.exec_():
+                                                raise Exception("No se pudo ejecutar la consulta de los totales de Factura")
+                                            
+                                            query.first()
+                                            
+                                            subtotal=Decimal(query.value(0).toString())
+                                            totalcosto=Decimal(query.value(1).toString())
+                                            iva=Decimal(query.value(2).toString())
+                                            
+                                            movFacturaCredito(insertedId, subtotal*Decimal("-1"),iva*Decimal("-1"),totalcosto*Decimal("-1") )                   
+                                            
+                                            if not self.database.commit():
+                                                raise Exception("NO se hizo el commit para la Anulacion")
+                                            QMessageBox.information( self, "Llantera Esquipulas", "Factura anulada Correctamente", QMessageBox.Ok )                            
+                                            self.updateModels()
+                                    
+                                except Exception as inst:
+                                    print inst
+                                    print query.lastError().text()
+                                    self.database.rollback()
+                            else:
+                                anulardialog.close() 
     @pyqtSlot(  )
     def on_btnrecibo_clicked( self ):
         self.recibo.show()
