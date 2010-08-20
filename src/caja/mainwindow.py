@@ -24,6 +24,7 @@ from arqueo import frmArqueo
 from cierrecaja import frmCierreCaja
 from decimal import Decimal
 from utility import constantes
+from devolucion import frmDevolucion
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     """
     Esta clase implementa el MainWindow de Caja
@@ -75,7 +76,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.btnClients.setEnabled( state )
         self.btnrecibo.setEnabled( state )
         self.btnfactura.setEnabled( state )
-
+        self.btnDevolutions.setEnabled( state )
         self.mdiArea.setEnabled( state )
         self.mdiArea.setVisible( state )
         self.actionLockSession.setVisible( state )
@@ -198,6 +199,18 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow( clientes )
         clientes.show()
 
+    @pyqtSlot( )
+    def on_btnDevolutions_clicked( self ):
+        """
+        Slot documentation goes here.
+        """
+        devolucion = frmDevolucion( self.user, self )
+        devolucion.setAttribute( Qt.WA_DeleteOnClose )
+        self.mdiArea.addSubWindow( devolucion )
+        devolucion.show()
+
+    
+    
 class DatosSesion():
     def __init__(self):
         self.usuarioId=0
