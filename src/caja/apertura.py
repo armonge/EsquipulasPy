@@ -28,7 +28,7 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
         self.txtUsuario.setText( parent.user.user )
         self.txtUsuario.setReadOnly( True )
 
-        self.txtUser.setFocus()
+#        self.txtUser.setFocus()
         self.txtPassword.setEchoMode( QLineEdit.Password )
         self.setWindowIcon( QIcon( ":/icons/res/logo.png" ) )
         

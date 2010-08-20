@@ -360,14 +360,13 @@ class EntradaCompraModel( QAbstractTableModel ):
 
 
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,  observacion,total, idbodega, idtipocambio, escontado) 
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total,:idbodega, :idtc, :escontado)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,  observacion,total, idbodega, idtipocambio, escontado) 
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:idbodega, :idtc, :escontado)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para ingresar el documento" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
-            query.bindValue( ":anulado", 0 )
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.totalD.to_eng_string() )
             query.bindValue( ":idbodega", 1 )

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\apertura.ui'
 #
-# Created: Fri Aug 13 23:01:13 2010
+# Created: Thu Aug 19 16:27:08 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -109,10 +109,14 @@ class Ui_dlgApertura(object):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), dlgApertura.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), dlgApertura.reject)
         QtCore.QMetaObject.connectSlotsByName(dlgApertura)
-        dlgApertura.setTabOrder(self.txtUsuario, self.dtFechaTime)
-        dlgApertura.setTabOrder(self.dtFechaTime, self.cbcaja)
-        dlgApertura.setTabOrder(self.cbcaja, self.txtSaldoD)
-        dlgApertura.setTabOrder(self.txtSaldoD, self.buttonBox)
+        dlgApertura.setTabOrder(self.cbcaja, self.txtSaldoC)
+        dlgApertura.setTabOrder(self.txtSaldoC, self.txtSaldoD)
+        dlgApertura.setTabOrder(self.txtSaldoD, self.txtUser)
+        dlgApertura.setTabOrder(self.txtUser, self.txtPassword)
+        dlgApertura.setTabOrder(self.txtPassword, self.buttonBox)
+        dlgApertura.setTabOrder(self.buttonBox, self.dtFechaTime)
+        dlgApertura.setTabOrder(self.dtFechaTime, self.txtUsuario)
+        dlgApertura.setTabOrder(self.txtUsuario, self.txtcaja)
 
     def retranslateUi(self, dlgApertura):
         dlgApertura.setWindowTitle(QtGui.QApplication.translate("dlgApertura", "Apertura de Caja", None, QtGui.QApplication.UnicodeUTF8))

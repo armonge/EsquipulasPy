@@ -641,7 +641,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         
         
     
-    def aceptar(self):
+    def accept(self):
         if self.readOnly:
             return self.accept()
         
@@ -667,7 +667,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         else:
             self.txtcliente.setText(factura.cbcliente.currentText())
             self.totalFactura = Decimal(0)
-            self.connect( self.buttonBox, SIGNAL( "accepted()" ), self.aceptar )
+#            self.connect( self.buttonBox, SIGNAL( "accepted()" ), self.aceptar )
             self.lbltotal.setText(factura.lbltotal.text())
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():

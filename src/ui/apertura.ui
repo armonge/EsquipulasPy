@@ -183,11 +183,15 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>txtUsuario</tabstop>
-  <tabstop>dtFechaTime</tabstop>
   <tabstop>cbcaja</tabstop>
+  <tabstop>txtSaldoC</tabstop>
   <tabstop>txtSaldoD</tabstop>
+  <tabstop>txtUser</tabstop>
+  <tabstop>txtPassword</tabstop>
   <tabstop>buttonBox</tabstop>
+  <tabstop>dtFechaTime</tabstop>
+  <tabstop>txtUsuario</tabstop>
+  <tabstop>txtcaja</tabstop>
  </tabstops>
  <resources/>
  <connections>
