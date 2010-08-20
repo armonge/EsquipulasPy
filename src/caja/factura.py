@@ -285,16 +285,16 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                                         query.bindValue (":supervisor", supervisor.uid)
         
                                         #Insertar el documento anulacion como hijo de la factura
-                                        query=QSqlQuery("""Select
-                                                @subtotal:=d.total/(1+ca.valorcosto/100) as subtotal,
-                                                sum(unidades*costounit*tc.tasa) as totalcosto,
-                                                IF(ca.valorcosto IS NULL,0,@subtotal*ca.valorcosto/100) as IVA                                        
+                                        query=QSqlQuery("""select
+                                                @subtotal:=(d.total/(1+ca.valorcosto/100))*tc.tasa as subtotal,
+                                                sum(unidades*costounit*tc.tasa*-1) as totalcosto,
+                                                IF(ca.valorcosto IS NULL,0,@subtotal*ca.valorcosto/100)*tc.tasa as IVA                                        
                                                 from articulosxdocumento ad
                                                 join documentos d on d.iddocumento=ad.iddocumento
                                                 join tiposcambio tc on tc.idtc=d.idtipocambio
                                                 JOIN costosxdocumento cd on cd.iddocumento=d.iddocumento
                                                 JOIN costosagregados ca on ca.idcostoagregado=cd.idcostoagregado
-                                                where d.iddocumento=%d and ca.idtipocosto=%d""" % (iddoc, constantes.IVA))
+                                                where d.iddocumento=%d and ca.idtipocosto=%d""" % (doc, constantes.IVA))
                                         
                                         if not query.exec_():
                                             raise Exception("No se pudo ejecutar la consulta de los totales de Factura")
