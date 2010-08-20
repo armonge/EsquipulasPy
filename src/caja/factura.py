@@ -327,13 +327,13 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         query.first()        
         nimpreso = query.value( 0 ).toString()
         doc=self.navmodel.record( self.mapper.currentIndex()).value( "iddocumento" ).toInt()[0]
-        anulado=iddoc=self.navmodel.record( self.mapper.currentIndex() ).value( "Anulada" ).toInt()[0]
+        anulado=iddoc=self.navmodel.record( self.mapper.currentIndex() ).value( "estado" ).toInt()[0]
 
         query=QSqlQuery("""SELECT doc.idtipodoc from documentos d
                         JOIN docpadrehijos dph on dph.idpadre=d.iddocumento
                         join documentos doc ON doc.iddocumento=dph.idhijo
-                        where d.anulado=0 and d.iddocumento=%d
-                        group by d.iddocumento""" %(doc))        
+                        where d.idestado=%d and d.iddocumento=%d
+                        group by d.iddocumento""" %(constantes.ANULADO, doc))        
         query.exec_()
         query.first()
         print query.value(0).toString()
@@ -605,7 +605,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     b.nombrebodega as Bodega,
                     tc.tasa as 'Tipo de Cambio Oficial',
                     valorcosto as tasaiva,
-                    d.anulado as Anulada,
+                    d.idestado as estado,
                     d.escontado
                 FROM documentos d
                 JOIN bodegas b ON b.idbodega=d.idbodega

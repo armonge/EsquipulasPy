@@ -10,6 +10,7 @@ from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
 from lineafactura import LineaFactura
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
+from utility import constantes
 from utility.movimientos import movFacturaContado , movFacturaCredito
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD = range( 5 )
@@ -207,9 +208,9 @@ class FacturaModel( QAbstractTableModel ):
         return int( section + 1 )
 
 #TODO: INSERCION
-    def save( self , datosRecibo):
+    def save( self , otrosDatosModel):
         """
-        Este metodo guarda el documento actual en la base de datos
+        Este metodo guarda la factura en la base de datos
         """
         query = QSqlQuery()
 
@@ -222,8 +223,8 @@ class FacturaModel( QAbstractTableModel ):
 #                self.printedDocumentNumber = "S/N"
 #                
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,observacion,total,idbodega,escontado,idtipocambio,idcaja,autorizado) 
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:bodega,:escontado,:idtc,:caja,:autorizado)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,observacion,total,idbodega,escontado,idtipocambio,idcaja,idestado) 
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:bodega,:escontado,:idtc,:caja,:estado)
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
@@ -235,7 +236,7 @@ class FacturaModel( QAbstractTableModel ):
             query.bindValue( ":escontado", self.escontado )
             query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
             query.bindValue( ":caja", self.datosSesion.cajaId)
-            query.bindValue( ":autorizado", self.escontado)
+            query.bindValue( ":estado", constantes.CONFIRMADO if self.escontado else constantes.PENDIENTE)
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
@@ -277,17 +278,13 @@ class FacturaModel( QAbstractTableModel ):
                     i = i + 1
 
 #VERIFICO SI el id del iva es cero. NO SERA CERO CUANDO LA BODEGA=1 PORQUE ESTA NO ES exonerada                     
-            print self.bodegaId
+            
             if self.bodegaId == 1 :
                 query.prepare( """
                 INSERT INTO costosxdocumento (iddocumento, idcostoagregado) VALUES( :iddocumento, :idcostoagregado )
                 """ )
                 query.bindValue( ":iddocumento", insertedId )
                 query.bindValue( ":idcostoagregado", self.ivaId )
-                print "Documento"
-                print insertedId
-                print "IVA"
-                print self.ivaId
                 
                 if not query.exec_():
                     print insertedId
@@ -295,15 +292,28 @@ class FacturaModel( QAbstractTableModel ):
                     raise Exception( "El iva NO SE INSERTO" )
 
             #manejar las cuentas contables en Cordobas
-            # el costo no se multiplica porque ya esta en cordobas
-            if self.escontado:
-                movFacturaCredito( insertedId, self.subtotal * self.datosSesion.tipoCambioOficial , self.IVA * self.datosSesion.tipoCambioOficial, self.costototal )
-            
+            # el costo no se multiplica porque ya esta en cordobas                
             
             guardar = True
-            if datosRecibo!=None:
-                datosRecibo.lineasAbonos[0].idFac= insertedId
-                guardar = datosRecibo.save(False)
+            if self.escontado:
+                movFacturaCredito( insertedId, self.subtotal * self.datosSesion.tipoCambioOficial , self.IVA * self.datosSesion.tipoCambioOficial, self.costototal )
+                # Como es al contado el modelo otrosDatosModel guarda datos del recibo
+                otrosDatosModel.lineasAbonos[0].idFac= insertedId
+                guardar = otrosDatosModel.save(False)
+            else:
+                # Como es al credito el modelo otrosDatosModel guarda datos del credito
+                query.prepare( """
+                INSERT INTO creditos (iddocumento, fechatope,tasamulta) VALUES( :iddocumento, :fechatope, :multa )
+                """ )
+                query.bindValue( ":iddocumento", insertedId )
+                query.bindValue( ":fechatope", self.ivaId )
+                query.bindValue( ":multa", self.ivaId )
+                
+                guardar = query.exec_() 
+                if not guardar:
+                    print insertedId
+                    print self.ivaId
+                    raise Exception( "El iva NO SE INSERTO" )
 
 
             if not guardar or not QSqlDatabase.database().commit():
