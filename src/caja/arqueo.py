@@ -8,7 +8,7 @@ from decimal import  Decimal, InvalidOperation
 import logging
 
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator
-from PyQt4.QtCore import pyqtSlot, SIGNAL, QDateTime, QTimer, QModelIndex
+from PyQt4.QtCore import pyqtSlot,  QDateTime, QTimer, QModelIndex, Qt
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 from ui.Ui_arqueo import Ui_frmArqueo
 from utility.base import Base
@@ -36,7 +36,9 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         self.parentWindow = parent
         Base.__init__( self )
 
-
+        self.setWindowFlags(Qt.Dialog)
+        self.parentWindow.removeToolBar(self.toolBar)
+        self.addToolBar(self.toolBar)
 
         self.editmodel = None
         self.user = user
@@ -220,8 +222,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         cargar todos los modelos para la edición
         """
         try:
-            self.editmodel = ArqueoModel()
-            self.editmodel.uid = self.user.uid
+            self.editmodel = ArqueoModel(self.parentWindow.datosSesion)
 
             self.editmodel.datetime.setDate(self.parentWindow.datosSesion.fecha)
 

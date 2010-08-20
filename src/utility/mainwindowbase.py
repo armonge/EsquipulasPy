@@ -6,7 +6,7 @@ Created on 11/06/2010
 '''
 from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot, QSize, QUrl
 from PyQt4.QtGui import QDialog, QMessageBox, QIcon, QWidget, QVBoxLayout, \
-QPushButton, qApp, QDesktopServices
+QPushButton, qApp, QDesktopServices, QMdiSubWindow
 from utility.user import dlgUserLogin, User, dlgPasswordChange
 
 class MainWindowBase( object ):
@@ -49,11 +49,12 @@ class MainWindowBase( object ):
         
         settings = QSettings()
         self.restoreGeometry( settings.value( "MainWindow/Geometry" ).toByteArray() )
+        #self.mdiArea.subWindowActivated[QMdiSubWindow].connect(self.showtoolbar)
         self.connect( self.mdiArea, SIGNAL( "subWindowActivated(QMdiSubWindow *)" )\
                       , self.showtoolbar )
-        self.connect(self.btnAbout, SIGNAL("clicked()"), self.about)
-        self.connect(self.btnHelp, SIGNAL("clicked()"), self.help)
-        self.connect(self.btnPasswd, SIGNAL("clicked()"), self.changePassword)
+        self.btnAbout.clicked.connect(self.about)
+        self.btnHelp.clicked.connect(self.about)
+        self.btnPasswd.clicked.connect(self.changePassword)
     
     def about(self):
         QMessageBox.about(self, "Llantera Esquipulas", \

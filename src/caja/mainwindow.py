@@ -92,7 +92,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     @pyqtSlot(  )
     def on_btnArqueo_clicked( self ):
         arqueo = frmArqueo( self.user, self )
-        self.mdiArea.addSubWindow( arqueo )
+        arqueo.setWindowModality(Qt.WindowModal)
         arqueo.show()
 
   

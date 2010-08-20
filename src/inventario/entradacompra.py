@@ -62,9 +62,8 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
 
         #general events
-        self.connect( self.actionEditCell, SIGNAL( "triggered()" ), self.editCell )
-
-        self.rbcash.clicked[bool].connect(self.updatePay)
+        self.actionEditCell.triggered.connect(self.editCell)
+        self.rbCash.clicked[bool].connect(self.updatePay)
         self.rbCheck.clicked[bool].connect(self.updatePay)
         self.rbCredit.clicked[bool].connect(self.updatePay)
 
@@ -239,7 +238,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
-                    raise UserWarning( u"No se pudo establecer la conexion con la base de datos" )
+                    raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
 
             self.status = False
 

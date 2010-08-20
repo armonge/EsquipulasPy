@@ -6,9 +6,10 @@ Created on 11/07/2010
 '''
 from decimal import Decimal
 import logging
-from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel, QVBoxLayout, QDialogButtonBox, QFormLayout, QLineEdit, QDialog, QTableView, QAbstractItemView, QMessageBox
+from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel, QVBoxLayout, QDialogButtonBox, \
+QFormLayout, QLineEdit, QDialog, QTableView, QAbstractItemView, QMessageBox
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
-from PyQt4.QtCore import QTimer, Qt, pyqtSlot, SIGNAL, SLOT, QDateTime
+from PyQt4.QtCore import QTimer, Qt, pyqtSlot, QDateTime, QModelIndex
 
 from ui.Ui_kardex import Ui_frmKardex
 
@@ -254,7 +255,8 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
                 self.tabledetails.horizontalHeader().setStretchLastSection  (True)
 #                self.dtPicker.emit( SIGNAL( "dateTimeChanged( QDateTime )" ), QDateTime.currentDateTime() )
                 self.dtPicker.setDateTime( QDateTime.currentDateTime() )
-                self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+                self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
+                #self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
 
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
@@ -292,10 +294,10 @@ class dlgSelectDoc( QDialog ):
         JOIN bodegas b ON b.idbodega = d.idbodega
         LEFT JOIN docpadrehijos dpd ON dpd.idpadre = d.iddocumento
         LEFT JOIN documentos h ON h.iddocumento = dpd.idhijo AND h.idtipodoc = %d
-        WHERE d.idtipodoc IN (%s) 
+        WHERE d.idtipodoc IN (%s) AND d.idestado = %d
         GROUP BY d.iddocumento
         HAVING SUM(h.idtipodoc) IS NULL
-        """ % ( constantes.IDKARDEX , tiposdoc)
+        """ % ( constantes.IDKARDEX , tiposdoc, constantes.CONFIRMADO)
         self.model.setQuery( query)
 
 
@@ -316,21 +318,17 @@ class dlgSelectDoc( QDialog ):
         self.tblBills.setColumnHidden( idbodega, True )
         self.tblBills.setColumnHidden(observacion, True)
         self.tblBills.resizeColumnsToContents()
-        
-        self.connect( self.buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
-        self.connect( self.buttonbox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) )
-        self.connect( self.txtSearch, SIGNAL( "textChanged(QString)" ), self.updateFilter )
+
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+        self.txtSearch.textChanged[unicode].connect(self.updateFilter)
 
     def setupUi(self):
-        
         self.tblBills = QTableView()
         self.tblBills.setSelectionMode( QAbstractItemView.SingleSelection )
         self.tblBills.setSelectionBehavior( QAbstractItemView.SelectRows )
         self.tblBills.selectRow( 0 )
-        
 
-
-        
         self.buttonbox = QDialogButtonBox( QDialogButtonBox.Ok | QDialogButtonBox.Cancel )
 
         self.txtSearch = QLineEdit()

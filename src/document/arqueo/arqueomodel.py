@@ -5,6 +5,8 @@ Created on 07/06/2010
 @author: Andrés Reyes Monge
 '''
 #TODO: Creo que podria utilizar un arreglo o algún tipo de estructura para los totales en lugar de utilizar una variable para uno
+import logging
+
 from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
 from PyQt4.QtGui import QSortFilterProxyModel
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
@@ -25,8 +27,10 @@ class ArqueoModel( QAbstractTableModel ):
     @cvar: El tipo de documento de arqueo
     @type: int 
     """
-    def __init__( self ):
+    def __init__( self , datosSesion):
         super( ArqueoModel, self ).__init__()
+        self.datosSesion = datosSesion
+        
         self.database = QSqlDatabase.database()
         """
         @ivar: La base de datos que se ocupa en el sistema
@@ -347,14 +351,13 @@ class ArqueoModel( QAbstractTableModel ):
                 raise Exception( u"No se pudo comenzar la transacción" )
             #Insertar el documento
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,  observacion,total,  idtipocambio) 
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total, :idtc)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,  observacion,total,  idtipocambio)
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total, :idtc)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para guardar el arqueo" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
-            query.bindValue( ":anulado", 0 )
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.totalD.to_eng_string() )
             query.bindValue( ":idtc", self.exchangeRateId )
@@ -364,13 +367,26 @@ class ArqueoModel( QAbstractTableModel ):
                 raise  Exception( "No se pudo guardar el arqueo" )
 
             insertedId = query.lastInsertId().toInt()[0]
+
+            #Insertar el padre del arqueo
+            if not query.prepare("""
+            INSERT INTO docpadrehijos (idpadre, idhijo)
+            VALUES (:idpadre, :idhijo)
+            """):
+                raise Exception(u"No se pudo preparar la relación con la sesión")
+
+            query.bindValue(":idpadre",self.datosSesion.sesionId )
+            query.bindValue(":idhijo", insertedId)
+
+            if not query.exec_():
+                raise Exception(u"No se pudo insertar la relación con la sesión")
             #Insertar el usuario
             if not query.prepare( """
             INSERT INTO personasxdocumento (idpersona, iddocumento)
             VALUES (:idpersona, :iddocumento) 
             """ ):
                 raise  Exception( "No se pudo preparar la consulta guardar el usuario" )
-            query.bindValue( ":idpersona", self.uid )
+            query.bindValue( ":idpersona", self.datosSesion.usuarioId )
             query.bindValue( ":iddocumento", insertedId )
             if not query.exec_():
                 raise Exception( "No se pudo guardar el usuario" )
@@ -424,7 +440,7 @@ class ArqueoModel( QAbstractTableModel ):
             self.database.rollback()
             return False
         except Exception as inst:
-            logging.critical(inst)
+            logging.critical(unicode(inst))
             logging.critical(query.lastError().text())
             self.database.rollback()
             return False

@@ -48,7 +48,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param state: false = bloqueado        true = activado
         """
-        self.btnAnnulments.setEnabled( state )
         self.btnArticles.setEnabled( state )
         self.btnBrands.setEnabled( state )
         self.btnCategories.setEnabled( state )

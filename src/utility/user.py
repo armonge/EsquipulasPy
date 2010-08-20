@@ -195,9 +195,9 @@ class User:
                     raise Exception( "La consulta no se pudo ejecutar" )
 
                 if query.size() == 0:
-                    raise UserWarning( "El usuario no es valido" )
+                    raise UserWarning( "No se ha podido autenticar al usuario %s" self.user )
                 else:
-                    logging.info(u"El usuario %s ha iniciado sesión" % self.user)
+                    logging.info(u"El usuario %s se ha autenticado" % self.user)
                     while query.next():
                         self.__valid = True
                         self.__uid = query.value( UID ).toInt()[0]
