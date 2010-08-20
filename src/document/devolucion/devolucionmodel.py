@@ -40,6 +40,12 @@ class DevolucionModel( QAbstractTableModel ):
         @ivar:El numero de esta devolución
         @type:string
         """
+        self.numnotacredito = ""
+        u"""
+        @ivar:El numero de el documento Nota de Credito
+        @type:string
+        """
+        
         self.clientId = 0
         """
         @ivar:El id del cliente de esta devolución
@@ -373,26 +379,87 @@ class DevolucionModel( QAbstractTableModel ):
             for linea in self.lines:
                 if linea.valid:
                     linea.save( insertedId )
-
-            movFacturaCredito( insertedId, self.subtotalC * -1, self.ivaC * -1, self.totalCostC * -1 )
-
-
-
-
-
-
-
-#            Crear la relacion con su padre
+            
+            #            Crear la relacion con su padre
             if not query.prepare( """
             INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (:idpadre, :idhijo)
             """ ):
-                raise Exception(u"No se pudo preparar la consulta para insertar la relación de la devolución con la factura")
+                raise Exception(u"No se pudo preparar la consulta para insertar la relación de la deovulución con la factura")
             
             query.bindValue( ":idpadre", self.invoiceId )
             query.bindValue( ":idhijo", insertedId )
 
             if not query.exec_():
                 raise Exception(u"No se crear la relacion de la devolución con la factura" )
+
+            
+            
+            #Insertar el documento de Nota de Credito
+            if not query.prepare( """
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,total, idtipocambio, idconcepto, idbodega)
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:total, :idtipocambio, :idconcepto, :idbodega)
+            """ ):
+                raise Exception(u"No se pudo preparar la consulta para añadir el documentoNotaCredito")
+
+            query.bindValue( ":ndocimpreso", self.numnotacredito )
+            query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
+            query.bindValue( ":idtipodoc", constantes.IDNOTACREDITO )
+            query.bindValue( ":idusuario", self.uid )
+            query.bindValue( ":anulado", 0 )
+            query.bindValue( ":idpersona", self.clientId )
+            query.bindValue( ":total", self.totalD.to_eng_string() )
+            query.bindValue( ":idtipocambio", self.exchangeRateId )
+            query.bindValue(":idconcepto", self.conceptId)
+            query.bindValue(":idbodega", self.warehouseId)
+
+            if not query.exec_():
+                raise Exception( "No se pudo insertar el documento Nota Credito" )
+            insertedIdNC=query.lastInsertId()
+            
+            # Crear la relacion con su padre Devolucion
+            if not query.prepare( """
+            INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (:idpadre, :idhijo)
+            """ ):
+                raise Exception(u"No se pudo preparar la consulta para insertar la relación de la deovulución con la NotaCredito")
+            
+            query.bindValue( ":idpadre", insertedId )
+            query.bindValue( ":idhijo", insertedIdNC )
+
+            
+            
+            if not query.exec_():
+                raise Exception(u"No se creo la relacion de la devolución con la factura" )
+
+            query.prepare( """
+                SELECT
+                s.iddocumento,
+                s.ndocimpreso,
+                s.Saldo,
+                IFNULL(ca.valorcosto,0) as tasaiva,
+                s.idpersona
+            FROM vw_saldofacturas s
+            LEFT JOIN costosxdocumento cxd ON s.iddocumento= cxd.iddocumento
+            LEFT JOIN costosagregados ca ON ca.idcostoagregado = cxd.idcostoagregado AND ca.idtipocosto=%d
+            WHERE s.idpersona=%d
+            ORDER BY CAST(s.ndocimpreso AS SIGNED)"""%(constantes.IVA,self.clientId) )
+            if not query.exec_():
+                query.lastError().text()
+                raise Exception( "Ocurrio un error al ejecutar la consulta del saldo" )
+            #FIXME
+            query.first()
+            saldo=Decimal(query.value(2).toString())
+            if saldo<=self.totalD():
+                movFacturaCredito( insertedIdNC, self.subtotalC * -1, self.ivaC * -1, self.totalCostC * -1 )
+            else:
+                subsaldo=saldo/1+(self.ivaRate/100)             
+                subiva=saldo-subsaldo
+                
+                diferencia=(self.totalD()-saldo)/1+(self.ivaRate/100)
+                ivad=diferencia-saldo 
+                #FIXME               
+                movFacturaCredito( insertedIdNC, subsaldo * -1, subiva * -1, self.totalCostC * -1 )
+                movPagoRealizado( insertedIdNC, diferencia * -1, ivad * -1, self.totalCostC * -1 )
+
 
 
             if not QSqlDatabase.database().commit():
