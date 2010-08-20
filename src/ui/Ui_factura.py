@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\workspace\EsquipulasPy\src\ui\factura.ui'
+# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\factura.ui'
 #
-# Created: Tue Aug 10 06:44:59 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created: Fri Aug 20 00:15:22 2010
+#      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_frmFactura(object):
     def setupUi(self, frmFactura):
         frmFactura.setObjectName("frmFactura")
-        frmFactura.resize(479, 513)
+        frmFactura.resize(479, 522)
         self.centralwidget = QtGui.QWidget(frmFactura)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
@@ -393,11 +393,13 @@ class Ui_frmFactura(object):
         icon9 = QtGui.QIcon()
         icon9.addPixmap(QtGui.QPixmap(":/icons/res/document-save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionSave.setIcon(icon9)
+        self.actionSave.setVisible(False)
         self.actionSave.setObjectName("actionSave")
         self.actionCancel = QtGui.QAction(frmFactura)
         icon10 = QtGui.QIcon()
         icon10.addPixmap(QtGui.QPixmap(":/icons/res/dialog-cancel.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionCancel.setIcon(icon10)
+        self.actionCancel.setVisible(False)
         self.actionCancel.setObjectName("actionCancel")
         self.actionEditCell = QtGui.QAction(frmFactura)
         self.actionEditCell.setIcon(icon1)
@@ -422,9 +424,16 @@ class Ui_frmFactura(object):
         icon14.addPixmap(QtGui.QPixmap(":/icons/res/edit-paste.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionPaste.setIcon(icon14)
         self.actionPaste.setObjectName("actionPaste")
+        self.actionRefresh = QtGui.QAction(frmFactura)
+        icon15 = QtGui.QIcon()
+        icon15.addPixmap(QtGui.QPixmap(":/icons/res/view-refresh.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionRefresh.setIcon(icon15)
+        self.actionRefresh.setVisible(True)
+        self.actionRefresh.setObjectName("actionRefresh")
         self.toolBar.addAction(self.actionNew)
         self.toolBar.addAction(self.actionSave)
         self.toolBar.addAction(self.actionCancel)
+        self.toolBar.addAction(self.actionRefresh)
         self.toolBar.addAction(self.actionPreview)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionCopy)
@@ -504,5 +513,8 @@ class Ui_frmFactura(object):
         self.actionCut.setText(QtGui.QApplication.translate("frmFactura", "Cortar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCut.setShortcut(QtGui.QApplication.translate("frmFactura", "Ctrl+X", None, QtGui.QApplication.UnicodeUTF8))
         self.actionPaste.setText(QtGui.QApplication.translate("frmFactura", "Pegar", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRefresh.setText(QtGui.QApplication.translate("frmFactura", "Refresh", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRefresh.setToolTip(QtGui.QApplication.translate("frmFactura", "Actualizar", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRefresh.setShortcut(QtGui.QApplication.translate("frmFactura", "F5", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc

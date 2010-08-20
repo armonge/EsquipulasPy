@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>479</width>
-    <height>513</height>
+    <height>522</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -650,6 +650,7 @@ color: rgb(255, 0, 0);</string>
    <addaction name="actionNew"/>
    <addaction name="actionSave"/>
    <addaction name="actionCancel"/>
+   <addaction name="actionRefresh"/>
    <addaction name="actionPreview"/>
    <addaction name="separator"/>
    <addaction name="actionCopy"/>
@@ -732,6 +733,9 @@ color: rgb(255, 0, 0);</string>
    <property name="shortcut">
     <string>Ctrl+G</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionCancel">
    <property name="icon">
@@ -740,6 +744,9 @@ color: rgb(255, 0, 0);</string>
    </property>
    <property name="text">
     <string>Cancelar</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionEditCell">
@@ -794,6 +801,24 @@ color: rgb(255, 0, 0);</string>
    </property>
    <property name="text">
     <string>Pegar</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icons/res/view-refresh.png</normaloff>:/icons/res/view-refresh.png</iconset>
+   </property>
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+   <property name="toolTip">
+    <string>Actualizar</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
    </property>
   </action>
  </widget>
