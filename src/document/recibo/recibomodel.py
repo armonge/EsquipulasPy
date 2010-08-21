@@ -131,10 +131,7 @@ class ReciboModel( AccountsSelectorModel ):
 
         
         suma = self.currentSum
-        print "total"
-        print self.total
-        print "suma"
-        print suma
+
         suma =  self.total - suma
         suma = Decimal(str(round(suma,4)))
         ultimaFila = len(self.lines)-1

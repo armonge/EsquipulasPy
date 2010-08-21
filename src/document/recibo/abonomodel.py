@@ -4,13 +4,14 @@ Created on 18/05/2010
 
 @author: Luis Carlos Mejia Garcia
 '''
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime,QSize
 
 from lineaabono import LineaAbono
-from PyQt4.QtGui import QStyledItemDelegate, QDoubleSpinBox
-from utility.singleselectionmodel import SingleSelectionModel 
+from PyQt4.QtGui import QStyledItemDelegate, QDoubleSpinBox,QSortFilterProxyModel
+#from utility.singleselectionmodel import SingleSelectionModel 
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
+from PyQt4.QtSql import QSqlQueryModel
 
 #IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, MONTODOLAR, MONEDA = range( 6 )
 IDFAC, NFAC, TOTALFAC,SUBABONO,ABONO,SALDO = range( 6 )
@@ -171,17 +172,6 @@ class AbonoModel( QAbstractTableModel ):
         return int( section + 1 )
 
 class AbonoDelegate(QStyledItemDelegate):
-    def __init__(self, query, parent=None):
-        super(AbonoDelegate, self).__init__(parent)
-        self.prods = SingleSelectionModel()
-        query.exec_()
-        while query.next():
-            self.prods.items.append([
-                query.value(0).toInt()[0],
-                query.value(1).toString(),
-                query.value(2).toInt()[0]
-                                    ])
-             
     def sizeHint( self, option, index ):
         fm = option.fontMetrics
         if index.column() == NFAC:

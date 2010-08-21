@@ -151,18 +151,15 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             QMessageBox.Ok )
         else:
 
-            self.facturasmodel.setQuery( """            
+            self.facturasmodel.setQuery( """          
             SELECT
                 s.iddocumento,
                 s.ndocimpreso,
                 s.Saldo,
-                IFNULL(ca.valorcosto,0) as tasaiva,
+                s.tasaiva,
                 s.idpersona
             FROM vw_saldofacturas s
-            LEFT JOIN costosxdocumento cxd ON s.iddocumento= cxd.iddocumento
-            LEFT JOIN costosagregados ca ON ca.idcostoagregado = cxd.idcostoagregado AND ca.idtipocosto=1
             WHERE s.saldo>0
-            ORDER BY CAST(s.ndocimpreso AS SIGNED)
             ;
         """ )
 
@@ -238,22 +235,12 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 # ASIGNO EL DELEGADO A LA TABLA DE LOS PAGO            
             delegate = ReciboDelegate()
             self.tabledetails.setItemDelegate( delegate )
+
+
 # ASIGNO EL DELEGADO A LA TABLA DE LOS ABONOS
-            query = QSqlQuery("""
-            SELECT 
-                idtipopago,
-                CONCAT(descripcion, ' ' , moneda) as tipopago,
-                idtipomoneda
-                
-                FROM tiposmoneda m
-            JOIN tipospago p
-            ;
-            """) 
-            delegado = AbonoDelegate(query)
+            delegado = AbonoDelegate()
             self.tableabonos.setItemDelegate( delegado )
-#            self.addLine()
-            
-            
+                       
             self.status = False
             self.frbotones.setVisible( True )
             self.updateFacturasFilter()
@@ -565,16 +552,16 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 #FIXME: Se el simbolo de la moneda deberia de salir desde la tabla tiposmoneda    
             self.detailsmodel.setQuery( """
                 SELECT
-                p.recibo as iddocumento,
+                p.iddocumento,
                 CONCAT(tp.descripcion, ' ' , tm.moneda) as 'Tipo de Pago',
                  p.refexterna as 'No. Referencia',
                  CONCAT(tm.simbolo,' ',FORMAT(monto,4)) as 'Monto',
-                 CONCAT('US$ ',FORMAT(monto / IF(p.tipomoneda=2,1,IFNULL(tc.tasaBanco,tc.tasa)),4)) as 'Monto US$'
-            FROM pagos p
-            JOIN documentos d ON d.iddocumento=p.recibo
+                 CONCAT('US$ ',FORMAT(monto / IF(p.idtipomoneda=2,1,IFNULL(tc.tasaBanco,tc.tasa)),4)) as 'Monto US$'
+            FROM movimientoscaja p
+            JOIN documentos d ON d.iddocumento=p.iddocumento AND d.idtipodoc=18
             JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
-            JOIN tiposmoneda tm ON tm.idtipomoneda=p.tipomoneda
-            JOIN tipospago tp ON tp.idtipopago=p.tipopago
+            JOIN tiposmoneda tm ON tm.idtipomoneda=p.idtipomoneda
+            JOIN tiposmovimientocaja tp ON tp.idtipomovimiento=p.idtipomovimiento
             ORDER BY p.nlinea
             ;
             """ )
@@ -882,12 +869,16 @@ class DatosRecibo(object):
 
     @property
     def obtenerRetencion( self ):
-        if not self.retencionValida:
-            self.aplicarRet = False
-            self.retencionId =0
-            return Decimal(0)
+        if self.aplicarRet:
+                
+            if not self.retencionValida:
+                self.aplicarRet = False
+                self.retencionId =0
+                return Decimal(0)
+            else:
+                return ( self.subtotal * ( self.retencionTasa / Decimal( 100 ) ) )
         else:
-            return ( self.subtotal * ( self.retencionTasa / Decimal( 100 ) ) ) if self.aplicarRet else Decimal(0)
+            return Decimal(0)
         
     @property
     def obtenerGanancia( self ):
@@ -956,7 +947,7 @@ class DatosRecibo(object):
     
     
     #INSERTAR LA RELACION CON El USUARIO y EL CLIENTE
-#            print "recibo ID " + insertedId            
+    #            print "recibo ID " + insertedId            
             query.prepare( 
                 "INSERT INTO personasxdocumento (iddocumento,idpersona) VALUES" +  
                 "(" + insertedId + ",:iduser),"
@@ -977,7 +968,7 @@ class DatosRecibo(object):
             
             i = 0
             for linea in self.lineas:
-#                    print insertedId + "-" + str(linea.pagoId) + "-" + str(linea.monedaId)
+    #                    print insertedId + "-" + str(linea.pagoId) + "-" + str(linea.monedaId)
                 linea.save( insertedId, i )
                 i = i + 1
     #INSERTAR los abonos

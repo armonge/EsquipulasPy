@@ -204,22 +204,35 @@ def movAbonoDeCliente( iddoc, total, retencion,ganancia ):
     '''    
     iddoc = str( iddoc )
     query = QSqlQuery()
+     
     query.prepare( "INSERT INTO cuentasxdocumento (idcuenta,iddocumento,monto) values " +
     "(" + CXCCLIENTE + "," + iddoc + ",-:total)," +
-    ("" if ganancia == 0  else "(" + PRODUCTOSFINANCIEROS + "," + iddoc + ",-:ganancia)," )+
-    ( "" if retencion == 0 else "(" + RETENCIONPAGADA + "," + iddoc + ",:retencion)," ) +
     "(" + CAJAGENERAL + "," + iddoc + ",:totalpagar)" )
-
+    
     query.bindValue( ":total", total.to_eng_string() )
-    query.bindValue( ":ganancia", ganancia.to_eng_string() )
-    query.bindValue( ":retencion", retencion.to_eng_string() )
     query.bindValue( ":totalpagar", ( total - retencion + ganancia ).to_eng_string() )
-
 
     if not query.exec_():
         print( iddoc )
         print( query.lastError().text() )
-        raise Exception( "NO SE PUDIERON INSERTAR LAS CUENTAS CONTABLES" )
+        raise Exception( "No fue posible insertar las cuentas Caja, Clientes para el recibo" )
+
+    if ganancia != 0 :
+        query.prepare( "INSERT INTO cuentasxdocumento (idcuenta,iddocumento,monto) values " +
+        "(" + PRODUCTOSFINANCIEROS + "," + iddoc + ",-:ganancia)")
+        
+        query.bindValue( ":ganancia", ganancia.to_eng_string() )
+        if not query.exec_():
+            print( query.lastError().text() )
+            raise Exception( "No fue posible insertar las cuentas Productos financieros para el recibo" )
+
+    if retencion !=0 :
+        query.prepare( "INSERT INTO cuentasxdocumento (idcuenta,iddocumento,monto) values " +
+        "(" + RETENCIONPAGADA + "," + iddoc + ",:retencion)")
+        query.bindValue( ":retencion", retencion.to_eng_string() )
+        if not query.exec_():
+            print( query.lastError().text() )
+            raise Exception( "No fue posible insertar las cuentas Rencion Pagada para el recibo" )
 
 
 def movPagoRealizado( iddoc, subtotal, impuesto , retencion , ctabanco_caja = CAJAGENERAL, ctaproveedor_gasto = PROVEEDORLOCAL ):

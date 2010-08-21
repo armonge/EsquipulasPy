@@ -16,51 +16,46 @@ class ReciboDelegate(QStyledItemDelegate):
         super(ReciboDelegate, self).__init__(parent)
         
         query = QSqlQuery("""
-        SELECT 
-            idtipopago,
-            CONCAT(descripcion, ' ' , moneda) as tipopago,
-            idtipomoneda,
-            m.simbolo
-            FROM tiposmoneda m
-        JOIN tipospago p
-        
-        ;
-        """) 
-        self.prods = SingleSelectionModel()
+            SELECT
+                idtipomovimiento,
+                CONCAT(descripcion, ' ' , moneda) as tipopago,
+                idtipomoneda,
+                m.simbolo
+                FROM tiposmoneda m
+            JOIN tiposmovimientocaja p
+            ;
+        """)
+        self.filtrados = [] 
         query.exec_()
         while query.next():
-            self.prods.items.append([
-                query.value(0).toInt()[0],
-                query.value(1).toString(),
-                query.value(2).toInt()[0],
-                query.value(3).toString()
-                                    ])
-
+            self.filtrados.append(query.value(1).toString())
+            
+        self.abonosmodel =QSqlQueryModel()
+        self.abonosmodel.setQuery(query)
+        self.proxymodel = QSortFilterProxyModel()
+        self.proxymodel.setSourceModel(self.abonosmodel)
+        self.proxymodel.setFilterKeyColumn(1)
+        self.completer = QCompleter()            
+        self.completer.setModel(self.proxymodel)
+        
+        self.completer.setCompletionColumn(1)
+        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+        
 
 
     def createEditor( self, parent, option, index ):
         if index.column() == DESCRIPCION:             
-            completer = QCompleter()            
             combo = QComboBox(parent)
             combo.setEditable(True)
-            
-
-            combo.setModel(self.prods)
-            completer.setModel(self.prods)
+            value = index.data().toString()
+            self.filtrados.append(value)
+            self.proxymodel.setFilterRegExp(self.filter())
+            combo.setModel(self.proxymodel)
             combo.setModelColumn(1)
-            completer.setCompletionColumn(1)
-            tabla=index.model()
-            if index.data() != "":
-                self.prods.items.append([tabla.index( index.row(),0 ).data().toInt()[0]  ,
-                                        index.data().toString(),
-                                        tabla.lines[index.row()].monedaId,
-                                        tabla.lines[index.row()].simboloMoneda
-                                         ])
-            
-            completer.setCaseSensitivity(Qt.CaseInsensitive)
-            completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
-            combo.setCompleter(completer)
+            combo.setCompleter(self.completer)
             return combo
+        
         elif index.column() == MONTO:
             doublespinbox = QDoubleSpinBox( parent )
             doublespinbox.setMinimum( -1000000 )
@@ -81,9 +76,9 @@ class ReciboDelegate(QStyledItemDelegate):
             return False
         
     def filter(self):
-        filtro =  "|^".join(self.filtrados)
+        filtro =  "$|^".join(self.filtrados)
         if filtro !="":
-            filtro = "[^" + filtro + "]"
+            filtro = "^" + filtro + "$"
         return filtro
 
     def setEditorData( self, editor, index ):
@@ -101,24 +96,24 @@ class ReciboDelegate(QStyledItemDelegate):
     def setModelData( self, editor, model, index ):
 
         if index.column()==DESCRIPCION:
-            if self.prods.rowCount()>0:
-                try:
-                    model.setData(index,  [
-                                           self.prods.items[editor.currentIndex()][0],  
-                                           self.prods.items[editor.currentIndex()][1],
-                                           self.prods.items[editor.currentIndex()][2],
-                                           self.prods.items[editor.currentIndex()][3]
+            modelo = self.proxymodel
+            if modelo.rowCount()>0:
+                fila = editor.currentIndex()
+                model.setData(index,  [
+                                           modelo.index(fila,0).data().toInt()[0],  
+                                           modelo.index(fila,1).data().toString(),
+                                           modelo.index(fila,2).data().toInt()[0],
+                                           modelo.index(fila,3).data().toString()
                     ])
-                    del self.prods.items[editor.currentIndex()]
-                except IndexError as inst:
-                    print inst
-                
+                self.removeFromFilter(modelo.index(fila,1).data().toString())
+                self.proxymodel.setFilterRegExp(self.filter())
+
         else:
             QStyledItemDelegate.setModelData( self, editor, model, index )
 
     def sizeHint( self, option, index ):
         u"""
-        El tama�o sugerido de los datos en el modelo
+        El tamaño sugerido de los datos en el modelo
         """
         fm = option.fontMetrics
         if index.column() == DESCRIPCION:
@@ -127,111 +122,3 @@ class ReciboDelegate(QStyledItemDelegate):
             return QSize( 150, fm.height() )
         
         return QStyledItemDelegate.sizeHint( self, option, index )
-    
-#    def __init__(self, parent=None):
-#        super(ReciboDelegate, self).__init__(parent)
-#        
-#        query = QSqlQuery("""
-#        SELECT 
-#            idtipopago,
-#            CONCAT(descripcion, ' ' , moneda) as tipopago,
-#            idtipomoneda
-#            
-#            FROM tiposmoneda m
-#        JOIN tipospago p
-#        ;
-#        """) 
-#        self.prods = SingleSelectionModel()
-#        query.exec_()
-#        while query.next():
-#            self.prods.items.append([
-#                query.value(0).toInt()[0],
-#                query.value(1).toString(),
-#                query.value(2).toInt()[0]
-#                                    ])
-#             
-#    def sizeHint( self, option, index ):
-#        fm = option.fontMetrics
-#        if index.column() == DESCRIPCION:
-#            return QSize( 250, fm.height() )
-#
-#        return QStyledItemDelegate.sizeHint( self, option, index )
-#
-#
-#
-#    def createEditor(self,  parent,  option,  index):
-#        if index.column() == REFERENCIA:
-#            textbox = QLineEdit(parent)
-#            return textbox
-#        elif index.column() == DESCRIPCION :           
-#            completer = QCompleter()            
-#            combo = QComboBox(parent)
-#            combo.setEditable(True)
-#            
-#
-#            combo.setModel(self.prods)
-#            completer.setModel(self.prods)
-#            combo.setModelColumn(1)
-#            completer.setCompletionColumn(1)
-#            tabla=index.model()
-#            if index.data() != "":
-#                self.prods.items.append([tabla.index( index.row(),0 ).data().toInt()[0]  ,
-#                                        index.data().toString(),
-#                                        tabla.index( index.row(),2 ).data().toInt()[0]
-#                                         ])
-#
-#            
-#                
-#            completer.setCaseSensitivity(Qt.CaseInsensitive)
-#            completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
-#            combo.setCompleter(completer)
-#            return combo
-#        elif index.column()==MONTO:
-#            spinbox = QDoubleSpinBox(parent)
-#            spinbox.setRange(1,  999999999)
-#            spinbox.setDecimals(4)
-#            spinbox.setSingleStep(1)
-#            spinbox.setAlignment(Qt.AlignRight|Qt.AlignVCenter)
-#            return spinbox
-#        else:
-#            QStyledItemDelegate.createEditor(self,  parent,  option,  index)
-#    
-#    def setEditorData(self, editor, index):
-#        """
-#        En esta funcion se inicializan los datos a mostrarse en el editor
-#        se ejecuta justo en el momento en el que se muestra el editor
-#        """
-#        text = index.model().data(index, Qt.DisplayRole)
-##        if index.column() == REFERENCIA:
-##            editor.setValue( index.model().data(index, Qt.DisplayRole) if index.model().data(index, Qt.DisplayRole) != "" else 0 )
-##        el
-#        if index.column() == MONTO:
-#            valortemp =index.model().data(index, Qt.EditRole) if index.model().data(index, Qt.EditRole) != "" else 0
-#            #if index.model().tasabanco !=0 and  
-#            editor.setValue( valortemp )
-#        elif index.column() == DESCRIPCION:
-#            i = editor.findText(text)
-#            if i == -1:
-#                i = 0
-#            editor.setCurrentIndex(i)
-#        else:
-#            QStyledItemDelegate.setEditorData(self, editor, index)
-#
-#    def setModelData(self,  editor,  model,  index):
-#        """
-#        En este evento se toma el resultado del editor y se introduco en el modelo
-#        """
-#        text = index.model().data(index,  Qt.DisplayRole)
-#        if index.column() == DESCRIPCION:
-#            try:
-#                model.setData(index,  [
-#                                       self.prods.items[editor.currentIndex()][0],  
-#                                       self.prods.items[editor.currentIndex()][1],
-#                                       self.prods.items[editor.currentIndex()][2]
-#                ])
-#                del self.prods.items[editor.currentIndex()]
-#            except IndexError as inst:
-#                print inst
-#        else:
-#            QStyledItemDelegate.setModelData(self,  editor,  model,  index)
-#

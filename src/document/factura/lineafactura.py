@@ -73,7 +73,7 @@ class LineaFactura:
         query.bindValue( ":iddocumento", iddocumento )
         query.bindValue( ":idarticulo", self.itemId )
         query.bindValue( ":unidades", self.quantity * -1 )
-        query.bindValue( ":costo", self.costodolar.to_eng_string() )
+        query.bindValue( ":costo", self.costo.to_eng_string() )
         query.bindValue( ":precio", self.itemPrice.to_eng_string() )
         query.bindValue( ":linea", linea )
 

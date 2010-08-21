@@ -50,7 +50,7 @@ class LineaAbono(object):
         INSERT INTO docpadrehijos(idpadre,idhijo,monto,nlinea) 
         VALUES (:idfac,:iddocumento, :monto,:linea) 
         """):
-            raise Exception("no esta preparada")
+            raise Exception("La linea # %d del abono no pudo ser preparada"%linea)
         
         query.bindValue(":idfac",  self.idFac)
         query.bindValue(":iddocumento",  iddocumento)
@@ -59,7 +59,7 @@ class LineaAbono(object):
 
         if not query.exec_():
             print(query.lastError().text())
-            raise Exception("line" + str(linea))
+            raise Exception("no se pudo insertar la linea" + str(linea))
             
             
 
