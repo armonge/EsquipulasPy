@@ -139,7 +139,7 @@ class AccountsSelectorModel( QAbstractTableModel ):
 
 class AccountsSelectorDelegate( QStyledItemDelegate ):
     def __init__( self, query,showTable=False ):
-        QStyledItemDelegate.__init__( self )
+        super(AccountsSelectorDelegate, self).__init__( )
         self.showTable=showTable
         query.exec_()
         if not query.size() > 0:

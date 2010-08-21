@@ -859,6 +859,10 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
                 return moneyfmt( self.parent.totalD, 4, "US$" )
 
 class LiquidacionAccountsModel( AccountsSelectorModel ):
+    def __init__(self, docid):
+        super(LiquidacionAccountsModel, self).__init__()
+        self.docid = docid
+
     def flags( self, index ):
         if not index.isValid():
             return Qt.ItemIsEnabled
@@ -866,3 +870,36 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
             return Qt.ItemIsEnabled | Qt.ItemIsEditable
         else:
             return Qt.ItemIsEnabled
+
+    def save(self):
+        if not self.valid:
+            raise Exception ( "Existe un error con las cuentas contables" )
+        query = QSqlQuery()
+        try:
+            if not QSqlDatabase.database().transaction():
+                raise Exception( u"No se pudo comenzar la transacción" )
+
+            if not query.prepare("""
+            UPDATE documentos SET idestado = :estado WHERE iddocumento = :iddocumento LIMIT 1
+            """):
+                raise Exception("No se pudo preparar la consulta para actualizar el documento")
+            
+            query.bindValue(":estado", constantes.CONFIRMADO)
+            query.bindValue(":iddocumento", self.docid)
+
+            if not query.exec_():
+                raise Exception("No se pudo actualizar el documento")
+            
+            for number, line in enumerate(self.lines):
+                line.save(self.docid, number)
+
+
+
+            if not QSqlDatabase.database().commit():
+                raise Exception( "No se pudo hacer commit" )
+
+            return True
+        except Exception as inst:
+            logging.critical(unicode(inst))
+            logging.critical(query.lastError().text())
+            return False

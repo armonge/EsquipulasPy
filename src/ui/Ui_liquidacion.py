@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/liquidacion.ui'
 #
-# Created: Thu Aug 19 23:22:49 2010
+# Created: Fri Aug 20 21:28:24 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -299,7 +299,7 @@ class Ui_frmLiquidacion(object):
         self.toolBar.setObjectName("toolBar")
         frmLiquidacion.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.xdockWidget = XDockWidget(frmLiquidacion)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.xdockWidget.sizePolicy().hasHeightForWidth())
@@ -312,6 +312,7 @@ class Ui_frmLiquidacion(object):
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.dockWidgetContents)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.tabWidget_2 = QtGui.QTabWidget(self.dockWidgetContents)
+        self.tabWidget_2.setMinimumSize(QtCore.QSize(0, 200))
         self.tabWidget_2.setObjectName("tabWidget_2")
         self.tabaccounts = QtGui.QWidget()
         self.tabaccounts.setObjectName("tabaccounts")
@@ -379,9 +380,10 @@ class Ui_frmLiquidacion(object):
         self.actionCancel.setIcon(icon9)
         self.actionCancel.setVisible(False)
         self.actionCancel.setObjectName("actionCancel")
-        self.actionEditar = QtGui.QAction(frmLiquidacion)
-        self.actionEditar.setIcon(icon)
-        self.actionEditar.setObjectName("actionEditar")
+        self.actionEdit = QtGui.QAction(frmLiquidacion)
+        self.actionEdit.setIcon(icon)
+        self.actionEdit.setVisible(False)
+        self.actionEdit.setObjectName("actionEdit")
         self.actionDeleteRow = QtGui.QAction(frmLiquidacion)
         icon10 = QtGui.QIcon()
         icon10.addPixmap(QtGui.QPixmap(":/icons/res/edit-delete.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -402,7 +404,15 @@ class Ui_frmLiquidacion(object):
         icon13.addPixmap(QtGui.QPixmap(":/icons/res/edit-paste.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionPaste.setIcon(icon13)
         self.actionPaste.setObjectName("actionPaste")
+        self.actionEditAccounts = QtGui.QAction(frmLiquidacion)
+        icon14 = QtGui.QIcon()
+        icon14.addPixmap(QtGui.QPixmap(":/icons/res/view-bank-account.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionEditAccounts.setIcon(icon14)
+        self.actionEditAccounts.setVisible(False)
+        self.actionEditAccounts.setObjectName("actionEditAccounts")
         self.toolBar.addAction(self.actionNew)
+        self.toolBar.addAction(self.actionEdit)
+        self.toolBar.addAction(self.actionEditAccounts)
         self.toolBar.addAction(self.actionSave)
         self.toolBar.addAction(self.actionCancel)
         self.toolBar.addAction(self.actionPreview)
@@ -486,8 +496,7 @@ class Ui_frmLiquidacion(object):
         self.actionGoLast.setText(QtGui.QApplication.translate("frmLiquidacion", "Ir al ultimo registro", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave.setText(QtGui.QApplication.translate("frmLiquidacion", "Guardar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCancel.setText(QtGui.QApplication.translate("frmLiquidacion", "Cancelar", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionEditar.setText(QtGui.QApplication.translate("frmLiquidacion", "Editar", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionEditar.setShortcut(QtGui.QApplication.translate("frmLiquidacion", "Ctrl+E", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionEdit.setText(QtGui.QApplication.translate("frmLiquidacion", "Editar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionDeleteRow.setText(QtGui.QApplication.translate("frmLiquidacion", "Borrar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionDeleteRow.setShortcut(QtGui.QApplication.translate("frmLiquidacion", "Del", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCopy.setText(QtGui.QApplication.translate("frmLiquidacion", "Copiar", None, QtGui.QApplication.UnicodeUTF8))
@@ -495,6 +504,7 @@ class Ui_frmLiquidacion(object):
         self.actionCut.setText(QtGui.QApplication.translate("frmLiquidacion", "Cortar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCut.setShortcut(QtGui.QApplication.translate("frmLiquidacion", "Ctrl+X", None, QtGui.QApplication.UnicodeUTF8))
         self.actionPaste.setText(QtGui.QApplication.translate("frmLiquidacion", "Pegar", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionEditAccounts.setText(QtGui.QApplication.translate("frmLiquidacion", "Editar Cuentas", None, QtGui.QApplication.UnicodeUTF8))
 
 from utility.widgets.xdockwidget import XDockWidget
 import res_rc

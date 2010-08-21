@@ -256,7 +256,7 @@ class XDockWidget( QDockWidget ):
     __pyqtSignals__ = ( "stateChanged(bool)", )
 
     def __init__( self, *args ):
-        QDockWidget.__init__( self, *args )
+        super(XDockWidget, self).__init__( *args )
         self.titleBar = XDockWidgetTitleBar( self )
         self.setTitleBarWidget( self.titleBar )
         self.mainWidget = None
@@ -289,21 +289,3 @@ class XDockWidget( QDockWidget ):
 
 
 
-if __name__ == "__main__":
-    import sys
-    from PyQt4.QtGui import QApplication, QMainWindow, QComboBox, QPushButton, QTextEdit
-    app = QApplication( sys.argv )
-    win = QMainWindow()
-    dock1 = XDockWidget( "1st dockwidget", win )
-    combo = QComboBox( dock1 )
-    dock1.setWidget( combo )
-    win.addDockWidget( Qt.LeftDockWidgetArea, dock1 )
-    dock2 = XDockWidget( "2nd dockwidget" )
-    button = QPushButton( "Hello, world!", dock2 )
-    dock2.setWidget( button )
-    win.addDockWidget( Qt.RightDockWidgetArea, dock2 )
-    edit = QTextEdit( win )
-    win.setCentralWidget( edit )
-    win.resize( 640, 480 )
-    win.show()
-    app.exec_()

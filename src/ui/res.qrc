@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>res/view-bank-account.png</file>
     <file>res/utilities-desktop-extra.png</file>
     <file>res/arrow-left.png</file>
     <file>res/dialog-ok-apply.png</file>
@@ -36,8 +37,8 @@
     <file>res/checkbox.png</file>
   </qresource>
   <qresource prefix="images">
-  	<file>res/help-about.png</file>	
-  	<file>res/system-help.png</file>	
+    <file>res/help-about.png</file>
+    <file>res/system-help.png</file>
     <file>res/passwd-bg.png</file>
     <file>res/reconcile.png</file>
     <file>res/account-types-checking.png</file>

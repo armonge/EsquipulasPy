@@ -583,6 +583,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionNew"/>
+   <addaction name="actionEdit"/>
+   <addaction name="actionEditAccounts"/>
    <addaction name="actionSave"/>
    <addaction name="actionCancel"/>
    <addaction name="actionPreview"/>
@@ -598,7 +600,7 @@
   </widget>
   <widget class="XDockWidget" name="xdockWidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+    <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
      <horstretch>0</horstretch>
      <verstretch>1</verstretch>
     </sizepolicy>
@@ -619,6 +621,12 @@
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
       <widget class="QTabWidget" name="tabWidget_2">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>200</height>
+        </size>
+       </property>
        <property name="currentIndex">
         <number>0</number>
        </property>
@@ -757,7 +765,7 @@
     <bool>false</bool>
    </property>
   </action>
-  <action name="actionEditar">
+  <action name="actionEdit">
    <property name="icon">
     <iconset resource="res.qrc">
      <normaloff>:/icons/res/document-edit.png</normaloff>:/icons/res/document-edit.png</iconset>
@@ -765,8 +773,8 @@
    <property name="text">
     <string>Editar</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+E</string>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionDeleteRow">
@@ -812,6 +820,18 @@
    </property>
    <property name="text">
     <string>Pegar</string>
+   </property>
+  </action>
+  <action name="actionEditAccounts">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icons/res/view-bank-account.png</normaloff>:/icons/res/view-bank-account.png</iconset>
+   </property>
+   <property name="text">
+    <string>Editar Cuentas</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>

@@ -12,18 +12,19 @@ from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from ui.Ui_liquidacion import Ui_frmLiquidacion
 
-import utility.constantes
+from utility import constantes
 from utility import movimientos
 from utility.reports import frmReportes
 from utility.base import Base
 from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorLine
-from document.liquidacion.liquidacionmodel import LiquidacionModel
+from document.liquidacion.liquidacionmodel import LiquidacionModel, LiquidacionAccountsModel
 from document.liquidacion.liquidaciondelegate import LiquidacionDelegate
 
 
 #navigation model
 IDDOCUMENTO, NDOCIMPRESO, FECHA, PROCEDENCIA, AGENCIA, ALMACEN, FLETE, SEGURO,\
-OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO = range( 16 )
+OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO, ESTADO, TOTALD, TOTALC = range( 19 )
+
 
 #details model
 IDARTICULO, DESCRIPCION, UNIDADES, COSTOCOMPRA, FOB, FLETEP, SEGUROP, OTROSP, \
@@ -86,20 +87,34 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.detailsproxymodel.setFilterRegExp( "^"+self.navmodel.record( index ).value( "iddocumento" ).toString()+"$" )
+        self.detailsproxymodel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
 
         self.accountsProxyModel.setFilterKeyColumn( IDDOCUMENTOC )
-        self.accountsProxyModel.setFilterRegExp( "^"+self.navmodel.record( index ).value( "iddocumento" ).toString()+"$" )
+        self.accountsProxyModel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
 
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
         
         self.ckISO.setChecked( True if self.navmodel.record( index ).value( "iso" ).toDouble()[0] != 0 else False )
+
+        estado = self.navmodel.record( index ).value( "estado" ).toInt()[0]
+        if estado == constantes.INCOMPLETO:
+            print "here"
+            if self.user.hasRole('contabilidad'):
+                self.actionEditAccounts.setVisible(True)
+            if self.user.hasRole('inventario'):
+                self.actionEdit.setVisible(True)
+        else:
+            self.actionEditAccounts.setVisible(False)
+            self.actionEdit.setVisible(False)
+        
 
     def setControls( self, status ):
         """
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param status: 1 = navegando 2 = añadiendo productos 3 = añadiendo cuentas contables
         """
+        #self.actionEdit.setVisible(status == 1 and self.user.hasRole('inventario'))
+        #self.actionEditAccounts.setVisible(status == 1 and self.user.hasRole('contabilidad'))
         
         self.txtPolicy.setReadOnly( status == 1 or status == 3 )
         self.txtSource.setReadOnly( status == 1 or status == 3)
@@ -159,6 +174,19 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         if status == 2: #editando
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
             self.tabledetails.addAction( self.actionDeleteRow )
+
+            self.txtPolicy.setText("")
+            self.txtSource.setText("")
+
+            self.sbAgency.setValue(0)
+            self.sbFreight.setValue(0)
+            self.sbInsurance.setValue(0)
+            self.sbOther.setValue(0)
+
+            self.sbWeight.setValue(0)
+            self.sbPaperWork.setValue(0)
+            self.sbStore.setValue(0)
+            self.sbTransportation.setValue(0)
             
         elif status == 3:
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
@@ -183,32 +211,31 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 "para recuperar los documentos" )
             query = u"""
                 SELECT
-                    d.iddocumento as iddocumento,
-                    d.ndocimpreso as 'Número de Liquidación',
-                    DATE(d.fechacreacion) as 'Fecha',
-                    l.procedencia as 'Procedencia',
-                    l.totalagencia as 'Agencia',
-                    l.totalalmacen as 'Almacén',
-                    l.fletetotal as 'Flete',
-                    l.segurototal as 'Seguro',
-                    l.otrosgastos as 'Otros Gastos',
-                    l.porcentajetransporte as 'Transporte',
-                    l.porcentajepapeleria as 'Papelería',
-                    l.peso as 'Peso',
-                    p.nombre as 'Proveedor',
-                    b.nombrebodega as 'Bodega',
+                    d.iddocumento,
+                    d.ndocimpreso AS 'Número de Liquidación',
+                    d.fecha AS 'Fecha',
+                    d.procedencia AS 'Procedencia',
+                    d.totalagencia AS 'Agencia',
+                    d.totalalmacen AS 'Almacen',
+                    d.fletetotal AS 'Flete',
+                    d.segurototal as 'Seguro',
+                    d.otrosgastos AS 'Otros Gastos',
+                    d.porcentajetransporte AS 'Transporte',
+                    d.porcentajepapeleria AS 'Papelería',
+                    d.peso AS 'Peso',
+                    d.Proveedor AS 'Proveedor',
+                    d.bodega AS 'Bodega',
                     SUM(IFNULL(valorcosto,0)) as  'ISO',
-                    tc.tasa as 'Tasa de Cambio'
-                FROM documentos d
-                JOIN liquidaciones l ON d.iddocumento = l.iddocumento
-                JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
-                JOIN personas p ON p.idpersona = pxd.idpersona AND p.tipopersona = %d
-                JOIN bodegas b ON b.idbodega = d.idbodega
+                    d.tasa,
+                    d.estado,
+                    d.totald AS 'Total US$',
+                    d.totalc AS 'Total C$'
+                FROM esquipulasdb.vw_liquidacionesguardadas d
                 LEFT JOIN costosxdocumento cxd ON d.iddocumento = cxd.iddocumento
-                LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = 6
-                JOIN tiposcambio tc ON d.idtipocambio = tc.idtc
-                GROUP BY d.iddocumento
-            """ % utility.constantes.PROVEEDOR
+                LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = %d 
+                GROUP BY d.iddocumento;
+            """ % ( constantes.ISO)
+            print query
             self.navmodel.setQuery( query )
     
             self.detailsmodel.setQuery( u"""
@@ -249,6 +276,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             """ )
     
             self.tableaccounts.setModel( self.accountsProxyModel )
+
+            #query = 
+            #self.totalsModel = QSqlQueryModel(query)
             
     
     
@@ -339,7 +369,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             FROM costosagregados c 
             LEFT JOIN tsim t on c.idcostoagregado=t.idtsim 
             WHERE activo=1 AND idtipocosto IN (%d,%d,%d,%d)
-            """ % (utility.constantes.IVA, utility.constantes.SPE, utility.constantes.TSIM, utility.constantes.ISO))
+            """ % (constantes.IVA, constantes.SPE, constantes.TSIM, constantes.ISO))
             if not query.exec_():
                 raise UserWarning( "No se pudo ejecutar la consulta para obtener los valores de los impuestos" )
             elif not query.size()==4:
@@ -428,19 +458,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
 
 
-
     @pyqtSlot( "int" )
     def on_tabWidget_currentChanged( self, id ):
             self.xdockWidget.setVisible( True if  not id else False )
 
-    @pyqtSlot( "QString" )
-    def on_sbAgency_valueChanged( self, p0 ):
-        """
-        Slot documentation goes here.
-        """
-        if not self.editmodel is None:
-            self.editmodel.agencyTotal = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
-            self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
 
     @pyqtSlot( "QString" )
@@ -456,70 +477,78 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         if not self.editmodel is None:
             self.editmodel.origin = p0            
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( "double" )
     def on_sbStore_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.storeTotal = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
+            self.editmodel.storeTotal = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
+            self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
+
+    @pyqtSlot( "double" )
+    def on_sbAgency_valueChanged( self, p0 ):
+        """
+        Slot documentation goes here.
+        """
+        if not self.editmodel is None:
+            self.editmodel.agencyTotal = Decimal( str(p0) ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
 
-
-    @pyqtSlot( "QString" )
+    @pyqtSlot( "double" )
     def on_sbPaperWork_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.paperworkRate = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
+            self.editmodel.paperworkRate = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( "double" )
     def on_sbTransportation_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.transportRate = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
+            self.editmodel.transportRate = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( "double" )
     def on_sbWeight_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.weight = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
+            self.editmodel.weight = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( "double" )
     def on_sbFreight_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.freightTotal = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
+            self.editmodel.freightTotal = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( "double" )
     def on_sbInsurance_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.insuranceTotal = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
+            self.editmodel.insuranceTotal = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( "double" )
     def on_sbOther_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.otherTotal = Decimal( p0 ) if not p0 == "" else Decimal( 0 )
+            self.editmodel.otherTotal = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "int" )
@@ -558,33 +587,82 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         Guardar el documento actual
         """
         if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            if self.editmodel.valid:
-                if self.editmodel.save():
-                    QMessageBox.information( None,
-                         "Llantera Esquipulas" ,
-                         """El documento se ha guardado con exito""" )
-                    self.editmodel = None
-                    self.updateModels()
-                    self.navigate( 'last' )
-                    self.status = 1
+            if self.status ==2:
+                if self.editmodel.valid:
+                    if self.editmodel.save():
+                        QMessageBox.information( self,
+                             "Llantera Esquipulas" ,
+                             "El documento se ha guardado con exito")
+                        self.editmodel = None
+                        self.updateModels()
+                        self.status = 1
+                        self.navigate( 'last' )
+                        
+                    else:
+                        QMessageBox.critical( self,
+                            "Llantera Esquipulas" ,
+                             "Ha ocurrido un error al guardar el documento")
+
+
                 else:
-                    QMessageBox.critical( None,
-                        "Llantera Esquipulas" ,
-                         """Ha ocurrido un error al guardar el documento""" )
+                    try:
+                        QMessageBox.warning( self,"Llantera Esquipulas" ,self.editmodel.validError)
+                    except AttributeError:
+                        QMessageBox.warning( self,"Llantera Esquipulas" ,u"El documento no puede guardarse ya que la información no esta completa")
+            elif self.status == 3:
+                if self.accountsEditModel.valid:
+                    if self.accountsEditModel.save():
+                        QMessageBox.information(self, "Llantera Esquipulas", "Las cuentas contables se han guardado correctamente")
+                        self.updateModels()
+                        self.status = 1
+                        self.navigate('last')
+                    else:
+                        QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al guardar las cuentas contables")
+                else:
+                    QMessageBox.critical("Existe un error con sus cuentas contables, reviselo antes de guardar")
+                
+                    
 
+    @pyqtSlot()
+    def on_actionEditAccounts_activated(self):
+        """
+        Editar las cuentas contables
+        """
+        try:
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
+            docid = self.navmodel.record( self.mapper.currentIndex() ).value( IDDOCUMENTO ).toInt()[0]
+            self.xdockWidget.setCollapsed(False)
+            self.accountsEditModel = LiquidacionAccountsModel(docid)
+            accountsdelegate = AccountsSelectorDelegate(QSqlQuery( """
+             SELECT c.idcuenta, c.codigo, c.descripcion
+             FROM cuentascontables c
+             JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
+             WHERE c.padre != 1 AND c.idcuenta != 22
+             """ ),True )
+            self.tableaccounts.setItemDelegate( accountsdelegate )
+            
+            self.tableaccounts.setModel(self.accountsEditModel)
 
-            else:
-                try:
-                    QMessageBox.warning( self,"Llantera Esquipulas" ,self.editmodel.validError)
-                except AttributeError:
-                    QMessageBox.warning( self,"Llantera Esquipulas" ,u"El documento no puede guardarse ya que la información no esta completa")
+            self.accountsEditModel.insertRows( 0,2 )
+            
+            line = AccountsSelectorLine()
+            line.itemId = int(movimientos.INVENTARIO)
+            line.code = "110 003 001 000 000"
+            line.name = "INV Inventario de Bodega"
 
-
-#self.editmodel.accountsModel.insertRows( 0 )
-
-#line = AccountsSelectorLine()
-#line.itemId = int(movimientos.INVENTARIO)
-#line.code = "110 003 001 000 000"
-#line.name = "INV Inventario de Bodega"
-
-#self.editmodel.accountsModel.lines[0] = line
+            line.amount = Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( TOTALC ).toString())
+            self.accountsEditModel.lines[0] = line
+            self.tabWidget.setCurrentIndex( 0 )
+            
+            self.tableaccounts.resizeColumnsToContents()
+            self.status = 3
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(unicode(inst))
+            self.status = 1
+        except Exception as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", u"El sistema no pudo iniciar la edición de las cuentas contables")
+            logging.critical(unicode(inst))
+            self.status = 1

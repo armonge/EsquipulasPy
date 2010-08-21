@@ -200,17 +200,17 @@ class Base( object ):
         if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
             if self.editmodel.valid:
                 if self.editmodel.save():
-                    QMessageBox.information( None,
+                    QMessageBox.information( self,
                          "Llantera Esquipulas" ,
-                         """El documento se ha guardado con exito""" ) 
+                         "El documento se ha guardado con exito" )
                     self.editmodel = None
                     self.updateModels()
                     self.navigate( 'last' )
                     self.status = True
                 else:
-                    QMessageBox.critical( None,
+                    QMessageBox.critical( self,
                         "Llantera Esquipulas" ,
-                         """Ha ocurrido un error al guardar el documento""" ) 
+                         "Ha ocurrido un error al guardar el documento" )
     
     
             else:

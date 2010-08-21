@@ -195,7 +195,7 @@ class User:
                     raise Exception( "La consulta no se pudo ejecutar" )
 
                 if query.size() == 0:
-                    raise UserWarning( "No se ha podido autenticar al usuario %s" self.user )
+                    raise UserWarning( "No se ha podido autenticar al usuario %s" %self.user )
                 else:
                     logging.info(u"El usuario %s se ha autenticado" % self.user)
                     while query.next():
@@ -204,10 +204,10 @@ class User:
                         self.__fullname = query.value( FULLNAME ).toString()
                         self.__roles.append( query.value( ROLE ).toString() )
         except UserWarning as inst:
-            self.error = str( inst )
-            logging.error(inst)
-        except Exception as e:
-            logging.critical(inst)
+            self.error = unicode( inst )
+            logging.error(unicode(inst))
+        except Exception as inst:
+            logging.critical(unicode(inst))
         finally:
             if self.db.isOpen():
                 self.db.close()
