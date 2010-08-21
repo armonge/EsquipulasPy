@@ -447,12 +447,13 @@ class LiquidacionModel( QAbstractTableModel ):
 
             #insertar el usuario
             if not query.prepare( """
-            INSERT INTO personasxdocumento (idpersona, iddocumento) 
-            VALUE (:idusuario, :iddocumento)
+            INSERT INTO personasxdocumento (idpersona, iddocumento, idaccion) 
+            VALUE (:idusuario, :iddocumento, :accion)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
             query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":iddocumento", insertedId )
+            query.bindValue(":accion", constantes.ACCCREA)
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar  el usuario" )
@@ -859,9 +860,10 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
                 return moneyfmt( self.parent.totalD, 4, "US$" )
 
 class LiquidacionAccountsModel( AccountsSelectorModel ):
-    def __init__(self, docid):
+    def __init__(self, docid, user):
         super(LiquidacionAccountsModel, self).__init__()
         self.docid = docid
+        self.user = user
 
     def flags( self, index ):
         if not index.isValid():
@@ -889,6 +891,16 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
 
             if not query.exec_():
                 raise Exception("No se pudo actualizar el documento")
+
+            if not query.prepare("""
+            INSERT INTO personasxdocumento (idpersona, iddocumento, idaccion)
+            VALUES (:idpersona, :iddocumento, :accion)
+            """):
+                raise Exception(u"No se pudo preparar la relación del usuario con el documento")
+
+            query.bindValue(":idpersona", self.user.uid)
+            query.bindValue(":iddocumento", self.docid)
+            query.bindValue(":accion", constantes.ACCCONTABILIZA)
             
             for number, line in enumerate(self.lines):
                 line.save(self.docid, number)

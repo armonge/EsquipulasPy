@@ -4,11 +4,14 @@ Created on 02/06/2010
 
 @author: Marcos Moreno
 '''
+from decimal import Decimal
+import logging
+
 from PyQt4.QtGui import QMessageBox, QDialog, QLineEdit, QIcon
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 from PyQt4.QtCore import pyqtSlot, pyqtSignature, QDateTime,Qt
 from ui.Ui_apertura import Ui_dlgApertura
-from decimal import Decimal
+
 from utility.user import User
 from utility import constantes
 
@@ -19,6 +22,7 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
         @param user: El id del usuario que ha creado este documento
         """
         super( dlgApertura, self ).__init__( parent )
+        self.parentWindow = parent
         self.setupUi( self )
         
         self.editmodel = AperturaModel(parent.datosSesion)
@@ -56,9 +60,10 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
                     QMessageBox.critical(self, "Abrir Caja","No existe ninguna caja en la base de datos")
             except UserWarning as inst:
                 QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+                logging.error(unicode(inst))
                 self.reject()
-            except Exception as e:
-                print e
+            except Exception as inst:
+                logging.error(unicode(inst))
                 self.reject()
             finally:
                 if QSqlDatabase.database().isOpen():
@@ -68,7 +73,8 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
             self.cbcaja.setModelColumn( 1 )
             self.cbcaja.setCurrentIndex(-1)
             self.dtFechaTime.setDateTime( QDateTime.currentDateTime() )
-        
+
+            self.buttonBox.rejected.connect(self.reject)
 
 #                
 #    @pyqtSlot( "int" )
@@ -93,30 +99,29 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
             if supervisor.valid:
                 if not supervisor.hasRole( 'root' ):
                     QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación","El usuario no tiene permisos para autorizar la apertura de caja")
+                    logging.info(u"El usuario %s intento autorizar la apertura de una sesión" % supervisor.uname)
                     self.reject()
                           
                 self.editmodel.supervisorId = supervisor.uid
                 self.editmodel.datosSesion.fecha = self.dtFechaTime.date()
                 
                 if not self.editmodel.save():
-                    if self.editmodel.errorId == 1:
-                        QMessageBox.warning( None, u"La sesión no fue abierta","")
-                    elif self.editmodel.errorId == 2:
-                        QMessageBox.warning( None, u"La sesión no fue abierta", u"La sesión no fue abierta porque no existe un tipo de cambio para la fecha actual")
-                    else:
-                        QMessageBox.warning( None, u"La sesión no fue abierta", u"La sesión no fue abierta. Por favor Contacte al administrador del sistema")
+                    QMessageBox.warning( self,"Llantera Esquipulas", self.editmodel.error)
+                    logging.error(self.editmodel.error)
+                    #else:
+                        #QMessageBox.warning( None, u"La sesión no fue abierta", u"La sesión no fue abierta. Por favor Contacte al administrador del sistema")
                 else:
                     QMessageBox.information(None,u"Sesión Abierta", u"La sesión fue abierta exitosamente")
-                    QDialog.accept(self)
+                    logging.info(u"El usuario %s ha abierto una sesión de caja autorizada por el usuario %s " %(self.parentWindow.user.user, supervisor.user))
+                    super(dlgApertura,self).accept()
             else:
-                QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación",u"El nombre de usuario o contraseña son incorrectos")
+                QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación",supervisor.error)
                 self.txtUser.setFocus()
                 self.txtPassword.setText("")
         else:
-            if self.editmodel.errorId==1:
-                self.cbcaja.setFocus()
-                QMessageBox.warning( None, u"La sesión no fue abierta", u"Por favor seleccione la caja en la que se abrirá la sesión")
-                self.editmodel.errorId =0
+            self.cbcaja.setFocus()
+            QMessageBox.warning( None, u"La sesión no fue abierta", self.editmodel.error)
+            #self.editmodel.errorId =0
             
     @pyqtSlot()
     def on_txtSaldoC_editingFinished(self):
@@ -133,11 +138,7 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
             
         
 
-    def on_buttonBox_cancelled( self ):
-        """
-        Cancela la apertura de caja        
-        """
-        self.reject()
+
 
     @property
     def idsesion(self):
@@ -160,7 +161,7 @@ class AperturaModel(object):
     def valid(self):
         
         if self.datosSesion.cajaId == 0:
-            self.errorId = 1
+            self.error = u"La sesión no fue abierta por que no se ha seleccionado una caja"
         else:
             return True
         return False
@@ -171,22 +172,25 @@ class AperturaModel(object):
         return total
     
     def save(self):
+        query = QSqlQuery()
+        resultado = False
         try:
             if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
+                if not QSqlDatabase.database().open():
+                    raise UserWarning(u"No se pudo conectar con la base de datos")
 
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
             
             fecha = self.datosSesion.fecha.toString("yyyyMMdd") 
             #extraer el tipo de cambio de acuerdo a la fecha junto con su id
-            query = QSqlQuery( "SELECT idtc,tasa,IFNULL(tasabanco,tasa) as tasabanco FROM tiposcambio t where fecha=DATE('" + fecha + "')")
+            query.prepare( "SELECT idtc,tasa,IFNULL(tasabanco,tasa) as tasabanco FROM tiposcambio t where fecha=DATE('" + fecha + "')")
             if not query.exec_():
                 raise Exception("No existe una tasa de cambio para la fecha " + fecha)
             
             
             if query.size()==0:
-                self.errorId = 2
+                self.error = u"La sesión no fue abierta porque no existe un tipo de cambio para la fecha actual"
 #                self.reject()
                 return False
                 
@@ -199,7 +203,7 @@ class AperturaModel(object):
             
             
 
-            query = QSqlQuery("CALL spConsecutivo(22,NULL);")
+            query = QSqlQuery("CALL spConsecutivo(%d,NULL);" % constantes.IDAPERTURA)
             
             if not query.exec_():
                 raise Exception("No pudo ser cargado el consecutivo del documento")
@@ -228,9 +232,9 @@ class AperturaModel(object):
             self.datosSesion.sesionId=query.lastInsertId().toInt()[0]
             insertedId = str(self.datosSesion.sesionId)             
             
-            if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,autoriza) VALUES" + 
-            "(:usuario," + insertedId + ",0), "
-            "(:supervisor," + insertedId + ",1)"):
+            if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,accion) VALUES" +
+            "(:usuario," + insertedId + ", "+str(constantes.ACCCREA) + " ), "
+            "(:supervisor," + insertedId + ","+ str(constantes.ACCAUTORIZA)+ " )"):
                 raise Exception( query.lastError().text() )
             
 
@@ -259,11 +263,10 @@ class AperturaModel(object):
             
             resultado = True
         except Exception as inst:
-            print  query.lastError().databaseText()
-            print query.lastError().driverText()
-            print inst.args
+            logging.critical(unicode(inst))
+            logging.critical(query.lastError().text())
             QSqlDatabase.database().rollback()
-            resultado = False
+            self.error = u"Hubo un error al guardar la sesión de caja en la base de datos"
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()

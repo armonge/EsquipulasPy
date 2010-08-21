@@ -98,11 +98,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
         estado = self.navmodel.record( index ).value( "estado" ).toInt()[0]
         if estado == constantes.INCOMPLETO:
-            print "here"
             if self.user.hasRole('contabilidad'):
                 self.actionEditAccounts.setVisible(True)
-            if self.user.hasRole('inventario'):
-                self.actionEdit.setVisible(True)
+            #if self.user.hasRole('inventario'):
+                #self.actionEdit.setVisible(True)
         else:
             self.actionEditAccounts.setVisible(False)
             self.actionEdit.setVisible(False)
@@ -235,7 +234,6 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = %d 
                 GROUP BY d.iddocumento;
             """ % ( constantes.ISO)
-            print query
             self.navmodel.setQuery( query )
     
             self.detailsmodel.setQuery( u"""
@@ -442,7 +440,6 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabledetails.setColumnHidden( IDDOCUMENTOT, False )
 
             self.status = 2
-            print self.status
         except UserWarning as inst:
             self.status = 1
             QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
@@ -634,7 +631,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                     raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
             docid = self.navmodel.record( self.mapper.currentIndex() ).value( IDDOCUMENTO ).toInt()[0]
             self.xdockWidget.setCollapsed(False)
-            self.accountsEditModel = LiquidacionAccountsModel(docid)
+            self.accountsEditModel = LiquidacionAccountsModel(docid, self.user)
             accountsdelegate = AccountsSelectorDelegate(QSqlQuery( """
              SELECT c.idcuenta, c.codigo, c.descripcion
              FROM cuentascontables c

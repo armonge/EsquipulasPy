@@ -35,7 +35,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
-
+        self.setWindowModality(Qt.WindowModal)
         self.setWindowFlags(Qt.Dialog)
         self.parentWindow.removeToolBar(self.toolBar)
         self.addToolBar(self.toolBar)
@@ -98,7 +98,6 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             WHERE d.idtipodoc =  %d
             GROUP BY d.iddocumento
             """ % ( constantes.USUARIO, constantes.IDARQUEO)
-            print query
             self.navmodel.setQuery(query)
             
             self.detailsModel.setQuery( u"""
