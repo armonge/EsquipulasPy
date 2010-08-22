@@ -202,7 +202,7 @@ class Base( object ):
                 if self.editmodel.save():
                     QMessageBox.information( self,
                          "Llantera Esquipulas" ,
-                         "El documento se ha guardado con exito" )
+                         u"El documento se ha guardado con éxito" )
                     self.editmodel = None
                     self.updateModels()
                     self.navigate( 'last' )

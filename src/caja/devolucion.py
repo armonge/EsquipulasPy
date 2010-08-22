@@ -415,7 +415,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 if self.datosRecibo.save():
                     QMessageBox.information( None,
                         self.trUtf8( "Llantera Esquipulas" ),
-                        self.trUtf8( """El documento se ha guardado con exito""" ) )
+                        self.trUtf8( u"""El documento se ha guardado con éxito""" ) )
                     self.editmodel = None
                     self.updateModels()
                     self.navigate( 'last' )

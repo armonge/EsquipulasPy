@@ -233,12 +233,13 @@ class KardexModel( QAbstractTableModel ):
             insertedId = query.lastInsertId().toInt()[0]
 
             if not query.prepare( """
-            INSERT INTO personasxdocumento (idpersona, iddocumento) 
-            VALUE (:idusuario, :iddocumento)
+            INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion) 
+            VALUE (:idusuario, :iddocumento,:accion)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
             query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":accion", constantes.AUTOR)
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar  el usuario" )

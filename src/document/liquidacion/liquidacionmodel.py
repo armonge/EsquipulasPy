@@ -453,19 +453,20 @@ class LiquidacionModel( QAbstractTableModel ):
                 raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
             query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":iddocumento", insertedId )
-            query.bindValue(":accion", constantes.ACCCREA)
+            query.bindValue(":accion", constantes.AUTOR)
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar  el usuario" )
 
             #insertar el proveedor
             if not query.prepare( """
-            INSERT INTO personasxdocumento (idpersona, iddocumento) 
-            VALUE (:idproveedor, :iddocumento)
+            INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion) 
+            VALUE (:idproveedor, :iddocumento,:accion)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para ingresar proveedor" )
             query.bindValue( ":idproveedor", self.providerId )
             query.bindValue( ":iddocumento", insertedId )
+            query.bindValue(":accion", constantes.PROVEEDOR)
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el proveedor" )
