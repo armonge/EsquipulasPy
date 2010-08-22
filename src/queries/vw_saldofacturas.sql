@@ -1,16 +1,17 @@
+﻿DROP VIEW IF EXISTS `vw_saldofacturas`;
+CREATE OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_saldofacturas` AS
+
 SELECT
-factura.iddocumento,
-factura.ndocimpreso,
-factura.total - SUM(IFNULL(abono.monto,0)) - IFNULL(devolucion.total,0)  AS saldo,
+fac.iddocumento,
+fac.ndocimpreso,
+fac.total AS saldo,
+IFNULL(ca.valorcosto,0) AS tasaiva,
 p.idpersona,
 p.nombre
-FROM documentos factura
-JOIN personasxdocumento pd ON pd.iddocumento=factura.iddocumento
-JOIN personas p ON pd.idpersona=p.idpersona AND p.tipopersona=1
-LEFT JOIN docpadrehijos abono ON abono.idpadre=factura.iddocumento
-LEFT JOIN documentos recibo ON abono.idhijo=recibo.iddocumento AND recibo.idtipodoc=18
-LEFT JOIN documentos devolucion ON abono.idhijo=devolucion.iddocumento AND devolucion.idtipodoc=10
-WHERE factura.idtipodoc=5
-AND factura.anulado=0
-GROUP BY factura.iddocumento
-;
+FROM documentos fac 
+JOIN personasxdocumento pd ON pd.iddocumento = fac.iddocumento
+JOIN personas p ON p.idpersona = pd.idpersona AND p.tipopersona = 1
+LEFT JOIN costosxdocumento cd ON cd.iddocumento = fac.iddocumento
+LEFT JOIN costosagregados ca ON cd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = 1
+WHERE fac.idtipodoc = 5 AND fac.idestado = 1
+ORDER BY CAST(fac.ndocimpreso AS SIGNED);

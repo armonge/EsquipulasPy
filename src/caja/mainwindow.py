@@ -132,7 +132,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                         apertura.idcaja
                     FROM `esquipulasdb`.`documentos` apertura
                     JOIN tiposcambio tc ON tc.idtc = apertura.idtipocambio
-                    JOIN personasxdocumento pd ON pd.iddocumento = apertura.iddocumento AND pd.accion=%d
+                    JOIN personasxdocumento pd ON pd.iddocumento = apertura.iddocumento AND pd.idaccion=%d
                     LEFT JOIN docpadrehijos ph ON apertura.iddocumento=ph.idpadre
                     LEFT JOIN documentos cierre ON cierre.iddocumento = ph.idhijo AND cierre.idtipodoc=%d
                     WHERE apertura.idtipodoc=%d AND pd.idpersona=%d
@@ -140,7 +140,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                     HAVING SUM(IFNULL(cierre.idtipodoc,0)) = 0;
                    """%(constantes.ACCCREA, constantes.IDARQUEO,constantes.IDAPERTURA, self.datosSesion.usuarioId)
                 if not query.prepare(q):
-                       raise Exception(u"No se pudo preparar la consulta para recuperar la información de la sesión")
+                    raise Exception(u"No se pudo preparar la consulta para recuperar la información de la sesión")
                 if not query.exec_():
                     raise Exception(u"No se pudo ejecutar la consulta para recuperar la información de la sesión")
 
@@ -173,8 +173,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 if db.isOpen():
                     db.close()
 
-                if self.datosSesion != None:
-                    print self.datosSesion.sesionId
             except UserWarning as inst:
                 QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
                 logging.error(unicode(inst))

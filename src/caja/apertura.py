@@ -76,20 +76,6 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
 
             self.buttonBox.rejected.connect(self.reject)
 
-#                
-#    @pyqtSlot( "int" )
-#    def on_cboCaja_currentIndexChanged( self, index ):
-#        """
-#        @param index: El CurrentIndex del comboBox para la caja seleccionada
-#        """
-#        self.idCaja = self.model.record( index ).value( "idcaja" ).toInt()[0]
-
-#    @pyqtSlot(  )
-#    def on_buttonBox_accepted( self ):
-#        """
-#        Agrega una apertura de caja        
-#        """
-#        
     def accept(self):
         if not self.cerrar:
             self.editmodel.datosSesion.cajaId =  self.cajasmodel.record( self.cbcaja.currentIndex() ).value( "idcaja" ).toInt()[0]
@@ -98,9 +84,10 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
             supervisor = User( self.txtUser.text(), self.txtPassword.text())
             if supervisor.valid:
                 if not supervisor.hasRole( 'root' ):
-                    QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación","El usuario no tiene permisos para autorizar la apertura de caja")
-                    logging.info(u"El usuario %s intento autorizar la apertura de una sesión" % supervisor.uname)
-                    self.reject()
+                    QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación","El usuario %s no tiene permisos para autorizar la apertura de caja"% supervisor.user)
+                    logging.info(u"El usuario %s intento autorizar la apertura de una sesión" % supervisor.user)
+                    return
+                    
                           
                 self.editmodel.supervisorId = supervisor.uid
                 self.editmodel.datosSesion.fecha = self.dtFechaTime.date()
@@ -127,13 +114,13 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
     def on_txtSaldoC_editingFinished(self):
         if self.editmodel != None:
             self.editmodel.saldoCordoba = Decimal(str(self.txtSaldoC.value()))
-            print self.editmodel.saldoCordoba
+        
                
     @pyqtSlot( )
     def on_txtSaldoD_editingFinished(self):
         if self.editmodel != None:
             self.editmodel.saldoDolar = Decimal(str(self.txtSaldoD.value()))
-            print self.editmodel.saldoDolar                
+                        
            
             
         
@@ -154,12 +141,12 @@ class AperturaModel(object):
     
         self.supervisorId = 0
         self.errorId=0
+        self.error = ""
         self.saldoCordoba = Decimal(0)
         self.saldoDolar = Decimal(0)
     
     @property
     def valid(self):
-        
         if self.datosSesion.cajaId == 0:
             self.error = u"La sesión no fue abierta por que no se ha seleccionado una caja"
         else:
@@ -167,7 +154,7 @@ class AperturaModel(object):
         return False
     @property
     def total(self):
-        print self.datosSesion.tipoCambioBanco
+        
         total = (self.saldoCordoba / self.datosSesion.tipoCambioBanco) + self.saldoDolar
         return total
     
@@ -191,7 +178,6 @@ class AperturaModel(object):
             
             if query.size()==0:
                 self.error = u"La sesión no fue abierta porque no existe un tipo de cambio para la fecha actual"
-#                self.reject()
                 return False
                 
             
@@ -232,7 +218,7 @@ class AperturaModel(object):
             self.datosSesion.sesionId=query.lastInsertId().toInt()[0]
             insertedId = str(self.datosSesion.sesionId)             
             
-            if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,accion) VALUES" +
+            if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,idaccion) VALUES" +
             "(:usuario," + insertedId + ", "+str(constantes.ACCCREA) + " ), "
             "(:supervisor," + insertedId + ","+ str(constantes.ACCAUTORIZA)+ " )"):
                 raise Exception( query.lastError().text() )
@@ -265,8 +251,10 @@ class AperturaModel(object):
         except Exception as inst:
             logging.critical(unicode(inst))
             logging.critical(query.lastError().text())
+            print query.lastError().text()
             QSqlDatabase.database().rollback()
             self.error = u"Hubo un error al guardar la sesión de caja en la base de datos"
+            
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()

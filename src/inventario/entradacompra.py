@@ -240,8 +240,6 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
                 if not QSqlDatabase.database().open():
                     raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
 
-            self.status = False
-
             self.editmodel = EntradaCompraModel()
             self.editmodel.uid = self.user.uid
             self.tabledetails.setModel( self.editmodel )
@@ -265,13 +263,14 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
             self.updateEditModels()
 
-
+            
             self.rbCash.click()
 
             self.addLine()
             self.dtPicker.setDateTime( QDateTime.currentDateTime() )
             self.editmodel.providerId = self.providersModel.record( self.cbProvider.currentIndex() ).value( "idpersona" ).toInt()[0]
             self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+            self.status = False
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             logging.error(unicode(inst))

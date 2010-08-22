@@ -89,7 +89,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         
         
         if not self.updateModels():
-            QMessageBox.critical(self, "Llantera Esquipulas", "No fue posible crear una nueva factura")
+#            QMessageBox.critical(self, "Llantera Esquipulas", "No fue posible crear una nueva factura")
             return 
         
         self.status = False                
