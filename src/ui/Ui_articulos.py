@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\workspace\EsquipulasPy\src\ui\articulos.ui'
+# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\articulos.ui'
 #
-# Created: Mon Aug 09 11:56:47 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created: Sat Aug 21 20:40:35 2010
+#      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -56,25 +56,30 @@ class Ui_frmArticlesNew(object):
         self.txtComission.setObjectName("txtComission")
         self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.txtComission)
         self.label_3 = QtGui.QLabel(frmArticlesNew)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
+        self.label_3.setSizePolicy(sizePolicy)
         self.label_3.setObjectName("label_3")
-        self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.label_3)
+        self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.label_3)
         self.txtISC = QtGui.QLineEdit(frmArticlesNew)
         self.txtISC.setObjectName("txtISC")
-        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.txtISC)
+        self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.txtISC)
         self.label_2 = QtGui.QLabel(frmArticlesNew)
         self.label_2.setObjectName("label_2")
-        self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.label_2)
+        self.formLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.label_2)
         self.txtDAI = QtGui.QLineEdit(frmArticlesNew)
         self.txtDAI.setObjectName("txtDAI")
-        self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.txtDAI)
-        self.label_4 = QtGui.QLabel(frmArticlesNew)
-        self.label_4.setObjectName("label_4")
-        self.formLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.label_4)
-        self.txtProfit = QtGui.QLineEdit(frmArticlesNew)
-        self.txtProfit.setObjectName("txtProfit")
-        self.formLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.txtProfit)
+        self.formLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.txtDAI)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.formLayout.setItem(0, QtGui.QFormLayout.LabelRole, spacerItem)
+        self.label_4 = QtGui.QLabel(frmArticlesNew)
+        self.label_4.setObjectName("label_4")
+        self.formLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.label_4)
+        self.txtProfit = QtGui.QLineEdit(frmArticlesNew)
+        self.txtProfit.setObjectName("txtProfit")
+        self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.txtProfit)
         self.gridLayout.addLayout(self.formLayout, 0, 2, 2, 1)
         self.categoriesview = QtGui.QTreeView(frmArticlesNew)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
@@ -134,13 +139,29 @@ class Ui_frmArticlesNew(object):
         self.label_5.setText(QtGui.QApplication.translate("frmArticlesNew", "<b>Categoria</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.label_6.setText(QtGui.QApplication.translate("frmArticlesNew", "<b>Marca</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAgregarMarca.setToolTip(QtGui.QApplication.translate("frmArticlesNew", "Agregar Marca", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("frmArticlesNew", "<b>Comisión</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("frmArticlesNew", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Comisión $</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.txtComission.setText(QtGui.QApplication.translate("frmArticlesNew", "0", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("frmArticlesNew", "<b>ISC</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("frmArticlesNew", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"right\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">% ISC</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.txtISC.setText(QtGui.QApplication.translate("frmArticlesNew", "0", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("frmArticlesNew", "<b>DAI</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("frmArticlesNew", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">% DAI</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.txtDAI.setText(QtGui.QApplication.translate("frmArticlesNew", "0", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("frmArticlesNew", "<b>Ganancia</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_4.setText(QtGui.QApplication.translate("frmArticlesNew", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Ganancia $</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.txtProfit.setText(QtGui.QApplication.translate("frmArticlesNew", "0", None, QtGui.QApplication.UnicodeUTF8))
         self.label_7.setText(QtGui.QApplication.translate("frmArticlesNew", "Buscar", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("frmArticlesNew", "Buscar", None, QtGui.QApplication.UnicodeUTF8))
