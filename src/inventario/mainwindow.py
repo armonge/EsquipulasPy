@@ -15,6 +15,8 @@ from kardexother import frmKardexOther
 from ui.Ui_mainwindowinventario import Ui_MainWindow
 from articulos import frmArticulos
 from utility.mainwindowbase import MainWindowBase
+from utility.persona import dlgPersona
+from utility import constantes
 
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     """
@@ -118,9 +120,11 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        catproveedores = frmCatProveedores( self )
-        self.mdiArea.addSubWindow( catproveedores )
-        catproveedores.show()
+        dialog = dlgPersona(constantes.PROVEEDOR,"Proveedor",self)
+        dialog.exec_()
+#        catproveedores = frmCatProveedores( self )
+#        self.mdiArea.addSubWindow( catproveedores )
+#        catproveedores.show()
 
     @pyqtSlot(  )
     def on_btnLiquidations_clicked( self ):

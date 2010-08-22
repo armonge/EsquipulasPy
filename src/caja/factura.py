@@ -21,6 +21,7 @@ from recibo import dlgRecibo
 from utility.user import dlgUserLogin,User
 from utility.movimientos import movFacturaCredito
 from utility import constantes
+
 #controles
 IDDOCUMENTO, NDOCIMPRESO, CLIENTE,VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, FECHA, BODEGA, TASA,TASAIVA,ESTADO,ANULADO,ESCONTADO = range( 15 )
 
@@ -75,6 +76,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 
         self.readOnly = True
         self.status = True
+
+
                 
     @pyqtSlot(  )
     def on_actionNew_activated( self ):
@@ -594,7 +597,9 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         #            Rellenar el combobox de los vendedores
                 
                 self.vendedoresModel.setQuery( """
-                    SELECT idpersona , nombre AS Vendedor 
+                    SELECT 
+                    idpersona, 
+                    nombre AS Vendedor 
                     FROM personas
                     WHERE tipopersona = %d
                 """%constantes.VENDEDOR )
@@ -667,7 +672,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 
                 
                 self.cbcliente.setModel( self.clientesModel )
-                self.cbcliente.setCurrentIndex( -1 )
+                self.cbcliente.setIndex( -1 )
                 self.cbcliente.setFocus()
                 self.cbcliente.setModelColumn( 1 )
                 self.completer = QCompleter()

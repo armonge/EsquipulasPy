@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/mainwindowcaja.ui'
+# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\mainwindowcaja.ui'
 #
-# Created by: PyQt4 UI code generator 4.7.3
+# Created: Sun Aug 22 02:03:40 2010
+#      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -36,7 +37,7 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.dockWidget = QtGui.QDockWidget(MainWindow)
-        self.dockWidget.setMinimumSize(QtCore.QSize(230, 175))
+        self.dockWidget.setMinimumSize(QtCore.QSize(230, 181))
         self.dockWidget.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.dockWidget.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.RightDockWidgetArea)
         self.dockWidget.setObjectName("dockWidget")
@@ -50,7 +51,7 @@ class Ui_MainWindow(object):
         self.toolBox.setObjectName("toolBox")
         self.page_2 = QtGui.QWidget()
         self.page_2.setEnabled(True)
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 570))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 601))
         self.page_2.setObjectName("page_2")
         self.gridLayout_2 = QtGui.QGridLayout(self.page_2)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -153,29 +154,6 @@ class Ui_MainWindow(object):
         self.btnArqueo.setObjectName("btnArqueo")
         self.gridLayout_2.addWidget(self.btnArqueo, 5, 0, 1, 1)
         self.toolBox.addItem(self.page_2, "")
-        self.page = QtGui.QWidget()
-        self.page.setEnabled(True)
-        self.page.setGeometry(QtCore.QRect(0, 0, 214, 570))
-        self.page.setObjectName("page")
-        self.gridLayout = QtGui.QGridLayout(self.page)
-        self.gridLayout.setObjectName("gridLayout")
-        self.btnClients = QtGui.QPushButton(self.page)
-        self.btnClients.setEnabled(False)
-        self.btnClients.setMinimumSize(QtCore.QSize(0, 70))
-        font = QtGui.QFont()
-        font.setPointSize(9)
-        font.setWeight(75)
-        font.setBold(True)
-        self.btnClients.setFont(font)
-        self.btnClients.setAutoFillBackground(False)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/images/res/preferences-desktop-personal.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnClients.setIcon(icon2)
-        self.btnClients.setIconSize(QtCore.QSize(64, 64))
-        self.btnClients.setFlat(False)
-        self.btnClients.setObjectName("btnClients")
-        self.gridLayout.addWidget(self.btnClients, 0, 0, 1, 1)
-        self.toolBox.addItem(self.page, "")
         self.verticalLayout.addWidget(self.toolBox)
         self.dockWidget.setWidget(self.dockWidgetContents_2)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidget)
@@ -183,18 +161,24 @@ class Ui_MainWindow(object):
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.actionLockSession = QtGui.QAction(MainWindow)
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(":/icons/res/object-locked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionLockSession.setIcon(icon3)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/icons/res/object-locked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionLockSession.setIcon(icon2)
         self.actionLockSession.setObjectName("actionLockSession")
         self.actionUnlockSession = QtGui.QAction(MainWindow)
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(":/icons/res/object-unlocked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionUnlockSession.setIcon(icon4)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(":/icons/res/object-unlocked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionUnlockSession.setIcon(icon3)
         self.actionUnlockSession.setVisible(False)
         self.actionUnlockSession.setObjectName("actionUnlockSession")
+        self.actionClients = QtGui.QAction(MainWindow)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(":/images/res/preferences-desktop-personal.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionClients.setIcon(icon4)
+        self.actionClients.setObjectName("actionClients")
         self.toolBar.addAction(self.actionLockSession)
         self.toolBar.addAction(self.actionUnlockSession)
+        self.toolBar.addAction(self.actionClients)
 
         self.retranslateUi(MainWindow)
         self.toolBox.setCurrentIndex(0)
@@ -215,20 +199,10 @@ class Ui_MainWindow(object):
         self.btnArqueo.setText(QtGui.QApplication.translate("MainWindow", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
         self.btnArqueo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+5", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), QtGui.QApplication.translate("MainWindow", "Movimientos", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnClients.setText(QtGui.QApplication.translate("MainWindow", "Clientes", None, QtGui.QApplication.UnicodeUTF8))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.page), QtGui.QApplication.translate("MainWindow", "Catalogos", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionLockSession.setText(QtGui.QApplication.translate("MainWindow", "Bloquear Sesión", None, QtGui.QApplication.UnicodeUTF8))
         self.actionUnlockSession.setText(QtGui.QApplication.translate("MainWindow", "Desbloquear Sesión", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionClients.setText(QtGui.QApplication.translate("MainWindow", "clients", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionClients.setToolTip(QtGui.QApplication.translate("MainWindow", "Crear un Nuevo Cliente", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    MainWindow = QtGui.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
-

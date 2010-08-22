@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\articulos.ui'
 #
-# Created: Sat Aug 21 20:45:34 2010
+# Created: Sat Aug 21 20:50:56 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -133,6 +133,15 @@ class Ui_frmArticlesNew(object):
 
         self.retranslateUi(frmArticlesNew)
         QtCore.QMetaObject.connectSlotsByName(frmArticlesNew)
+        frmArticlesNew.setTabOrder(self.categoriesview, self.brandsview)
+        frmArticlesNew.setTabOrder(self.brandsview, self.txtComission)
+        frmArticlesNew.setTabOrder(self.txtComission, self.txtProfit)
+        frmArticlesNew.setTabOrder(self.txtProfit, self.txtISC)
+        frmArticlesNew.setTabOrder(self.txtISC, self.txtDAI)
+        frmArticlesNew.setTabOrder(self.txtDAI, self.btnAgregarMarca)
+        frmArticlesNew.setTabOrder(self.btnAgregarMarca, self.txtCategorySearch)
+        frmArticlesNew.setTabOrder(self.txtCategorySearch, self.txtBrandSearch)
+        frmArticlesNew.setTabOrder(self.txtBrandSearch, self.buttonBox)
 
     def retranslateUi(self, frmArticlesNew):
         frmArticlesNew.setWindowTitle(QtGui.QApplication.translate("frmArticlesNew", "Añadir Articulos", None, QtGui.QApplication.UnicodeUTF8))

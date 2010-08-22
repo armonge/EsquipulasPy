@@ -252,6 +252,18 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>categoriesview</tabstop>
+  <tabstop>brandsview</tabstop>
+  <tabstop>txtComission</tabstop>
+  <tabstop>txtProfit</tabstop>
+  <tabstop>txtISC</tabstop>
+  <tabstop>txtDAI</tabstop>
+  <tabstop>btnAgregarMarca</tabstop>
+  <tabstop>txtCategorySearch</tabstop>
+  <tabstop>txtBrandSearch</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="res.qrc"/>
  </resources>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\factura.ui'
 #
-# Created: Fri Aug 20 02:02:08 2010
+# Created: Sun Aug 22 02:00:24 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!

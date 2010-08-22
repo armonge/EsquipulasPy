@@ -26,6 +26,8 @@ from arqueo import frmArqueo
 from cierrecaja import frmCierreCaja
 from utility import constantes
 from devolucion import frmDevolucion
+from utility.persona import dlgPersona
+
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     """
     Esta clase implementa el MainWindow de Caja
@@ -76,7 +78,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
             self.actionUnlockSession.setVisible( not state )
 
         self.btnArqueo.setEnabled( state )
-        self.btnClients.setEnabled( state )
+#        self.btnClients.setEnabled( state )
         self.btnrecibo.setEnabled( state )
         self.btnfactura.setEnabled( state )
         self.btnDevolutions.setEnabled( state )
@@ -84,7 +86,11 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.setVisible( state )
         self.actionLockSession.setVisible( state )
 
-
+    @pyqtSlot(  )
+    def on_actionClients_activated( self ):
+        dialog = dlgPersona(constantes.CLIENTE,"Cliente",self)
+        dialog.exec_()
+        
     @pyqtSlot(  )
     def on_btnConceptos_clicked( self ):
         conceptos=frmCatConceptos(2,self)
