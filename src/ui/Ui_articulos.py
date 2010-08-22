@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\articulos.ui'
 #
-# Created: Sat Aug 21 20:44:14 2010
+# Created: Sat Aug 21 20:45:34 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -161,7 +161,7 @@ class Ui_frmArticlesNew(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Ganancia %</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">% Ganancia</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.txtProfit.setText(QtGui.QApplication.translate("frmArticlesNew", "0", None, QtGui.QApplication.UnicodeUTF8))
         self.label_7.setText(QtGui.QApplication.translate("frmArticlesNew", "Buscar", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("frmArticlesNew", "Buscar", None, QtGui.QApplication.UnicodeUTF8))
