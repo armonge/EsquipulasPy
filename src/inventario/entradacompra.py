@@ -196,7 +196,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             SELECT idarticulo, Descripcion as descripcion FROM vw_articulosdescritos
             """ )
             if not query.size() > 0:
-                raise Exception("No existen productos en la base de datos")
+                raise UserWarning("No existen productos en la base de datos")
             prods = SingleSelectionModel()
             query.exec_()
             while query.next():
@@ -274,11 +274,12 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             logging.error(unicode(inst))
-            self.status = True
-        except Exception as e:
+#            self.status = True
+        except Exception as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", "No se pudo iniciar una nueva entrada compra")
+            print inst
             logging.error(unicode(inst))
-            self.status = True
+#            self.status = True
 
         if QSqlDatabase.database().isOpen():
             QSqlDatabase.database().close()
