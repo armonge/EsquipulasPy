@@ -10,6 +10,7 @@ from lineaentradacompra import LineaEntradaCompra
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movEntradaCompra
+from utility import constantes
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, PRECIOD, TOTALC, TOTALD = range( 7 )
 class EntradaCompraModel( QAbstractTableModel ):
@@ -382,24 +383,27 @@ class EntradaCompraModel( QAbstractTableModel ):
 
             #insertar el usuario
             if not query.prepare( """
-            INSERT INTO personasxdocumento (idpersona, iddocumento) 
-            VALUE (:idusuario, :iddocumento)
+            INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion) 
+            VALUE (:idusuario, :iddocumento,:idaccion)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
             query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":idaccion", constantes.AUTOR )
 
             if not query.exec_():
+                
                 raise Exception( "No se pudo insertar  el usuario" )
 
             #insertar el proveedor
             if not query.prepare( """
-            INSERT INTO personasxdocumento (idpersona, iddocumento) 
-            VALUE (:idproveedor, :iddocumento)
+            INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion) 
+            VALUE (:idproveedor, :iddocumento,:idaccion)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para ingresar proveedor" )
             query.bindValue( ":idproveedor", self.providerId )
             query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":idaccion", constantes.PROVEEDOR )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el proveedor" )
