@@ -6,7 +6,7 @@ Created on 21/05/2010
 TODO: DAI,  ISC, ISO no se aplican según exoneración
 '''
 #import math
-from decimal import Decimal, ROUND_DOWN
+from decimal import Decimal, ROUND_CEILING
 import logging
 
 from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt, SIGNAL
@@ -361,7 +361,7 @@ class LiquidacionModel( QAbstractTableModel ):
         M{TSIMTOTAL = ( PESO / FACTORPESO )S{uarr} * PORCENTAJETSIM}
         @rtype: Decimal
         """
-        return ( self.weight / self.weightFactor ).to_integral_exact( rounding = ROUND_DOWN) * self.tsimRate
+        return ( self.weight / self.weightFactor ).to_integral_exact( rounding = ROUND_CEILING) * self.tsimRate
 
 
     @property

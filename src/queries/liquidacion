@@ -1,8 +1,8 @@
 cifTotal = fobTotal + fleteTotal + seguroTotal + otrosgastosTotal
 
-daiTotal = %dai +cifTotal * tipocambio
+daiTotal = %dai +cifTotal 
 
-iscTotal = daiTotal +daiTotal + %isc
+iscTotal = daiTotal + (daiTotal * %isc)
 
 ivaTotal = (cifTotal + daiTotal + iscTotal + tsim ) * %iva
 
