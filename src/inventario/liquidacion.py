@@ -25,7 +25,7 @@ from document.liquidacion.liquidaciondelegate import LiquidacionDelegate
 
 #navigation model
 IDDOCUMENTO, NDOCIMPRESO, FECHA, PROCEDENCIA, AGENCIA, ALMACEN, FLETE, SEGURO,\
-OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO, ESTADO, TOTALD, TOTALC = range( 19 )
+OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO, ESTADO,FOBTOTAL, CIFTOTAL, IMPUESTOTOTAL, TOTALD, TOTALC = range( 22 )
 
 
 #details model
@@ -174,6 +174,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.tablenavigation.setColumnHidden( BODEGA, True )
         self.tablenavigation.setColumnHidden( ISO, True )
         self.tablenavigation.setColumnHidden( TCAMBIO, True )
+        self.tablenavigation.setColumnHidden( FOBTOTAL, True )
+        self.tablenavigation.setColumnHidden( CIFTOTAL, True )
+        self.tablenavigation.setColumnHidden( IMPUESTOTOTAL, True )
 
         
  #TOTALD, TOTALC = range( 19 )
@@ -186,26 +189,25 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.tabnavigation.setEnabled( status )
         if status == 1:
 
-            #self.tabletotals.setColumnHidden( IDDOCUMENTO, True )
-            #self.tabletotals.setColumnHidden( AGENCIA, True )
-            #self.tabletotals.setColumnHidden( PESO, True )
-            #self.tabletotals.setColumnHidden( ALMACEN, True )
-            #self.tabletotals.setColumnHidden( FLETE, True )
-            #self.tabletotals.setColumnHidden( SEGURO, True )
-            #self.tabletotals.setColumnHidden( OTROS, True )
-            #self.tabletotals.setColumnHidden( TRANSPORTE, True )
-            #self.tabletotals.setColumnHidden( PAPELERIA, True )
-            #self.tabletotals.setColumnHidden( BODEGA, True )
-            #self.tabletotals.setColumnHidden( ISO, True )
-            #self.tabletotals.setColumnHidden( TCAMBIO, True )
-            #self.tabletotals.setColumnHidden(NDOCIMPRESO, True)
-            #self.tabletotals.setColumnHidden(ESTADO, True)
-            #self.tabletotals.setColumnHidden(FECHA, True)
-            #self.tabletotals.setColumnHidden(PROCEDENCIA, True)
-            #self.tabletotals.setColumnHidden(PESO, True)
-            #self.tabletotals.setColumnHidden(PROVEEDOR, True)
-            #self.tabletotals.setColumnHidden(TCAMBIO, True)
-            print "ocultando"
+            self.tabletotals.setColumnHidden( IDDOCUMENTO, True )
+            self.tabletotals.setColumnHidden( AGENCIA, True )
+            self.tabletotals.setColumnHidden( PESO, True )
+            self.tabletotals.setColumnHidden( ALMACEN, True )
+            self.tabletotals.setColumnHidden( FLETE, True )
+            self.tabletotals.setColumnHidden( SEGURO, True )
+            self.tabletotals.setColumnHidden( OTROS, True )
+            self.tabletotals.setColumnHidden( TRANSPORTE, True )
+            self.tabletotals.setColumnHidden( PAPELERIA, True )
+            self.tabletotals.setColumnHidden( BODEGA, True )
+            self.tabletotals.setColumnHidden( ISO, True )
+            self.tabletotals.setColumnHidden( TCAMBIO, True )
+            self.tabletotals.setColumnHidden(NDOCIMPRESO, True)
+            self.tabletotals.setColumnHidden(ESTADO, True)
+            self.tabletotals.setColumnHidden(FECHA, True)
+            self.tabletotals.setColumnHidden(PROCEDENCIA, True)
+            self.tabletotals.setColumnHidden(PESO, True)
+            self.tabletotals.setColumnHidden(PROVEEDOR, True)
+            self.tabletotals.setColumnHidden(TCAMBIO, True)
         elif status == 2: #editando
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
             self.tabledetails.addAction( self.actionDeleteRow )
@@ -223,8 +225,15 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.sbStore.setValue(0)
             self.sbTransportation.setValue(0)
 
+            self.tabletotals.resizeColumnsToContents()
+
+            for x in range(self.tabletotals.model().columnCount()):
+                self.tabletotals.setColumnHidden(x, False)
+            self.actionEditAccounts.setVisible(False)
         elif status == 3:
+            self.tabTotalsAccounts.setCurrentIndex(0)
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
+            self.actionEditAccounts.setVisible(False)
         else:
             self.tableaccounts.setEditTriggers( QTableView.NoEditTriggers )
             self.tabledetails.removeAction( self.actionDeleteRow )
@@ -245,30 +254,34 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                     raise UserWarning( "No se pudo conectar con la base de datos "+  \
                 "para recuperar los documentos" )
             query = u"""
-                SELECT
-                    d.iddocumento,
-                    d.ndocimpreso AS 'Número de Liquidación',
-                    d.fecha AS 'Fecha',
-                    d.procedencia AS 'Procedencia',
-                    d.totalagencia AS 'Agencia',
-                    d.totalalmacen AS 'Almacen',
-                    d.fletetotal AS 'Flete',
-                    d.segurototal as 'Seguro',
-                    d.otrosgastos AS 'Otros Gastos',
-                    d.porcentajetransporte AS 'Transporte',
-                    d.porcentajepapeleria AS 'Papelería',
-                    d.peso AS 'Peso',
-                    d.Proveedor AS 'Proveedor',
-                    d.bodega AS 'Bodega',
-                    SUM(IFNULL(valorcosto,0)) as  'ISO',
-                    d.tasa,
-                    d.estado,
-                    d.totald AS 'Total US$',
-                    d.totalc AS 'Total C$'
-                FROM esquipulasdb.vw_liquidacionesguardadas d
-                LEFT JOIN costosxdocumento cxd ON d.iddocumento = cxd.iddocumento
-                LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = %d 
-                GROUP BY d.iddocumento;
+SELECT
+    d.iddocumento,
+    d.ndocimpreso AS 'Número de Liquidación',
+    d.fecha AS 'Fecha',
+    d.procedencia AS 'Procedencia',
+    d.totalagencia AS 'Agencia',
+    d.totalalmacen AS 'Almacen',
+    d.fletetotal AS 'Flete',
+    d.segurototal as 'Seguro',
+    d.otrosgastos AS 'Otros Gastos',
+    d.porcentajetransporte AS 'Transporte',
+    d.porcentajepapeleria AS 'Papelería',
+    d.peso AS 'Peso',
+    d.Proveedor AS 'Proveedor',
+    d.bodega AS 'Bodega',
+    SUM(IFNULL(valorcosto,0)) as  'ISO',
+    d.tasa,
+    d.estado,
+lt.fobtotal,
+lt.ciftotal,
+lt.impuestototal,
+    d.totald AS 'Total US$',
+    d.totalc AS 'Total C$'
+FROM esquipulasdb.vw_liquidacionesguardadas d
+JOIN vw_liquidacioncontotales lt ON lt.iddocumento = d.iddocumento
+LEFT JOIN costosxdocumento cxd ON d.iddocumento = cxd.iddocumento
+LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = %d
+GROUP BY d.iddocumento;
             """ % ( constantes.ISO)
             self.navmodel.setQuery( query )
     
@@ -394,6 +407,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 raise UserWarning( u"No existen tipos de cambio en la base de datos" )
 
             self.editmodel = LiquidacionModel( self.user.uid )
+            self.editmodel.applyISO = self.ckISO.isChecked()
             self.addLine()
             query = QSqlQuery( """
             SELECT 
@@ -424,7 +438,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 elif query.value( 3 ).toInt()[0] == 6: #ISO
                     self.editmodel.isoId = query.value( 0 ).toInt()[0]
                     self.editmodel.isoRate = Decimal( query.value( 1 ).toString() )
-
+        
             providersModel = QSqlQueryModel()
             providersModel.setQuery( """
             SELECT idpersona, nombre FROM personas p WHERE tipopersona = 2 AND activo = 1
@@ -482,9 +496,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
         except UserWarning as inst:
             self.status = 1
-            QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             logging.error(inst)
         except Exception as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", u"Hubo un error al intentar iniciar una nueva liquidación")
             self.status = 1
             logging.critical(inst)
         finally:
@@ -608,11 +623,17 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.editmodel.applyISO = True if status == Qt.Checked else False
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
+            if status == Qt.Checked:
+                self.ckTaxes.setChecked(False)
+
     @pyqtSlot( "int" )
     def on_ckTaxes_stateChanged( self, status ):
         if not self.editmodel is None:
             self.editmodel.applyTaxes = True if status == Qt.Unchecked else False
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
+
+            if status == Qt.Checked:
+                self.ckISO.setChecked(False)
 
 
     def loadModels( self ):
@@ -708,4 +729,5 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         except Exception as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", u"El sistema no pudo iniciar la edición de las cuentas contables")
             logging.critical(unicode(inst))
+            self.tableaccounts.setModel( self.accountsProxyModel )
             self.status = 1

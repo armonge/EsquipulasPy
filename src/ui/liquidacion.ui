@@ -630,7 +630,7 @@
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <widget class="QTabWidget" name="tabWidget_2">
+      <widget class="QTabWidget" name="tabTotalsAccounts">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -867,7 +867,7 @@
   <tabstop>txtExchangeRate</tabstop>
   <tabstop>tablenavigation</tabstop>
   <tabstop>txtSearch</tabstop>
-  <tabstop>tabWidget_2</tabstop>
+  <tabstop>tabTotalsAccounts</tabstop>
   <tabstop>tableaccounts</tabstop>
   <tabstop>tabletotals</tabstop>
  </tabstops>

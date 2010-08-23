@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/arqueo.ui'
 #
-# Created: Thu Aug 19 11:49:52 2010
+# Created: Sun Aug 22 20:45:30 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!

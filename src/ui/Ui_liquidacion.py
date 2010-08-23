@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/liquidacion.ui'
 #
-# Created: Sun Aug 22 19:26:07 2010
+# Created: Sun Aug 22 20:46:31 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -315,9 +315,9 @@ class Ui_frmLiquidacion(object):
         self.dockWidgetContents.setObjectName("dockWidgetContents")
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.dockWidgetContents)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.tabWidget_2 = QtGui.QTabWidget(self.dockWidgetContents)
-        self.tabWidget_2.setMinimumSize(QtCore.QSize(0, 200))
-        self.tabWidget_2.setObjectName("tabWidget_2")
+        self.tabTotalsAccounts = QtGui.QTabWidget(self.dockWidgetContents)
+        self.tabTotalsAccounts.setMinimumSize(QtCore.QSize(0, 200))
+        self.tabTotalsAccounts.setObjectName("tabTotalsAccounts")
         self.tabaccounts = QtGui.QWidget()
         self.tabaccounts.setObjectName("tabaccounts")
         self.verticalLayout_8 = QtGui.QVBoxLayout(self.tabaccounts)
@@ -328,7 +328,7 @@ class Ui_frmLiquidacion(object):
         self.tableaccounts.horizontalHeader().setStretchLastSection(True)
         self.tableaccounts.verticalHeader().setVisible(False)
         self.verticalLayout_8.addWidget(self.tableaccounts)
-        self.tabWidget_2.addTab(self.tabaccounts, "")
+        self.tabTotalsAccounts.addTab(self.tabaccounts, "")
         self.tabtotals = QtGui.QWidget()
         self.tabtotals.setObjectName("tabtotals")
         self.verticalLayout_7 = QtGui.QVBoxLayout(self.tabtotals)
@@ -338,8 +338,8 @@ class Ui_frmLiquidacion(object):
         self.tabletotals.horizontalHeader().setStretchLastSection(True)
         self.tabletotals.verticalHeader().setVisible(False)
         self.verticalLayout_7.addWidget(self.tabletotals)
-        self.tabWidget_2.addTab(self.tabtotals, "")
-        self.verticalLayout_3.addWidget(self.tabWidget_2)
+        self.tabTotalsAccounts.addTab(self.tabtotals, "")
+        self.verticalLayout_3.addWidget(self.tabTotalsAccounts)
         self.xdockWidget.setWidget(self.dockWidgetContents)
         frmLiquidacion.addDockWidget(QtCore.Qt.DockWidgetArea(8), self.xdockWidget)
         self.actionNew = QtGui.QAction(frmLiquidacion)
@@ -439,7 +439,7 @@ class Ui_frmLiquidacion(object):
         self.tabWidget.setCurrentIndex(1)
         self.swProvider.setCurrentIndex(0)
         self.swWarehouse.setCurrentIndex(1)
-        self.tabWidget_2.setCurrentIndex(0)
+        self.tabTotalsAccounts.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(frmLiquidacion)
         frmLiquidacion.setTabOrder(self.txtPolicy, self.cbProvider)
         frmLiquidacion.setTabOrder(self.cbProvider, self.dtPicker)
@@ -453,8 +453,8 @@ class Ui_frmLiquidacion(object):
         frmLiquidacion.setTabOrder(self.txtWarehouse, self.txtExchangeRate)
         frmLiquidacion.setTabOrder(self.txtExchangeRate, self.tablenavigation)
         frmLiquidacion.setTabOrder(self.tablenavigation, self.txtSearch)
-        frmLiquidacion.setTabOrder(self.txtSearch, self.tabWidget_2)
-        frmLiquidacion.setTabOrder(self.tabWidget_2, self.tableaccounts)
+        frmLiquidacion.setTabOrder(self.txtSearch, self.tabTotalsAccounts)
+        frmLiquidacion.setTabOrder(self.tabTotalsAccounts, self.tableaccounts)
         frmLiquidacion.setTabOrder(self.tableaccounts, self.tabletotals)
 
     def retranslateUi(self, frmLiquidacion):
@@ -490,8 +490,8 @@ class Ui_frmLiquidacion(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmLiquidacion", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.xdockWidget.setWindowTitle(QtGui.QApplication.translate("frmLiquidacion", "Detalles", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tabaccounts), QtGui.QApplication.translate("frmLiquidacion", "Movimientos Contables", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tabtotals), QtGui.QApplication.translate("frmLiquidacion", "Totales", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabTotalsAccounts.setTabText(self.tabTotalsAccounts.indexOf(self.tabaccounts), QtGui.QApplication.translate("frmLiquidacion", "Movimientos Contables", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabTotalsAccounts.setTabText(self.tabTotalsAccounts.indexOf(self.tabtotals), QtGui.QApplication.translate("frmLiquidacion", "Totales", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setText(QtGui.QApplication.translate("frmLiquidacion", "Nuevo", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setShortcut(QtGui.QApplication.translate("frmLiquidacion", "Ctrl+N", None, QtGui.QApplication.UnicodeUTF8))
         self.actionPreview.setText(QtGui.QApplication.translate("frmLiquidacion", "Previsualizar", None, QtGui.QApplication.UnicodeUTF8))
