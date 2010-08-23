@@ -148,6 +148,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.dtPicker.setReadOnly( status != 2 )
         self.cbWarehouse.setEnabled( status == 2 )
 
+        self.actionRefreshArticles.setVisible( status == 2)
         self.actionCancel.setVisible( not status == 1)
         self.actionSave.setVisible( not status == 1)
         self.actionPreview.setVisible( status == 1 )
@@ -686,7 +687,34 @@ GROUP BY d.iddocumento;
                     QMessageBox.critical("Existe un error con sus cuentas contables, reviselo antes de guardar")
                 
                     
+    @pyqtSlot()
+    def on_actionRefreshArticles_activated(self):
+        """
+        Actualizar la lista de articulos
+        """
+        query = QSqlQuery()
+        try:
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning(u"No se pudo conectar con la base de datos")
 
+
+
+            self.tabledetails.itemDelegate().update(query)
+            for line in [line for line in self.editmodel.lines if line.itemId != 0]:
+                line.update(query)
+                
+        except UserWarning as inst:
+            QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(query.lastError().text())
+            logging.error(unicode(inst))
+            self.on_actionCancel_activated()
+        except Exception as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error fatal al tratar de actualizar la lista de articulos, el sistema no puede recuperarse" + \
+                                                             " y sus cambios se han perdido")
+            logging.error(query.lastError().text())
+            logging.critical(unicode(inst))
+            self.on_actionCancel_activated()
     @pyqtSlot()
     def on_actionEditAccounts_activated(self):
         """

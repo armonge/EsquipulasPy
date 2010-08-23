@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/liquidacion.ui'
 #
-# Created: Sun Aug 22 20:46:31 2010
+# Created: Sun Aug 22 21:12:31 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -414,7 +414,14 @@ class Ui_frmLiquidacion(object):
         self.actionEditAccounts.setIcon(icon14)
         self.actionEditAccounts.setVisible(False)
         self.actionEditAccounts.setObjectName("actionEditAccounts")
+        self.actionRefreshArticles = QtGui.QAction(frmLiquidacion)
+        icon15 = QtGui.QIcon()
+        icon15.addPixmap(QtGui.QPixmap(":/icons/res/view-refresh.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionRefreshArticles.setIcon(icon15)
+        self.actionRefreshArticles.setVisible(False)
+        self.actionRefreshArticles.setObjectName("actionRefreshArticles")
         self.toolBar.addAction(self.actionNew)
+        self.toolBar.addAction(self.actionRefreshArticles)
         self.toolBar.addAction(self.actionEdit)
         self.toolBar.addAction(self.actionEditAccounts)
         self.toolBar.addAction(self.actionSave)
@@ -510,6 +517,7 @@ class Ui_frmLiquidacion(object):
         self.actionCut.setShortcut(QtGui.QApplication.translate("frmLiquidacion", "Ctrl+X", None, QtGui.QApplication.UnicodeUTF8))
         self.actionPaste.setText(QtGui.QApplication.translate("frmLiquidacion", "Pegar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionEditAccounts.setText(QtGui.QApplication.translate("frmLiquidacion", "Editar Cuentas", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRefreshArticles.setText(QtGui.QApplication.translate("frmLiquidacion", "Actualizar los valores de los articulos", None, QtGui.QApplication.UnicodeUTF8))
 
 from utility.widgets.xdockwidget import XDockWidget
 import res_rc

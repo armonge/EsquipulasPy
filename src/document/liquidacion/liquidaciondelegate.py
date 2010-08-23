@@ -23,29 +23,9 @@ class LiquidacionDelegate( QStyledItemDelegate ):
         '''
         super( LiquidacionDelegate, self ).__init__( parent )
 
-        query = QSqlQuery( """
-        SELECT 
-            idarticulo, 
-            Descripcion AS 'Articulo',
-            dai,
-            isc,
-            Comision as comision 
-        FROM vw_articulosconcostosactuales 
-        WHERE activo=1
-        """ )
         self.prods = ArticlesModel()
-        query.exec_()
-        list = []
-        while query.next():
-            self.prods.items.append( [
-                query.value( 0 ).toInt()[0],
-                query.value( 1 ).toString(),
-                Decimal( query.value( 2 ).toString() ),
-                Decimal( query.value( 3 ).toString() ),
-                Decimal( query.value( 4 ).toString() ),
-                                    ] )
-
-        self.COUNT = 0
+        self.ids = []
+        self.update(QSqlQuery())
 
 
 
@@ -79,7 +59,52 @@ class LiquidacionDelegate( QStyledItemDelegate ):
         else:
             QStyledItemDelegate.createEditor( self, parent, option, index )
 
-
+    def update(self, query):
+        """
+        Actualizar todos los valores de los articulos
+        @param query: El objeto consulta en el que se van a tratar de obtener los nuevos valores de los articulos
+        @type: QSqlQuery
+        """
+        inset = list([  itemId for itemId in self.ids if itemId not in [prod[0] for prod in self.prods.items]    ])
+        
+        listos = ",".join([str(x) for x in inset])
+        print "inset",inset,"ids",self.ids, listos
+        if len(inset) > 0:
+            query.prepare( """
+            SELECT
+                idarticulo,
+                Descripcion AS 'Articulo',
+                dai,
+                isc,
+                Comision as comision
+            FROM vw_articulosconcostosactuales
+            WHERE activo=1 AND idarticulo NOT IN (%s)
+            """ % listos)
+        else:
+            query.prepare( """
+            SELECT
+                idarticulo,
+                Descripcion AS 'Articulo',
+                dai,
+                isc,
+                Comision as comision
+            FROM vw_articulosconcostosactuales
+            WHERE activo=1 
+            """)
+        
+        query.exec_()
+        self.prods = ArticlesModel()
+        while query.next():
+            self.prods.items.append( [
+                query.value( 0 ).toInt()[0],
+                query.value( 1 ).toString(),
+                Decimal( query.value( 2 ).toString() ),
+                Decimal( query.value( 3 ).toString() ),
+                Decimal( query.value( 4 ).toString() ),
+                                    ] )
+        self.ids = list([item[0] for item in self.prods.items])
+        self.ids.extend(inset)
+                                    
 
     def setEditorData( self, editor, index ):
         text = index.data( Qt.DisplayRole ).toString()

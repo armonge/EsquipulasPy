@@ -593,6 +593,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionNew"/>
+   <addaction name="actionRefreshArticles"/>
    <addaction name="actionEdit"/>
    <addaction name="actionEditAccounts"/>
    <addaction name="actionSave"/>
@@ -839,6 +840,18 @@
    </property>
    <property name="text">
     <string>Editar Cuentas</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionRefreshArticles">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icons/res/view-refresh.png</normaloff>:/icons/res/view-refresh.png</iconset>
+   </property>
+   <property name="text">
+    <string>Actualizar los valores de los articulos</string>
    </property>
    <property name="visible">
     <bool>false</bool>

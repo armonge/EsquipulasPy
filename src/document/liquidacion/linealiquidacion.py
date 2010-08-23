@@ -336,6 +336,37 @@ class LineaLiquidacion( object ):
         except InvalidOperation:
             return Decimal( 0 )
 
+    def update(self, query):
+        """
+        Actualizar los porcentajes de DAI, ISC y COMISION
+        @param query: La query en la que se ejecuta todo el proceso de actualización
+        @type: QSqlQuery
+        """
+        qDESCRIPTION, qDAI, qISC, qCOMISION = range(4)
+        q = """
+        SELECT
+            Descripcion AS 'Articulo',
+            dai,
+            isc,
+            Comision as comision
+        FROM vw_articulosconcostosactuales
+        WHERE idarticulo = %d
+        LIMIT 1
+        """ % self.itemId 
+        if not query.exec_(q):
+            raise Exception(u"No se ejecutar la consulta para actualizar los valores del articulo %s " % self.itemDescription)
+        if not query.size() == 1:
+            raise Exception(u"No se pudieron obtener los valores para el articulo %s " % self.itemDescription )
+
+        query.first()
+        self.itemDescription == query.value(qDESCRIPTION).toString()
+        self.__rateDAI = Decimal(query.value(qDAI).toString())
+        self.__rateISC = Decimal(query.value(qISC).toString())
+        self.comisionValue = Decimal(query.value(qCOMISION).toString())
+
+
+        
+        
     def save( self, iddocumento ):
         """
         Este metodo guarda la linea en la base de datos
