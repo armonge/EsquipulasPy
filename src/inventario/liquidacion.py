@@ -2,6 +2,8 @@
 
 """
 Module implementing frmLiquidacion.
+TODO: Guardar los movimientos contables
+TODO: Cargar los totales al navegar
 """
 from decimal import Decimal
 import logging
@@ -65,6 +67,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.navproxymodel = QSortFilterProxyModel( self )
         self.navproxymodel.setSourceModel( self.navmodel )
         self.navproxymodel.setFilterKeyColumn( -1 )
+
+        self.navproxyproxymodel = QSortFilterProxyModel( self )
+        self.navproxyproxymodel.setSourceModel( self.navproxymodel )
+        
 #        Este es el modelo con los datos de la con los detalles
         self.detailsmodel = QSqlQueryModel( self )
 ##        Este es el filtro del modelo anterior
@@ -92,6 +98,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.accountsProxyModel.setFilterKeyColumn( IDDOCUMENTOC )
         self.accountsProxyModel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
 
+        self.navproxyproxymodel.setFilterKeyColumn(IDDOCUMENTO)
+        self.navproxyproxymodel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
+        
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
         
         self.ckISO.setChecked( True if self.navmodel.record( index ).value( "iso" ).toDouble()[0] != 0 else False )
@@ -128,6 +137,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.sbStore.setReadOnly( status == 1 or status == 3)
         self.sbTransportation.setReadOnly( status == 1 or status == 3)
         self.ckISO.setEnabled( not (status == 1 or status == 3 ))
+        self.ckTaxes.setEnabled( not (status == 1 or status == 3 ))
         self.tablenavigation.setEnabled(status == 1)
 
 
@@ -164,13 +174,39 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.tablenavigation.setColumnHidden( BODEGA, True )
         self.tablenavigation.setColumnHidden( ISO, True )
         self.tablenavigation.setColumnHidden( TCAMBIO, True )
+
+        
+ #TOTALD, TOTALC = range( 19 )
+
+
         
         self.tableaccounts.setColumnHidden( IDCUENTA, True )
         self.tableaccounts.setColumnHidden( IDDOCUMENTOC, True )
         
         self.tabnavigation.setEnabled( status )
-        
-        if status == 2: #editando
+        if status == 1:
+
+            #self.tabletotals.setColumnHidden( IDDOCUMENTO, True )
+            #self.tabletotals.setColumnHidden( AGENCIA, True )
+            #self.tabletotals.setColumnHidden( PESO, True )
+            #self.tabletotals.setColumnHidden( ALMACEN, True )
+            #self.tabletotals.setColumnHidden( FLETE, True )
+            #self.tabletotals.setColumnHidden( SEGURO, True )
+            #self.tabletotals.setColumnHidden( OTROS, True )
+            #self.tabletotals.setColumnHidden( TRANSPORTE, True )
+            #self.tabletotals.setColumnHidden( PAPELERIA, True )
+            #self.tabletotals.setColumnHidden( BODEGA, True )
+            #self.tabletotals.setColumnHidden( ISO, True )
+            #self.tabletotals.setColumnHidden( TCAMBIO, True )
+            #self.tabletotals.setColumnHidden(NDOCIMPRESO, True)
+            #self.tabletotals.setColumnHidden(ESTADO, True)
+            #self.tabletotals.setColumnHidden(FECHA, True)
+            #self.tabletotals.setColumnHidden(PROCEDENCIA, True)
+            #self.tabletotals.setColumnHidden(PESO, True)
+            #self.tabletotals.setColumnHidden(PROVEEDOR, True)
+            #self.tabletotals.setColumnHidden(TCAMBIO, True)
+            print "ocultando"
+        elif status == 2: #editando
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
             self.tabledetails.addAction( self.actionDeleteRow )
 
@@ -186,7 +222,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.sbPaperWork.setValue(0)
             self.sbStore.setValue(0)
             self.sbTransportation.setValue(0)
-            
+
         elif status == 3:
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
         else:
@@ -307,6 +343,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tablenavigation.setModel( self.navproxymodel )
             self.tablenavigation.resizeColumnsToContents()
             self.tabledetails.setModel( self.detailsproxymodel )
+            self.tabletotals.setModel(self.navproxyproxymodel)
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             logging.error(inst)
@@ -321,7 +358,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
         self.tablenavigation.setModel( self.navproxymodel )
         self.tabledetails.setModel( self.detailsproxymodel )
-
+        self.tabletotals.setModel(self.navproxyproxymodel)
 
         self.tableaccounts.setModel( self.accountsProxyModel )
 
@@ -335,8 +372,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     def on_actionPreview_activated( self ):
         printer = QPrinter()
         printer.setOrientation(QPrinter.Landscape)
-        printer.setPageSize(QPrinter.Letter)
-        web = "liquidaciones.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] 
+        printer.setPageSize(QPrinter.Legal)
+        web = "liquidaciones.php?doc=%s" % self.navmodel.record( self.mapper.currentIndex() ).value( NDOCIMPRESO ).toString()
         report = frmReportes( web, self.user, printer,self )
         report.exec_()
 
@@ -436,10 +473,13 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.dtPicker.setMaximumDateTime(QDateTime.currentDateTime())
             self.dtPicker.setDateTime(QDateTime.currentDateTime() )
 
+            
             self.tabletotals.setModel( self.editmodel.totalsModel )
             self.tabledetails.setColumnHidden( IDDOCUMENTOT, False )
 
+            self.tableaccounts.setModel(None)
             self.status = 2
+
         except UserWarning as inst:
             self.status = 1
             QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
@@ -566,6 +606,12 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     def on_ckISO_stateChanged( self, status ):
         if not self.editmodel is None:
             self.editmodel.applyISO = True if status == Qt.Checked else False
+            self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
+
+    @pyqtSlot( "int" )
+    def on_ckTaxes_stateChanged( self, status ):
+        if not self.editmodel is None:
+            self.editmodel.applyTaxes = True if status == Qt.Unchecked else False
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
 

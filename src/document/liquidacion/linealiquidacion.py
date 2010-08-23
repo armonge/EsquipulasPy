@@ -41,18 +41,34 @@ class LineaLiquidacion( object ):
         @ivar:El valor de comisión para el articulo
         @type:Decimal 
         """
-        self.rateISC = Decimal( 0 )
+        self.__rateISC = Decimal( 0 )
         """
         @type: Decimal
         @ivar: El porcentaje ISC del articulo
         """
 
-        self.rateDAI = Decimal( 0 )
+        self.__rateDAI = Decimal( 0 )
         """
         @type: Decimal
         @ivar: El porcentaje DAI del articulo
         """
 
+    def setRateDAI(self, dai):
+        self.__rateDAI = dai
+
+    def getRateDAI(self):
+        return self.__rateDAI if self.parent.applyTaxes else Decimal(0)
+
+    rateDAI = property(getRateDAI, setRateDAI)
+
+    def setRateISC(self, isc):
+        self.__rateISC = isc
+
+    def getRateISC(self):
+        return self.__rateISC if self.parent.applyTaxes else Decimal(0)
+
+    rateISC = property(getRateISC, setRateISC)
+    
     @property
     def valid( self ):
         """
@@ -341,7 +357,7 @@ class LineaLiquidacion( object ):
         query.bindValue( ":idarticulo", self.itemId )
         query.bindValue( ":unidades", self.quantity )
         query.bindValue( ":costounit", self.costoDolar.to_eng_string() )
-        query.bindValue( ":costocompra", self.costoDolarT.to_eng_string() )
+        query.bindValue( ":costocompra", self.itemCost.to_eng_string() )
 
         if not query.exec_():
             raise Exception( "Error al insertar una de las lineas del documento" )

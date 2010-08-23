@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/liquidacion.ui'
 #
-# Created: Fri Aug 20 21:28:24 2010
+# Created: Sun Aug 22 19:26:07 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -167,8 +167,8 @@ class Ui_frmLiquidacion(object):
         self.swWarehouse.addWidget(self.page_4)
         self.gridLayout.addWidget(self.swWarehouse, 4, 1, 1, 3)
         self.horizontalLayout_2.addLayout(self.gridLayout)
-        self.verticalLayout_4 = QtGui.QVBoxLayout()
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.gridLayout_2 = QtGui.QGridLayout()
+        self.gridLayout_2.setObjectName("gridLayout_2")
         self.formLayout_2 = QtGui.QFormLayout()
         self.formLayout_2.setFieldGrowthPolicy(QtGui.QFormLayout.ExpandingFieldsGrow)
         self.formLayout_2.setObjectName("formLayout_2")
@@ -204,12 +204,16 @@ class Ui_frmLiquidacion(object):
         self.sbTransportation.setMaximum(100.0)
         self.sbTransportation.setObjectName("sbTransportation")
         self.formLayout_2.setWidget(3, QtGui.QFormLayout.FieldRole, self.sbTransportation)
-        self.verticalLayout_4.addLayout(self.formLayout_2)
+        self.gridLayout_2.addLayout(self.formLayout_2, 0, 0, 1, 2)
         self.ckISO = QtGui.QCheckBox(self.groupBox_3)
         self.ckISO.setEnabled(False)
         self.ckISO.setObjectName("ckISO")
-        self.verticalLayout_4.addWidget(self.ckISO)
-        self.horizontalLayout_2.addLayout(self.verticalLayout_4)
+        self.gridLayout_2.addWidget(self.ckISO, 1, 0, 1, 1)
+        self.ckTaxes = QtGui.QCheckBox(self.groupBox_3)
+        self.ckTaxes.setEnabled(False)
+        self.ckTaxes.setObjectName("ckTaxes")
+        self.gridLayout_2.addWidget(self.ckTaxes, 1, 1, 1, 1)
+        self.horizontalLayout_2.addLayout(self.gridLayout_2)
         self.horizontalLayout_3.addWidget(self.groupBox_3)
         self.groupBox_2 = QtGui.QGroupBox(self.tabdetails)
         self.groupBox_2.setEnabled(True)
@@ -471,6 +475,7 @@ class Ui_frmLiquidacion(object):
         self.label_9.setText(QtGui.QApplication.translate("frmLiquidacion", "Transporte", None, QtGui.QApplication.UnicodeUTF8))
         self.sbTransportation.setSuffix(QtGui.QApplication.translate("frmLiquidacion", " %", None, QtGui.QApplication.UnicodeUTF8))
         self.ckISO.setText(QtGui.QApplication.translate("frmLiquidacion", "Aplicar ISO", None, QtGui.QApplication.UnicodeUTF8))
+        self.ckTaxes.setText(QtGui.QApplication.translate("frmLiquidacion", "Exonerar", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("frmLiquidacion", "Totales de declaración", None, QtGui.QApplication.UnicodeUTF8))
         self.label_12.setText(QtGui.QApplication.translate("frmLiquidacion", "Peso", None, QtGui.QApplication.UnicodeUTF8))
         self.label_13.setText(QtGui.QApplication.translate("frmLiquidacion", "Flete ", None, QtGui.QApplication.UnicodeUTF8))

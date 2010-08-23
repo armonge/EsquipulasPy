@@ -3,9 +3,10 @@
 Created on 21/05/2010
 
 @author: Andrés Reyes Monge
+TODO: DAI,  ISC, ISO no se aplican según exoneración
 '''
 #import math
-from decimal import Decimal, ROUND_CEILING
+from decimal import Decimal, ROUND_DOWN
 import logging
 
 from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt, SIGNAL
@@ -175,6 +176,11 @@ class LiquidacionModel( QAbstractTableModel ):
         @ivar:Si a esta liquidación se le aplica ISO o no
         @type:bool
         """
+        self.applyTaxes = True
+        """
+        @ivar: Si a esta liquidación se le aplican Impuestos o no
+        @type:bool
+        """
 
         self.paperworkRate = Decimal( 0 )
         """
@@ -214,7 +220,7 @@ class LiquidacionModel( QAbstractTableModel ):
         El porcentaje IVA usado en esta liquidacion
         @rtype: Decimal
         """
-        return self.__ivaRate if self.applyIVA else Decimal( 0 )
+        return self.__ivaRate if self.applyIVA and self.applyTaxes else Decimal( 0 )
     ivaRate = property( getIvaRate, setIvaRate )
 
 
@@ -272,7 +278,7 @@ class LiquidacionModel( QAbstractTableModel ):
         El porcentaje ISO usado en esta liqudiacion
         @rtype: Decimal
         """
-        return self.__isoRate if self.applyISO else Decimal( 0 )
+        return self.__isoRate if self.applyISO and self.applyTaxes else Decimal( 0 )
     def setISORate( self, iso ):
         self.__isoRate = iso
     isoRate = property( getISORate, setISORate )
@@ -303,7 +309,7 @@ class LiquidacionModel( QAbstractTableModel ):
         M{ISCTOTAL = S{sum}ISCPARCIAL}
         @rtype: Decimal
         """
-        isc = sum( [ linea.fobParcial for linea in self.lines if linea.valid ] )
+        isc = sum( [ linea.iscParcial for linea in self.lines if linea.valid ] )
         return isc if isc > 0 else Decimal( 0 )
 
     @property
@@ -321,10 +327,10 @@ class LiquidacionModel( QAbstractTableModel ):
         """
         El total de impuestos del documento
         
-        M{IMPUESTOSTOTAL = DAITOTAL + ISCTOTAL + IVATOTAL}
+        M{IMPUESTOSTOTAL = DAITOTAL + ISCTOTAL + IVATOTAL + TSIMTOTAL + SPETOTAL + ISOTOTAL}
         @rtype: Decimal
         """
-        return self.daiTotal + self.iscTotal + self.ivaTotal
+        return self.daiTotal + self.iscTotal + self.ivaTotal + self.tsimTotal + self.speTotal + self.isoTotal
 
     @property
     def ivaTotal( self ):
@@ -334,7 +340,7 @@ class LiquidacionModel( QAbstractTableModel ):
         M{IVATOTAL = TOTALDOLARES * PORCENTAJEIVA}
         @rtype: Decimal
         """
-        return self.totalD * ( 100 / self.ivaRate ) if self.applyIVA else Decimal( 0 )
+        return self.totalD * (  self.ivaRate / 100) if self.applyIVA else Decimal( 0 )
 
     @property
     def daiTotal( self ):
@@ -355,7 +361,7 @@ class LiquidacionModel( QAbstractTableModel ):
         M{TSIMTOTAL = ( PESO / FACTORPESO )S{uarr} * PORCENTAJETSIM}
         @rtype: Decimal
         """
-        return ( self.weight / self.weightFactor ).to_integral_exact( rounding = ROUND_CEILING ) * self.tsimRate
+        return ( self.weight / self.weightFactor ).to_integral_exact( rounding = ROUND_DOWN) * self.tsimRate
 
 
     @property
@@ -387,7 +393,7 @@ class LiquidacionModel( QAbstractTableModel ):
         """
         return self.totalD * self.exchangeRate
 
-    def removeRows( self, position, rows = 1, index = QModelIndex ):
+    def removeRows( self, position, rows = 1, index = QModelIndex() ):
         """
         Borrar filas del modelo
         @rtype: bool
@@ -529,7 +535,7 @@ class LiquidacionModel( QAbstractTableModel ):
                     raise Exception( "No se pudo insertar el iva" )
 
             #insertar el iso si aplica
-            if self.applyISO:
+            if self.applyISO and self.applyTaxes:
                 if not query.prepare( """
                 INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) VALUES (:iddocumento, :idcostoagregado )
                 """ ):
@@ -792,7 +798,7 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
         """
         QAbstractTableModel.__init__( self )
         self.parent = parent
-
+        print "here"
         self.connect( self.parent, SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.fn )
 
     def fn( self, index1, index2 ):
@@ -809,7 +815,7 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
         """
         return 5
 
-    def rowCount ( self, index = QModelIndex ):
+    def rowCount ( self, index = QModelIndex() ):
         """
         El numero de filas del modelo
         @rtype: int
@@ -859,6 +865,17 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
                 return moneyfmt( self.parent.totalC, 4, "C$" )
             elif index.column() == COSTODTOTAL:
                 return moneyfmt( self.parent.totalD, 4, "US$" )
+
+        if role == Qt.ToolTipRole:
+            if index.column() == IMPUESTOSTOTAL:
+                return "DAI = %s \nISC = %s \nIVA = %s \nSPE = %s \nTSIM = %s \nISO = %s"  % \
+                (moneyfmt(self.parent.daiTotal, 4, "US$"), \
+                moneyfmt(self.parent.iscTotal,4,"US$"), \
+                moneyfmt(self.parent.ivaTotal, 4, "US$"), \
+                moneyfmt(self.parent.speTotal, 4, "US$"),
+                moneyfmt(self.parent.tsimTotal, 4, "US$"), \
+                moneyfmt(self.parent.isoTotal,4,"US$")
+                )
 
 class LiquidacionAccountsModel( AccountsSelectorModel ):
     def __init__(self, docid, user):
