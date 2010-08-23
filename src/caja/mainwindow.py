@@ -127,7 +127,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 if not db.isOpen():
                     if not db.open():
                         raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
-                    #Deberian utilizarse constantes aca, no hay manejo de excepciones
                 q = """
                     SELECT
                         apertura.iddocumento,
@@ -144,7 +143,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                     WHERE apertura.idtipodoc=%d AND pd.idpersona=%d
                     GROUP BY apertura.iddocumento
                     HAVING SUM(IFNULL(cierre.idtipodoc,0)) = 0;
-                   """%(constantes.ACCCREA, constantes.IDARQUEO,constantes.IDAPERTURA, self.datosSesion.usuarioId)
+                   """%(constantes.AUTOR, constantes.IDARQUEO,constantes.IDAPERTURA, self.datosSesion.usuarioId)
                 if not query.prepare(q):
                     raise Exception(u"No se pudo preparar la consulta para recuperar la información de la sesión")
                 if not query.exec_():
