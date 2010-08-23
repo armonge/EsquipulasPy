@@ -672,7 +672,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 
                 
                 self.cbcliente.setModel( self.clientesModel )
-                self.cbcliente.setIndex( -1 )
+                self.cbcliente.setCurrentIndex( -1 )
                 self.cbcliente.setFocus()
                 self.cbcliente.setModelColumn( 1 )
                 self.completer = QCompleter()
