@@ -8,7 +8,7 @@ import logging
 
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QItemSelectionModel, QDataWidgetMapper, QMessageBox
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
-from PyQt4.QtCore import pyqtSlot, QDateTime, SIGNAL, QTimer, QModelIndex
+from PyQt4.QtCore import pyqtSlot, QDateTime, SIGNAL, QTimer, QModelIndex, Qt
 
 from ui.Ui_operations import Ui_frmOperations
 from utility.accountselector import AccountsSelectorModel, AccountsSelectorDelegate
@@ -26,6 +26,8 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
 
         self.navmodel = QSqlQueryModel()
         self.navproxymodel = QSortFilterProxyModel()
+        self.navproxymodel.setFilterKeyColumn( -1 )
+        self.navproxymodel.setFilterCaseSensitivity(Qt.CaseInsensitive)
         self.navproxymodel.setSourceModel( self.navmodel )
 
         self.detailsmodel = QSqlQueryModel()
@@ -144,12 +146,14 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
         self.tableDetails.setColumnHidden( IDDOCUMENTOC, True )
         self.tableDetails.setColumnHidden( IDCUENTA, True )
 
+
     @pyqtSlot()
     def on_btnAdd_clicked( self ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( "No se pudo abrir la base de datos" )
+                
             self.editModel = AccountsSelectorModel()
             self.editModel.insertRow( 1 )
             
@@ -191,14 +195,16 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
         except UserWarning as inst:
             self.status = False
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(unicode(inst))
         except Exception as inst:
-            print inst
+            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al tratar de iniciar un nuevo ajuste")
+            logging.critical(unicode(inst))
             self.status = False
 
 
     @pyqtSlot( "QString" )
     def on_txtSearch_textChanged( self, text ):
-        self.navproxymodel.setFilterKeyColumn( -1 )
+        
         self.navproxymodel.setFilterRegExp( text )
 
 
@@ -233,8 +239,8 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
                 n = "1"
 
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso, fechacreacion, idconcepto, escontado, anulado, idtipodoc) 
-            VALUES (:ndocimpreso, :fechacreacion, :idconcepto, 0,0, %d)
+            INSERT INTO documentos (ndocimpreso, fechacreacion, idconcepto,   idtipodoc)
+            VALUES (:ndocimpreso, :fechacreacion, :idconcepto,  %d)
             """ % constantes.IDAJUSTECONTABLE ):
                 raise Exception( "No se pudo preparar la consulta para guardar el documento" )
             query.bindValue( ":ndocimpreso", n )
@@ -247,12 +253,13 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             insertedId = query.lastInsertId().toInt()[0]
 
             if not query.prepare( """
-            INSERT INTO personasxdocumento (idpersona, iddocumento) 
-            VALUES (:usuario, :documento)
+            INSERT INTO personasxdocumento (idpersona, iddocumento, idaccion) 
+            VALUES (:usuario, :documento, :idaccion)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para insertar el usuario" )
             query.bindValue( ":usuario", self.user.uid )
             query.bindValue( ":documento", insertedId )
+            query.bindValue( ":idaccion", constantes.ACCCREA)
 
             if not query.exec_():
                 raise Exception( u"No se pudo guardar la relación con el usuario" )
@@ -271,6 +278,7 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             logging.error(inst)
         except Exception as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al tratar de guardar su ajuste")
             self.database.rollback()
             logging.critical(inst)
             logging.critical(query.lastError().text())

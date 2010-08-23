@@ -58,8 +58,7 @@ class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
         QTimer.singleShot( 0, self.loadModels )
                 
     
-    @pyqtSlot(  )
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
         """
@@ -83,8 +82,7 @@ class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
         if QSqlDatabase.database().isOpen():
             QSqlDatabase.database().close()
 
-    @pyqtSlot(  )
-    def on_actionSave_activated( self ):
+    def save( self ):
         if self.editmodel !=None:
             
             self.editmodel.datos.observaciones = self.txtobservaciones.toPlainText()
@@ -126,6 +124,7 @@ class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
         """
         @param status: false = editando        true = navegando
         """
+        self.actionPrint.setVisible(status)
         self.dtPicker.setReadOnly( status )
         self.dtPicker.setMinimumDate(QDate(1772,1,1))
         self.dtPicker.setMaximumDate(QDate(7999,12,31))

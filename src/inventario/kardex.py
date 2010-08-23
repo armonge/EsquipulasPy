@@ -130,8 +130,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
         if state == Qt.Checked:
             self.stateproxymodel.setFilterRegExp("")
             
-    @pyqtSlot()
-    def on_actionCancel_activated(self):
+    def cancel(self):
         self.editmodel = None
         self.tabledetails.setModel(self.detailsproxymodel)
         self.status = True    
@@ -143,7 +142,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
          
     def setControls(self, status):
         self.tabnavigation.setEnabled(status)
-        
+        self.actionPrint.setVisible(status)
         self.actionGoFirst.setVisible(status)
         self.actionGoPrevious.setVisible(status)
         self.actionGoNext.setVisible(status)
@@ -173,8 +172,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
         
         
         
-    @pyqtSlot(  )
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         Slot documentation goes here.
         """
@@ -261,11 +259,11 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
             logging.warning(inst)
-            self.on_actionCancel_activated()
+            self.cancel()
         except Exception as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", "No se pudo iniciar el documento kardex")
             logging.critical(inst)
-            self.on_actionCancel_activated()
+            self.cancel()
         finally:
             if self.database.isOpen():
                 self.database.close()

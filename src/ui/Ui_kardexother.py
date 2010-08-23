@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/kardexother.ui'
 #
-# Created: Mon Aug  9 16:49:08 2010
+# Created: Mon Aug 23 02:32:12 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!

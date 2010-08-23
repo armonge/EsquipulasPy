@@ -2,8 +2,6 @@
 
 """
 Module implementing frmLiquidacion.
-TODO: Guardar los movimientos contables
-TODO: Cargar los totales al navegar
 """
 from decimal import Decimal
 import logging
@@ -14,9 +12,9 @@ from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from ui.Ui_liquidacion import Ui_frmLiquidacion
 
+from utility.moneyfmt import moneyfmt
 from utility import constantes
 from utility import movimientos
-from utility.reports import frmReportes
 from utility.base import Base
 from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorLine
 from document.liquidacion.liquidacionmodel import LiquidacionModel, LiquidacionAccountsModel
@@ -30,7 +28,7 @@ OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO, ESTADO,FOBT
 
 #details model
 IDARTICULO, DESCRIPCION, UNIDADES, COSTOCOMPRA, FOB, FLETEP, SEGUROP, OTROSP, \
-CIF, IMPUESTOSP, COMISION, AGENCIAP, ALMACENP, PAPELERIAP, TRANSPORTEP, IDDOCUMENTOT = range( 16 )
+CIF, IMPUESTOSP, COMISION, AGENCIAP, ALMACENP, PAPELERIAP, TRANSPORTEP, DTOTALD, DUNITD, DTOTALC, DUNITC, IDDOCUMENTOT = range( 20 )
 
 #accounts model
 IDCUENTA, CODCUENTA, NCUENTA, MONTOCUENTA, IDDOCUMENTOC = range( 5 )
@@ -38,6 +36,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     """
     Class documentation goes here.
     """
+    web = "liquidaciones.php?doc="
+    orientation = QPrinter.Landscape
+    pageSize = QPrinter.Legal
     def __init__( self, user, parent = None ):
         """
         @param user: EL objeto usuario que esta asociado con esta sesión
@@ -62,7 +63,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.xdockWidget.setVisible( False )
 
 #        El modelo principal
-        self.navmodel = QSqlQueryModel( self )
+        self.navmodel = LiquidacionNavModel( self )
 #        El modelo que filtra a self.navmodel
         self.navproxymodel = QSortFilterProxyModel( self )
         self.navproxymodel.setSourceModel( self.navmodel )
@@ -109,11 +110,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         if estado == constantes.INCOMPLETO:
             if self.user.hasRole('contabilidad'):
                 self.actionEditAccounts.setVisible(True)
-            #if self.user.hasRole('inventario'):
-                #self.actionEdit.setVisible(True)
         else:
             self.actionEditAccounts.setVisible(False)
-            self.actionEdit.setVisible(False)
         
 
     def setControls( self, status ):
@@ -121,8 +119,6 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param status: 1 = navegando 2 = añadiendo productos 3 = añadiendo cuentas contables
         """
-        #self.actionEdit.setVisible(status == 1 and self.user.hasRole('inventario'))
-        #self.actionEditAccounts.setVisible(status == 1 and self.user.hasRole('contabilidad'))
         
         self.txtPolicy.setReadOnly( status == 1 or status == 3 )
         self.txtSource.setReadOnly( status == 1 or status == 3)
@@ -148,10 +144,11 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.dtPicker.setReadOnly( status != 2 )
         self.cbWarehouse.setEnabled( status == 2 )
 
-        self.actionRefreshArticles.setVisible( status == 2)
+        self.actionUpdateArticles.setVisible( status == 2)
         self.actionCancel.setVisible( not status == 1)
         self.actionSave.setVisible( not status == 1)
         self.actionPreview.setVisible( status == 1 )
+        self.actionPrint.setVisible( status == 1 )
         self.actionNew.setVisible( status == 1 )
 
 
@@ -180,7 +177,6 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.tablenavigation.setColumnHidden( IMPUESTOTOTAL, True )
 
         
- #TOTALD, TOTALC = range( 19 )
 
 
         
@@ -252,61 +248,66 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
-                    raise UserWarning( "No se pudo conectar con la base de datos "+  \
-                "para recuperar los documentos" )
+                    raise UserWarning( "No se pudo conectar con la base de datos ")
             query = u"""
-SELECT
-    d.iddocumento,
-    d.ndocimpreso AS 'Número de Liquidación',
-    d.fecha AS 'Fecha',
-    d.procedencia AS 'Procedencia',
-    d.totalagencia AS 'Agencia',
-    d.totalalmacen AS 'Almacen',
-    d.fletetotal AS 'Flete',
-    d.segurototal as 'Seguro',
-    d.otrosgastos AS 'Otros Gastos',
-    d.porcentajetransporte AS 'Transporte',
-    d.porcentajepapeleria AS 'Papelería',
-    d.peso AS 'Peso',
-    d.Proveedor AS 'Proveedor',
-    d.bodega AS 'Bodega',
-    SUM(IFNULL(valorcosto,0)) as  'ISO',
-    d.tasa,
-    d.estado,
-lt.fobtotal,
-lt.ciftotal,
-lt.impuestototal,
-    d.totald AS 'Total US$',
-    d.totalc AS 'Total C$'
-FROM esquipulasdb.vw_liquidacionesguardadas d
-JOIN vw_liquidacioncontotales lt ON lt.iddocumento = d.iddocumento
-LEFT JOIN costosxdocumento cxd ON d.iddocumento = cxd.iddocumento
-LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = %d
-GROUP BY d.iddocumento;
+            SELECT
+                d.iddocumento,
+                d.ndocimpreso AS 'Número de Liquidación',
+                d.fecha AS 'Fecha',
+                d.procedencia AS 'Procedencia',
+                d.totalagencia AS 'Agencia',
+                d.totalalmacen AS 'Almacen',
+                d.fletetotal AS 'Flete',
+                d.segurototal as 'Seguro',
+                d.otrosgastos AS 'Otros Gastos',
+                d.porcentajetransporte AS 'Transporte',
+                d.porcentajepapeleria AS 'Papelería',
+                d.peso AS 'Peso',
+                d.Proveedor AS 'Proveedor',
+                d.bodega AS 'Bodega',
+                SUM(IFNULL(valorcosto,0)) as  'ISO',
+                d.tasa,
+                d.estado,
+                lt.fobtotal,
+                lt.ciftotal,
+                lt.impuestototal,
+                d.totald AS 'Total US$',
+                d.totalc AS 'Total C$'
+            FROM esquipulasdb.vw_liquidacionesguardadas d
+            JOIN vw_liquidacioncontotales lt ON lt.iddocumento = d.iddocumento
+            LEFT JOIN costosxdocumento cxd ON d.iddocumento = cxd.iddocumento
+            LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = %d
+            GROUP BY d.iddocumento;
             """ % ( constantes.ISO)
             self.navmodel.setQuery( query )
-    
-            self.detailsmodel.setQuery( u"""
-            SELECT 
+            query = u"""
+            SELECT
                 a.idarticulo as 'Id',
-                descripcion as 'Descripción', 
-                unidades as 'Cantidad', 
-                CONCAT('U$', FORMAT(costocompra,4)) as 'Costo Compra US$', 
-                CONCAT('U$', FORMAT(fob,4)) as 'FOB US$', 
-                CONCAT('U$', FORMAT(flete,4)) as 'Flete US$', 
-                CONCAT('U$', FORMAT(seguro,4)) as 'Seguro US$', 
-                CONCAT('U$', FORMAT(otrosgastos,4)) as 'Otros Gastos US$', 
-                CONCAT('U$', FORMAT(cif,4)) as 'CIF US$', 
-                CONCAT('U$', FORMAT(impuestos,4)) as 'Impuestos US$', 
-                CONCAT('U$', FORMAT(comision,4)) as 'Comisión US$', 
-                CONCAT('U$', FORMAT(agencia,4)) as 'Agencia US$', 
-                CONCAT('U$', FORMAT(almacen,4)) as 'Almacen US$', 
-                CONCAT('U$', FORMAT(papeleria,4)) as 'Papelería US$', 
-                CONCAT('U$', FORMAT(transporte,4)) as 'Transporte US$', 
-                iddocumento
+                descripcion as 'Descripción',
+                unidades as 'Cantidad',
+                CONCAT('US$', FORMAT(costocompra,4)) as 'Costo Compra US$',
+                CONCAT('US$', FORMAT(fob,4)) as 'FOB US$',
+                CONCAT('US$', FORMAT(flete,4)) as 'Flete US$',
+                CONCAT('US$', FORMAT(seguro,4)) as 'Seguro US$',
+                CONCAT('US$', FORMAT(otrosgastos,4)) as 'Otros Gastos US$',
+                CONCAT('US$', FORMAT(cif,4)) as 'CIF US$',
+                CONCAT('US$', FORMAT(impuestos,4)) as 'Impuestos US$',
+                CONCAT('US$', FORMAT(comision,4)) as 'Comisión US$',
+                CONCAT('US$', FORMAT(agencia,4)) as 'Agencia US$',
+                CONCAT('US$', FORMAT(almacen,4)) as 'Almacen US$',
+                CONCAT('US$', FORMAT(papeleria,4)) as 'Papelería US$',
+                CONCAT('US$', FORMAT(transporte,4)) as 'Transporte US$',
+                CONCAT('US$', FORMAT(costototal,4))  as 'Costo Total US$',
+                CONCAT('US$', FORMAT(costounit,4))  as 'Costo Unitario US$',
+                CONCAT('C$', FORMAT(costototal * tc.tasa ,4)) as 'Costo Total C$',
+                CONCAT('C$', FORMAT(costounit  * tc.tasa ,4)) as 'Costo Unitario C$',
+                v.iddocumento
             FROM vw_articulosprorrateados v
+            JOIN documentos d on d.iddocumento=v.iddocumento
+            JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
             JOIN vw_articulosdescritos a ON a.idarticulo = v.idarticulo
-            """ )
+            """
+            self.detailsmodel.setQuery( query )
     
             self.accountsModel.setQuery( """
             SELECT
@@ -366,8 +367,7 @@ GROUP BY d.iddocumento;
 
 
 
-    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
+    def cancel( self ):
         self.editmodel = None
 
         self.tablenavigation.setModel( self.navproxymodel )
@@ -375,27 +375,26 @@ GROUP BY d.iddocumento;
         self.tabletotals.setModel(self.navproxyproxymodel)
 
         self.tableaccounts.setModel( self.accountsProxyModel )
-
-        
         
         self.status = 1
         self.navigate( 'last' )
+
+    @property
+    def printIdentifier(self):
+        return self.txtPolicy.text()
+    #def preview( self ):
+        #printer = QPrinter()
         
+        #printer.setOrientation(self.orientation)
 
-    @pyqtSlot(  )
-    def on_actionPreview_activated( self ):
-        printer = QPrinter()
-        
-        printer.setOrientation(QPrinter.Landscape)
+        #printer.setPageSize(self.pageSize)
+        #web = self.web + self.printIdentifier
+         ##self.navmodel.record( self.mapper.currentIndex() ).value( 'Número de Liquidación' ).toString()
 
-        printer.setPageSize(QPrinter.Legal)
-        web = "liquidaciones.php?doc=" + self.txtPolicy.text() #self.navmodel.record( self.mapper.currentIndex() ).value( 'Número de Liquidación' ).toString()
+        #report = frmReportes( web, self.user, printer,self )
+        #report.exec_()
 
-        report = frmReportes( web, self.user, printer,self )
-        report.exec_()
-
-    @pyqtSlot(  )
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         Slot documentation goes here.
         """
@@ -649,8 +648,7 @@ GROUP BY d.iddocumento;
         self.navigate( 'last' )
         self.status = 1
 
-    @pyqtSlot(  )
-    def on_actionSave_activated( self ):
+    def save( self ):
         """
         Guardar el documento actual
         """
@@ -690,8 +688,7 @@ GROUP BY d.iddocumento;
                     QMessageBox.critical("Existe un error con sus cuentas contables, reviselo antes de guardar")
                 
                     
-    @pyqtSlot()
-    def on_actionRefreshArticles_activated(self):
+    def updateArticles(self):
         """
         Actualizar la lista de articulos
         """
@@ -711,15 +708,15 @@ GROUP BY d.iddocumento;
             QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
             logging.error(query.lastError().text())
             logging.error(unicode(inst))
-            self.on_actionCancel_activated()
+            self.cancel()
         except Exception as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error fatal al tratar de actualizar la lista de articulos, el sistema no puede recuperarse" + \
                                                              " y sus cambios se han perdido")
             logging.error(query.lastError().text())
             logging.critical(unicode(inst))
-            self.on_actionCancel_activated()
-    @pyqtSlot()
-    def on_actionEditAccounts_activated(self):
+            self.cancel()
+
+    def editAccounts(self):
         """
         Editar las cuentas contables
         """
@@ -755,6 +752,7 @@ GROUP BY d.iddocumento;
             self.status = 3
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            self.tableaccounts.setModel( self.accountsProxyModel )
             logging.error(unicode(inst))
             self.status = 1
         except Exception as inst:
@@ -762,3 +760,35 @@ GROUP BY d.iddocumento;
             logging.critical(unicode(inst))
             self.tableaccounts.setModel( self.accountsProxyModel )
             self.status = 1
+
+    def addActionsToToolBar(self):
+        self.actionEditAccounts = self.createAction(text="Editar cuentas contables", icon=":/icons/res/view-bank-account.png", slot=self.editAccounts)
+        self.actionUpdateArticles = self.createAction(text="Actualizar lista de articulos", icon=":/icons/res/view-refresh.png", slot=self.updateArticles)
+
+        self.toolBar.addActions([
+            self.actionNew,
+            self.actionEditAccounts,
+            self.actionPreview,
+            self.actionPrint,
+            self.actionSave,
+            self.actionCancel,
+            self.actionUpdateArticles
+        ])
+        self.toolBar.addSeparator()
+        self.toolBar.addActions([
+            self.actionGoFirst,
+            self.actionGoPrevious,
+            self.actionGoLast,
+            self.actionGoNext,
+            self.actionGoLast
+        ])
+
+
+class LiquidacionNavModel(QSqlQueryModel):
+    def data(self, index, role = Qt.DisplayRole):
+        if role == Qt.DisplayRole:
+            if index.column() in  (TOTALD, IMPUESTOTOTAL, CIFTOTAL, FOBTOTAL):
+                return moneyfmt(Decimal(super(LiquidacionNavModel, self).data(index, role).toString()),4,"US$")
+            elif index.column() == TOTALC:
+                return moneyfmt(Decimal(super(LiquidacionNavModel, self).data(index, role).toString()),4,"C$")
+        return super(LiquidacionNavModel, self).data(index, role)

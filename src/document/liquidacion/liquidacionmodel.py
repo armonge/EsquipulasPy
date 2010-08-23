@@ -798,7 +798,6 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
         """
         QAbstractTableModel.__init__( self )
         self.parent = parent
-        print "here"
         self.connect( self.parent, SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.fn )
 
     def fn( self, index1, index2 ):

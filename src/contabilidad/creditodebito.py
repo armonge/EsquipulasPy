@@ -4,6 +4,9 @@ Created on 04/08/2010
 
 @author: marcos
 '''
+import logging
+from decimal import Decimal
+
 from PyQt4.QtCore import pyqtSlot, SIGNAL, QModelIndex, Qt, QTimer, \
     SLOT, QDateTime
 
@@ -14,7 +17,7 @@ from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from ui.Ui_creditodebito import Ui_frmCreditoDebito
 from utility.base import Base
-from decimal import Decimal
+
 from utility import constantes
 #from document.creditodebito import creditoDebitoModel
 
@@ -53,8 +56,7 @@ class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
 #        Cargar los modelos en un hilo aparte
         QTimer.singleShot( 0, self.loadModels )
 
-    @pyqtSlot(  )
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         Slot documentation goes here.
         """
@@ -128,13 +130,15 @@ class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
 
                 self.tabledetails.resizeColumnsToContents()
                 self.dtPicker.setDateTime( QDateTime.currentDateTime() )
-                self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+                self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
                 self.status =  False 
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.errror(unicode(inst))
             self.status = True
         except Exception as inst:
-            print inst
+            QMessageBox.critical(self, "Llantera Esquipulas",u"Hubo un error al cargar la lista de documentos")
+            logging.errror(unicode(inst))
             self.status = True
         finally:
             if QSqlDatabase.database().isOpen():
@@ -144,6 +148,7 @@ class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
         """
         @param status false = editando        true = navegando
         """
+        self.actionPrint.setVisible(status)
         self.dtPicker.setReadOnly(  status )            
         self.actionSave.setVisible(  not status )
         self.actionCancel.setVisible( not status )

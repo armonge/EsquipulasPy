@@ -27,8 +27,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
-
-
+    web = "cheques.php?doc="    
     def __init__( self, user, parent ):
         '''
         Constructor
@@ -163,6 +162,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         """
         @param status false = editando        true = navegando
         """
+        self.actionPrint.setVisible(status)
         self.dtPicker.setReadOnly(  status )
         self.subtotal.setReadOnly( status )
         self.txtobservaciones.setReadOnly( status)
@@ -283,8 +283,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             self.iva.setToolTip(moneyfmt(self.editmodel.iva,4,"C$"))
             self.retencion.setToolTip(moneyfmt(self.editmodel.retencion,4,"C$"))
             
-#    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
+    def cancel( self ):
         """
         Aca se cancela la edicion del documento
         """
@@ -301,19 +300,11 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         
         self.status = True
 
+    @property
+    def printIdentifier(self):
+        self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
-    @pyqtSlot(  )
-    def on_actionPreview_activated( self ):
-        """
-        Funcion usada para mostrar el reporte de una entrada compra
-        """
-        printer = QPrinter()
-        printer.setPageSize(QPrinter.Letter)
-        web = "cheques.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
-        report = frmReportes( web , self.user, printer, self )
-        report.exec_()
-
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel
         """

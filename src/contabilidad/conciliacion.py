@@ -266,6 +266,7 @@ class frmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param status: false = editando        true = navegando
         """
+        self.actionPrint.setVisible(status)
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
         self.tabnavigation.setEnabled( status )
@@ -286,8 +287,7 @@ class frmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
             self.spbsaldobanco.setValue(0)
             self.tabWidget.setCurrentIndex( 0 )
 
-    @pyqtSlot(  )
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         Slot documentation goes here.
         """
@@ -384,8 +384,7 @@ class frmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
 #        self.tabledetails.setColumnHidden(DELBANCO,True)
     
 
-    @pyqtSlot()
-    def on_actionSave_activated( self  ):
+    def save( self  ):
         """
         Guardar el documento actual
         """
@@ -423,8 +422,7 @@ class frmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
         return False
 
 
-    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
+    def cancel( self ):
         self.editmodel = None
         self.tablenavigation.setModel( self.navproxymodel )
         self.tabledetails.setModel( self.detailsmodel )

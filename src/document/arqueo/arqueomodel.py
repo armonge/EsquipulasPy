@@ -134,6 +134,11 @@ class ArqueoModel( QAbstractTableModel ):
         self.totalTransferC = Decimal(0)
         self.totalTransferD = Decimal(0)
 
+        self.authorizationId = 0
+        """
+        @ivar: El id del usuario que autoriza el arqueo
+        @type: int
+        """
     @property
     def differenceD(self):
         """
@@ -240,7 +245,7 @@ class ArqueoModel( QAbstractTableModel ):
         Si un documento es valido
         @rtype: bool
         """
-        return self.exchangeRateId != 0 and self.printedDocumentNumber != ""
+        return self.exchangeRateId != 0 and self.printedDocumentNumber != "" and self.authorizationId != 0
 
     def data( self, index, role = Qt.DisplayRole ):
         """
@@ -382,14 +387,27 @@ class ArqueoModel( QAbstractTableModel ):
                 raise Exception(u"No se pudo insertar la relación con la sesión")
             #Insertar el usuario
             if not query.prepare( """
-            INSERT INTO personasxdocumento (idpersona, iddocumento)
-            VALUES (:idpersona, :iddocumento) 
+            INSERT INTO personasxdocumento (idpersona, iddocumento, idaccion)
+            VALUES (:idpersona, :iddocumento, :idaccion) 
             """ ):
                 raise  Exception( "No se pudo preparar la consulta guardar el usuario" )
             query.bindValue( ":idpersona", self.datosSesion.usuarioId )
             query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":idaccion", constantes.ACCCREA)
             if not query.exec_():
                 raise Exception( "No se pudo guardar el usuario" )
+
+            #Insertar el usuario que autoriza
+            if not query.prepare( """
+            INSERT INTO personasxdocumento (idpersona, iddocumento, idaccion)
+            VALUES (:idpersona, :iddocumento, :idaccion)
+            """ ):
+                raise  Exception( "No se pudo preparar la consulta guardar el usuario" )
+            query.bindValue( ":idpersona", self.authorizationId )
+            query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":idaccion", constantes.ACCAUTORIZA)
+            if not query.exec_():
+                raise Exception( u"No se pudo guardar el usuario que da la autorización" )
 
             #Insertar los totales
             if not query.prepare(

@@ -27,6 +27,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
     '''
     Esta clase implementa el formulario arqueo
     '''
+    web = "arqueos.php?doc="
     def __init__( self, user, parent = None ):
         '''
         Constructor
@@ -75,6 +76,8 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( "No se pudo abrir la base de datos" )
+
+            #TODO: Esta consulta tiene que mejorar para definir realmente quien es el que realiza el arqueo
             query = """
             SELECT
                 d.iddocumento,
@@ -94,10 +97,10 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             JOIN movimientoscaja mc ON mc.iddocumento = d.iddocumento
             JOIN tiposmoneda tm ON mc.idtipomoneda = tm.idtipomoneda
             JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
-            JOIN personas p ON p.idpersona = pxd.idpersona AND p.tipopersona =  %d
+            JOIN personas p ON p.idpersona = pxd.idpersona
             WHERE d.idtipodoc =  %d
             GROUP BY d.iddocumento
-            """ % ( constantes.USUARIO, constantes.IDARQUEO)
+            """ % (  constantes.IDARQUEO)
             self.navmodel.setQuery(query)
             
             self.detailsModel.setQuery( u"""
@@ -148,6 +151,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         """
         @param status: false = editando true = navegando 
         """
+        self.actionPrint.setVisible(status)
         self.tablenavigation.setEnabled( status )
         self.tabnavigation.setEnabled( status )
 
@@ -215,8 +219,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         #self.lblTransferC.setText( moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
         #self.lblTransferD.setText(  moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
 
-    @pyqtSlot( )
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         cargar todos los modelos para la edición
         """
@@ -362,15 +365,13 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
     def on_dtPicker_dateTimeChanged( self, datetime ):
         pass
 
-    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
+    def cancel( self ):
         self.editmodel = None
         
         self.status = True
         self.navigate( 'last' )
 
-    @pyqtSlot(  )
-    def on_actionSave_activated( self ):
+    def save( self ):
         """
         Redefiniendo el metodo save de Base para mostrar advertencias si el arqueo no concuerda
         """
@@ -400,24 +401,17 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
             if len(errors)>0:
                 raise UserWarning( "\n".join(errors))
-            super(frmArqueo, self).on_actionSave_activated()
+            super(frmArqueo, self).save()
         except UserWarning as inst:
             if not self.editmodel.observations == "":
                 if QMessageBox.question(self, "Llantera Esquipulas", unicode(inst) + u"\n¿Desea Continuar?", QMessageBox.Yes| QMessageBox.No) == QMessageBox.Yes:
-                    super(frmArqueo, self).on_actionSave_activated()
+                    super(frmArqueo, self).save()
             else:
                 QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst) + u"\n Por favor especifique el motivo de la diferencia")
 
-    @pyqtSlot(  )
-    def on_actionPreview_activated( self ):
-        """
-        Funcion usada para mostrar el reporte de una entrada compra
-        """
-        printer = QPrinter()
-        printer.setPageSize(QPrinter.Letter)
-        web = "arqueos.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] 
-        report = frmReportes( web , self.parentWindow.user, printer, self )
-        report.exec_()
+    @property
+    def printIdentifier(self):
+        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
     def navigate( self, to ):
         """

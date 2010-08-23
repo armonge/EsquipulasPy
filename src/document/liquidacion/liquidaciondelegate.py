@@ -68,7 +68,6 @@ class LiquidacionDelegate( QStyledItemDelegate ):
         inset = list([  itemId for itemId in self.ids if itemId not in [prod[0] for prod in self.prods.items]    ])
         
         listos = ",".join([str(x) for x in inset])
-        print "inset",inset,"ids",self.ids, listos
         if len(inset) > 0:
             query.prepare( """
             SELECT

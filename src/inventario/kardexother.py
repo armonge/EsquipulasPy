@@ -50,6 +50,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         QTimer.singleShot(0, self.loadModels)
         
     def setControls(self,status):
+        self.actionPrint.setVisible(status)
         self.actionGoFirst.setVisible(status)
         self.actionGoPrevious.setVisible(status)
         self.actionGoNext.setVisible(status)
@@ -103,8 +104,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
             print inst
-    @pyqtSlot()
-    def on_actionNew_activated(self):
+    def newDocument(self):
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open:
@@ -161,8 +161,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             print inst
         
         
-    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
+    def cancel( self ):
         """
         Borrar todos los modelos que se hallan creado para el modo edición, asignar los modelos de navegación a las 
         vistas

@@ -27,6 +27,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
+    web = "entradaslocales.php?doc="
     def __init__( self, user, parent = None ):
         """
         Constructor
@@ -62,7 +63,6 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
 
         #general events
-        self.actionEditCell.triggered.connect(self.editCell)
         self.rbCash.clicked[bool].connect(self.updatePay)
         self.rbCheck.clicked[bool].connect(self.updatePay)
         self.rbCredit.clicked[bool].connect(self.updatePay)
@@ -215,23 +215,13 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.lblIVA.setText( moneyfmt( self.editmodel.IVAC, 4, "C$" ) )
             self.lblTotal.setText( moneyfmt( self.editmodel.totalC, 4, "C$" ) )
             self.lblTotalD.setText( moneyfmt( self.editmodel.totalD, 4, "US$" ) )
+    @property
+    def printIdentifier(self):
+        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
 
-    @pyqtSlot(  )
-    def on_actionPreview_activated( self ):
-        """
-        Funcion usada para mostrar el reporte de una entrada compra
-        """
-        printer = QPrinter()
-        printer.setPageSize(QPrinter.Letter)
-        web = "entradaslocales.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
-        report = frmReportes(web  , self.user, printer, self )
 
-        report.exec_()
-
-
-    @pyqtSlot(  )
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
         """
@@ -285,8 +275,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             QSqlDatabase.database().close()
 
 
-    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
+    def cancel( self ):
         """
         Aca se cancela la edicion del documento
         """
@@ -313,18 +302,18 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
 
 
-
+        
     def setControls( self, status ):
         """
         @param status: false = editando        true = navegando
         """
         self.txtDocumentNumber.setReadOnly( status )
+        self.actionPrint.setVisible(status)
         self.dtPicker.setReadOnly( status )
         self.txtObservations.setReadOnly( status )
 
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
-        self.actionRefresh.setVisible( not status )
         self.rbCash.setEnabled( not status )
         self.rbCheck.setEnabled( not status )
         self.rbCredit.setEnabled( not status )

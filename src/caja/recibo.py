@@ -35,7 +35,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
-
+    web =  "recibos.php?doc="
 
     def __init__( self, user, parent ):
         '''
@@ -126,16 +126,14 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.abonoeditmodel.lines[i].totalFac = monto
         self.tablefacturas.setRowHidden( n, True )
 
-    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
+    def cancel( self ):
         """
         Aca se cancela la edicion del documento
         """
         self.status = True
         
 
-    @pyqtSlot(  )
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
         """
@@ -250,21 +248,11 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         if QSqlDatabase.database().isOpen():
             QSqlDatabase.database().close()
 
-    @pyqtSlot(  )
-    def on_actionPreview_activated( self ):
-        """
-        Funcion usada para mostrar el reporte de una entrada compra
-        """
-        printer = QPrinter()
-        printer.setPageSize(QPrinter.Letter)
-        web =  "recibos.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
-        print web
-        report = frmReportes(web , self.parentWindow.user,  printer, self)
+    @property
+    def printIdentifier(self):
+        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
-        report.exec_()
-
-    @pyqtSlot( )
-    def on_actionSave_activated( self ):
+    def save( self ):
         """
         Slot documentation goes here.
         """
@@ -410,6 +398,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
         @param status false = editando        true = navegando
         """
+        self.actionPrint.setVisible(status)
         self.dtPicker.setReadOnly( True )
 #        self.ckretener.setEnabled( ( not status ) )
         self.txtobservaciones.setReadOnly( status )
@@ -630,10 +619,10 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
     
     def accept(self):
         if self.readOnly:
-            return self.accept()
+            return super(dlgRecibo, self).accept()
         
         if self.datosRecibo.valid(self):
-            return self.accept()
+            return super(dlgRecibo, self).accept()
         else:
             self.setResult(-1)
 

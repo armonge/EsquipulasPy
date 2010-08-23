@@ -31,7 +31,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
-
+    web = "facturas.php?doc="
     def __init__( self, user, parent ):
         '''
         Constructor
@@ -65,8 +65,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         
         QTimer.singleShot( 0, self.loadModels )
     
-    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
+    def cancel( self ):
         """
         Aca se cancela la edicion del documento
         """
@@ -79,8 +78,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 
 
                 
-    @pyqtSlot(  )
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
         """
@@ -98,20 +96,31 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.status = False                
         self.dtPicker.setDate(self.parentWindow.datosSesion.fecha)
         
+    @property
+    def printIdentifier(self):
+        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
-    @pyqtSlot(  )
-    def on_actionPreview_activated( self ):
-        """
-        Funcion usada para mostrar el reporte de una entrada compra
-        """
-        printer = QPrinter()
-        printer.setPageSize(QPrinter.Letter)
-        web = "facturas.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0] 
-        report = frmReportes( web , self.parentWindow.user, printer, self )
-        report.exec_()
+    def addActionsToToolBar(self):
+        self.actionRefresh= self.createAction(text="Actualizar", icon=":/icons/res/view-refresh.png", slot=self.refresh, shortcut=Qt.Key_F5)
 
-    @pyqtSlot( )
-    def on_actionRefresh_activated( self ):
+        self.toolBar.addActions([
+            self.actionNew,
+            self.actionRefresh,
+            self.actionPreview,
+            self.actionPrint,
+            self.actionSave,
+            self.actionCancel,
+        ])
+        self.toolBar.addSeparator()
+        self.toolBar.addActions([
+            self.actionGoFirst,
+            self.actionGoPrevious,
+            self.actionGoLast,
+            self.actionGoNext,
+            self.actionGoLast
+        ])
+
+    def refresh( self ):
         """
         Actualizar los modelos de edición
         """
@@ -123,8 +132,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             QMessageBox.information( None, "Factura", u"Los datos fueron actualizados con éxito" )
         
         
-    @pyqtSlot(  )
-    def on_actionSave_activated( self ):
+    def save( self ):
         """
         Guardar el documento actual
         """
@@ -394,6 +402,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         @param status: false = editando        true = navegando
         """
+        self.actionPrint.setVisible(status)
         self.readOnly = status
         self.txtobservaciones.setReadOnly( status )
         self.rbcontado.setEnabled( ( not status ) )
@@ -842,9 +851,11 @@ class Anular( QDialog ):
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout.addWidget(self.buttonBox, 4, 0, 1, 2)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.reject)
-        QtCore.QMetaObject.connectSlotsByName(self)
+
+        
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+        #QtCore.QMetaObject.connectSlotsByName(self)
         
         self.conceptosmodel = QSqlQueryModel()
         self.conceptosmodel.setQuery( """

@@ -29,6 +29,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
     """
     Formulario para crear nuevas devoluciones
     """
+    web = "devoluciones.php?doc=%"  
     def __init__( self, user, parent = None ):
         """
         Constructor
@@ -196,6 +197,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param status: false = editando        true = navegando
         """
+        self.actionPrint.setVisible(status)
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
         self.tabnavigation.setEnabled( status )
@@ -256,8 +258,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         if not self.editmodel is None:
             self.editmodel.observations = self.txtObservations.toPlainText()
 
-    @pyqtSlot(  )
-    def on_actionNew_activated( self ):
+    def newDocument( self ):
         """
         Slot documentation goes here.
         """
@@ -376,20 +377,11 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         if not self.editmodel is None:
             self.editmodel.conceptId = self.conceptsmodel.record( index ).value( "idconcepto" ).toInt()[0]
 
+    @property
+    def printIdentifier(self):
+        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
-    @pyqtSlot(  )
-    def on_actionPreview_activated( self ):
-        """
-        Funcion usada para mostrar el reporte de una entrada compra
-        """
-        printer = QPrinter()
-        printer.setPageSize(QPrinter.Letter)
-        web = "devoluciones.php?doc=%d" % self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
-        report = frmReportes(  web, self.user, printer, self )
-        report.exec_()
-
-    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
+    def cancel( self ):
         self.editmodel = None
 
         self.tablenavigation.setModel( self.navproxymodel )
@@ -398,8 +390,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 
         self.status = True
 
-    @pyqtSlot( )
-    def on_actionSave_activated( self ):
+    def save( self ):
         """
         Slot documentation goes here.
         """

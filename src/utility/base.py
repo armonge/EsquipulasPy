@@ -1,15 +1,22 @@
 # -*- coding: utf-8 -*-
 from decimal import  Decimal
 import functools
+import logging
 
-from PyQt4.QtCore import  pyqtSlot,  QSettings
+from PyQt4.QtCore import  pyqtSlot,  QSettings, SIGNAL, QUrl
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtGui import QMessageBox, QDataWidgetMapper
+from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, QProgressBar, QPrinter, QPrintDialog, QDialog
+from PyQt4.QtWebKit import QWebView
 
+from utility.reports import frmReportes
 class Base( object ):
     """
     Esta clase sirve de base para muchos  formularios de inventario
     """
+    orientation = QPrinter.Portrait
+    pageSize = QPrinter.Letter
+    web = ""
+    
     def __init__( self ):
         self.mapper = QDataWidgetMapper( self )
         u"""
@@ -31,12 +38,22 @@ class Base( object ):
         """
         @ivar: El MainWindow al que pertenece este widget
         """
+        self.createActions()
+
+        self.printProgressBar= QProgressBar(self)
+        self.printProgressBar.setVisible(False)
+        
         self.mapper.currentIndexChanged[int].connect(self.updateDetailFilter)
         self.actionGoFirst.triggered.connect(functools.partial(self.navigate, 'first'))
         self.actionGoPrevious.triggered.connect(functools.partial(self.navigate, 'previous'))
         self.actionGoNext.triggered.connect(functools.partial(self.navigate, 'next'))
         self.actionGoLast.triggered.connect(functools.partial(self.navigate, 'last'))
 
+        self.actionCut.setVisible(False)
+        self.actionPaste.setVisible(False)
+        self.actionCopy.setVisible(False)
+
+        
     def closeEvent( self, event ):
         u"""
         Guardar el tamaño, la posición en la pantalla y la posición de la barra de tareas
@@ -192,8 +209,7 @@ class Base( object ):
         self.mapper.setCurrentIndex( index.row() )
 
 
-    @pyqtSlot(  )
-    def on_actionSave_activated( self ):
+    def save( self ):
         """
         Guardar el documento actual
         """
@@ -235,39 +251,87 @@ class Base( object ):
         row = self.editmodel.rowCount()
         self.editmodel.insertRows( row )
 
-
-    @pyqtSlot(  )
-    def on_actionPreview_activated( self ):
-        """
-        Funcion usada para mostrar los reportes
-        """
+    def createAction(self, text, slot=None, shortcut=None, icon=None,
+        tip=None, checkable=False, signal="triggered()"):
+        action = QAction(text, self)
+        if icon is not None:
+            action.setIcon(QIcon(icon))
+        if shortcut is not None:
+            action.setShortcut(shortcut)
+        if tip is not None:
+            action.setToolTip(tip)
+            action.setStatusTip(tip)
+        if slot is not None:
+            self.connect(action, SIGNAL(signal), slot)
+        if checkable:
+            action.setCheckable(True)
+        return action
+    def newDocument(self):
+        raise NotImplementedError()
+    def preview(self):
+        raise NotImplementedError()
+    def cancel(self):
         raise NotImplementedError()
 
-    @pyqtSlot( )
-    def on_actionNew_activated( self ):
+    @property
+    def printIdentifier(self):
         """
-        Realizar todo el procesamiento necesario para crear un nuevo documento, crear y llenar los
-        modelos necesarios, etc.
-        """
-        raise NotImplementedError()
-
-    @pyqtSlot(  )
-    def on_actionCancel_activated( self ):
-        """
-        Borrar todos los modelos que se hallan creado para el modo edición, asignar los modelos de navegación a las 
-        vistas
+        La identificación de este documento para reporte, normalmente sera el iddocumento o el ndocimpreso
+        @rtype:string
         """
         raise NotImplementedError()
+    def preview( self ):
+        printer = QPrinter()
 
-    @pyqtSlot( )
-    def on_actionRefresh_activated( self ):
-        """
-        Actualizar los modelos de edición
-        """
-        self.updateEditModels()
+        printer.setOrientation(self.orientation)
 
-    @pyqtSlot( )
-    def on_actionDeleteRow_activated( self ):
+        printer.setPageSize(self.pageSize)
+        web = self.web + self.printIdentifier
+
+        report = frmReportes( web, self.user, printer,self )
+        report.exec_()
+
+    def printDocument(self):
+        settings = QSettings()
+        base = settings.value( "Reports/base" ).toString()
+        
+        self.printer = QPrinter()
+        self.printer.setOrientation(self.orientation)
+        self.printer.setPageSize(self.pageSize)
+
+        self.webview = QWebView()
+        web = base+ self.web + self.printIdentifier + "&uname=" + self.user.user + "&hash=" + self.user.hash
+        self.loaded = False
+
+
+        self.webview.load( QUrl( web ) )
+        
+
+        self.webview.loadFinished[bool].connect(self.on_webview_loadFinished)
+        self.webview.loadProgress[int].connect(self.on_webview_loadProgress)
+        
+    def on_webview_loadProgress(self, progress):
+        self.printProgressBar.setValue(progress)
+
+
+    def on_webview_loadFinished(self, status):
+        if self.printProgressBar.isVisible():
+            self.printProgressBar.hide()
+        if not status:
+            QMessageBox.critical(self, "Llantera Esquipulas", "El reporte no se pudo cargar")
+            logging.error("No se pudo cargar el reporte")
+
+        self.loaded = True
+
+        printdialog = QPrintDialog(self.printer, self)
+        if printdialog.exec_() == QDialog.Accepted:
+            self.webview.print_(self.printer)
+            
+        del self.webview
+        del self.printer
+
+        
+    def deleteRow(self):
         """
         Funcion usada para borrar lineas de la tabla
         """
@@ -279,6 +343,53 @@ class Base( object ):
 
         self.editmodel.removeRows( row, 1 )
         self.updateLabels()
+
+        
+    def createActions(self):
+        self.actionNew = self.createAction(text="Nuevo", icon=":/icons/res/document-new.png", shortcut="Ctrl+n", slot=self.newDocument)
+        self.actionPreview = self.createAction(text="Previsualizar", icon=":/icons/res/document-preview.png", slot=self.preview)
+        self.actionPrint = self.createAction(text="Imprimir", icon=":/icons/res/document-print.png", slot = self.printDocument)
+        self.actionSave = self.createAction(text="Guardar", icon=":/icons/res/document-save.png", slot = self.save)
+        self.actionCancel = self.createAction(text="Cancelar", icon=":/icons/res/dialog-cancel.png", slot = self.cancel)
+        
+        self.actionCopy = self.createAction(text="Copiar", icon=":/icons/res/edit-copy.png", shortcut="Ctrl+c")
+        self.actionCut = self.createAction(text="Cortar", icon=":/icons/res/edit-cut.png", shortcut="Ctrl+x")
+        self.actionPaste = self.createAction(text="Pegar", icon=":/icons/res/edit-paste.png", shortcut="Ctrl+v")
+
+        self.actionGoFirst = self.createAction(text="Ir al primer registro", icon=":/icons/res/go-first.png")
+        self.actionGoPrevious = self.createAction(text="Ir al registro anterior", icon=":/icons/res/go-previous.png")
+        self.actionGoLast = self.createAction(text="Ir al ultimo registro", icon=":/icons/res/go-last.png")
+        self.actionGoNext = self.createAction(text="Ir al siguiente registro", icon=":/icons/res/go-next.png")
+
+        self.actionDeleteRow = self.createAction(text="Ir al siguiente registro", icon=":/icons/res/edit-delete.png", slot=self.deleteRow)
+
+        self.addActionsToToolBar()
+        
+    def addActionsToToolBar(self):
+        self.toolBar.addActions([
+            self.actionNew,
+            self.actionPreview,
+            self.actionPrint,
+            self.actionSave,
+            self.actionCancel
+        ])
+        self.toolBar.addSeparator()
+        #self.toolBar.addActions([
+            #self.actionCopy,
+            #self.actionCut,
+            #self.actionPaste
+        #])
+        #self.toolBar.addSeparator()
+        self.toolBar.addActions([
+            self.actionGoFirst,
+            self.actionGoPrevious,
+            self.actionGoLast,
+            self.actionGoNext,
+            self.actionGoLast
+        ])
+
+
+
 
     @pyqtSlot(  )
     def on_txtObservations_textChanged( self ):

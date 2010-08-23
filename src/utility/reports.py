@@ -5,9 +5,6 @@ from PyQt4.QtGui import  QPrinter, QPrintPreviewDialog,  QLineEdit, QMessageBox,
 from PyQt4.QtWebKit import QWebView
 from PyQt4.QtCore import  QUrl, QSettings
 
-
-        
-        
 class frmReportes( QPrintPreviewDialog ):
     """
     Este es un formulario generico que muestra los reportes web generados para las 
