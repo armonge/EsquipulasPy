@@ -385,9 +385,12 @@ GROUP BY d.iddocumento;
     @pyqtSlot(  )
     def on_actionPreview_activated( self ):
         printer = QPrinter()
+        
         printer.setOrientation(QPrinter.Landscape)
+
         printer.setPageSize(QPrinter.Legal)
-        web = "liquidaciones.php?doc=%s" % self.navmodel.record( self.mapper.currentIndex() ).value( NDOCIMPRESO ).toString()
+        web = "liquidaciones.php?doc=" + self.txtPolicy.text() #self.navmodel.record( self.mapper.currentIndex() ).value( 'Número de Liquidación' ).toString()
+
         report = frmReportes( web, self.user, printer,self )
         report.exec_()
 
