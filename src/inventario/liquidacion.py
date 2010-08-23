@@ -306,6 +306,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             JOIN documentos d on d.iddocumento=v.iddocumento
             JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
             JOIN vw_articulosdescritos a ON a.idarticulo = v.idarticulo
+            ORDER BY v.nlinea
             """
             self.detailsmodel.setQuery( query )
     

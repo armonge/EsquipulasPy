@@ -42,10 +42,10 @@ class dlgPersona(Ui_dlgPersona,QDialog):
         
         
         self.combomodel = QSortFilterProxyModel()
-        self.combomodel.setSourceModel(self.personasModel)
-        self.combomodel.setFilterKeyColumn(0)
-        self.combomodel.setFilterRegExp('[^%d$]'%self.tipo)
-        
+#        self.combomodel.setSourceModel(self.personasModel)
+#        self.combomodel.setFilterKeyColumn(0)
+#        self.combomodel.setFilterRegExp('[^%d$]'%self.tipo)
+#        
         self.navproxymodel = QSortFilterProxyModel()
         self.navproxymodel.setFilterKeyColumn(-1)
         self.navproxymodel.setSourceModel(self.navmodel)

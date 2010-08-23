@@ -12,9 +12,9 @@ Created on 06/06/2010
 from PyQt4.QtGui import QMainWindow, QDialog, QSortFilterProxyModel, QTableView, QAbstractItemView, QDialogButtonBox, QLineEdit, QFormLayout, QVBoxLayout
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 from PyQt4.QtCore import SIGNAL, Qt, SLOT,QDate
-from ui.Ui_anulaciones import Ui_frmAnulacionesFactura
+#from ui.Ui_anulaciones import Ui_frmAnulacionesFactura
 
-class frmAnulaciones( QMainWindow, Ui_frmAnulacionesFactura ):
+class frmAnulaciones( QMainWindow):#, Ui_frmAnulacionesFactura ):
     '''
     classdocs
     '''

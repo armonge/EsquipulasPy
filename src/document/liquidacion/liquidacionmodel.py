@@ -548,10 +548,11 @@ class LiquidacionModel( QAbstractTableModel ):
 
 
 
-
+            i =1 
             for line in self.lines:
                 if line.valid:
-                    line.save( insertedId )
+                    line.save( insertedId,i )
+                    i +=1
 
 
 

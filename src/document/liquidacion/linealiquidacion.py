@@ -367,7 +367,7 @@ class LineaLiquidacion( object ):
 
         
         
-    def save( self, iddocumento ):
+    def save( self, iddocumento,nlinea ):
         """
         Este metodo guarda la linea en la base de datos
         
@@ -379,8 +379,8 @@ class LineaLiquidacion( object ):
 
         query = QSqlQuery()
         if not query.prepare( """
-        INSERT INTO articulosxdocumento (iddocumento, idarticulo, unidades, costounit, costocompra)
-        VALUES( :iddocumento,:idarticulo,  :unidades, :costounit, :costocompra)
+        INSERT INTO articulosxdocumento (iddocumento, idarticulo, unidades, costounit, costocompra,nlinea)
+        VALUES( :iddocumento,:idarticulo,  :unidades, :costounit, :costocompra,:linea)
         """ ):
             raise Exception( "No se pudo preparar la consulta para insertar una de las lineas del documento" )
 
@@ -389,6 +389,7 @@ class LineaLiquidacion( object ):
         query.bindValue( ":unidades", self.quantity )
         query.bindValue( ":costounit", self.costoDolar.to_eng_string() )
         query.bindValue( ":costocompra", self.itemCost.to_eng_string() )
+        query.bindValue( ":linea",nlinea )
 
         if not query.exec_():
             raise Exception( "Error al insertar una de las lineas del documento" )
