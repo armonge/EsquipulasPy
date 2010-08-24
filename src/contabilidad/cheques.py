@@ -124,9 +124,9 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         FROM cuentasxdocumento c 
         JOIN documentos d ON c.iddocumento = d.iddocumento
         JOIN cuentascontables cc ON cc.idcuenta = c.idcuenta
-        WHERE d.idtipodoc = 12
+        WHERE d.idtipodoc = %d
         ORDER BY nlinea
-        """ )
+        """ %(constantes.IDCHEQUE))
 
         
         self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
@@ -258,7 +258,21 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     def on_subtotal_valueChanged(self,index):
         if not self.editmodel is None:
            self.updateTotals()
-           self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.totalCordobas)
+           query=QSqlQuery("""SELECT
+                cc.idcuenta,
+                SUM(IFNULL(monto,0)) monto
+            FROM cuentascontables cc
+            LEFT JOIN cuentascontables ch ON cc.idcuenta = ch.padre
+            LEFT JOIN cuentasxdocumento cxd ON cc.idcuenta = cxd.idcuenta
+            WHERE cc.idcuenta = %d""" %(self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0]))
+           query.exec_()
+           query.first()
+           totalcuenta=query.value(1).toString()
+           print totalcuenta
+           if Decimal(str(self.subtotal.value()))>Decimal(totalcuenta):
+                QMessageBox.warning(self, "Llantera Esquipulas", "No existe suficiente saldo para crear el cheque")
+           else:
+               self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.totalCordobas)
                
                 
     def updateTotals(self):
