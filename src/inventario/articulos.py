@@ -7,7 +7,7 @@ Created on 28/05/2010
 import logging
 
 from PyQt4.QtCore import SIGNAL, SLOT, pyqtSlot, Qt , QVariant, pyqtSlot
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog, QItemSelection
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from utility.catgeneric import Ui_frmCatGeneric
 from ui.Ui_articulos import Ui_frmArticlesNew
@@ -320,10 +320,11 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
         self.txtISC.setValidator(self.validator)
         self.txtDAI.setValidator(self.validator)
         self.txtProfit.setValidator(self.validator)
-        
-        self.connect(self.buttonBox, SIGNAL("rejected()"), self, SLOT("reject()"))
-        self.connect(self.categoriesview.selectionModel(), SIGNAL("selectionChanged(QItemSelection, QItemSelection)"), self.updateCategory)
-        self.connect(self.brandsview.selectionModel(), SIGNAL("selectionChanged(QItemSelection, QItemSelection)"), self.updateBrand)
+
+
+        self.buttonBox.rejected.connect(self.reject)
+        self.categoriesview.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect(self.updateCategory)
+        self.brandsview.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect(self.updateBrand)
 
     def cargarMarcas(self):
         if not QSqlDatabase.database().isOpen():
@@ -352,10 +353,11 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
     
     def save(self):
         query = QSqlQuery()
+        result = False
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.open():
-                    raise Exception("No se pudo conectar con la base de datos")
+                    raise UserWarning("No se pudo conectar con la base de datos")
                 
             
             query.prepare("CALL spAgregarArticulos(:activo,:marca, :subcategoria, :dai, :isc, :comision, :ganancia )")
@@ -370,13 +372,16 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
             if not query.exec_():
                 raise Exception("No se pudo ejecutar la consulta")
             
-            return True
+            result = True
+            
+        except UserWarning as inst:
+            logging.error(query.lastError().text())
+            logging.error(unicode(inst))
         except Exception as inst:
-            print query.lastQuery()
-            print query.lastError().text()
-            print inst
-            return False
-        
+            logging.critical(query.lastError().text())
+            logging.critical(unicode(inst))
+
+        return result
         
     @pyqtSlot("QString")
     def on_txtCategorySearch_textChanged(self, text):
@@ -415,7 +420,7 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
                 query.prepare("INSERT INTO marcas(nombre) VALUES (:marca)")
                 query.bindValue(":marca",marca[0])
                 if not query.exec_():
-                    print query.lastError().text()
+                    logging.error(query.lastError().text())
                     QMessageBox.warning(None,"Error al crear la marca","No se pudo insertar la marca")
                 else:
                     self.cargarMarcas()
@@ -453,11 +458,14 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
     
     def updateBrand(self, selected, deselected):            
         if self.brandsproxymodel.rowCount()>=0:
-            self.brandId =  self.brandsmodel.index(selected.indexes()[0].row(),0).data().toInt()[0]
+            self.brandId =  self.brandsproxymodel.index(selected.indexes()[0].row(),0).data().toInt()[0]
         
         
     def updateCategory(self, selected, deselected):
-        row = selected.indexes()[0].row()
-        parent = selected.indexes()[0].parent()
-        self.catvalid = parent.data().toString() != ""
-        self.catId =  self.catproxymodel.data(self.catproxymodel.index(row, 1, parent), Qt.DisplayRole)
+        try:
+            row = selected.indexes()[0].row()
+            parent = selected.indexes()[0].parent()
+            self.catvalid = parent.data().toString() != ""
+            self.catId =  self.catproxymodel.data(self.catproxymodel.index(row, 1, parent), Qt.DisplayRole)
+        except IndexError:
+            pass

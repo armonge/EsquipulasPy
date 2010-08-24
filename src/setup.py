@@ -8,6 +8,15 @@ Utiliza py2exe para crear un ejecutable y una serie de dlls en Windows
 from distutils.core import setup
 import platform
 import os
+import py2exe
+#Override the function in py2exe to determine if a dll should be included
+dllList = ('mfc90.dll','msvcp90.dll','qtnetwork.pyd','qtxmlpatterns4.dll','qtsvg4.dll')
+origIsSystemDLL = py2exe.build_exe.isSystemDLL
+def isSystemDLL(pathname):
+    if os.path.basename(pathname).lower() in dllList:
+        return 0
+    return origIsSystemDLL(pathname)
+py2exe.build_exe.isSystemDLL = isSystemDLL
 
 if platform.system() == 'Windows':
     import py2exe
@@ -15,6 +24,9 @@ if platform.system() == 'Windows':
             ( 'sqldrivers', [
                 'C:\Python26\Lib\site-packages\PyQt4\plugins\sqldrivers\qsqlmysql4.dll'
                 ] ),
+			( '', [
+			r'C:\Python26\Lib\site-packages\PyQt4\bin\libmySQL.dll'
+			] ),
             ( 'translations', [
                 os.getcwd() + r'\translations\qt_es.qm'
             ] ),
@@ -33,14 +45,14 @@ setup(
 	version = '1.0',
 	description = 'Interfaz de Escritorio a Esquipulas',
 	author = u'Andrés Reyes Monge, Luis Carlos Mejia Garcia, Marcos Antonio Moreno Gonzales',
-    includes = ['__main__.py','__init__.py'],
+    #includes = ['__main__.py','__init__.py'],
 	windows = [{
 		'script':'__main__.py',
 		'icon_resources':[( 1, os.getcwd() + r"\ui\res\logo.ico" )]
 		}],
 	options = {
 		"py2exe": {
-			"includes": ["sip", "PyQt4.QtGui", "PyQt4.QtCore", "PyQt4.QtSql", "PyQt4.QtWebKit", "PyQt4.QtNetwork"],
+			"includes": ["sip","PyQt4.QtGui", "PyQt4.QtCore", "PyQt4.QtSql", "PyQt4.QtWebKit", "PyQt4.QtNetwork"],
             "dist_dir":r"..\dist"
 			}
 		},

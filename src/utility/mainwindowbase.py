@@ -7,6 +7,7 @@ Created on 11/06/2010
 from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot, QSize, QUrl
 from PyQt4.QtGui import QDialog, QMessageBox, QIcon, QWidget, QVBoxLayout, \
 QPushButton, qApp, QDesktopServices, QMdiSubWindow
+from PyQt4.QtSql import QSqlDatabase
 from utility.user import dlgUserLogin, User, dlgPasswordChange
 
 class MainWindowBase( object ):
@@ -55,6 +56,8 @@ class MainWindowBase( object ):
         self.btnAbout.clicked.connect(self.about)
         self.btnHelp.clicked.connect(self.about)
         self.btnPasswd.clicked.connect(self.changePassword)
+
+        self.setWindowTitle("Llantera Esquipulas: %s@%s" % (QSqlDatabase.database().databaseName() , QSqlDatabase.database().hostName()))
     
     def about(self):
         QMessageBox.about(self, "Llantera Esquipulas", \
