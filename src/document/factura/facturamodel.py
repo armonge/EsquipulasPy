@@ -2,7 +2,7 @@
 '''
 Created on 18/05/2010
 
-@author: armonge
+@author: Luis Carlos Mejia Garcia
 '''
 from PyQt4 import QtGui
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
@@ -12,6 +12,7 @@ from decimal import Decimal
 from utility.moneyfmt import moneyfmt
 from utility import constantes
 from utility.movimientos import movFacturaContado , movFacturaCredito
+from utility import constantes
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD = range( 5 )
 class FacturaModel( QAbstractTableModel ):
@@ -258,15 +259,18 @@ class FacturaModel( QAbstractTableModel ):
 
 #INSERTAR LA RELACION CON El USUARIO , EL CLIENTE Y EL PROVEEDOR            
             query.prepare( 
-                "INSERT INTO personasxdocumento (iddocumento,idpersona) VALUES" +  
-                "(" + insertedId + ",:iduser),"
-                "(" + insertedId + ",:idcliente),"
-                "(" + insertedId + ",:idvendedor)" 
+                "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +  
+                "(" + insertedId + ",:iduser,:autor),"
+                "(" + insertedId + ",:idcliente,:cliente),"
+                "(" + insertedId + ",:idvendedor,:vendedor)" 
                 )
 
             query.bindValue( ":iduser", self.datosSesion.usuarioId )
             query.bindValue( ":idcliente", self.clienteId )
             query.bindValue( ":idvendedor", self.vendedorId )
+            query.bindValue( ":autor", constantes.AUTOR)
+            query.bindValue( ":cliente", constantes.CLIENTE)
+            query.bindValue( ":vendedor",constantes.VENDEDOR )
 
             if not query.exec_():
                 raise Exception( "No se Inserto la relacion entre el documento y las personas" )

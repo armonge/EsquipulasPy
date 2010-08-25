@@ -495,17 +495,19 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             
             if self.readOnly:
 #        El modelo principal
+                
+                
                 self.navmodel.setQuery( """
-                    SELECT
+                SELECT
                         d.iddocumento,
                         d.ndocimpreso as 'No. Factura',
-                        GROUP_CONCAT(IF(p.tipopersona=1,p.nombre,"") SEPARATOR '') as Cliente,
-                        GROUP_CONCAT(IF(p.tipopersona=3,p.nombre,"") SEPARATOR '') as Vendedor,
+                        GROUP_CONCAT(IF(pxd.idaccion=%d,p.nombre,"") SEPARATOR '') as Cliente,
+                        GROUP_CONCAT(IF(pxd.idaccion=%d,p.nombre,"") SEPARATOR '') as Vendedor,
                         CONCAT('US$ ',FORMAT(ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4),4))  as subtotal,
                         CONCAT('US$ ',FORMAT(d.total- ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4),4))  as iva,
                         CONCAT('US$ ',FORMAT(d.Total,4)) as Total,
                         d.observacion,
-                        DATE_FORMAT(d.fechacreacion,'%d/%m/%Y') as Fecha,
+                        %s as Fecha,
                         b.nombrebodega as Bodega,
                         tc.tasa as 'Tipo de Cambio Oficial',
                         valorcosto as tasaiva,
@@ -520,13 +522,12 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     JOIN personas p ON p.idpersona=pxd.idpersona
                     LEFT JOIN costosxdocumento cd ON cd.iddocumento=d.iddocumento
                     LEFT JOIN costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
-                    WHERE d.idtipodoc=5
+                    WHERE d.idtipodoc=%d
                     GROUP BY d.iddocumento
                     ORDER BY CAST(IF(ndocimpreso='S/N',0,d.ndocimpreso) AS SIGNED)
                     ;
-                """ )
-        #        El modelo que filtra a self.navmodel
-    #            self.navproxymodel = QSortFilterProxyModel( self )
+                """%(constantes.CLIENTE,constantes.VENDEDOR,"DATE_FORMAT(d.fechacreacion,'%d/%m/%Y')",constantes.IDFACTURA))
+
     
         #        Este es el modelo con los datos de la tabla para navegar
                 self.detailsmodel.setQuery( u"""
