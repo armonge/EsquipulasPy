@@ -389,35 +389,35 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 
 
         self.status = True
-
-    def save( self ):
-        """
-        Slot documentation goes here.
-        """
-#        self.datosRecibo.lineasAbonos =self.abonoeditmodel.lines
-#        self.datosRecibo.lineas = self.editmodel.lines
-        self.datosRecibo.observaciones = self.txtobservaciones.toPlainText()
-        if self.datosRecibo.valid(self):
-            if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-                if not QSqlDatabase.database().isOpen():
-                    QSqlDatabase.database().open()
-    
-          
-                if self.datosRecibo.save():
-                    QMessageBox.information( None,
-                        self.trUtf8( "Llantera Esquipulas" ),
-                        self.trUtf8( u"""El documento se ha guardado con éxito""" ) )
-                    self.editmodel = None
-                    self.updateModels()
-                    self.navigate( 'last' )
-                    self.status = True
-                else:
-                    QMessageBox.critical( None,
-                        self.trUtf8( "Llantera Esquipulas" ),
-                        self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
-    
-                if QSqlDatabase.database().isOpen():
-                    QSqlDatabase.database().close()
+#
+#    def save( self ):
+#        """
+#        Slot documentation goes here.
+#        """
+##        self.datosRecibo.lineasAbonos =self.abonoeditmodel.lines
+##        self.datosRecibo.lineas = self.editmodel.lines
+#        self.datosRecibo.observaciones = self.txtObservations.toPlainText()
+#        if self.datosRecibo.valid(self):
+#            if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+#                if not QSqlDatabase.database().isOpen():
+#                    QSqlDatabase.database().open()
+#    
+#          
+#                if self.datosRecibo.save():
+#                    QMessageBox.information( None,
+#                        self.trUtf8( "Llantera Esquipulas" ),
+#                        self.trUtf8( u"""El documento se ha guardado con éxito""" ) )
+#                    self.editmodel = None
+#                    self.updateModels()
+#                    self.navigate( 'last' )
+#                    self.status = True
+#                else:
+#                    QMessageBox.critical( None,
+#                        self.trUtf8( "Llantera Esquipulas" ),
+#                        self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
+#    
+#                if QSqlDatabase.database().isOpen():
+#                    QSqlDatabase.database().close()
 
 class dlgSelectBill( QDialog ):
     def __init__( self, parent = None ):
@@ -467,7 +467,7 @@ class dlgSelectBill( QDialog ):
             ) as tbl
             WHERE unittotal > 0
         """ % (constantes.IDDEVOLUCION, constantes.IDFACTURA, constantes.CLIENTE, constantes.IDKARDEX)
-        print query
+        
         self.billsmodel.setQuery( query)
 
 
