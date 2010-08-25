@@ -156,7 +156,7 @@ class DevolucionModel( QAbstractTableModel ):
         
 
     @property
-    def totalD( self ):
+    def subtotalD( self ):
         """
         El total en dolares del documento
         @rtype: Decimal 
@@ -165,12 +165,12 @@ class DevolucionModel( QAbstractTableModel ):
         return foo if foo != 0 else Decimal( 0 )
     
     @property
-    def subtotalD( self ):
+    def totalD( self ):
         """
         El subtotal en dolares del documento
         @rtype: Decimal
         """
-        return self.totalD / ( 1 + ( self.ivaRate / 100 ) )
+        return self.subtotalD * (1+ ( self.ivaRate / 100 ) )
 
     @property
     def totalC( self ):
@@ -405,7 +405,6 @@ class DevolucionModel( QAbstractTableModel ):
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", constantes.IDNOTACREDITO )
             query.bindValue( ":idusuario", self.uid )
-            query.bindValue( ":anulado", 0 )
             query.bindValue( ":idpersona", self.clientId )
             query.bindValue( ":total", self.totalD.to_eng_string() )
             query.bindValue( ":idtipocambio", self.exchangeRateId )
