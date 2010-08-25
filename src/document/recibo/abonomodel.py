@@ -76,7 +76,7 @@ class AbonoModel( QAbstractTableModel ):
             elif column == TOTALFAC:
                 return moneyfmt(line.totalFac ,  4,  "US$")
             elif column == SUBABONO:
-                return str(line.subMonto)
+                return moneyfmt(line.subMonto ,  4,  "US$")
             elif column == SALDO:
                 return moneyfmt(line.saldo ,  4,  "US$")
         elif role == Qt.EditRole:

@@ -184,8 +184,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 #            Rellenar el combobox de las CONCEPTOS
             self.conceptosModel = QSqlQueryModel()
             self.conceptosModel.setQuery( """
-               SELECT idconcepto, descripcion FROM conceptos c;
-            """ )
+               SELECT idconcepto, descripcion FROM conceptos c WHERE idtipodoc = %d;
+            """%constantes.IDRECIBO )
             if self.conceptosModel.rowCount() == 0:
                 QMessageBox.information( None, "Recibo", "No existen conceptos para los recibos, por favor cree uno" )
                 return ""
@@ -512,12 +512,12 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                             DATE(padre.fechacreacion) as 'Fecha',
                             padre.ndocimpreso as 'No. Recibo',
                             p.nombre as 'Cliente',
-                            padre.total as 'Total',
+                            padre.total + IFNULL(hijo.total,0) as 'Total',
                             c.descripcion as 'En cocepto de',
                             IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
                             IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%s')) as 'Retencion',
                             IFNULL(hijo.total,'-') as 'Total Ret C$',
-                            padre.total - IFNULL(hijo.total,0) as 'Total Pagado', 
+                            padre.total as 'Total Pagado', 
                            padre.observacion ,
                            IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion'
             FROM documentos padre
@@ -791,9 +791,8 @@ class DatosRecibo(object):
     def totalPagado( self ):
         """
     
-        """
-        total = self.total
-        return total * (1- (( self.retencionTasa / Decimal( 100 ) )  if self.aplicarRet else 0))
+        """ 
+        return self.total - self.obtenerRetencion
     
     
         
@@ -915,7 +914,9 @@ class DatosRecibo(object):
             query.bindValue( ":fechacreacion", fechaCreacion )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":observacion", self.observaciones )
-            query.bindValue( ":total", self.total.to_eng_string() )
+            totalPagado = self.totalPagado
+            query.bindValue( ":total",totalPagado.to_eng_string() )
+            
             query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
             query.bindValue( ":concepto", self.conceptoId )
             query.bindValue( ":caja", self.datosSesion.cajaId )
