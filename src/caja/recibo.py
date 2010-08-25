@@ -20,14 +20,14 @@ from document.recibo.recibomodel import ReciboModel
 from document.recibo.abonomodel import AbonoModel,LineaAbono, AbonoDelegate
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
-from utility.constantes import RETENCIONFUENTE,RETENCIONPROFESIONALES,IDRECIBO,IDRETENCION,CLIENTE,IDFACTURA
+from utility import constantes
 #from PyQt4.QtGui import QMainWindow
 
 #controles
 IDDOCUMENTO,FECHA, NDOCIMPRESO,NOMBRECLIENTE,TOTAL,  CONCEPTO, NRETENCION, TASARETENCION, TOTALRETENCION,TOTALPAGADO, OBSERVACION, CONRETENCION = range( 12 )
 
 #table
-IDDOCUMENTOT, DESCRIPCION, REFERENCIA, MONTO,MONTODOLAR,IDMONEDA = range( 6 )
+IDDOCUMENTOT, DESCRIPCION, REFERENCIA,BANCO, MONTO,MONTODOLAR,IDMONEDA = range( 7 )
 IDPAGO=0
 TOTALFAC=3
 IDRECIBODOC, NFAC, SALDO, TASAIVA,IDCLIENTE,SALDOFINAL = range( 6 )
@@ -444,7 +444,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.ckretener.setChecked(False)
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.tableabonos.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
-            self.tabledetails.setColumnHidden( IDMONEDA, True )            
+
             
         self.tableabonos.setColumnHidden(IDDOCUMENTO,True)
         
@@ -478,7 +478,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
         if self.cbtasaret.currentIndex() >-1 or (not self.ckretener.isEnabled()):
             self.ckretener.setChecked(retener)
-        self.ckretener.setEnabled(retener)        
+        self.ckretener.setEnabled(retener)
+        self.cbtasaret.setEnabled(retener)        
                     
         ret=self.datosRecibo.obtenerRetencion
         self.editmodel.asignarTotal(totalAbono-ret)
@@ -530,7 +531,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             WHERE padre.idtipodoc=%d
             AND p.tipopersona=%d
             ORDER BY padre.iddocumento
-            """%('%',IDRECIBO,CLIENTE))
+            """%('%',constantes.IDRECIBO,constantes.CLIENTE))
   
             self.navproxymodel = RONavigationModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )
@@ -544,6 +545,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 p.iddocumento,
                 CONCAT(tp.descripcion, ' ' , tm.moneda) as 'Tipo de Pago',
                  p.refexterna as 'No. Referencia',
+                 b.descripcion as Banco,
                  CONCAT(tm.simbolo,' ',FORMAT(monto,4)) as 'Monto',
                  CONCAT('US$ ',FORMAT(monto / IF(p.idtipomoneda=2,1,IFNULL(tc.tasaBanco,tc.tasa)),4)) as 'Monto US$'
             FROM movimientoscaja p
@@ -551,6 +553,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
             JOIN tiposmoneda tm ON tm.idtipomoneda=p.idtipomoneda
             JOIN tiposmovimientocaja tp ON tp.idtipomovimiento=p.idtipomovimiento
+            LEFT JOIN bancos b ON b.idbanco = p.idbanco
             ORDER BY p.nlinea
             ;
             """ )
@@ -572,7 +575,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             WHERE padre.idtipodoc=%d and d.monto is not null
             ORDER BY d.nlinea
 ;
-            """ % IDFACTURA)
+            """ % constantes.IDFACTURA)
 
     #        Este es el filtro del modelo anterior
             self.abonosproxymodel.setSourceModel( self.abonosmodel )
@@ -680,9 +683,11 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             
             self.tabledetails.setModel(self.editmodel)
             self.tabledetails.setColumnHidden(IDPAGO,True)
-            self.tabledetails.setColumnHidden(IDMONEDA,True)
-            self.tabledetails.setColumnWidth(DESCRIPCION,200)
+#            self.tabledetails.setColumnHidden(IDMONEDA,True)
             
+            
+            
+            self.tabledetails.setColumnWidth(DESCRIPCION,200)
             self.tabledetails.setItemDelegate(delegado)
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.swtasaret.setCurrentIndex(0)
@@ -831,7 +836,7 @@ class DatosRecibo(object):
                 foo += 1
                 if not line.valid:
                     recibo.tabledetails.selectRow(foo - 1)
-                    QMessageBox.information(None,"Guardar Recibo",u"La linea " + str(foo) + u" del tipo de pago no es válida")
+                    QMessageBox.information(None,"Guardar Recibo",u"La linea " + str(foo) + u" de los pagos esta incompleta. " + line.error)
                     return False
             if len(self.lineasAbonos) ==0:
                 QMessageBox.information(None,"Guardar Recibo",u"Por favor elija al menos una factura a la que se realizará el abono")
@@ -842,7 +847,6 @@ class DatosRecibo(object):
                 foo += 1
                 print line.monto
                 if not line.valid:
-#                    recibo.tableabonos.selectRow(foo - 1)
                     QMessageBox.information(None,"Guardar Recibo",u"La linea " + str(foo) + u" de las facturas abonadas no es válida")
                     return False
                 
@@ -938,13 +942,15 @@ class DatosRecibo(object):
     #INSERTAR LA RELACION CON El USUARIO y EL CLIENTE
     #            print "recibo ID " + insertedId            
             query.prepare( 
-                "INSERT INTO personasxdocumento (iddocumento,idpersona) VALUES" +  
-                "(" + insertedId + ",:iduser),"
-                "(" + insertedId + ",:idcliente)"     
+                "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +  
+                "(" + insertedId + ",:iduser,:autor),"
+                "(" + insertedId + ",:idcliente,:cliente)"     
                 )
     
             query.bindValue( ":iduser", self.datosSesion.usuarioId )
+            query.bindValue( ":autor", constantes.AUTOR )
             query.bindValue( ":idcliente", self.clienteId )
+            query.bindValue( ":usuario", constantes.CLIENTE )
             
     
             if not query.exec_():
@@ -955,7 +961,7 @@ class DatosRecibo(object):
             if len(self.lineas)==0:
                 raise Exception("Deben existir pagos")
             
-            i = 0
+            i = 1
             for linea in self.lineas:
     #                    print insertedId + "-" + str(linea.pagoId) + "-" + str(linea.monedaId)
                 linea.save( insertedId, i )
@@ -980,7 +986,7 @@ class DatosRecibo(object):
                 """ )
                 query.bindValue( ":ndocimpreso", self.retencionNumeroImpreso )
                 query.bindValue( ":fechacreacion", fechaCreacion)
-                query.bindValue( ":idtipodoc", IDRETENCION )
+                query.bindValue( ":idtipodoc", constantes.IDRETENCION )
                 query.bindValue( ":total", self.obtenerRetencion.to_eng_string() )
                 query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
                 query.bindValue( ":concepto", self.conceptoId )
@@ -1037,7 +1043,7 @@ class DatosRecibo(object):
                     (idtipocosto=%d OR idtipocosto =%d) AND 
                     activo=1 
                     ORDER BY valorcosto desc; 
-                    """ %(RETENCIONPROFESIONALES,RETENCIONFUENTE) )
+                    """ %(constantes.RETENCIONPROFESIONALES,constantes.RETENCIONFUENTE) )
 
             cbtasaret.setModel( self.retencionModel )
             cbtasaret.setModelColumn( 1 )
@@ -1046,8 +1052,8 @@ class DatosRecibo(object):
 
     def cargarNumeros(self,recibo):
 #            Cargar el numero de el Recibo actual
-        idrec= str(IDRECIBO)
-        idret = str(IDRETENCION)
+        idrec= str(constantes.IDRECIBO)
+        idret = str(constantes.IDRETENCION)
         query = QSqlQuery( "CALL spConsecutivo(" + idrec +",null)")
         if not query.exec_():
             print( query.lastError().text() )

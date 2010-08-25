@@ -9,7 +9,7 @@ from PyQt4.QtCore import Qt, QSize,QVariant
 from utility.widgets.searchpanel import SearchPanel
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from utility.singleselectionmodel import SingleSelectionModel
-IDTIPOPAGO,DESCRIPCION,  REFERENCIA,  MONTO = range(4)
+IDTIPOPAGO,DESCRIPCION,  REFERENCIA,BANCO,  MONTO = range(5)
 class ReciboDelegate(QStyledItemDelegate):
     
     def __init__(self, parent=None):
@@ -42,7 +42,13 @@ class ReciboDelegate(QStyledItemDelegate):
         self.completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
         
-
+        query = QSqlQuery("""
+            SELECT idbanco,descripcion FROM bancos;
+            """)
+        self.bancosmodel =QSqlQueryModel()
+        self.bancosmodel.setQuery(query)
+        
+        
 
     def createEditor( self, parent, option, index ):
         if index.column() == DESCRIPCION:             
@@ -55,7 +61,13 @@ class ReciboDelegate(QStyledItemDelegate):
             combo.setModelColumn(1)
             combo.setCompleter(self.completer)
             return combo
-        
+        elif index.column() == BANCO:
+            combo = QComboBox(parent)
+            #combo.setEditable(True)
+            combo.setModel(self.bancosmodel)
+            combo.setModelColumn(1)
+            #combo.setCompleter(self.completer)
+            return combo
         elif index.column() == MONTO:
             doublespinbox = QDoubleSpinBox( parent )
             doublespinbox.setMinimum( -1000000 )
@@ -83,7 +95,7 @@ class ReciboDelegate(QStyledItemDelegate):
 
     def setEditorData( self, editor, index ):
         data = index.data()
-        if index.column() == DESCRIPCION:
+        if index.column() in (BANCO,DESCRIPCION):
             i = editor.findText( data if type( data ) != QVariant else data.toString() )
             if i == -1:
                 i = 0
@@ -107,7 +119,16 @@ class ReciboDelegate(QStyledItemDelegate):
                     ])
                 self.removeFromFilter(modelo.index(fila,1).data().toString())
                 self.proxymodel.setFilterRegExp(self.filter())
-
+        elif index.column() == BANCO:
+            modelo = self.bancosmodel
+            if modelo.rowCount() == 0 : 
+                model.setData(index, [-1,""])
+            else:
+                fila = editor.currentIndex()
+                model.setData(index,  [
+                                               modelo.index(fila,0).data().toInt()[0],  
+                                               modelo.index(fila,1).data().toString()
+                        ])
         else:
             QStyledItemDelegate.setModelData( self, editor, model, index )
 

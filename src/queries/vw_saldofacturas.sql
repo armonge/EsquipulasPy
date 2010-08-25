@@ -1,17 +1,20 @@
 ﻿DROP VIEW IF EXISTS `vw_saldofacturas`;
 CREATE OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_saldofacturas` AS
 
-SELECT
-fac.iddocumento,
-fac.ndocimpreso,
-fac.total AS saldo,
-IFNULL(ca.valorcosto,0) AS tasaiva,
-p.idpersona,
-p.nombre
-FROM documentos fac 
-JOIN personasxdocumento pd ON pd.iddocumento = fac.iddocumento
-JOIN personas p ON p.idpersona = pd.idpersona AND p.tipopersona = 1
-LEFT JOIN costosxdocumento cd ON cd.iddocumento = fac.iddocumento
-LEFT JOIN costosagregados ca ON cd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = 1
-WHERE fac.idtipodoc = 5 AND fac.idestado = 1
-ORDER BY CAST(fac.ndocimpreso AS SIGNED);
+select
+fac.iddocumento AS iddocumento,
+fac.ndocimpreso AS ndocimpreso,
+fac.total - SUM(IFNULL(ph.monto,0)) AS saldo,
+ifnull(ca.valorcosto,0) AS tasaiva,
+p.idpersona AS idpersona,
+p.nombre AS nombre
+from documentos fac
+join personasxdocumento pd on pd.iddocumento = fac.iddocumento
+join personas p on p.idpersona = pd.idpersona and p.tipopersona = 1
+left join docpadrehijos ph ON ph.idpadre = fac.iddocumento
+left join documentos recibo ON ph.idhijo = recibo.iddocumento AND recibo.idtipodoc=18
+left join costosxdocumento cd on cd.iddocumento = fac.iddocumento
+left join costosagregados ca on cd.idcostoagregado = ca.idcostoagregado and ca.idtipocosto = 1
+where fac.idtipodoc = 5 and fac.idestado = 1
+GROUP BY fac.iddocumento
+order by cast(fac.ndocimpreso as signed);

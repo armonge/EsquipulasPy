@@ -11,7 +11,7 @@ from linearecibo import LineaRecibo
 from decimal import  Decimal
 from PyQt4.QtCore import QAbstractTableModel, Qt,SIGNAL
 
-IDPAGO, DESCRIPCION, REFERENCIA, MONTO, MONTODOLAR, IDMONEDA = range( 6 )
+IDPAGO, DESCRIPCION, REFERENCIA,BANCO, MONTO, MONTODOLAR, IDMONEDA = range( 7 )
 class ReciboModel( AccountsSelectorModel ):
     def __init__( self ,lineas, tipocambio):
         AccountsSelectorModel.__init__( self )
@@ -49,7 +49,9 @@ class ReciboModel( AccountsSelectorModel ):
 
         if index.column() == REFERENCIA:
             line = self.lines[index.row()]
-            return line.pagoId == 1 if line.pagoId != 0 else True 
+            return line.pagoId == 1 if line.pagoId != 0 else True
+        elif index.column() == BANCO:
+            return self.lines[index.row()].sinReferencia
         else:
             return False
     
@@ -82,6 +84,8 @@ class ReciboModel( AccountsSelectorModel ):
                 return moneyfmt( line.montoDolar , 4, "US$" ) if line.montoDolar != 0 else ""
             elif column == IDMONEDA:
                 return line.monedaId
+            elif column == BANCO:
+                return line.banco
             elif column == IDPAGO:
                 return line.pagoId
         elif role == Qt.EditRole:
@@ -108,7 +112,14 @@ class ReciboModel( AccountsSelectorModel ):
             line.simboloMoneda = value[3]
             index = self.index(index.row(),MONTO)
             line.monto =Decimal(str(line.montoDolar * self.tipoCambio)) if line.monedaId == 1 else line.montoDolar
-            
+            if line.sinReferencia:
+                line.referencia = ""
+                line.bancoId = 0
+                line.banco = ""
+        elif column == BANCO:
+            line.bancoId = value[0]
+            print line.bancoId
+            line.banco = value[1]
         elif column == MONTO:
             return self.asignarMonto(index,value)
         elif column == REFERENCIA:
@@ -170,6 +181,8 @@ class ReciboModel( AccountsSelectorModel ):
                 return u"Tipo de Pago"
             elif section == MONTO:
                 return "Monto"
+            elif section == BANCO:
+                return "Banco"
             elif section == MONTODOLAR:
                 return u"Monto US$"
             elif section == REFERENCIA:
