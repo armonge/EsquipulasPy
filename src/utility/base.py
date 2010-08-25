@@ -268,8 +268,8 @@ class Base( object ):
         return action
     def newDocument(self):
         raise NotImplementedError()
-    def preview(self):
-        raise NotImplementedError()
+#    def preview(self):
+#        raise NotImplementedError()
     def cancel(self):
         raise NotImplementedError()
 
@@ -282,12 +282,9 @@ class Base( object ):
         raise NotImplementedError()
     def preview( self ):
         printer = QPrinter()
-
         printer.setOrientation(self.orientation)
-
         printer.setPageSize(self.pageSize)
         web = self.web + self.printIdentifier
-
         report = frmReportes( web, self.user, printer,self )
         report.exec_()
 
@@ -347,10 +344,11 @@ class Base( object ):
         
     def createActions(self):
         self.actionNew = self.createAction(text="Nuevo", icon=":/icons/res/document-new.png", shortcut="Ctrl+n", slot=self.newDocument)
-        self.actionPreview = self.createAction(text="Previsualizar", icon=":/icons/res/document-preview.png", slot=self.preview)
+        self.actionPreview = self.createAction(text="Previsualizar", icon=":/icons/res/document-preview.png",shortcut="Ctrl+p", slot=self.preview)
         self.actionPrint = self.createAction(text="Imprimir", icon=":/icons/res/document-print.png", slot = self.printDocument)
-        self.actionSave = self.createAction(text="Guardar", icon=":/icons/res/document-save.png", slot = self.save)
-        self.actionCancel = self.createAction(text="Cancelar", icon=":/icons/res/dialog-cancel.png", slot = self.cancel)
+        self.actionSave = self.createAction(text="Guardar", icon=":/icons/res/document-save.png",shortcut="Ctrl+g", slot = self.save)
+        
+        self.actionCancel = self.createAction(text="Cancelar", icon=":/icons/res/dialog-cancel.png",shortcut="Esc", slot = self.cancel)
         
         self.actionCopy = self.createAction(text="Copiar", icon=":/icons/res/edit-copy.png", shortcut="Ctrl+c")
         self.actionCut = self.createAction(text="Cortar", icon=":/icons/res/edit-cut.png", shortcut="Ctrl+x")
