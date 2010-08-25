@@ -1,19 +1,26 @@
-DROP VIEW IF EXISTS `vw_saldofacturas`;
+﻿DROP VIEW IF EXISTS `vw_saldofacturas`;
 CREATE OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_saldofacturas` AS
 
-select fac.iddocumento AS iddocumento,
-fac.ndocimpreso AS ndocimpreso,
-(fac.total - sum(ifnull(ph.monto,0))) AS saldo,
-ifnull(ca.valorcosto,0) AS tasaiva,
-p.idpersona AS idpersona,
-p.nombre AS nombre
+select
+ fac.iddocumento as iddocumento,
+ fac.ndocimpreso,
+fac.total as totalfacturado,
+fac.total- SUM(IF(otros.idtipodoc=10,otros.total,0)) - SUM(IF(otros.idtipodoc=18,ph.monto,0)) as saldo,
+  SUM(IF(otros.idtipodoc=10,otros.total,0)) as totaldevolucion,
+  SUM(IF(otros.idtipodoc=18,ph.monto,0)) as totalabono,
+  ca.valorcosto as tasaiva,
+  p.idpersona,
+  p.nombre,
+  fac.idestado
 from documentos fac
-join personasxdocumento pd on pd.iddocumento = fac.iddocumento
-join personas p on p.idpersona = pd.idpersona and p.tipopersona = 1
+join personasxdocumento pxd ON pxd.iddocumento = fac.iddocumento AND pxd.idaccion = 1
+JOIN personas p ON p.idpersona = pxd.idpersona
+left join costosxdocumento cd ON cd.iddocumento = fac.iddocumento
+left join costosagregados ca ON ca.idcostoagregado = cd.idcostoagregado
 left join docpadrehijos ph on ph.idpadre = fac.iddocumento
-left join documentos recibo on ph.idhijo = recibo.iddocumento and recibo.idtipodoc = 18
-left join costosxdocumento cd on cd.iddocumento = fac.iddocumento
-left join costosagregados ca on
-cd.idcostoagregado = ca.idcostoagregado  and ca.idtipocosto = 1
-where fac.idtipodoc = 5 and fac.idestado = 1
-group by fac.iddocumento order by cast(fac.ndocimpreso as signed);
+left join documentos otros on ph.idhijo = otros.iddocumento AND otros.idestado =1
+WHERE
+-- fac.iddocumento = 40 AND
+fac.idtipodoc = 5
+GROUP BY fac.iddocumento
+;
