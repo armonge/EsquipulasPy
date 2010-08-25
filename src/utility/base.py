@@ -268,8 +268,8 @@ class Base( object ):
         return action
     def newDocument(self):
         raise NotImplementedError()
-#    def preview(self):
-#        raise NotImplementedError()
+
+
     def cancel(self):
         raise NotImplementedError()
 
@@ -281,31 +281,48 @@ class Base( object ):
         """
         raise NotImplementedError()
     def preview( self ):
-        printer = QPrinter()
-        printer.setOrientation(self.orientation)
-        printer.setPageSize(self.pageSize)
-        web = self.web + self.printIdentifier
-        report = frmReportes( web, self.user, printer,self )
-        report.exec_()
+        try:
+            printer = QPrinter()
+            printer.setOrientation(self.orientation)
+            printer.setPageSize(self.pageSize)
+            web = self.web + self.printIdentifier
+            report = frmReportes( web, self.user, printer,self )
+            report.exec_()
+        except UserWarning as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            logging.error(unicode(inst))
+        except Exception as inst:
+            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al intentar mostrar su reporte")
+            logging.critical(unicode(inst))
 
     def printDocument(self):
-        settings = QSettings()
-        base = settings.value( "Reports/base" ).toString()
-        
-        self.printer = QPrinter()
-        self.printer.setOrientation(self.orientation)
-        self.printer.setPageSize(self.pageSize)
+        try:
+            settings = QSettings()
+            base = settings.value( "Reports/base" ).toString()
 
-        self.webview = QWebView()
-        web = base+ self.web + self.printIdentifier + "&uname=" + self.user.user + "&hash=" + self.user.hash
-        self.loaded = False
+            if base == "":
+                raise UserWarning(u"No existe una configuración para el servidor de reportes")
+            
+            self.printer = QPrinter()
+            self.printer.setOrientation(self.orientation)
+            self.printer.setPageSize(self.pageSize)
+
+            self.webview = QWebView()
+            web = base+ self.web + self.printIdentifier + "&uname=" + self.user.user + "&hash=" + self.user.hash
+            self.loaded = False
 
 
-        self.webview.load( QUrl( web ) )
-        
+            self.webview.load( QUrl( web ) )
 
-        self.webview.loadFinished[bool].connect(self.on_webview_loadFinished)
-        self.webview.loadProgress[int].connect(self.on_webview_loadProgress)
+
+            self.webview.loadFinished[bool].connect(self.on_webview_loadFinished)
+            self.webview.loadProgress[int].connect(self.on_webview_loadProgress)
+        except UserWarning as inst:
+            logging.error(unicode(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+        except Exception as inst:
+            logging.critical(unicode(inst))
+            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un problema al intentar imprimir su reporte")
         
     def on_webview_loadProgress(self, progress):
         self.printProgressBar.setValue(progress)

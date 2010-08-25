@@ -16,12 +16,6 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>879</width>
-    <height>0</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>Liquidación</string>
   </property>
@@ -87,6 +81,12 @@
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>200</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -106,6 +106,12 @@
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>200</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
                  <property name="currentIndex">
                   <number>0</number>
@@ -184,6 +190,12 @@
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>83</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -207,6 +219,12 @@
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>200</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -226,6 +244,12 @@
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>200</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
                  <property name="currentIndex">
                   <number>1</number>
@@ -266,13 +290,19 @@
               <layout class="QGridLayout" name="gridLayout_2">
                <item row="0" column="0" colspan="2">
                 <layout class="QFormLayout" name="formLayout_2">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMinAndMaxSize</enum>
+                 </property>
                  <property name="fieldGrowthPolicy">
-                  <enum>QFormLayout::ExpandingFieldsGrow</enum>
+                  <enum>QFormLayout::FieldsStayAtSizeHint</enum>
                  </property>
                  <item row="0" column="0">
                   <widget class="QLabel" name="label_6">
                    <property name="text">
                     <string>Agencia</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>sbAgency</cstring>
                    </property>
                   </widget>
                  </item>
@@ -285,7 +315,7 @@
                     </size>
                    </property>
                    <property name="prefix">
-                    <string>US$ </string>
+                    <string>C$ </string>
                    </property>
                    <property name="maximum">
                     <double>999999999.000000000000000</double>
@@ -296,6 +326,9 @@
                   <widget class="QLabel" name="label_7">
                    <property name="text">
                     <string>Almacen</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>sbStore</cstring>
                    </property>
                   </widget>
                  </item>
@@ -308,7 +341,7 @@
                     </size>
                    </property>
                    <property name="prefix">
-                    <string>US$ </string>
+                    <string>C$ </string>
                    </property>
                    <property name="maximum">
                     <double>999999999.000000000000000</double>
@@ -319,6 +352,9 @@
                   <widget class="QLabel" name="label_8">
                    <property name="text">
                     <string>Papeleria</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>sbPaperWork</cstring>
                    </property>
                   </widget>
                  </item>
@@ -342,6 +378,9 @@
                   <widget class="QLabel" name="label_9">
                    <property name="text">
                     <string>Transporte</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>sbTransportation</cstring>
                    </property>
                   </widget>
                  </item>
@@ -403,10 +442,16 @@
              <string>Totales de declaración</string>
             </property>
             <layout class="QFormLayout" name="formLayout">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetMinAndMaxSize</enum>
+             </property>
              <item row="0" column="0">
               <widget class="QLabel" name="label_12">
                <property name="text">
                 <string>Peso</string>
+               </property>
+               <property name="buddy">
+                <cstring>sbWeight</cstring>
                </property>
               </widget>
              </item>
@@ -415,6 +460,9 @@
                <property name="text">
                 <string>Flete </string>
                </property>
+               <property name="buddy">
+                <cstring>sbFreight</cstring>
+               </property>
               </widget>
              </item>
              <item row="2" column="0">
@@ -422,12 +470,18 @@
                <property name="text">
                 <string>Seguro</string>
                </property>
+               <property name="buddy">
+                <cstring>sbInsurance</cstring>
+               </property>
               </widget>
              </item>
              <item row="3" column="0">
               <widget class="QLabel" name="label_15">
                <property name="text">
                 <string>Otros Gastos</string>
+               </property>
+               <property name="buddy">
+                <cstring>sbOther</cstring>
                </property>
               </widget>
              </item>
@@ -694,17 +748,26 @@
   <tabstop>dtPicker</tabstop>
   <tabstop>txtSource</tabstop>
   <tabstop>cbWarehouse</tabstop>
+  <tabstop>sbAgency</tabstop>
+  <tabstop>sbStore</tabstop>
+  <tabstop>sbPaperWork</tabstop>
+  <tabstop>sbTransportation</tabstop>
   <tabstop>ckISO</tabstop>
+  <tabstop>ckTaxes</tabstop>
+  <tabstop>sbWeight</tabstop>
+  <tabstop>sbFreight</tabstop>
+  <tabstop>sbInsurance</tabstop>
+  <tabstop>sbOther</tabstop>
   <tabstop>tabledetails</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>tabletotals</tabstop>
+  <tabstop>tableaccounts</tabstop>
   <tabstop>txtProvider</tabstop>
   <tabstop>txtWarehouse</tabstop>
   <tabstop>txtExchangeRate</tabstop>
   <tabstop>tablenavigation</tabstop>
   <tabstop>txtSearch</tabstop>
   <tabstop>tabTotalsAccounts</tabstop>
-  <tabstop>tableaccounts</tabstop>
-  <tabstop>tabletotals</tabstop>
+  <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources>
   <include location="res.qrc"/>

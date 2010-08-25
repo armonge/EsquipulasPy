@@ -82,10 +82,10 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             JOIN tiposdoc tdc ON tdc.idtipodoc = d.idtipodoc
             JOIN bodegas b ON b.idbodega = d.idbodega
             JOIN docpadrehijos dpd ON dpd.idpadre = d.iddocumento
-            JOIN documentos kx ON kx.iddocumento = dpd.idhijo AND kx.idtipodoc = 27
+            JOIN documentos kx ON kx.iddocumento = dpd.idhijo AND kx.idtipodoc = %d
             WHERE d.idtipodoc IN (%s)
             GROUP BY d.iddocumento
-            """ % self.tiposdoc
+            """ % (constantes.IDKARDEX, self.tiposdoc)
             self.navigationmodel.setQuery(query )
             
             query = u"""

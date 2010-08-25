@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/entradacompra.ui'
 #
-# Created: Mon Aug 23 02:21:25 2010
+# Created: Tue Aug 24 15:05:40 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -254,8 +254,6 @@ class Ui_frmEntradaCompra(object):
         self.toolBar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.toolBar.setObjectName("toolBar")
         frmEntradaCompra.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
-        self.toolBar.addSeparator()
-        self.toolBar.addSeparator()
         self.label_2.setBuddy(self.txtDocumentNumber)
         self.label.setBuddy(self.dtPicker)
         self.label_3.setBuddy(self.txtProvider)

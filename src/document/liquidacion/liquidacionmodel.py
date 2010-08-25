@@ -3,7 +3,6 @@
 Created on 21/05/2010
 
 @author: Andrés Reyes Monge
-TODO: DAI,  ISC, ISO no se aplican según exoneración
 '''
 #import math
 from decimal import Decimal, ROUND_CEILING
@@ -83,14 +82,14 @@ class LiquidacionModel( QAbstractTableModel ):
         """
 
 
-        self.agencyTotal = Decimal( 0 )
+        self.agencyTotalC = Decimal( 0 )
         u"""
-        @ivar:El total de agencia en la liquidación
+        @ivar:El total en cordobas de agencia en la liquidación
         @type:Decimal
         """
-        self.storeTotal = Decimal( 0 )
+        self.storeTotalC = Decimal( 0 )
         u"""
-        @ivar:El total de almacén en la liquidación
+        @ivar:El total en cordobas de almacén en la liquidación
         @type:Decimal
         """
 
@@ -210,7 +209,13 @@ class LiquidacionModel( QAbstractTableModel ):
         @type:LiquidacionTotalsModel
         """
 
+    @property
+    def agencyTotal(self):
+        return self.agencyTotalC / self.exchangeRate
 
+    @property
+    def storeTotal(self):
+        return self.storeTotalC / self.exchangeRate
 
 
     def setIvaRate( self, ivarate ):
@@ -292,6 +297,20 @@ class LiquidacionModel( QAbstractTableModel ):
         self.fobTotal = fob if fob > 0 else Decimal( 0 )
 
     @property
+    def fobTotalC(self):
+        """
+        EL FOB total del documento en cordobas
+        """
+        return self.fobTotal * self.exchangeRate
+
+    @property
+    def cifTotalC(self):
+        """
+        El CIF total del documento en cordobas
+        """
+        return self.cifTotal * self.exchangeRate
+    
+    @property
     def cifTotal( self ):
         """
         El CIF total del documento
@@ -332,6 +351,13 @@ class LiquidacionModel( QAbstractTableModel ):
         """
         return self.daiTotal + self.iscTotal + self.ivaTotal + self.tsimTotal + self.speTotal + self.isoTotal
 
+    @property
+    def taxesTotalC(self):
+        """
+        El total en cordobas de los impuestos del documento
+        """
+        return self.taxesTotal * self.exchangeRate
+        
     @property
     def ivaTotal( self ):
         """
@@ -717,24 +743,35 @@ class LiquidacionModel( QAbstractTableModel ):
                 return line.itemCost
         elif role == Qt.ToolTipRole:
             if column == CIF:
-                return "CIF Total = " + moneyfmt( self.cifTotal, 4, "US$" ) + " <br /> FOB Total = " \
-            + moneyfmt( self.fobTotal, 4, "US$" ) + "<br /> FOB Parcial" + moneyfmt( line.fobParcial, 4, "US$" )
+                return "CIF Total = %s\nFOB Total = %s\nFOB Parcial %s" % ( \
+                    moneyfmt( self.cifTotal, 4, "US$" ),\
+                    moneyfmt( self.fobTotal, 4, "US$" ), \
+                    moneyfmt( line.fobParcial, 4, "US$" )
+                    )
 
             elif column == IMPUESTOS:
-                return "DAI Parcial = " + moneyfmt( line.daiParcial, 4, "US$" ) + " <br /> ISC Parcial = " \
-            + moneyfmt( line.iscParcial, 4, "US$" ) + "<br />IVA Parcial = " + moneyfmt( line.ivaParcial, 4, "US$" ) \
-            + "<br /> TSIM Parcial = " + moneyfmt( line.tsimParcial, 4, "US$" ) + "<br /> SPE Parcial = " \
-            + moneyfmt( line.speParcial, 4, "US$" ) + "<br /> ISO Parcial = " + moneyfmt( line.isoParcial, 4, "US$" )
+                return "DAI Parcial = %s\nISC Parcial = %s\nIVA Parcial = %s\n TSIM Parcial = %s\n SPE Parcial = %s\n ISO Parcial = %s" % ( \
+                    moneyfmt( line.daiParcial, 4, "US$" ) , \
+                    moneyfmt( line.iscParcial, 4, "US$" ) ,\
+                    moneyfmt( line.ivaParcial, 4, "US$" ) ,\
+                    moneyfmt( line.tsimParcial, 4, "US$" ), \
+                    moneyfmt( line.speParcial, 4, "US$" ), \
+                    moneyfmt( line.isoParcial, 4, "US$" )
+                    )
 
             elif column == FOB:
-                return "Fob Total = " + moneyfmt( self.fobTotal, 4, "US$" )
+                return "Fob Total = % s" % moneyfmt( self.fobTotal, 4, "US$" )
 
             elif column == TCOSTOD:
-                return "CIF Parcial = " + moneyfmt( line.cifParcial, 4, "US$" ) + "<br /> Comision Parcial = "\
-                + moneyfmt( line.comisionParcial, 4, "US$" ) + "<br /> Agencia Parcial = " + moneyfmt( line.agenciaParcial, 4, "US$" ) \
-                + "<br /> Almacen Parcial = " + moneyfmt( line.almacenParcial, 4, "US$" ) + "<br /> Papeleria Parcial = " \
-                + moneyfmt( line.papeleriaParcial, 4, "US$" ) + "<br /> Transporte Parcial = " + moneyfmt( line.transporteParcial, 4, "US$" ) \
-                + "<br /> Impuestos Parcial = " + moneyfmt( line.impuestosParcial, 4, "US$" )
+                return u"CIF Parcial = %s\nComisión Parcial = %s\nAgencia Parcial = %s\nAlmacen Parcial = %s\nPapeleria Parcial = %s\nTransporte Parcial = %s\nImpuestos Parcial = %s" % ( \
+                        moneyfmt( line.cifParcial, 4, "US$" ) ,\
+                        moneyfmt( line.comisionParcial, 4, "US$" ) ,\
+                        moneyfmt( line.agenciaParcial, 4, "US$" ) ,\
+                        moneyfmt( line.almacenParcial, 4, "US$" ),\
+                        moneyfmt( line.papeleriaParcial, 4, "US$" ),\
+                        moneyfmt( line.transporteParcial, 4, "US$" ),\
+                        moneyfmt( line.impuestosParcial, 4, "US$" )
+                        )
 
 
     def setData( self, index, value, role = Qt.EditRole ):
@@ -773,7 +810,7 @@ class LiquidacionModel( QAbstractTableModel ):
             self.dirty = True
 
 
-            if column  in ( CANTIDAD, COSTOUNIT ):
+            if column  in ( CANTIDAD, COSTOUNIT, ARTICULO ):
                 self.updateFob()
 
             if index.row() == len( self.lines ) - 1 and line.valid:
@@ -836,15 +873,15 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
 
         if orientation == Qt.Horizontal:
             if section == FOBTOTAL:
-                return "FOB US$"
+                return "FOB"
             elif section == COSTOCTOTAL:
                 return "Total C$"
             elif section == COSTODTOTAL:
-                return "Total US"
+                return "Total US$"
             elif section == CIFTOTAL:
-                return "CIF US$"
+                return "CIF"
             elif section == IMPUESTOSTOTAL:
-                return "Impuestos US$"
+                return "Impuestos"
         return int( section + 1 )
 
     def data( self, index, role = Qt.DisplayRole ):
@@ -856,11 +893,11 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
 
         if role == Qt.DisplayRole:
             if index.column() == FOBTOTAL:
-                return moneyfmt( self.parent.fobTotal, 4, "US$" )
+                return moneyfmt( self.parent.fobTotal, 4, "US$" ) + " / " + moneyfmt(self.parent.fobTotalC, 4, "C$")
             elif index.column() == CIFTOTAL:
-                return moneyfmt( self.parent.cifTotal, 4, "US$" )
+                return moneyfmt( self.parent.cifTotal, 4, "US$" ) + " / " + moneyfmt(self.parent.cifTotalC, 4, "C$")
             elif index.column() == IMPUESTOSTOTAL:
-                return moneyfmt( self.parent.taxesTotal, 4, "US$" )
+                return moneyfmt( self.parent.taxesTotal, 4, "US$" ) + " / " + moneyfmt(self.parent.taxesTotalC, 4, "C$")
             elif index.column() == COSTOCTOTAL:
                 return moneyfmt( self.parent.totalC, 4, "C$" )
             elif index.column() == COSTODTOTAL:

@@ -57,7 +57,7 @@ class MainWindowBase( object ):
         self.btnHelp.clicked.connect(self.about)
         self.btnPasswd.clicked.connect(self.changePassword)
 
-        self.setWindowTitle("Llantera Esquipulas: %s@%s" % (QSqlDatabase.database().databaseName() , QSqlDatabase.database().hostName()))
+        self.setWindowTitle("Llantera Esquipulas %s: %s@%s" % (qApp.applicationName(),QSqlDatabase.database().databaseName() , QSqlDatabase.database().hostName()))
     
     def about(self):
         QMessageBox.about(self, "Llantera Esquipulas", \

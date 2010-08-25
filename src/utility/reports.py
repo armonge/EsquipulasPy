@@ -3,7 +3,7 @@ import logging
 
 from PyQt4.QtGui import  QPrinter, QPrintPreviewDialog,  QLineEdit, QMessageBox, QProgressBar, QPrintPreviewWidget
 from PyQt4.QtWebKit import QWebView
-from PyQt4.QtCore import  QUrl, QSettings
+from PyQt4.QtCore import  QUrl, QSettings, Qt
 
 class frmReportes( QPrintPreviewDialog ):
     """
@@ -17,9 +17,15 @@ class frmReportes( QPrintPreviewDialog ):
         """
         super(frmReportes, self).__init__(printer, parent )
         settings = QSettings()
-        base = settings.value( "Reports/base" ).toString()
-        self.report =  base + web + "&uname=" + user.user + "&hash=" + user.hash 
+        base = settings.value( "Reports/Base" ).toString()
+        if base == "":
+            raise UserWarning(u"No existe una configuración para el servidor de reportes")
+            
+
+        
+        self.report =  base + web + "&uname=" + user.user + "&hash=" + user.hash
         self.webview = QWebView()
+        self.setWindowFlags(self.windowFlags()|Qt.WindowMaximizeButtonHint)
 
         
 

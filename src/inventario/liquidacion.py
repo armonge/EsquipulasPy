@@ -88,9 +88,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         #inicializando el documento
         self.editmodel = None
 
+        
+        
         QTimer.singleShot( 0, self.loadModels )
-
-
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
@@ -175,6 +175,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.tablenavigation.setColumnHidden( FOBTOTAL, True )
         self.tablenavigation.setColumnHidden( CIFTOTAL, True )
         self.tablenavigation.setColumnHidden( IMPUESTOTOTAL, True )
+        self.tablenavigation.setColumnHidden( ESTADO, True )
 
         
 
@@ -182,9 +183,13 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         
         self.tableaccounts.setColumnHidden( IDCUENTA, True )
         self.tableaccounts.setColumnHidden( IDDOCUMENTOC, True )
+
         
         self.tabnavigation.setEnabled( status )
         if status == 1:
+
+            self.sbAgency.setPrefix("US$ ")
+            self.sbStore.setPrefix("US$ ")
 
             self.tabletotals.setColumnHidden( IDDOCUMENTO, True )
             self.tabletotals.setColumnHidden( AGENCIA, True )
@@ -206,6 +211,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabletotals.setColumnHidden(PROVEEDOR, True)
             self.tabletotals.setColumnHidden(TCAMBIO, True)
         elif status == 2: #editando
+            self.sbAgency.setPrefix("C$ ")
+            self.sbStore.setPrefix("C$ ")
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
             self.tabledetails.addAction( self.actionDeleteRow )
 
@@ -222,7 +229,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.sbStore.setValue(0)
             self.sbTransportation.setValue(0)
 
-            self.tabletotals.resizeColumnsToContents()
+            for column in range(self.tabletotals.model().columnCount()):
+                self.tabletotals.setColumnWidth(column, 170)
 
             for x in range(self.tabletotals.model().columnCount()):
                 self.tabletotals.setColumnHidden(x, False)
@@ -496,6 +504,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabledetails.setColumnHidden( IDDOCUMENTOT, False )
 
             self.tableaccounts.setModel(None)
+            self.tabledetails.setColumnWidth(DESCRIPCION, 250)
+
+            
+            
             self.status = 2
 
         except UserWarning as inst:
@@ -539,7 +551,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.storeTotal = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
+            self.editmodel.storeTotalC = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "double" )
@@ -548,7 +560,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.agencyTotal = Decimal( str(p0) ) if not p0 == "" else Decimal( 0 )
+            self.editmodel.agencyTotalC = Decimal( str(p0) ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
 
@@ -704,6 +716,29 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabledetails.itemDelegate().update(query)
             for line in [line for line in self.editmodel.lines if line.itemId != 0]:
                 line.update(query)
+
+
+            providersModel = QSqlQueryModel()
+            providersModel.setQuery( """
+            SELECT idpersona, nombre FROM personas p WHERE tipopersona = 2 AND activo = 1
+            """ )
+            if not providersModel.rowCount() > 0:
+                raise UserWarning("No existen proveedores en el sistema")
+            self.cbProvider.setModel( providersModel )
+            self.cbProvider.setModelColumn( 1 )
+
+            warehouseModel = QSqlQueryModel()
+            warehouseModel.setQuery( """
+            SELECT idbodega, nombrebodega
+            FROM bodegas b
+            ORDER BY idbodega
+            """ )
+            if not warehouseModel.rowCount() > 0:
+                raise UserWarning("No existen bodegas en el sistema")
+            self.cbWarehouse.setModel( warehouseModel )
+            self.cbWarehouse.setModelColumn( 1 )
+
+
                 
         except UserWarning as inst:
             QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))

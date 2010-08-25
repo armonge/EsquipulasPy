@@ -338,7 +338,7 @@ class DevolucionModel( QAbstractTableModel ):
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":idusuario", self.uid )
-            query.bindValue( ":anulado", constantes.PENDIENTE)
+            query.bindValue( ":pendiente", constantes.PENDIENTE)
             query.bindValue( ":idpersona", self.clientId )
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.totalD.to_eng_string() )

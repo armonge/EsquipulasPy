@@ -419,6 +419,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 #                if QSqlDatabase.database().isOpen():
 #                    QSqlDatabase.database().close()
 
+
 class dlgSelectBill( QDialog ):
     def __init__( self, parent = None ):
         super( dlgSelectBill, self ).__init__( parent )

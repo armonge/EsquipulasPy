@@ -53,7 +53,6 @@ class LiquidacionDelegate( QStyledItemDelegate ):
                                          index.model().lines[index.row()].comisionValue
                                          ] )
             sp = SearchPanel( self.prods, parent,True )
-
             return sp
 
         else:
@@ -114,6 +113,7 @@ class LiquidacionDelegate( QStyledItemDelegate ):
             if i == -1:
                 i = 1
             editor.setCurrentIndex( i )
+            editor.lineEdit().selectAll()
         elif index.column() == COSTOUNIT:
             editor.setValue( index.data( Qt.EditRole ).toDouble()[0] if index.data( Qt.EditRole ).toDouble()[0] != 0 else 1 )
         else:
