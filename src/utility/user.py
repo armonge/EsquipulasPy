@@ -5,13 +5,13 @@ Modulo en el que se maneja la logica de usuarios
 import hashlib
 import functools
 import logging
-
+import sys
 
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from PyQt4.QtCore import  SIGNAL, SLOT, Qt, QTimer
 from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap, QDialogButtonBox,\
 QFormLayout, QVBoxLayout, QLineEdit, qApp, QMessageBox, QLabel
-
+from utility.database import Database
 from ui import res_rc
 from ui.Ui_user import Ui_dlgUserLogin
 
@@ -27,7 +27,6 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
         self.setupUi(self)
         self.user = None
         self.max = max
-
         self.attempts = 0
 
         self.txtApplication.setText(self.txtApplication.text() +": "+ qApp.applicationName() )
@@ -51,8 +50,7 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
 
 
     def accept(self):
-        self.user = User( self.txtUser.text(), self.txtPassword.text() )
-
+        self.user = User( self.txtUser.text(), self.txtPassword.text(),self.txtBd.text() )
         if self.user.valid or self.attempts == self.max -1:
             super(dlgUserLogin, self).accept()
         else:
@@ -132,7 +130,7 @@ class User:
     @cvar: El hash usado en esta aplicación para los usuarios
     @type: string  
     """
-    def __init__( self, user, password ):
+    def __init__( self, user, password,db ):
         self.__user = user
         """
         @ivar: el nombre de usuario
@@ -143,6 +141,12 @@ class User:
         @ivar: La contraseña
         @type:string
         """
+        self.__database = db
+        u"""
+        @ivar: La contraseña
+        @type:string
+        """
+        
         self.__roles = []
         """
         @ivar: La lista de permisos de un usuario
@@ -168,7 +172,8 @@ class User:
         @ivar:Posibles errores
         @type:string
         """
-        self.db = QSqlDatabase.database()
+        self.db = Database.getDatabase(self.__database)
+        print self.__database
         try:
             if not self.db.open():
                 raise UserWarning( u'Existen problemas de conectividad con la base de datos' )

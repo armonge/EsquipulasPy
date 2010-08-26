@@ -87,42 +87,36 @@ if __name__ == '__main__':
         raise Exception( "No se selecciono un modulo" )
 
 
-    db = Database.getDatabase( "--dbconfig" in sys.argv )
+    
 
     if "--reportconfig" in sys.argv:
         settings = QtCore.QSettings()
         text, result = QtGui.QInputDialog.getText( None, u"Configuración del servidor de reportes", "Url base de los reportes", QtGui.QLineEdit.Normal, settings.value( "Reports/Base", "" ).toString() )
         if result:
             settings.setValue( "Reports/Base", text )
-
-
-    if db:
-        dlguser = dlgUserLogin()
-        cont = 0
-        valido = False
-        dlguser.txtPassword.setText("")
-        if dlguser.exec_() == QtGui.QDialog.Accepted:
-            user = dlguser.user
-            if user.valid:
-                if user.hasRole( module ):
-                    mainwindow = MainWindow( user )
-                    mainwindow.showMaximized()
-                    sys.exit( app.exec_() )
-                else:
-                    QtGui.QMessageBox.critical( None,
-                    "Llantera Esquipulas",
-                    u"Usted no tiene permiso para acceder a este modulo",
-                    QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
+    
+    Database.getDatabase("","--dbconfig" in sys.argv)
+    
+    dlguser = dlgUserLogin()
+    cont = 0
+    valido = False
+    dlguser.txtPassword.setText("")
+    if dlguser.exec_() == QtGui.QDialog.Accepted:
+        user = dlguser.user
+        if user.valid:
+            if user.hasRole( module ):
+                mainwindow = MainWindow( user )
+                mainwindow.showMaximized()
+                sys.exit( app.exec_() )
             else:
                 QtGui.QMessageBox.critical( None,
-                    "Llantera Esquipulas",
-                    user.error,
-                    QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
-            
-    else:
-        QtGui.QMessageBox.critical( None,
+                "Llantera Esquipulas",
+                u"Usted no tiene permiso para acceder a este modulo",
+                QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
+        else:
+            QtGui.QMessageBox.critical( None,
             "Llantera Esquipulas",
-            u"No puede continuar sin una configuración de base de datos",
-            QtGui.QMessageBox.StandardButtons( \
-                QtGui.QMessageBox.Ok ) )
+            user.error,
+            QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
+                
     sys.exit()
