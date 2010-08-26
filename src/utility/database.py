@@ -17,12 +17,9 @@ class dlgDatabaseConfig( QDialog ):
         """
         super( dlgDatabaseConfig, self ).__init__( parent )
 
-        settings = QSettings()
-
-
-        self.txtServer = QLineEdit( settings.value( "Esquipulas/Server", "" ).toString() )
+        self.txtServer = QLineEdit()
         self.txtDatabase = QLineEdit()
-        self.txtUser = QLineEdit( settings.value( "Esquipulas/User", "" ).toString() )
+        self.txtUser = QLineEdit()
         self.txtPassword = QLineEdit()
         self.txtPassword.setEchoMode( QLineEdit.Password )
 
