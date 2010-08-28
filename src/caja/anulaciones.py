@@ -54,8 +54,8 @@ class frmAnulaciones( QMainWindow):#, Ui_frmAnulacionesFactura ):
             print "accepted"
 
 class dlgSelectInvoice( QDialog ):
-    def __init__( self ):
-        QDialog.__init__( self )
+    def __init__( self, parent = None ):
+        super(dlgSelectInvoice, self).__init__( parent )
 
         self.annullmentsmodel = QSqlQueryModel()
         self.annullmentsmodel.setQuery( """
@@ -101,9 +101,9 @@ class dlgSelectInvoice( QDialog ):
         self.setLayout( layout )
 
         self.setMinimumWidth( 400 )
-        self.connect( buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
-        self.connect( buttonbox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) )
-        self.connect( txtSearch, SIGNAL( "textChanged(QString)" ), self.updateFilter )
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+        self.txtSearch.textChanged[unicode].connect(self.updateFilter)
 
     def updateFilter( self, string ):
         self.filtermodel.setFilterWildcard( string )
