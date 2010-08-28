@@ -832,9 +832,33 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 #        return value
 
 
+
+#TODO: Que tipo de conceptos se deberian de mostrar aca?
 class Anular( QDialog ):
-    def __init__( self ,numero):
-        QDialog.__init__( self )
+    def __init__( self ,numero, parent = None):
+        super(Anular, self).__init__(parent )
+
+        self.setupUi()
+
+        
+        #QtCore.QMetaObject.connectSlotsByName(self)
+
+        self.conceptosmodel = QSqlQueryModel()
+        self.conceptosmodel.setQuery( """
+        SELECT idconcepto,descripcion
+        FROM conceptos c;
+        """ )
+        self.cboConceptos.setModel(self.conceptosmodel)
+        self.cboConceptos.setCurrentIndex( -1 )
+        self.cboConceptos.setModelColumn( 1 )
+        self.numero=numero
+
+        self.lblnfactura2.setText(str(self.numero))
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+    
+        
+    def setupUi(self):
         self.setObjectName("frmAnulaciones")
         self.setWindowTitle( "Seleccione la factura a anular" )
         self.resize(485, 300)
@@ -848,7 +872,6 @@ class Anular( QDialog ):
         self.lblnfactura2.setFrameShape(QtGui.QFrame.Box)
         self.lblnfactura2.setText("")
         self.lblnfactura2.setObjectName("lblnfactura2")
-        self.lblnfactura2.setText(str(numero))
         self.gridLayout.addWidget(self.lblnfactura2, 0, 1, 1, 1)
         self.lblconcepto = QtGui.QLabel(self)
         self.lblconcepto.setObjectName("lblconcepto")
@@ -869,21 +892,3 @@ class Anular( QDialog ):
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout.addWidget(self.buttonBox, 4, 0, 1, 2)
-
-        
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.reject)
-        #QtCore.QMetaObject.connectSlotsByName(self)
-        
-        self.conceptosmodel = QSqlQueryModel()
-        self.conceptosmodel.setQuery( """
-        SELECT idconcepto,descripcion FROM conceptos c;
-        """ )
-        self.cboConceptos.setModel(self.conceptosmodel)
-        self.cboConceptos.setCurrentIndex( -1 )
-        self.cboConceptos.setModelColumn( 1 )
-        self.numero=numero
-    
-    def updateFilter( self, string ):
-        self.filtermodel.setFilterWildcard( string )
-                
