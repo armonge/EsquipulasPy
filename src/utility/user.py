@@ -30,7 +30,7 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
         self.attempts = 0
 
         self.txtApplication.setText(self.txtApplication.text() +": "+ qApp.applicationName() )
-        self.txtUser.setText('root')
+        
 
         self.lblError.setVisible(False)
 
@@ -46,11 +46,14 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
         #mostrar redondeado el dialogo
         pixmap = QPixmap(":/images/res/passwd-bg.png");
         self.setMask(pixmap.mask());
+        
+        self.txtUser.setText('root')
+        self.txtBd.setText('Esquipulasdb')
 
 
 
     def accept(self):
-        db =  Database.getDatabase(self.txtBd.text())
+        Database.getDatabase(self.txtBd.text())
         self.user = User( self.txtUser.text(), self.txtPassword.text())
         if self.user.valid or self.attempts == self.max -1:
             super(dlgUserLogin, self).accept()
