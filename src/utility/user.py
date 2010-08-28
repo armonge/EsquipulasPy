@@ -50,7 +50,8 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
 
 
     def accept(self):
-        self.user = User( self.txtUser.text(), self.txtPassword.text(),self.txtBd.text() )
+        db =  Database.getDatabase(self.txtBd.text())
+        self.user = User( self.txtUser.text(), self.txtPassword.text())
         if self.user.valid or self.attempts == self.max -1:
             super(dlgUserLogin, self).accept()
         else:
@@ -130,7 +131,7 @@ class User:
     @cvar: El hash usado en esta aplicación para los usuarios
     @type: string  
     """
-    def __init__( self, user, password,db ):
+    def __init__( self, user, password ):
         self.__user = user
         """
         @ivar: el nombre de usuario
@@ -141,12 +142,6 @@ class User:
         @ivar: La contraseña
         @type:string
         """
-        self.__database = db
-        u"""
-        @ivar: La contraseña
-        @type:string
-        """
-        
         self.__roles = []
         """
         @ivar: La lista de permisos de un usuario
@@ -172,8 +167,7 @@ class User:
         @ivar:Posibles errores
         @type:string
         """
-        self.db = Database.getDatabase(self.__database)
-        print self.__database
+        self.db = QSqlDatabase.database()
         try:
             if not self.db.open():
                 raise UserWarning( u'Existen problemas de conectividad con la base de datos' )
