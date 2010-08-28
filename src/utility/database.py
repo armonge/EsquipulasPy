@@ -54,22 +54,22 @@ class Database:
         @rtype: QSqlDatabase
         """
         settings = QSettings()
-        if not ( settings.value( "Esquipulas/Name" ).toString() == "" or settings.value( "Esquipulas/Server" ).toString() == "" or settings.value( "Esquipulas/User" ).toString() == "" or settings.value( "Esquipulas/Password" ).toString() == "" )  and not newsettings:                     
+        if not ( settings.value( "Database/Name" ).toString() == "" or settings.value( "Database/Server" ).toString() == "" or settings.value( "Database/User" ).toString() == "" or settings.value( "Database/Password" ).toString() == "" )  and not newsettings:                     
                 QSqlDatabase.removeDatabase('QMYSQL')
                 database = QSqlDatabase.addDatabase( 'QMYSQL' )
                 database.setDatabaseName( db )
-                database.setHostName( settings.value( "Esquipulas/Server" ).toString() )
-                database.setUserName( settings.value( "Esquipulas/User" ).toString() )
-                database.setPassword( settings.value( "Esquipulas/Password" ).toString() )
+                database.setHostName( settings.value( "Database/Server" ).toString() )
+                database.setUserName( settings.value( "Database/User" ).toString() )
+                database.setPassword( settings.value( "Database/Password" ).toString() )
                 return database
                 
-        elif ( settings.value( "Remi/Name" ).toString() == "" or settings.value( "Remi/Server" ).toString() == "" or settings.value( "Remi/User" ).toString() == "" or settings.value( "Remi/Password" ).toString() == "" )  and not newsettings:
+        elif ( settings.value( "Remidb/Name" ).toString() == "" or settings.value( "Remidb/Server" ).toString() == "" or settings.value( "Remidb/User" ).toString() == "" or settings.value( "Remidb/Password" ).toString() == "" )  and not newsettings:
                 QSqlDatabase.removeDatabase('QMYSQL')        
                 database = QSqlDatabase.addDatabase( 'QMYSQL' )
                 database.setDatabaseName( db )
-                database.setHostName( settings.value( "Remi/Server" ).toString() )
-                database.setUserName( settings.value( "Remi/User" ).toString() )
-                database.setPassword( settings.value( "Remi/Password" ).toString() )
+                database.setHostName( settings.value( "Remidb/Server" ).toString() )
+                database.setUserName( settings.value( "Remidb/User" ).toString() )
+                database.setPassword( settings.value( "Remidb/Password" ).toString() )
                 return database
         else:
             dbconfig = dlgDatabaseConfig()
@@ -83,18 +83,18 @@ class Database:
                 
                 if dbconfig.txtDatabase.text()=="esquipulasdb":
                     #guardar en el archivo de configuracion
-                    settings.setValue( "Esquipulas/Name", dbconfig.txtDatabase.text() )
-                    settings.setValue( "Esquipulas/Server", dbconfig.txtServer.text() )
-                    settings.setValue( "Esquipulas/User", dbconfig.txtUser.text() )
-                    settings.setValue( "Esquipulas/Password", dbconfig.txtPassword.text() )
+                    settings.setValue( "Database/Name", dbconfig.txtDatabase.text() )
+                    settings.setValue( "Database/Server", dbconfig.txtServer.text() )
+                    settings.setValue( "Database/User", dbconfig.txtUser.text() )
+                    settings.setValue( "Database/Password", dbconfig.txtPassword.text() )
                     return database
                 elif dbconfig.txtDatabase.text()=="remi":
                     #guardar en el archivo de configuracion
-                    settings.setValue( "Remi/Name", dbconfig.txtDatabase.text() )
-                    settings.setValue( "Remi/Server", dbconfig.txtServer.text() )
-                    settings.setValue( "Remi/User", dbconfig.txtUser.text() )
-                    settings.setValue( "Remi/Password", dbconfig.txtPassword.text() )
+                    settings.setValue( "Remidb/Name", dbconfig.txtDatabase.text() )
+                    settings.setValue( "Remidb/Server", dbconfig.txtServer.text() )
+                    settings.setValue( "Remidb/User", dbconfig.txtUser.text() )
+                    settings.setValue( "Remidb/Password", dbconfig.txtPassword.text() )
                     return database
 
-        return False
+            return False
 
