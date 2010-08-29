@@ -79,34 +79,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.editmodel = None
         self.datosRecibo=None
 
-
-
-#        #general events
-#        self.connect( self.actionEditCell, SIGNAL( "triggered()" ), self.editCell )
-#        self.connect( self.actionDeleteRow, SIGNAL( "triggered()" ), self.removeLine )
-#        self.connect( self.actionGoFirst, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'first' ) )
-#        self.connect( self.actionGoPrevious, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'previous' ) )
-#        self.connect( self.actionGoNext, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'next' ) )
-#        self.connect( self.actionGoLast, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'last' ) )
-
         QTimer.singleShot( 0, self.loadModels )
-
-        # manejador de evento de los radio boton
-#        self.connect( self.rbcontado, SIGNAL( "toggled(bool)" ), self.creditocontado)
-#        self.connect( self.rbcredito, SIGNAL( "toggled(bool)" ), self.creditocontado )
-#
-#        QTimer.singleShot( 0, self.loadModels )
-#
-#
-#
-#    def creditocontado(self,on):
-#        """
-#        Asignar el 1 si es al contado, 0 si es al credito
-#        """
-#        print("hola")
-#        if not self.editmodel is None:
-#            self.editmodel.escontado = 1 if self.rbcontado.isChecked() else 0
-#            print(str(self.editmodel.escontado))
 
     def agregarFactura(self,i,n):
 #        modelo = cindex.model()

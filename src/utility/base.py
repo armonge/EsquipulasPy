@@ -146,8 +146,9 @@ class Base( object ):
         else:
             self.mapper.toLast()()
         
-        self.tabledetails.resizeColumnsToContents()
-        self.tabledetails.horizontalHeader().setStretchLastSection(True)
+        if self.tabledetails != None:
+            self.tabledetails.resizeColumnsToContents()
+            self.tabledetails.horizontalHeader().setStretchLastSection(True)
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
 

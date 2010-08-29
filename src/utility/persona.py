@@ -4,134 +4,260 @@ Created on 21/08/2010
 
 @author: Luis Carlos Mejia
 '''
+import logging
+from utility import constantes
 from PyQt4.QtCore import pyqtSlot,Qt
-from PyQt4.QtGui import QDialog,QCompleter,QMessageBox,QSortFilterProxyModel
-from ui.Ui_persona import Ui_dlgPersona
+from PyQt4.QtGui import QMainWindow,QDataWidgetMapper,QMessageBox,QSortFilterProxyModel
+from ui.Ui_persona import Ui_frmPersona
+from utility.base import Base
 from PyQt4.QtSql import QSqlQueryModel,QSqlQuery, QSqlDatabase
 
-class dlgPersona(Ui_dlgPersona,QDialog):
+TIPO,ID,NOMBRE,DIRECCION,TELEFONO,CORREO,RUC,ACTIVO = range(8)
+
+class frmPersona(Ui_frmPersona,QMainWindow,Base):
     def __init__( self,tipo,rol,parent = None):
-        super( dlgPersona, self ).__init__( parent )
+        super( frmPersona, self ).__init__( parent )
         self.setupUi( self )
-        
+        self.parentWindow = parent
+        self.tabledetails = None
+        Base.__init__( self )
+        self.setWindowModality(Qt.WindowModal)
+        self.setWindowFlags(Qt.Dialog)
+        self.parentWindow.removeToolBar(self.toolBar)
+        self.addToolBar(self.toolBar)
+
         self.tipo = tipo
         self.rol = rol
-        self.lbltitulo.setText("<B>Crear un %s</B>"%rol)
-#        self.lblnombre.setText("<B>%s</B>"%rol)
-        if not QSqlDatabase.database().isOpen():
-            QSqlDatabase.database().open()
-            
+        self.lbltitulo.setText(u"<B>Datos del %s</B>"%rol)
+
+        self.editmodel = None
+        self.parent = parent
+
+        self.navmodel = QSqlQueryModel()
         
-        self.personasModel = QSqlQueryModel()
-        self.personasModel.setQuery( """
-            SELECT
-                tipopersona,
-                idpersona,
-                nombre,
-                direccion,
-                telefono,
-                email,
-                ruc
-            FROM personas p
-            WHERE idpersona <> 1
-            ;""")
-        self.navmodel = QSortFilterProxyModel()
-        self.navmodel.setSourceModel(self.personasModel)
-        self.navmodel.setFilterKeyColumn(0)
-        self.navmodel.setFilterRegExp('^%d$'%self.tipo)
-        
-        
-        self.combomodel = QSortFilterProxyModel()
-#        self.combomodel.setSourceModel(self.personasModel)
-#        self.combomodel.setFilterKeyColumn(0)
-#        self.combomodel.setFilterRegExp('[^%d$]'%self.tipo)
-#        
         self.navproxymodel = QSortFilterProxyModel()
         self.navproxymodel.setFilterKeyColumn(-1)
         self.navproxymodel.setSourceModel(self.navmodel)
         self.navproxymodel.setFilterCaseSensitivity(Qt.CaseInsensitive)
         self.tablenavigation.setModel(self.navproxymodel)
-        self.tablenavigation.setColumnHidden(0,True)
-        self.tablenavigation.setColumnHidden(1,True)
+
+        self.actionPreview.setVisible(False)
+        self.actionPrint.setVisible(False)
+        self.updateModels()
+        self.status = True
         
-        if QSqlDatabase.database().isOpen():
-            QSqlDatabase.database().close()
-        
-        if self.combomodel.rowCount()==0:
-            self.esNuevo = False
-            self.btncancel.setVisible(False)
+    def updateDetailFilter( self, index ):
+        if self.navmodel.record( index ).value( "activo" ).toBool():  
+            self.rbactivo.setChecked(True)
         else:
-            self.esNuevo = True
-            self.cbnombre.setModel(self.combomodel)
-            self.cbnombre.setCurrentIndex( -1 )
-            self.cbnombre.setFocus()
-            self.cbnombre.setModelColumn( 2 )
-            completer = QCompleter()
-            completer.setCaseSensitivity( Qt.CaseInsensitive )
-            completer.setModel( self.combomodel )
-            completer.setCompletionColumn( 1 )
-            self.cbnombre.setCompleter(completer)
-            self.btnadd.clicked.connect(self.setControls)
-            self.btncancel.clicked.connect(self.setControls)
-        
-        self.setControls()
-        
-    def accept(self):
-        titulo = "Crear un nuevo %s"%self.rol 
-        if self.esNuevo:
-            if self.txtnombre.text()=="":
-                self.txtnombre.setFocus()
-                QMessageBox.warning(None,titulo,"Por favor escriba el nombre del %s"%self.rol)
-                return
-        else:
-            if self.cbnombre.currentIndex()==-1:
-                self.cbnombre.setFocus()
-                QMessageBox.warning(None,titulo,"Por favor elija una la persona")
-                return
+            self.rbinactivo.setChecked(True)
+     
+    def updateModels( self ):
+        try:
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning( "No se pudo abrir la base de datos" )
+
+            #TODO: Esta consulta tiene que mejorar para definir realmente quien es el que realiza el arqueo
+            query = u"""
+            SELECT
+                tipopersona,
+                idpersona,
+                Nombre,
+                direccion as 'Dirección',
+                telefono as 'Teléfono',
+                email as 'E-mail',
+                ruc as Ruc,
+                activo
+            FROM personas p
+          --  WHERE idpersona =%d
+            """ % constantes.CLIENTE
+            self.navmodel.setQuery(query)
+            self.navproxymodel.setSourceModel(self.navmodel)
+            self.tablenavigation.setModel(self.navproxymodel)
+            
+            self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
+            self.mapper.setModel( self.navproxymodel )
+            self.mapper.addMapping( self.txtnombre,NOMBRE)
+            self.mapper.addMapping( self.txtdireccion,DIRECCION)
+            self.mapper.addMapping( self.txttelefono,TELEFONO)
+            self.mapper.addMapping( self.txtcorreo,CORREO)
+            self.mapper.addMapping( self.txtruc,RUC)
+            
 
 
+            self.tablenavigation.setColumnHidden(TIPO,True)
+            self.tablenavigation.setColumnHidden(ID,True)
+            self.tablenavigation.setColumnHidden(ACTIVO,True)  
+            
+            self.tablenavigation.setColumnWidth(NOMBRE,200)
+                              
+            self.navigate( 'last' )
+            
+#            self.mapper.setCurrentIndex( index.row() )
+            
+        except UserWarning as inst:
+            logging.error(inst)
+            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+        except Exception as inst:
+            logging.critical(inst)
+        finally:
+            if self.database.isOpen():
+                self.database.close()
+
+        
+    def save(self):
+        editado = self.status == 2
+        
+        titulo = "Guardar los cambios" if editado else "Crear un nuevo %s"%self.rol 
+    
+        if self.txtnombre.text()=="":
+            self.txtnombre.setFocus()
+            QMessageBox.warning(None,titulo,"Por favor escriba el nombre del %s"%self.rol)
+            return False
+        
+        
+        if QMessageBox.question(None,titulo,u"¿Está seguro que desea guardar los cambios?" if editado else u"¿Está seguro que desea crear al %s?"%self.rol ,QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+            return False
+        
         try:
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
             
             query = QSqlQuery()
             
+            pos = self.mapper.currentIndex()
+            if editado:
+                query.prepare("""
+                UPDATE personas SET 
+                direccion =:dir, 
+                telefono=:tel,
+                email=:correo,
+                ruc=:ruc, 
+                tipopersona = :tipo,
+                activo=:activo
+                WHERE 
+                idpersona = :idpersona 
+                LIMIT 1;
+                """)
+                query.bindValue(":idpersona",self.navmodel.record( self.mapper.currentIndex() ).value( "idpersona" ).toInt()[0])
+            else:            
+                query.prepare("""
+                INSERT INTO personas(nombre,fechaingreso,direccion,telefono,email,ruc,tipopersona,activo) VALUES
+                (:nombre,NOW(),:dir,:tel,:correo,:ruc,:tipo,:activo)
+                """)
+                query.bindValue(":nombre",self.txtnombre.text())
                 
-                    
-            query.prepare("""
-            INSERT INTO personas(nombre,fechaingreso,direccion,telefono,email,ruc,tipopersona) VALUES
-            (:nombre,NOW(),:dir,:tel,:correo,:ruc,:tipo)
-            """)
-            query.bindValue(":nombre",self.txtnombre.text() if self.esNuevo else self.cbnombre.currentText())
             query.bindValue(":dir",self.txtdireccion.text())
             query.bindValue(":tel",self.txttelefono.text())
             query.bindValue(":correo",self.txtcorreo.text())
             query.bindValue(":ruc",self.txtruc.text())
             query.bindValue(":tipo",self.tipo)
+            query.bindValue(":activo",1 if self.rbactivo.isChecked() else 0)
+
             
             if not query.exec_():
                 raise Exception(query.lastError().text())
             
-            QMessageBox.information(None,titulo,"El %s fue creado exitosamente"%self.rol)
-            return QDialog.accept(self)
+            QMessageBox.information(None,titulo,"Los cambios fueron guardados" if editado else "El %s fue creado exitosamente"%self.rol)
+            
+            self.updateModels()
+            self.status = True
+            result = True
+            if editado:
+                self.mapper.setCurrentIndex(pos)
         except Exception as inst:
             print inst
             print query.lastError().text()
-        
             QMessageBox.critical(None,titulo,"El %s no pudo ser creado"%self.rol)
+            result = False
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
+                
+        return result
         
-    
-    def setControls(self):
-        self.esNuevo = not self.esNuevo
-        self.swnombre.setCurrentIndex(1 if self.esNuevo else 0)
-        self.txtcorreo.setEnabled(self.esNuevo)
-        self.txtdireccion.setEnabled(self.esNuevo)
-        self.txtruc.setEnabled(self.esNuevo)
-        self.txttelefono.setEnabled(self.esNuevo)
+    def cancel( self ):
+        self.editmodel = None
+        
+        self.status = True
+        self.navigate( 'last' )
+           
+    def setControls(self,status):
+        
+        self.tabWidget.setCurrentIndex(1 if status == False else 0)
+        if status == False:
+            self.txtnombre.setText("")
+            self.txtdireccion.setText("")
+            self.txtcorreo.setText("")
+            self.txtruc.setText("")
+            self.txttelefono.setText("")
+            self.rbactivo.setChecked(True)
+            self.txtnombre.setReadOnly(False)
+        elif status == True:
+            self.tablenavigation.setFocus()
+            self.txtnombre.setReadOnly(True)
+        else:
+            status = False    
+        
+        self.rbactivo.setEnabled(not status)
+        self.rbinactivo.setEnabled(not status)
+        self.tablenavigation.setEnabled( status )
+        self.tabnavigation.setEnabled( status )
+        self.actionNew.setVisible( status )
+        self.actionCancel.setVisible( not status )
+        self.actionSave.setVisible( not status )
+        self.actionEditar.setVisible(status )
+        self.actionGoFirst.setEnabled(status)
+        self.actionGoLast.setEnabled(status)
+        self.actionGoNext.setEnabled(status)
+        self.actionGoPrevious.setEnabled(status)
+                
+        self.txtcorreo.setReadOnly(status)
+        self.txtdireccion.setReadOnly(status)
+        self.txtruc.setReadOnly(status)
+        self.txttelefono.setReadOnly(status)
 
+    def setEditControls(self,status):
+
+        self.rbactivo.setEnabled(not status)
+        self.rbinactivo.setEnabled(not status)
+        self.tablenavigation.setEnabled( status )
+        self.tabnavigation.setEnabled( status )
+        self.actionNew.setVisible( status )
+        self.actionEditar.setVisible(status)
+        self.actionCancel.setVisible( not status )
+        self.actionSave.setVisible( not status )
+        self.txtcorreo.setReadOnly(status)
+        self.txtdireccion.setReadOnly(status)
+        self.txtruc.setReadOnly(status)
+        self.txttelefono.setReadOnly(status)
+        
+        self.actionGoFirst.setEnabled(status)
+        self.actionGoLast.setEnabled(status)
+        self.actionGoNext.setEnabled(status)
+        self.actionGoPrevious.setEnabled(status)
+        
+        if not status:
+            self.tabWidget.setCurrentIndex(0)
+            self.txtdireccion.setFocus()
+        else:
+            self.tabWidget.setCurrentIndex(1)
+            self.tablenavigation.setFocus()
+            
+            
+            
+    def newDocument( self ):
+        self.status = False        
+    
+    
+    @pyqtSlot(  )
+    def on_actionEditar_activated( self ):
+#        self.setEditControls(False)
+#        self.setControls(2)
+        self.status = 2
+        
+        
     @pyqtSlot( "int" )
     def on_cbnombre_currentIndexChanged( self, index ):
         """

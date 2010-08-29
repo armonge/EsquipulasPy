@@ -133,7 +133,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                     
             
         except UserWarning as inst:
-            logging.error(ins)
+            logging.error(inst)
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
             logging.critical(inst)
@@ -186,7 +186,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.tablenavigation.setColumnHidden( IDDOCUMMENTO, False )
 
 
-            doublevalidator = QDoubleValidator(0, 99999999, 4, self)
+#            doublevalidator = QDoubleValidator(0, 99999999, 4, self)
             
         else:
             self.tabledetailsC.setModel( self.detailsproxymodelC )

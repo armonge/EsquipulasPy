@@ -9,24 +9,19 @@ import logging
 from decimal import Decimal
 
 from PyQt4.QtGui import QMainWindow, QDialog, QMessageBox
-from PyQt4.QtCore import pyqtSlot, Qt,QDate
+from PyQt4.QtCore import pyqtSlot, Qt
 from PyQt4.QtSql import QSqlDatabase,QSqlQuery
 from factura import frmFactura
 from recibo import frmRecibo
 from ui.Ui_mainwindowcaja import Ui_MainWindow
 from apertura import dlgApertura
-from utility.user import dlgUserLogin, User
+#from utility.user import dlgUserLogin, User
 from utility.mainwindowbase import MainWindowBase
 from inventario.catalogos import frmCatConceptos
-from banks import frmBanks
-from cajas import frmCajas
-from catalogos import frmCatClientes
-from anulaciones import frmAnulaciones 
 from arqueo import frmArqueo
-from cierrecaja import frmCierreCaja
 from utility import constantes
 from devolucion import frmDevolucion
-from utility.persona import dlgPersona
+from utility.persona import frmPersona
 
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     """
@@ -88,8 +83,8 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
 
     @pyqtSlot(  )
     def on_actionClients_activated( self ):
-        dialog = dlgPersona(constantes.CLIENTE,"Cliente",self)
-        dialog.exec_()
+        clientes = frmPersona(constantes.CLIENTE,"Cliente",self)
+        clientes.show()
         
     @pyqtSlot(  )
     def on_btnConceptos_clicked( self ):
@@ -202,14 +197,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow( factura )
         factura.show()
 
-    @pyqtSlot(  )
-    def on_btnClients_clicked( self ):
-        """
-        Slot documentation goes here.
-        """
-        clientes = frmCatClientes( self )
-        self.mdiArea.addSubWindow( clientes )
-        clientes.show()
 
     @pyqtSlot( )
     def on_btnDevolutions_clicked( self ):

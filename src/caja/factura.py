@@ -63,6 +63,10 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.lblanulado.setHidden(True)
         self.recibo = dlgRecibo(self,True)
         
+        self.toolBar.removeAction(self.actionAnular)
+        self.toolBar.addAction(self.actionAnular)
+        
+        
         QTimer.singleShot( 0, self.loadModels )
     
     def cancel( self ):
@@ -195,7 +199,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
    
 
     @pyqtSlot(  )
-    def on_btnAnular_clicked( self ):
+    def on_actionAnular_activated( self ):
         
         doc=self.navmodel.record( self.mapper.currentIndex()).value( "iddocumento" ).toInt()[0]
         estado= self.navmodel.record( self.mapper.currentIndex() ).value( "idestado" ).toInt()[0]
@@ -428,7 +432,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
 
     def updateDetailFilter( self, index ):
         self.lbltasaiva.setText(self.navmodel.record( index ).value( "tasaiva" ).toString() +'%')
-        self.lblanulado.setHidden(self.navmodel.record( index ).value( "Anulada" ).toInt()[0]==0)
+        self.lblanulado.setHidden(self.navmodel.record( index ).value( "idestado" ).toInt()[0]!=constantes.ANULADO)
+        self.actionAnular.setEnabled(self.navmodel.record( index ).value( "idestado" ).toInt()[0]==constantes.CONFIRMADO)
         self.dtPicker.setDate(QDate.fromString(self.navmodel.record( index ).value( "Fecha" ).toString(),"dd/MM/yyyy"))
         escontado = self.navmodel.record( index ).value( "escontado" ).toBool() 
         if escontado:
@@ -802,8 +807,10 @@ class Anular( QDialog ):
         self.conceptosmodel = QSqlQueryModel()
         self.conceptosmodel.setQuery( """
         SELECT idconcepto,descripcion
-        FROM conceptos c;
-        """ )
+        FROM conceptos c
+        WHERE idtipodoc = %d
+        ;
+        """% constantes.IDANULACION )
         self.cboConceptos.setModel(self.conceptosmodel)
         self.cboConceptos.setCurrentIndex( -1 )
         self.cboConceptos.setModelColumn( 1 )

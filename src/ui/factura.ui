@@ -603,37 +603,50 @@ color: rgb(255, 0, 0);</string>
            <widget class="QLineEdit" name="txtSearch"/>
           </item>
           <item>
-           <widget class="QPushButton" name="btnAnular">
-            <property name="text">
-             <string>Anular Factura</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QComboBox" name="cboFiltro">
             <item>
              <property name="text">
               <string>Todas</string>
+             </property>
+             <property name="icon">
+              <iconset resource="res.qrc">
+               <normaloff>:/images/res/simbolo-dolar-300x245.jpg</normaloff>:/images/res/simbolo-dolar-300x245.jpg</iconset>
              </property>
             </item>
             <item>
              <property name="text">
               <string>Confirmadas</string>
              </property>
+             <property name="icon">
+              <iconset resource="res.qrc">
+               <normaloff>:/icons/res/checkbox.png</normaloff>:/icons/res/checkbox.png</iconset>
+             </property>
             </item>
             <item>
              <property name="text">
               <string>Anuladas</string>
+             </property>
+             <property name="icon">
+              <iconset resource="res.qrc">
+               <normaloff>:/icons/res/edit-delete.png</normaloff>:/icons/res/edit-delete.png</iconset>
              </property>
             </item>
             <item>
              <property name="text">
               <string>Crédito Pendiente</string>
              </property>
+             <property name="icon">
+              <iconset resource="res.qrc">
+               <normaloff>:/images/res/account-types-checking.png</normaloff>:/images/res/account-types-checking.png</iconset>
+             </property>
             </item>
             <item>
              <property name="text">
               <string>Anulación pendiente</string>
+             </property>
+             <property name="icon">
+              <iconset resource="res.qrc">
+               <normaloff>:/icons/res/document-edit.png</normaloff>:/icons/res/document-edit.png</iconset>
              </property>
             </item>
            </widget>
@@ -657,7 +670,23 @@ color: rgb(255, 0, 0);</string>
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionAnular"/>
   </widget>
+  <action name="actionAnular">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icons/res/edit-delete.png</normaloff>:/icons/res/edit-delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>anular</string>
+   </property>
+   <property name="toolTip">
+    <string>Anular la Factura</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>cbcliente</tabstop>

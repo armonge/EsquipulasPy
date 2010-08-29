@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/factura.ui'
+# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\factura.ui'
 #
-# Created: Mon Aug 23 02:44:46 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created: Sat Aug 28 23:44:49 2010
+#      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -338,21 +338,26 @@ class Ui_frmFactura(object):
         self.txtSearch = QtGui.QLineEdit(self.tabnavigation)
         self.txtSearch.setObjectName("txtSearch")
         self.horizontalLayout.addWidget(self.txtSearch)
-        self.btnAnular = QtGui.QPushButton(self.tabnavigation)
-        self.btnAnular.setObjectName("btnAnular")
-        self.horizontalLayout.addWidget(self.btnAnular)
         self.cboFiltro = QtGui.QComboBox(self.tabnavigation)
         self.cboFiltro.setObjectName("cboFiltro")
-        self.cboFiltro.addItem("")
-        self.cboFiltro.addItem("")
-        self.cboFiltro.addItem("")
-        self.cboFiltro.addItem("")
-        self.cboFiltro.addItem("")
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/images/res/simbolo-dolar-300x245.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.cboFiltro.addItem(icon2, "")
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(":/icons/res/checkbox.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.cboFiltro.addItem(icon3, "")
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(":/icons/res/edit-delete.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.cboFiltro.addItem(icon4, "")
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(":/images/res/account-types-checking.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.cboFiltro.addItem(icon5, "")
+        self.cboFiltro.addItem(icon1, "")
         self.horizontalLayout.addWidget(self.cboFiltro)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/icons/res/table.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.tabWidget.addTab(self.tabnavigation, icon2, "")
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap(":/icons/res/table.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.tabWidget.addTab(self.tabnavigation, icon6, "")
         self.verticalLayout.addWidget(self.tabWidget)
         frmFactura.setCentralWidget(self.centralwidget)
         self.statusbar = QtGui.QStatusBar(frmFactura)
@@ -361,6 +366,11 @@ class Ui_frmFactura(object):
         self.toolBar = QtGui.QToolBar(frmFactura)
         self.toolBar.setObjectName("toolBar")
         frmFactura.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        self.actionAnular = QtGui.QAction(frmFactura)
+        self.actionAnular.setEnabled(False)
+        self.actionAnular.setIcon(icon4)
+        self.actionAnular.setObjectName("actionAnular")
+        self.toolBar.addAction(self.actionAnular)
         self.label_5.setBuddy(self.dtPicker)
         self.label.setBuddy(self.txtcliente)
         self.label_11.setBuddy(self.txtcliente)
@@ -405,7 +415,6 @@ class Ui_frmFactura(object):
         self.btnrecibo.setText(QtGui.QApplication.translate("frmFactura", "Datos del Recibo", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), None)
         self.label_4.setText(QtGui.QApplication.translate("frmFactura", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnAnular.setText(QtGui.QApplication.translate("frmFactura", "Anular Factura", None, QtGui.QApplication.UnicodeUTF8))
         self.cboFiltro.setItemText(0, QtGui.QApplication.translate("frmFactura", "Todas", None, QtGui.QApplication.UnicodeUTF8))
         self.cboFiltro.setItemText(1, QtGui.QApplication.translate("frmFactura", "Confirmadas", None, QtGui.QApplication.UnicodeUTF8))
         self.cboFiltro.setItemText(2, QtGui.QApplication.translate("frmFactura", "Anuladas", None, QtGui.QApplication.UnicodeUTF8))
@@ -413,15 +422,7 @@ class Ui_frmFactura(object):
         self.cboFiltro.setItemText(4, QtGui.QApplication.translate("frmFactura", "Anulación pendiente", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmFactura", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionAnular.setText(QtGui.QApplication.translate("frmFactura", "anular", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionAnular.setToolTip(QtGui.QApplication.translate("frmFactura", "Anular la Factura", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    frmFactura = QtGui.QMainWindow()
-    ui = Ui_frmFactura()
-    ui.setupUi(frmFactura)
-    frmFactura.show()
-    sys.exit(app.exec_())
-
