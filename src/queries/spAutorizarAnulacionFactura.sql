@@ -3,9 +3,7 @@
 DROP PROCEDURE IF EXISTS `spAutorizarAnulacionFactura` $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spAutorizarAnulacionFactura`(
 IDANULACION INT,
-IDGERENTE INT,
-TIPOPERSONA INT,
-IDCONCEPTO INT
+IDGERENTE INT
 )
 BEGIN
 -- DECLARO UN ERROR HANDLER QUE HARA UN ROLLBACK EN CASO DE ERROR Y RETORNARA FALSE
@@ -18,77 +16,78 @@ BEGIN
 -- INICIO TRANSACCION
     START TRANSACTION;
 
--- OBTENGO EL CONSECUTIVO DE LA ANULACION, Y EL ID DE LA FACTURA QUE FUE ANULADA
-    SELECT
-    fnConsecutivo(2,null),
-    d.iddocumento
-    from docpadrehijos ph
-    JOIN documentos d ON ph.idpadre = d.iddocumento AND d.idtipodoc = 5
-    WHERE ph.idhijo = IDANULACION
+-- OBTENGO EL ID DE LA FACTURA QUE FUE ANULADA
+     SELECT
+          anul.idestado AS anulacionEstado,
+          anul.idtipodoc ,
+          fac.iddocumento AS facturaId,
+          fac.escontado AS facturaContado
+     FROM documentos anul
+     JOIN docpadrehijos PH on ph.idhijo = IDANULACION
+      JOIN documentos fac ON ph.idpadre = fac.iddocumento AND fac.idtipodoc = 5
+      WHERE anul.iddocumento = IDANULACION
     INTO
-    @numero,
-    @factura
+    @anulEstado,
+    @tipo,
+    @factura,
+    @esContado
      ;
 
--- OBTENGO EL ID DEL RECIBO EN CASO DE QUE LA FACTURA FUERA AL CONTADO O HALLA SIDO PAGADA POR UN RECIBO
     SELECT
-        rec.iddocumento,
-        rec.total,
-        rec.idtipocambio
-    from docpadrehijos ph
-    JOIN documentos fac ON ph.idpadre = @factura
-    JOIN documentos rec ON ph.idhijo = rec.iddocumento  AND rec.idtipodoc=18
-    WHERE fac.iddocumento = @factura
-    AND (fac.total = ph.monto OR fac.escontado=0)
+        rec.iddocumento
+    FROM documentos rec
+    JOIN  docpadrehijos ph ON ph.idhijo = rec.iddocumento
+    AND rec.idtipodoc=18
+    AND ph.idpadre = @factura
     INTO
-    @recibo,
-    @totalrecibo,
-    @tcrecibo
+    @recibo
     ;
 
--- ACTUALIZO EL ESTADO DE LA ANULACION Y LO PASO A CONFIRMADO
-    UPDATE documentos SET idestado = 1, ndocimpreso = @numero where iddocumento = IDANULACION;
+
+  IF @tipo <> 2 OR (@anulEstado IN (1,NULL)) OR (@esContado = 0 AND (@recibo IS NOT NULL)) THEN
+
+      SELECT FALSE;
+
+  ELSE
+
+-- OBTENGO EL ID DEL RECIBO EN CASO DE QUE LA FACTURA FUERA AL CONTADO O HALLA SIDO PAGADA POR UN RECIBO
+
 
 -- INSERTO LA RELACION DE LA ANULACION CON LA PERSONA QUE LA AUTORIZA
-    INSERT INTO personasxdocumento(idpersona, iddocumento,idaccion) VALUES (IDGERENTE,IDANULACION,TIPOPERSONA);
+    INSERT INTO personasxdocumento(idpersona, iddocumento,idaccion) VALUES (IDGERENTE,IDANULACION,5);
 
 -- REVIERTO LAS CUENTAS CONTABLES DE LA FACTURA, RELACIONANDOLAS CON LA ANULACION
     INSERT INTO cuentasxdocumento
-      SELECT IDANULACION,cxd.idcuenta,-cxd.monto,nlinea from documentos fac
-       JOIN cuentasxdocumento cxd ON cxd.iddocumento = @factura
-       where fac.iddocumento = @factura;
+      SELECT
+         IDANULACION,
+         cxd.idcuenta,
+         SUM(-cxd.monto) AS monto,
+         nlinea
+         FROM documentos doc
+         JOIN cuentasxdocumento cxd ON  cxd.iddocumento = doc.iddocumento AND cxd.iddocumento IN (@factura,@recibo)
+         GROUP BY cxd.idcuenta
+         HAVING SUM(-cxd.monto)<>0
+         ;
 
--- VERIFICO SI HAY RECIBO
+    -- VERIFICO SI HAY RECIBO
     IF @recibo is not null then
 
--- SI HAY RECIBO CREO UN DOCUMENTO NOTA DE CREDITO QUE REVERTIRA LAS CUENTAS DEL RECIBO
--- YA QUE SE LE TUVO QUE DEVOLVER EL DINERO AL CLIENTE.
-      INSERT INTO documentos (ndocimpreso,total,fechacreacion,idtipocambio,idconcepto,idestado,idtipodoc) VALUES
-                            (fnConsecutivo(14,null),@totalrecibo,NOW(),@tcrecibo,IDCONCEPTO,1,14);
-
-
-   -- OBTENGO EL ID DE LA NOTA DE CREDITO CREADA
-      SET @NC = LAST_INSERT_ID();
-
--- INSERTO LA RELACION ENTRE LAS NOTAS DE CREDITO Y EL RECIBO, CON LA ANULACION, LA ANULACION ES EL PADRE.
+-- INSERTO LA RELACION ENTRE EL RECIBO Y  LA ANULACION, LA ANULACION ES EL HIJO.
       INSERT INTO docpadrehijos(idpadre,idhijo) VALUES
-      (IDANULACION,@NC),
-      (IDANULACION,@recibo)
+      (@recibo,IDANULACION)
        ;
 
 -- ACTUALIZO EL ESTADO DEL RECIBO A ANULADO
       UPDATE documentos SET idestado = 2 where iddocumento = @recibo;
+   END IF;
 
--- REVIERTO LAS CUENTAS CONTABLES DEL RECIBO RELACIONANDOLAS A LA NOTA DE CREDITO.
-      INSERT INTO cuentasxdocumento
-      SELECT @NC ,cxd.idcuenta,-cxd.monto,cxd.nlinea from cuentasxdocumento cxd
-      WHERE cxd.iddocumento = @recibo
-      ;
-    END IF;
+-- ACTUALIZO EL ESTADO DE LA ANULACION Y LO PASO A CONFIRMADO
+    UPDATE documentos SET idestado = 1 WHERE iddocumento = IDANULACION;
+
 
     COMMIT;
-
-     SELECT TRUE;
+    SELECT TRUE;
+   END IF;
 END $$
 
 DELIMITER ;
