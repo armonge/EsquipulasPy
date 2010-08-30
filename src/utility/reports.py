@@ -5,11 +5,18 @@ from PyQt4.QtGui import  QPrinter, QPrintPreviewDialog,  QLineEdit, QMessageBox,
 from PyQt4.QtWebKit import QWebView
 from PyQt4.QtCore import  QUrl, QSettings, Qt
 
+class Reports(object):
+    instance = None
+    def __new__(cls, *args, **kargs):
+        if cls.instance is None:
+            cls.instance = object.__new__(cls, *args, **kargs)
+        return cls.instance
+
 class frmReportes( QPrintPreviewDialog ):
     """
     Este es un formulario generico que muestra los reportes web generados para las 
     """
-    def __init__( self, web, user, printer = QPrinter() ,parent = None, ):
+    def __init__( self, web, user, printer ,parent = None, ):
         """
         @param user: El objeto usuario asociado con esta sesión
         @param web: La dirección web a la que apunta el reporte
@@ -17,7 +24,8 @@ class frmReportes( QPrintPreviewDialog ):
         """
         super(frmReportes, self).__init__(printer, parent )
         settings = QSettings()
-        base = settings.value( "Reports/Base" ).toString()
+        r = Reports()
+        base = r.url
         if base == "":
             raise UserWarning(u"No existe una configuración para el servidor de reportes")
             

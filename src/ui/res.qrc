@@ -37,6 +37,8 @@
     <file>res/checkbox.png</file>
   </qresource>
   <qresource prefix="images">
+    <file>res/logo-big.png</file>
+    <file>res/tires.png</file>
     <file>res/help-about.png</file>
     <file>res/system-help.png</file>
     <file>res/passwd-bg.png</file>

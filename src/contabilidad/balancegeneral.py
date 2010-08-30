@@ -11,7 +11,6 @@ from PyQt4.QtCore import QDate,pyqtSlot,QAbstractItemModel, SIGNAL, QModelIndex,
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
-import locale
 
 CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, IDCUENTA, ACUMULADO = range( 8 )
 headers = [ u"Código", u"Descripción", "Es Debe", "hijos", "Saldo", "Padre", "Id", "Total"]
@@ -56,7 +55,7 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
             total = 0
             for i in range(self.activofiltermodel.rowCount()):
                 total += Decimal(self.activofiltermodel.index(i,ACUMULADO).data(Qt.EditRole).toString())
-            self.txtactivo.setText(locale.currency(total, symbol = 'C$' ))    
+            self.txtactivo.setText(moneyfmt(total,4,'C$' ))
             
     #        self.pasivoModel = CuentasModel()
             self.pasivofiltermodel = QSortFilterProxyModel()
@@ -76,7 +75,7 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
             total1 =0
             for i in range(self.pasivofiltermodel.rowCount()):
                 total1 += Decimal(self.pasivofiltermodel.index(i,ACUMULADO).data(Qt.EditRole).toString())
-            self.txtpasivo.setText(locale.currency(total1, symbol = 'C$' ))    
+            self.txtpasivo.setText(moneyfmt(total1,4,'C$' ))
             
             self.capitalfiltermodel = QSortFilterProxyModel()
             self.capitalfiltermodel.setSourceModel( self.model )
@@ -95,8 +94,8 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
             for i in range(self.capitalfiltermodel.rowCount()):
                 total2 += Decimal(self.capitalfiltermodel.index(i,ACUMULADO).data(Qt.EditRole).toString())
                            
-            self.txtcapital.setText(locale.currency(total2, symbol = 'C$' ))     
-            self.txtpasivocapital.setText(locale.currency(total1+total2, symbol = 'C$' ))    
+            self.txtcapital.setText(moneyfmt(total2,4,'C$' ))
+            self.txtpasivocapital.setText(moneyfmt(total1+total2,4,'C$' ))
             
             
     #        self.capitalTree.expandAll()
@@ -224,7 +223,7 @@ class CuentasModel( QAbstractItemModel ):
         return parentItem.childCount()
 
 class Cuenta( object ):
-    def __init__( self, parent, fecha, id = 0 , code = "", description = "", monto = 0, esdebe = 0 ):
+    def __init__( self, parent, fecha, id = 0 , code = "", description = "", monto = Decimal(0), esdebe = 0 ):
         self.parentItem = parent
         self.id = id
         self.code = code
@@ -236,7 +235,7 @@ class Cuenta( object ):
         
         if self.id != 0:
             self.model = QSqlQueryModel()
-            self.model.setQuery("CALL spBalance(" + fecha.toString("yyyyMMdd") + ")")
+            self.model.setQuery("CALL spBalance( %s )" % fecha.toString("yyyyMMdd"))
 
             modelo = self.model
             agregados = []
@@ -278,7 +277,7 @@ class CuentaPadre( object ):
         
         self.code = modelo.index(fila, CODIGO ).data().toString()
         self.description = modelo.index(fila, DESCRIPCION ).data().toString()
-        self.monto = modelo.index(fila, MONTO ).data().toDouble()[0]
+        self.monto = Decimal(modelo.index(fila, MONTO ).data().toString())
         self.esdebe =modelo.index(fila, ESDEBE ).data().toInt()[0]
         self.idpadre = modelo.index(fila, PADRE ).data().toInt()[0]
         
@@ -338,9 +337,9 @@ class CuentaPadre( object ):
             elif column == DESCRIPCION:
                 return self.description
             elif column == MONTO:
-                return locale.currency( self.monto, symbol = 'C$' ) if self.monto !=0 else ""
+                return moneyfmt(self.monto, 4,'C$' ) if self.monto !=0 else ""
             elif column == ACUMULADO:
-                value = locale.currency(self.acumulado, symbol = 'C$' )
+                value = moneyfmt(self.acumulado, 4,'C$' )
                 return value if value !=0 else ""
             elif column == ESDEBE:
                 return self.esdebe

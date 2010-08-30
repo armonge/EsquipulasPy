@@ -11,7 +11,7 @@ from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from PyQt4.QtCore import  SIGNAL, SLOT, Qt, QTimer
 from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap, QDialogButtonBox,\
 QFormLayout, QVBoxLayout, QLineEdit, qApp, QMessageBox, QLabel
-from utility.database import Database
+from utility import database 
 from ui import res_rc
 from ui.Ui_user import Ui_dlgUserLogin
 
@@ -53,7 +53,7 @@ class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
 
 
     def accept(self):
-        Database.getDatabase(self.txtBd.text())
+        database.getDatabase(self.txtBd.text(), "--dbconfig" in qApp.arguments() )
         self.user = User( self.txtUser.text(), self.txtPassword.text())
         if self.user.valid or self.attempts == self.max -1:
             super(dlgUserLogin, self).accept()
@@ -177,10 +177,10 @@ class User:
             else:
                 query = QSqlQuery()
                 if not query.prepare( """
-                SELECT 
-                    u.idusuario AS uid, 
-                    p.nombre, 
-                    r.nombre as rol 
+                SELECT
+                    u.idusuario AS uid,
+                    p.nombre,
+                    GROUP_CONCAT(r.nombre) as roles
                 FROM usuarios u
                 JOIN personas p ON p.idpersona = u.idusuario
                 JOIN usuarios_has_roles ur ON u.idusuario = ur.idusuario
@@ -188,6 +188,8 @@ class User:
                 WHERE u.estado = 1
                 AND u.username LIKE BINARY :user
                 AND u.password LIKE BINARY SHA1(:password)
+                GROUP BY u.idusuario
+                LIMIT 1
                 """ ):
                     raise UserWarning( "No se pudo preparar la consulta para validar el usuario" )
                 query.bindValue( ":user", self.user )
@@ -196,15 +198,15 @@ class User:
                 if not query.exec_():
                     raise Exception( "La consulta no se pudo ejecutar" )
 
-                if query.size() == 0:
+                if query.size() != 1:
                     raise UserWarning( "No se ha podido autenticar al usuario %s" %self.user )
                 else:
                     logging.info(u"El usuario %s se ha autenticado" % self.user)
-                    while query.next():
-                        self.__valid = True
-                        self.__uid = query.value( UID ).toInt()[0]
-                        self.__fullname = query.value( FULLNAME ).toString()
-                        self.__roles.append( query.value( ROLE ).toString() )
+                    query.first()
+                    self.__valid = True
+                    self.__uid = query.value( UID ).toInt()[0]
+                    self.__fullname = query.value( FULLNAME ).toString()
+                    self.__roles = query.value( ROLE ).toString().split(",")
         except UserWarning as inst:
             self.error = unicode( inst )
             logging.error(unicode(inst))

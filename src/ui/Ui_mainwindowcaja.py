@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\mainwindowcaja.ui'
+# Form implementation generated from reading ui file 'src/ui/mainwindowcaja.ui'
 #
-# Created: Sun Aug 22 02:03:40 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Mon Aug 30 12:01:51 2010
+#      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -27,6 +27,9 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.mdiArea.sizePolicy().hasHeightForWidth())
         self.mdiArea.setSizePolicy(sizePolicy)
+        brush = QtGui.QBrush(QtGui.QColor(121, 116, 113))
+        brush.setStyle(QtCore.Qt.NoBrush)
+        self.mdiArea.setBackground(brush)
         self.mdiArea.setViewMode(QtGui.QMdiArea.TabbedView)
         self.mdiArea.setTabShape(QtGui.QTabWidget.Rounded)
         self.mdiArea.setTabPosition(QtGui.QTabWidget.North)
@@ -51,7 +54,7 @@ class Ui_MainWindow(object):
         self.toolBox.setObjectName("toolBox")
         self.page_2 = QtGui.QWidget()
         self.page_2.setEnabled(True)
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 601))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 595))
         self.page_2.setObjectName("page_2")
         self.gridLayout_2 = QtGui.QGridLayout(self.page_2)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -206,3 +209,13 @@ class Ui_MainWindow(object):
         self.actionClients.setToolTip(QtGui.QApplication.translate("MainWindow", "Crear un Nuevo Cliente", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    MainWindow = QtGui.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+

@@ -15,7 +15,7 @@ from kardexother import frmKardexOther
 from ui.Ui_mainwindowinventario import Ui_MainWindow
 from articulos import frmArticulos
 from utility.mainwindowbase import MainWindowBase
-from utility.persona import dlgPersona
+from utility.persona import frmPersona
 from utility import constantes
 
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
@@ -120,8 +120,8 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        dialog = dlgPersona(constantes.PROVEEDOR,"Proveedor",self)
-        dialog.exec_()
+        dialog = frmPersona(constantes.PROVEEDOR,"Proveedor",self)
+        dialog.show()
 #        catproveedores = frmCatProveedores( self )
 #        self.mdiArea.addSubWindow( catproveedores )
 #        catproveedores.show()

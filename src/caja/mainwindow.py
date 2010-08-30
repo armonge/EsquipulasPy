@@ -80,6 +80,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.setEnabled( state )
         self.mdiArea.setVisible( state )
         self.actionLockSession.setVisible( state )
+        self.btnpago.setEnabled(state)
 
     @pyqtSlot(  )
     def on_actionClients_activated( self ):

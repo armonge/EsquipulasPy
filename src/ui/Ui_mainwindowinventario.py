@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\mainwindowinventario.ui'
+# Form implementation generated from reading ui file 'src/ui/mainwindowinventario.ui'
 #
-# Created: Sat Aug 21 20:20:20 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created: Mon Aug 30 13:15:33 2010
+#      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -27,6 +27,9 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.mdiArea.sizePolicy().hasHeightForWidth())
         self.mdiArea.setSizePolicy(sizePolicy)
+        brush = QtGui.QBrush(QtGui.QColor(121, 116, 113))
+        brush.setStyle(QtCore.Qt.NoBrush)
+        self.mdiArea.setBackground(brush)
         self.mdiArea.setViewMode(QtGui.QMdiArea.TabbedView)
         self.mdiArea.setTabShape(QtGui.QTabWidget.Rounded)
         self.mdiArea.setTabPosition(QtGui.QTabWidget.North)
@@ -49,7 +52,7 @@ class Ui_MainWindow(object):
         self.toolBox = QtGui.QToolBox(self.dockWidgetContents_2)
         self.toolBox.setObjectName("toolBox")
         self.page_2 = QtGui.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 547))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 541))
         self.page_2.setObjectName("page_2")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page_2)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -91,7 +94,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.btnEntries)
         self.toolBox.addItem(self.page_2, "")
         self.widget = QtGui.QWidget()
-        self.widget.setGeometry(QtCore.QRect(0, 0, 230, 547))
+        self.widget.setGeometry(QtCore.QRect(0, 0, 143, 226))
         self.widget.setObjectName("widget")
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.widget)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -142,7 +145,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.addWidget(self.btnKOther)
         self.toolBox.addItem(self.widget, "")
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 230, 547))
+        self.page.setGeometry(QtCore.QRect(0, 0, 190, 300))
         self.page.setObjectName("page")
         self.gridLayout_2 = QtGui.QGridLayout(self.page)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -257,3 +260,13 @@ class Ui_MainWindow(object):
         self.actionUnlockSession.setText(QtGui.QApplication.translate("MainWindow", "Desbloquear Sesión", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    MainWindow = QtGui.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+

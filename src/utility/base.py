@@ -8,7 +8,8 @@ from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, QProgressBar, QPrinter, QPrintDialog, QDialog
 from PyQt4.QtWebKit import QWebView
 
-from utility.reports import frmReportes
+from utility.reports import frmReportes, Reports
+
 class Base( object ):
     """
     Esta clase sirve de base para muchos  formularios de inventario
@@ -299,7 +300,8 @@ class Base( object ):
     def printDocument(self):
         try:
             settings = QSettings()
-            base = settings.value( "Reports/base" ).toString()
+            r = Reports()
+            base = r.url
 
             if base == "":
                 raise UserWarning(u"No existe una configuración para el servidor de reportes")

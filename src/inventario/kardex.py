@@ -161,7 +161,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
         self.tablenavigation.setColumnHidden(OBSERVACIONK, True)
         self.tablenavigation.setColumnHidden(BODEGA, True)
         
-        self.tabledetails.setColumnHidden(AJUSTE, not self.edit)
+        self.tabledetails.setColumnHidden(AJUSTE, True)
         
         self.tabledetails.setColumnHidden(IDDOCUMENTOT, True)
         
@@ -224,21 +224,15 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
 
 #               Cargar el numero de kardex 
                 query = QSqlQuery( """
-                SELECT
-                      MAX(CAST(ndocimpreso AS SIGNED))+1
-                FROM documentos d
-                WHERE idtipodoc=%d
+               CALL spConsecutivo(%d,NULL);
                 """ % constantes.IDKARDEX )
     
-                query.exec_()
+                if not query.exec_():
+                    raise UserWarning( u"No se pudo calcular el numero de la devolución" )
                 query.first()
+                self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
     
-                n = query.value( 0 ).toString()
-                if n == "0" or n=="" :
-                    n = "1"
-    
-                self.txtPrintedDocumentNumber.setText( n )
-                self.editmodel.printedDocumentNumber = n
+                self.txtPrintedDocumentNumber.setText( self.editmodel.printedDocumentNumber )
                 
                 
                 self.status = False 
@@ -251,10 +245,8 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
 
                 self.tabledetails.resizeColumnsToContents()
                 self.tabledetails.horizontalHeader().setStretchLastSection  (True)
-#                self.dtPicker.emit( SIGNAL( "dateTimeChanged( QDateTime )" ), QDateTime.currentDateTime() )
                 self.dtPicker.setDateTime( QDateTime.currentDateTime() )
                 self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
-                #self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
 
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))

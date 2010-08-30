@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/mainwindowcontabilidad.ui'
+# Form implementation generated from reading ui file 'src/ui/mainwindowcontabilidad.ui'
 #
-# Created by: PyQt4 UI code generator 4.7.3
+# Created: Mon Aug 30 13:15:36 2010
+#      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -26,6 +27,9 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.mdiArea.sizePolicy().hasHeightForWidth())
         self.mdiArea.setSizePolicy(sizePolicy)
+        brush = QtGui.QBrush(QtGui.QColor(121, 116, 113))
+        brush.setStyle(QtCore.Qt.NoBrush)
+        self.mdiArea.setBackground(brush)
         self.mdiArea.setViewMode(QtGui.QMdiArea.TabbedView)
         self.mdiArea.setTabShape(QtGui.QTabWidget.Rounded)
         self.mdiArea.setTabPosition(QtGui.QTabWidget.North)
@@ -48,7 +52,7 @@ class Ui_MainWindow(object):
         self.toolBox = QtGui.QToolBox(self.dockWidgetContents_2)
         self.toolBox.setObjectName("toolBox")
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 214, 570))
+        self.page.setGeometry(QtCore.QRect(0, 0, 157, 78))
         self.page.setObjectName("page")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -74,7 +78,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.btnAccounts)
         self.toolBox.addItem(self.page, "")
         self.page_2 = QtGui.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 570))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 568))
         self.page_2.setObjectName("page_2")
         self.gridLayout = QtGui.QGridLayout(self.page_2)
         self.gridLayout.setObjectName("gridLayout")

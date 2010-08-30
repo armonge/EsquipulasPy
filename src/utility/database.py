@@ -6,6 +6,7 @@ from PyQt4.QtSql import QSqlDatabase
 from PyQt4.QtGui import QDialog, QFormLayout, QVBoxLayout, QLineEdit, QDialogButtonBox
 from PyQt4.QtCore import   SLOT, SIGNAL, QObject, QSettings
 
+from utility.reports import Reports
 
 class dlgDatabaseConfig( QDialog ):
     u"""
@@ -17,11 +18,18 @@ class dlgDatabaseConfig( QDialog ):
         """
         super( dlgDatabaseConfig, self ).__init__( parent )
 
+        self.setupUi()
+
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+        
+    def setupUi(self):
         self.txtServer = QLineEdit()
         self.txtDatabase = QLineEdit()
         self.txtUser = QLineEdit()
         self.txtPassword = QLineEdit()
         self.txtPassword.setEchoMode( QLineEdit.Password )
+        self.txtReports = QLineEdit()
 
 
         formLayout = QFormLayout()
@@ -29,10 +37,9 @@ class dlgDatabaseConfig( QDialog ):
         formLayout.addRow( "Base de &Datos", self.txtDatabase )
         formLayout.addRow( "&Usuario", self.txtUser )
         formLayout.addRow( u"&Contraseña", self.txtPassword )
+        formLayout.addRow( u"Servidor de &Reportes", self.txtReports )
 
         self.buttonBox = QDialogButtonBox( QDialogButtonBox.Ok | QDialogButtonBox.Cancel )
-
-
 
         verticalLayout = QVBoxLayout()
 
@@ -41,60 +48,54 @@ class dlgDatabaseConfig( QDialog ):
 
         self.setLayout( verticalLayout )
 
-        QObject.connect( self.buttonBox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) );
-        QObject.connect( self.buttonBox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) );
+        
 
 
-class Database:
-    @staticmethod
-    def getDatabase(db, newsettings = False ):
-        u"""
-        @param newsettings: Cuando este parametro es verdadero la configuración de la base de datos se recarga
-        @type newsettings: bool
-        @rtype: QSqlDatabase
-        """
-        settings = QSettings()
-        if not ( settings.value( "Database/Name" ).toString() == "" or settings.value( "Database/Server" ).toString() == "" or settings.value( "Database/User" ).toString() == "" or settings.value( "Database/Password" ).toString() == "" )  and not newsettings:                     
-                QSqlDatabase.removeDatabase('QMYSQL')
-                database = QSqlDatabase.addDatabase( 'QMYSQL' )
-                database.setDatabaseName( db )
-                database.setHostName( settings.value( "Database/Server" ).toString() )
-                database.setUserName( settings.value( "Database/User" ).toString() )
-                database.setPassword( settings.value( "Database/Password" ).toString() )
-                return database
-                
-        elif ( settings.value( "Remidb/Name" ).toString() == "" or settings.value( "Remidb/Server" ).toString() == "" or settings.value( "Remidb/User" ).toString() == "" or settings.value( "Remidb/Password" ).toString() == "" )  and not newsettings:
-                QSqlDatabase.removeDatabase('QMYSQL')        
-                database = QSqlDatabase.addDatabase( 'QMYSQL' )
-                database.setDatabaseName( db )
-                database.setHostName( settings.value( "Remidb/Server" ).toString() )
-                database.setUserName( settings.value( "Remidb/User" ).toString() )
-                database.setPassword( settings.value( "Remidb/Password" ).toString() )
-                return database
-        else:
-            dbconfig = dlgDatabaseConfig()
-            if dbconfig.exec_() == QDialog.Accepted:
-                QSqlDatabase.removeDatabase('QMYSQL')
-                database = QSqlDatabase.addDatabase( 'QMYSQL' )
-                database.setDatabaseName( dbconfig.txtDatabase.text() )
-                database.setHostName( dbconfig.txtServer.text() )
-                database.setUserName( dbconfig.txtUser.text() )
-                database.setPassword( dbconfig.txtPassword.text() )
-                
-                if dbconfig.txtDatabase.text()=="esquipulasdb":
-                    #guardar en el archivo de configuracion
-                    settings.setValue( "Database/Name", dbconfig.txtDatabase.text() )
-                    settings.setValue( "Database/Server", dbconfig.txtServer.text() )
-                    settings.setValue( "Database/User", dbconfig.txtUser.text() )
-                    settings.setValue( "Database/Password", dbconfig.txtPassword.text() )
-                    return database
-                elif dbconfig.txtDatabase.text()=="remi":
-                    #guardar en el archivo de configuracion
-                    settings.setValue( "Remidb/Name", dbconfig.txtDatabase.text() )
-                    settings.setValue( "Remidb/Server", dbconfig.txtServer.text() )
-                    settings.setValue( "Remidb/User", dbconfig.txtUser.text() )
-                    settings.setValue( "Remidb/Password", dbconfig.txtPassword.text() )
-                    return database
+def newconfiguration(cfg):
+    settings = QSettings()
 
-            return False
+    dbconfig = dlgDatabaseConfig()
+    dbconfig.txtDatabase.setText( settings.value("%s/DBName"%cfg).toString())
+    dbconfig.txtServer.setText( settings.value("%s/DBServer"%cfg).toString())
+    dbconfig.txtReports.setText( settings.value("%s/DBReports"%cfg).toString())
+    dbconfig.txtUser.setText( settings.value("%s/DBUser"%cfg).toString())
+    
+    if dbconfig.exec_() == QDialog.Accepted:
+        QSqlDatabase.removeDatabase('QMYSQL')
+        database = QSqlDatabase.addDatabase( 'QMYSQL' )
+        database.setDatabaseName( dbconfig.txtDatabase.text() )
+        database.setHostName( dbconfig.txtServer.text() )
+        database.setUserName( dbconfig.txtUser.text() )
+        database.setPassword( dbconfig.txtPassword.text() )
+
+        #guardar en el archivo de configuracion
+        settings.setValue( "%s/DBName"%cfg, dbconfig.txtDatabase.text() )
+        settings.setValue( "%s/DBServer"%cfg, dbconfig.txtServer.text() )
+        settings.setValue( "%s/DBUser"%cfg, dbconfig.txtUser.text() )
+        settings.setValue( "%s/DBPassword"%cfg, dbconfig.txtPassword.text() )
+        settings.setValue( "%s/DBReports"%cfg, dbconfig.txtReports.text() )
+        r = Reports()
+        r.url = dbconfig.txtReports.text()
+
+def getDatabase(db, newsettings = False ):
+    u"""
+    @param newsettings: Cuando este parametro es verdadero la configuración de la base de datos se recarga
+    @type newsettings: bool
+    @rtype: QSqlDatabase
+    """
+    settings = QSettings()
+    if not newsettings and not ( settings.value( "%s/DBName"%db ).toString() == "" or \
+                                settings.value( "%s/DBServer"%db ).toString() == "" or \
+                                settings.value( "%s/DBUser"%db ).toString() == "" or \
+                                settings.value( "%s/DBPassword"%db ).toString() == ""):
+        database = QSqlDatabase.addDatabase( 'QMYSQL' )
+        database.setDatabaseName( settings.value( "%s/DBName"%db ).toString() )
+        database.setHostName( settings.value( "%s/DBServer"%db ).toString() )
+        database.setUserName( settings.value( "%s/DBUser"%db ).toString() )
+        database.setPassword( settings.value( "%s/DBPassword"%db ).toString() )
+
+        r = Reports()
+        r.url  = settings.value( "%s/DBReports"%db ).toString()
+    else:
+        newconfiguration(db)
 

@@ -30,6 +30,15 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="background">
+       <brush brushstyle="NoBrush">
+        <color alpha="255">
+         <red>121</red>
+         <green>116</green>
+         <blue>113</blue>
+        </color>
+       </brush>
+      </property>
       <property name="viewMode">
        <enum>QMdiArea::TabbedView</enum>
       </property>
@@ -84,8 +93,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>230</width>
-          <height>547</height>
+          <width>214</width>
+          <height>541</height>
          </rect>
         </property>
         <attribute name="label">
@@ -175,8 +184,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>230</width>
-          <height>547</height>
+          <width>143</width>
+          <height>226</height>
          </rect>
         </property>
         <attribute name="label">
@@ -297,8 +306,8 @@ Movimientos</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>230</width>
-          <height>547</height>
+          <width>190</width>
+          <height>300</height>
          </rect>
         </property>
         <attribute name="label">

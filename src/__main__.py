@@ -21,7 +21,7 @@ if __name__ == '__main__':
                     )
 
     from PyQt4 import QtGui, QtCore
-    from utility.database import Database
+    from utility import database 
     from utility.user import dlgUserLogin, User
     from ui import res_rc
     
@@ -70,6 +70,14 @@ if __name__ == '__main__':
     QLabel[error=true]{
         color:red;
     }
+    QMainWindow{
+        background-image: url(:/images/res/logo-big.png);
+        background-position:right bottom;
+        background-repeat:no-repeat;
+    }
+    QMdiArea QMainWindow{
+        background-image: url()
+    }
     """)
     if "--inventario" in sys.argv:
         app.setApplicationName( "Inventario" )
@@ -94,9 +102,9 @@ if __name__ == '__main__':
         text, result = QtGui.QInputDialog.getText( None, u"Configuración del servidor de reportes", "Url base de los reportes", QtGui.QLineEdit.Normal, settings.value( "Reports/Base", "" ).toString() )
         if result:
             settings.setValue( "Reports/Base", text )
-    
-    Database.getDatabase("","--dbconfig" in sys.argv)
-    
+            
+
+    #Database.getDatabase("","--dbconfig" in sys.argv)
     dlguser = dlgUserLogin()
     cont = 0
     valido = False
