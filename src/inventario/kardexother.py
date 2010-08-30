@@ -162,7 +162,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         
         
     def cancel( self ):
-        """
+        u"""
         Borrar todos los modelos que se hallan creado para el modo edición, asignar los modelos de navegación a las 
         vistas
         """

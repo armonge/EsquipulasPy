@@ -19,7 +19,6 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
     def __init__( self,parent,cerrar=False):
         """
         Constructor para agregar un nuevo articulo
-        @param user: El id del usuario que ha creado este documento
         """
         super( dlgApertura, self ).__init__( parent )
         self.parentWindow = parent

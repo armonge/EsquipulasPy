@@ -146,7 +146,7 @@ class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
 
     def setControls( self, status ):
         """
-        @param status false = editando        true = navegando
+        @param status: false = editando        true = navegando
         """
         self.actionPrint.setVisible(status)
         self.dtPicker.setReadOnly(  status )            

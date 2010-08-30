@@ -62,7 +62,7 @@ class LiquidacionDelegate( QStyledItemDelegate ):
         """
         Actualizar todos los valores de los articulos
         @param query: El objeto consulta en el que se van a tratar de obtener los nuevos valores de los articulos
-        @type: QSqlQuery
+        @type query: QSqlQuery
         """
         inset = list([  itemId for itemId in self.ids if itemId not in [prod[0] for prod in self.prods.items]    ])
         

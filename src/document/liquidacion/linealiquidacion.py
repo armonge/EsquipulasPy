@@ -340,7 +340,7 @@ class LineaLiquidacion( object ):
         """
         Actualizar los porcentajes de DAI, ISC y COMISION
         @param query: La query en la que se ejecuta todo el proceso de actualización
-        @type: QSqlQuery
+        @type query: QSqlQuery
         """
         qDESCRIPTION, qDAI, qISC, qCOMISION = range(4)
         q = """

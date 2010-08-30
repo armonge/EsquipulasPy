@@ -50,7 +50,7 @@ class KardexOtherModel(QAbstractTableModel):
         self.warehouseId = 0
         """
         @ivar: El id de la bodega en que se hace el movimiento
-        @tyoe: int
+        @type: int
         """
 
         self.exchangeRateId = 0

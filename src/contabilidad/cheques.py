@@ -160,7 +160,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         
     def setControls( self, status ):
         """
-        @param status false = editando        true = navegando
+        @param status: false = editando        true = navegando
         """
         self.actionPrint.setVisible(status)
         self.dtPicker.setReadOnly(  status )

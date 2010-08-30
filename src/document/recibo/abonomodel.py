@@ -30,12 +30,12 @@ class AbonoModel( QAbstractTableModel ):
     def valid( self ):
         """
         Un documento es valido cuando 
-            self.printedDocumentNumber != ""
-            self.providerId !=0
-            self.validLines >0
-            self.__idIVA !=0
-            self.uid != 0
-            self.warehouseId != 0 
+        self.printedDocumentNumber != ""
+        self.providerId !=0
+        self.validLines >0
+        self.__idIVA !=0
+        self.uid != 0
+        self.warehouseId != 0
         """
         if int( self.validLines ) < 1:
             print( "No Hay ninguna linea no valida" )
