@@ -70,7 +70,7 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
                 ruc as Ruc,
                 activo
             FROM personas p
-          --  WHERE idpersona =%d
+            WHERE tipopersona =%d
             """ % constantes.CLIENTE
             self.navmodel.setQuery(query)
             self.navproxymodel.setSourceModel(self.navmodel)
