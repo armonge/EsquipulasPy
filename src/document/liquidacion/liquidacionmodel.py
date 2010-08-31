@@ -154,7 +154,7 @@ class LiquidacionModel( QAbstractTableModel ):
         @ivar:El IVA usado en la liquidación cuando self.applyIVA = True
         @type:Decimal
         """
-        self.applyIVA = True
+        self.__applyIVA = True
         """
         @ivar:Si a esta liquidación se le aplica IVA o no
         @type:bool
@@ -225,9 +225,14 @@ class LiquidacionModel( QAbstractTableModel ):
         El porcentaje IVA usado en esta liquidacion
         @rtype: Decimal
         """
-        return self.__ivaRate if self.applyIVA and self.applyTaxes else Decimal( 0 )
+        return self.__ivaRate if self.applyIVA  else Decimal( 0 )
     ivaRate = property( getIvaRate, setIvaRate )
 
+    def setApplyIVA(self, applyIVA):
+        self.__applyIVA = applyIVA
+    def getApplyIVA(self):
+        return self.__applyIVA if self.applyTaxes else False
+    applyIVA = property(getApplyIVA, setApplyIVA)
 
     @property
     def valid( self ):

@@ -7,7 +7,7 @@ Created on 07/06/2010
 from decimal import  Decimal, InvalidOperation
 import logging
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator, QMdiArea
 from PyQt4.QtCore import pyqtSlot,  QDateTime, QTimer, QModelIndex, Qt
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 from ui.Ui_arqueo import Ui_frmArqueo
@@ -207,23 +207,29 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         self.lblCashC.setText(   moneyfmt(self.editmodel.totalCashC, 4, "C$") + " / " + moneyfmt(self.editmodel.expectedCashC, 4, "C$"))
         self.lblCashD.setText( moneyfmt(self.editmodel.totalCashD, 4, "US$") + " / " +  moneyfmt(self.editmodel.expectedCashD, 4, "US$") )
 
-        #self.lblCkC.setText( moneyfmt(self.editmodel.expectedCkC, 4, "C$") )
-        #self.lblCkD.setText( moneyfmt(self.editmodel.expectedCkD, 4, "US$") )
+        self.lblCkC.setText( moneyfmt(self.editmodel.expectedCkC, 4, "C$") )
+        self.lblCkD.setText( moneyfmt(self.editmodel.expectedCkD, 4, "US$") )
 
-        #self.lblCardC.setText( moneyfmt(self.editmodel.expectedCardC, 4, "C$") )
-        #self.lblCardD.setText(  moneyfmt(self.editmodel.expectedCardD, 4, "US$") )
+        self.lblCardC.setText( moneyfmt(self.editmodel.expectedCardC, 4, "C$") )
+        self.lblCardD.setText(  moneyfmt(self.editmodel.expectedCardD, 4, "US$") )
 
-        #self.lblDepositC.setText( moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
-        #self.lblDepositD.setText(  moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
+        self.lblDepositC.setText( moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
+        self.lblDepositD.setText(  moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
 
-        #self.lblTransferC.setText( moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
-        #self.lblTransferD.setText(  moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
+        self.lblTransferC.setText( moneyfmt(self.editmodel.expectedDepositC, 4, "C$") )
+        self.lblTransferD.setText(  moneyfmt(self.editmodel.expectedDepositD, 4, "US$") )
 
     def newDocument( self ):
         """
         cargar todos los modelos para la edición
         """
         try:
+            print self.parent.findChild(QMdiArea).subWindowList()
+            for window in self.parent.findChild(QMdiArea).subWindowList():
+                if window.widget():
+                    raise UserWarning(u"Por favor cierre las otras pestañas la aplicación antes de continuar con el arqueo")
+
+
             self.editmodel = ArqueoModel(self.parentWindow.datosSesion)
 
             self.editmodel.datetime.setDate(self.parentWindow.datosSesion.fecha)

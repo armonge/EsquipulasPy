@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
-"""
+u"""
 Modulo en el que se maneja la logica de usuarios
+
+@author: Andrés Reyes Monge
 """
 import hashlib
 import functools
 import logging
 import sys
+import re
 
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from PyQt4.QtCore import  SIGNAL, SLOT, Qt, QTimer
 from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap, QDialogButtonBox,\
-QFormLayout, QVBoxLayout, QLineEdit, qApp, QMessageBox, QLabel
+QFormLayout, QVBoxLayout, QLineEdit, qApp, QMessageBox, QLabel, QProgressBar
 from utility import database 
 from ui import res_rc
 from ui.Ui_user import Ui_dlgUserLogin
@@ -71,10 +74,20 @@ class dlgPasswordChange(QDialog):
         
         self.user = user
 
+
+        self.txtNewPassword.textChanged[unicode].connect(self.update)
+        self.txtRepeatPassword.textChanged[unicode].connect(self.update)
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
+
+    def update(self, passwd):
+        self.bar.setValue(self.user.checkPassword(passwd))
+        self.lblError.setText("" if self.txtNewPassword.text() == self.txtRepeatPassword.text() else u"Las contraseñas no coinciden" )
+        self.lblError.setVisible(self.txtNewPassword.text() != self.txtRepeatPassword.text())
         
     def accept(self):
+        
+        
         oldp = self.txtOldPassword.text()
         newp = self.txtNewPassword.text()
         repeatp = self.txtRepeatPassword.text()
@@ -83,11 +96,10 @@ class dlgPasswordChange(QDialog):
             if self.user.changePassword(oldp, newp, repeatp):
                 logging.info(u"La contraseña del usuario %s ha sido cambiada" % self.user.user)
                 super(dlgPasswordChange, self).accept()
-            else:
-                logging.warning(u"Intento fallido de cambiar la contraseña del usuario %s" % self.user.user)
         except UserWarning as inst:
             self.lblError.setText(unicode(inst) )
             self.lblError.setVisible(True)
+            logging.warning(unicode(inst))
             QTimer.singleShot(3000, functools.partial(self.lblError.setVisible, False))
             
             
@@ -109,6 +121,10 @@ class dlgPasswordChange(QDialog):
         self.form.addRow(u"Contraseña anterior", self.txtOldPassword)
         self.form.addRow(u"Nueva contraseña", self.txtNewPassword)
         self.form.addRow(u"Repita la nueva contraseña", self.txtRepeatPassword)
+
+        self.bar = QProgressBar()
+        self.bar.setMinimum(0)
+        self.bar.setMaximum(5)
         
         self.layout = QVBoxLayout()
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
@@ -120,6 +136,7 @@ class dlgPasswordChange(QDialog):
         
         self.layout.addLayout(self.form)
         self.layout.addWidget(self.lblError)
+        self.layout.addWidget(self.bar)
         self.layout.addWidget(self.buttonBox)
         
         self.setLayout(self.layout)
@@ -308,7 +325,8 @@ class User:
             raise UserWarning(u"La contraseña anterior que escribio no es correcta")
         elif not new == repeat:
             raise UserWarning(u"Las contraseñas no coinciden")
-        
+        elif not self.checkPassword(new)>3:
+            raise UserWarning(u"La contraseña es demasiado sencilla")
         if not self.db.isOpen():
             if not self.db.open():
                 raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
@@ -328,6 +346,31 @@ class User:
         self.__password = new
         
         return True
+
+
+    def checkPassword(self, password):
+        #strength = ['Blank','Very Weak','Weak','Medium','Strong','Very Strong']
+        score = 1
+
+        if len(password) < 1:
+            return 0
+        if len(password) < 4:
+            return 1
+
+        if len(password) >=8:
+            score = score + 1
+        if len(password) >=11:
+            score = score + 1
+
+        if re.search('\d+',password):
+            score = score + 1
+        if re.search('[a-z]',password) and re.search('[A-Z]',password):
+            score = score + 1
+        if re.search('.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]',password):
+            score = score + 1
+
+        return score
+
         
         
         

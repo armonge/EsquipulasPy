@@ -395,7 +395,7 @@ class LineaLiquidacion( object ):
             raise Exception( "Error al insertar una de las lineas del documento" )
 
         idarticuloxdocumento = query.lastInsertId()
-
+        
         if not query.prepare( """
         INSERT INTO costosxarticuloliquidacion ( idarticuloxdocumento, dai, isc, comision ) 
         VALUES (:idarticuloxdocumento, :dai, :isc, :comision)

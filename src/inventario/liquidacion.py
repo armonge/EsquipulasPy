@@ -23,7 +23,7 @@ from document.liquidacion.liquidaciondelegate import LiquidacionDelegate
 
 #navigation model
 IDDOCUMENTO, NDOCIMPRESO, FECHA, PROCEDENCIA, AGENCIA, ALMACEN, FLETE, SEGURO,\
-OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO, ESTADO,FOBTOTAL, CIFTOTAL, IMPUESTOTOTAL, TOTALD, TOTALC = range( 22 )
+OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO, ESTADO,FOBTOTAL, CIFTOTAL, IMPUESTOTOTAL, TOTALD, TOTALC, EXONERADO = range( 23 )
 
 
 #details model
@@ -104,7 +104,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
         
-        self.ckISO.setChecked( True if self.navmodel.record( index ).value( "iso" ).toDouble()[0] != 0 else False )
+        self.ckISO.setChecked( True if self.navmodel.record( index ).value( ISO ).toDouble()[0] != 0 else False )
+
+        self.ckTaxes.setChecked( True if self.navmodel.record(index).value(EXONERADO).toDouble()[0] != 0 else False)
 
         estado = self.navmodel.record( index ).value( "estado" ).toInt()[0]
         if estado == constantes.INCOMPLETO:
@@ -176,6 +178,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.tablenavigation.setColumnHidden( CIFTOTAL, True )
         self.tablenavigation.setColumnHidden( IMPUESTOTOTAL, True )
         self.tablenavigation.setColumnHidden( ESTADO, True )
+        self.tablenavigation.setColumnHidden( EXONERADO, True )
 
         
 
@@ -258,35 +261,38 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 if not QSqlDatabase.database().open():
                     raise UserWarning( "No se pudo conectar con la base de datos ")
             query = u"""
-            SELECT
-                d.iddocumento,
-                d.ndocimpreso AS 'Número de Liquidación',
-                d.fecha AS 'Fecha',
-                d.procedencia AS 'Procedencia',
-                ROUND(d.totalagencia * d.tasa,4) AS 'Agencia',
-                ROUND(d.totalalmacen * d.tasa,4) AS 'Almacen',
-                d.fletetotal AS 'Flete',
-                d.segurototal as 'Seguro',
-                d.otrosgastos AS 'Otros Gastos',
-                d.porcentajetransporte AS 'Transporte',
-                d.porcentajepapeleria AS 'Papelería',
-                d.peso AS 'Peso',
-                d.Proveedor AS 'Proveedor',
-                d.bodega AS 'Bodega',
-                SUM(IFNULL(valorcosto,0)) as  'ISO',
-                d.tasa,
-                d.estado,
-                lt.fobtotal,
-                lt.ciftotal,
-                lt.impuestototal,
-                d.totald AS 'Total US$',
-                d.totalc AS 'Total C$'
-            FROM esquipulasdb.vw_liquidacionesguardadas d
-            JOIN vw_liquidacioncontotales lt ON lt.iddocumento = d.iddocumento
-            LEFT JOIN costosxdocumento cxd ON d.iddocumento = cxd.iddocumento
-            LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto = %d
-            GROUP BY d.iddocumento;
-            """ % ( constantes.ISO)
+                SELECT
+                    d.iddocumento,
+                    d.ndocimpreso AS 'Número de Liquidación',
+                    d.fecha AS 'Fecha',
+                    d.procedencia AS 'Procedencia',
+                    ROUND(d.totalagencia * d.tasa,4) AS 'Agencia',
+                    ROUND(d.totalalmacen * d.tasa,4) AS 'Almacen',
+                    d.fletetotal AS 'Flete',
+                    d.segurototal as 'Seguro',
+                    d.otrosgastos AS 'Otros Gastos',
+                    d.porcentajetransporte AS 'Transporte',
+                    d.porcentajepapeleria AS 'Papelería',
+                    d.peso AS 'Peso',
+                    d.Proveedor AS 'Proveedor',
+                    d.bodega AS 'Bodega',
+                    IF(SUM(IF(ca.idtipocosto = 6 AND ca.valorcosto IS NOT NULL,ca.valorcosto,0)) != 0, 1,0) as  'APLICA ISO',
+                    d.tasa,
+                    d.estado,
+                    lt.fobtotal,
+                    lt.ciftotal,
+                    lt.impuestototal,
+                    d.totald AS 'Total US$',
+                    d.totalc AS 'Total C$',
+                    IF(SUM(IFNULL(ca.valorcosto,0)) + SUM(caxl.dai +caxl.isc) != 0, 0,1) as  'EXONERADO'
+                FROM esquipulasdb.vw_liquidacionesguardadas d
+                JOIN vw_liquidacioncontotales lt ON lt.iddocumento = d.iddocumento
+                LEFT JOIN costosxdocumento cxd ON d.iddocumento = cxd.iddocumento
+                LEFT JOIN costosagregados ca ON cxd.idcostoagregado = ca.idcostoagregado AND ca.idtipocosto IN ( %d,%d)
+                JOIN articulosxdocumento axd ON d.iddocumento = axd.iddocumento
+                JOIN costosxarticuloliquidacion caxl ON caxl.idarticuloxdocumento = axd.idarticuloxdocumento
+                GROUP BY d.iddocumento;
+            """ % ( constantes.ISO, constantes.IVA)
             self.navmodel.setQuery( query )
             query = u"""
             SELECT
@@ -391,17 +397,6 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     @property
     def printIdentifier(self):
         return self.txtPolicy.text()
-    #def preview( self ):
-        #printer = QPrinter()
-        
-        #printer.setOrientation(self.orientation)
-
-        #printer.setPageSize(self.pageSize)
-        #web = self.web + self.printIdentifier
-         ##self.navmodel.record( self.mapper.currentIndex() ).value( 'Número de Liquidación' ).toString()
-
-        #report = frmReportes( web, self.user, printer,self )
-        #report.exec_()
 
     def newDocument( self ):
         """
@@ -430,6 +425,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             FROM costosagregados c 
             LEFT JOIN tsim t on c.idcostoagregado=t.idtsim 
             WHERE activo=1 AND idtipocosto IN (%d,%d,%d,%d)
+            LIMIT 4
             """ % (constantes.IVA, constantes.SPE, constantes.TSIM, constantes.ISO))
             if not query.exec_():
                 raise UserWarning( "No se pudo ejecutar la consulta para obtener los valores de los impuestos" )
@@ -473,7 +469,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
             delegate = LiquidacionDelegate()
             if delegate.prods.rowCount()==0:
-                raise UserWarning("No hay articulos en existencia")
+                raise UserWarning(u"El sistema no tiene registrado ningún tipo de articulo, por favor añada articulos antes de hacer una liquidación")
                 
 
 

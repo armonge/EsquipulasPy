@@ -5,6 +5,7 @@ Created on 28/05/2010
 @author: Andrés Reyes Monge
 '''
 import logging
+from decimal import Decimal
 
 from PyQt4.QtCore import SIGNAL, SLOT, pyqtSlot, Qt , QVariant, pyqtSlot
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog, QItemSelection
@@ -60,10 +61,10 @@ class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
             self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
             self.tableview.setModel( self.filtermodel )
         except UserWarning as inst:
-            logging.error(inst)
+            logging.error(unicode(inst))
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
         except Exception as inst:
-            loggin.critical(inst)
+            loggin.critical(unicode(inst))
             QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al cargar la lista de articulos")
         finally:
             if self.database.isOpen():
@@ -146,9 +147,9 @@ class ArticlesModel( QSqlQueryModel ):
                 return True
             except UserWarning as inst:
                 QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
-                logging.error(inst)
+                logging.error(unicode(inst))
             except Exception as inst:
-                logging.critical(inst)
+                logging.critical(unicode(inst))
                 QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al guardar su cambio")
         return False
             
@@ -315,11 +316,6 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
         self.brandsview.setModel(self.brandsproxymodel)
         self.brandsview.setModelColumn(1)
         
-        self.validator = QDoubleValidator(0, 500,4,self)
-        self.txtComission.setValidator(self.validator)
-        self.txtISC.setValidator(self.validator)
-        self.txtDAI.setValidator(self.validator)
-        self.txtProfit.setValidator(self.validator)
 
 
         self.buttonBox.rejected.connect(self.reject)
@@ -364,10 +360,10 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
             query.bindValue(":activo", 1)
             query.bindValue(":marca", self.brandId)
             query.bindValue(":subcategoria", self.catId)
-            query.bindValue(":dai", self.DAI)
-            query.bindValue(":isc", self.ISC)
-            query.bindValue(":comision", self.comission)
-            query.bindValue(":ganancia", self.profit)
+            query.bindValue(":dai", self.DAI.to_eng_string())
+            query.bindValue(":isc", self.ISC.to_eng_string())
+            query.bindValue(":comision", self.comission.to_eng_string())
+            query.bindValue(":ganancia", self.profit.to_eng_string())
             
             if not query.exec_():
                 raise Exception("No se pudo ejecutar la consulta")
@@ -426,33 +422,33 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
                     self.cargarMarcas()
         
     
-    @pyqtSlot("QString")
-    def on_txtDAI_textChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbDAI_valueChanged(self, value):
         try:
-            self.DAI = float(text)
+            self.DAI = Decimal(str(value))
         except ValueError:
             self.DAI = 0
     
-    @pyqtSlot("QString")
-    def on_txtISC_textChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbISC_valueChanged(self, value):
         try:
-            self.ISC = float(text)
+            self.ISC = Decimal(str(value))
         except ValueError:
             self.ISC = 0
             
 
-    @pyqtSlot("QString")
-    def on_txtComission_textChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbComission_valueChanged(self, value):
         try:
-            self.comission = float(text)
+            self.comission = Decimal(str(value))
             
         except ValueError:
             self.comission = 0
         
-    @pyqtSlot("QString")
-    def on_txtProfit_textChanged(self, text):
+    @pyqtSlot("double")
+    def on_sbProfit_valueChanged(self, value):
         try:
-            self.profit = float(text)
+            self.profit = Decimal(str(value))
         except ValueError:
             self.profit = 0
     
