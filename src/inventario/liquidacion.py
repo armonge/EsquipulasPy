@@ -188,8 +188,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.tabnavigation.setEnabled( status )
         if status == 1:
 
-            self.sbAgency.setPrefix("US$ ")
-            self.sbStore.setPrefix("US$ ")
+#            self.sbAgency.setPrefix("US$ ")
+#            self.sbStore.setPrefix("US$ ")
 
             self.tabletotals.setColumnHidden( IDDOCUMENTO, True )
             self.tabletotals.setColumnHidden( AGENCIA, True )
@@ -263,8 +263,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 d.ndocimpreso AS 'Número de Liquidación',
                 d.fecha AS 'Fecha',
                 d.procedencia AS 'Procedencia',
-                d.totalagencia AS 'Agencia',
-                d.totalalmacen AS 'Almacen',
+                ROUND(d.totalagencia * d.tasa,4) AS 'Agencia',
+                ROUND(d.totalalmacen * d.tasa,4) AS 'Almacen',
                 d.fletetotal AS 'Flete',
                 d.segurototal as 'Seguro',
                 d.otrosgastos AS 'Otros Gastos',

@@ -71,7 +71,7 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
                 activo
             FROM personas p
             WHERE tipopersona =%d
-            """ % constantes.CLIENTE
+            """ %self.tipo
             self.navmodel.setQuery(query)
             self.navproxymodel.setSourceModel(self.navmodel)
             self.tablenavigation.setModel(self.navproxymodel)
@@ -185,9 +185,10 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
            
     def setControls(self,status):
         
-        self.tabWidget.setCurrentIndex(1 if status == False else 0)
+        
         if status == False:
             self.txtnombre.setText("")
+            self.txtnombre.setFocus()
             self.txtdireccion.setText("")
             self.txtcorreo.setText("")
             self.txtruc.setText("")
@@ -198,7 +199,9 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
             self.tablenavigation.setFocus()
             self.txtnombre.setReadOnly(True)
         else:
+            self.txtdireccion.setFocus()
             status = False    
+        self.tabWidget.setCurrentIndex(0 if status == False else 1)
         
         self.rbactivo.setEnabled(not status)
         self.rbinactivo.setEnabled(not status)
