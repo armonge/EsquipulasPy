@@ -7,22 +7,22 @@
     <x>0</x>
     <y>0</y>
     <width>657</width>
-    <height>470</height>
+    <height>450</height>
    </rect>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>450</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Arqueo</string>
+   <string>Persona</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QTabWidget" name="tabWidget">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>400</height>
-       </size>
-      </property>
       <property name="tabPosition">
        <enum>QTabWidget::West</enum>
       </property>
@@ -310,20 +310,7 @@ p, li { white-space: pre-wrap; }
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionEditar"/>
   </widget>
-  <action name="actionEditar">
-   <property name="icon">
-    <iconset resource="res.qrc">
-     <normaloff>:/icons/res/document-edit.png</normaloff>:/icons/res/document-edit.png</iconset>
-   </property>
-   <property name="text">
-    <string>Editar</string>
-   </property>
-   <property name="toolTip">
-    <string>Editar</string>
-   </property>
-  </action>
  </widget>
  <resources>
   <include location="res.qrc"/>

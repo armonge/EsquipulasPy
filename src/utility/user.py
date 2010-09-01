@@ -11,62 +11,178 @@ import sys
 import re
 
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
-from PyQt4.QtCore import  SIGNAL, SLOT, Qt, QTimer
+from PyQt4.QtCore import  Qt, QTimer, QSize
 from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap, QDialogButtonBox,\
-QFormLayout, QVBoxLayout, QLineEdit, qApp, QMessageBox, QLabel, QProgressBar
+QFormLayout, QVBoxLayout, QLineEdit,  QMessageBox, QLabel, QProgressBar, QHBoxLayout, \
+QFrame, QGridLayout, QSpacerItem, QSizePolicy, QFont, qApp
 from utility import database 
 from ui import res_rc
-from ui.Ui_user import Ui_dlgUserLogin
 
 UID, FULLNAME, ROLE = range( 3 )
 
-class dlgUserLogin( QDialog, Ui_dlgUserLogin ):
+class dlgAbstractUserLogin(QDialog):
     """
-    Dialogo utilizado para pedir valores de usuario y contraseña
+    Clase base para todos los dialogos que requieren autenticar a un usuario
     """
-    def __init__( self, parent = None, max = 3 ):
-        super( dlgUserLogin, self ).__init__( parent )
-
-        self.setupUi(self)
+    def __init__(self, maxAttempts = 3):
+        super(dlgAbstractUserLogin, self).__init__()
+        self.setupUi()
         self.user = None
-        self.max = max
+        self.maxAttempts = maxAttempts
         self.attempts = 0
 
-        self.txtApplication.setText(self.txtApplication.text() +": "+ qApp.applicationName() )
-        
+        #self.txtUser.setText('root')
+        #self.txtBd.setText('Esquipulasdb')
 
-        self.lblError.setVisible(False)
-
-        #No mostrar el marco de la ventana
-        self.setWindowFlags(Qt.FramelessWindowHint)
-
-        #Centrar el dialogo en la pantalla
-        dw = QDesktopWidget()
-        geometry = dw.screenGeometry()
-        self.setGeometry( (geometry.width() -519) / 2, (geometry.height() -311)  / 2  , 519, 311)
-
-
-        #mostrar redondeado el dialogo
-        pixmap = QPixmap(":/images/res/passwd-bg.png");
-        self.setMask(pixmap.mask());
-        
-        self.txtUser.setText('root')
-        self.txtBd.setText('Esquipulasdb')
-
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
 
     def accept(self):
-        database.getDatabase(self.txtBd.text(), "--dbconfig" in qApp.arguments() )
         self.user = User( self.txtUser.text(), self.txtPassword.text())
-        if self.user.valid or self.attempts == self.max -1:
-            super(dlgUserLogin, self).accept()
+        if self.user.valid or self.attempts == self.maxAttempts -1:
+            super(dlgAbstractUserLogin, self).accept()
         else:
             self.txtPassword.setText("")
             self.lblError.setVisible(True)
             self.attempts+=1
             QTimer.singleShot(3000, functools.partial(self.lblError.setVisible, False))
 
+    def setupUi(self):
+        self.txtPassword = QLineEdit()
+        self.txtPassword.setEchoMode(QLineEdit.Password)
+        self.txtUser = QLineEdit()
+
+        self.buttonbox = QDialogButtonBox(QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
+        self.lblError = QLabel()
+        self.lblError.setProperty("error", True)
+        self.lblError.setText(u"El usuario o la contraseña son incorrectos")
+        self.lblError.setVisible(False)
+
+        self.formLayout = QFormLayout()
+        self.formLayout.addRow(u"&Usuario", self.txtUser)
+        self.formLayout.addRow(u"&Contraseña", self.txtPassword)
+
+        self.txtUser.setWhatsThis("Escriba aca su usuario")
+        self.txtPassword.setWhatsThis(u"Escriba aca su contraseña, tenga en cuenta que el sistema hace diferencia entre minusculas y mayusculas")
+        
+        self.txtApplication = QLabel()
+
+class dlgUserLogin( dlgAbstractUserLogin ):
+    """
+    Dialogo utilizado para pedir valores de usuario, contraseña y base de datos al inicio de sesión
+    """
+    def accept(self):
+        database.getDatabase(self.txtBd.text(), "--dbconfig" in qApp.arguments() )
+        super(dlgUserLogin, self).accept()
+        
+        
+    def setupUi(self):
+        super(dlgUserLogin, self).setupUi()
+
+        #No mostrar el marco de la ventana
+        self.setWindowFlags(Qt.FramelessWindowHint)
+
+        self.resize(519, 311)
+        self.setMinimumSize(QSize(519, 311))
+        self.setMaximumSize(QSize(519, 311))
+
+        self.horizontalLayout = QHBoxLayout(self)
+        self.horizontalLayout.setMargin(0)
+
+        self.frame = QFrame(self)
+        self.frame.setFrameShape(QFrame.NoFrame)
+        self.frame.setFrameShadow(QFrame.Plain)
+
+        self.gridLayout = QGridLayout(self.frame)
+        self.gridLayout.setMargin(0)
+
+        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem, 0, 0, 1, 6)
+
+        
+
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.txtApplication.sizePolicy().hasHeightForWidth())
+        self.txtApplication.setSizePolicy(sizePolicy)
+
+        font = QFont()
+        font.setPointSize(16)
+        font.setWeight(75)
+        font.setBold(True)
+        self.txtApplication.setFont(font)
+        self.txtApplication.setAutoFillBackground(False)
+        self.txtApplication.setAlignment(Qt.AlignCenter)
+
+        self.gridLayout.addWidget(self.txtApplication, 1, 0, 1, 5)
+        spacerItem1 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem1, 2, 0, 1, 6)
+        spacerItem2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem2, 3, 0, 1, 6)
+        spacerItem3 = QSpacerItem(60, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem3, 5, 0, 1, 1)
+        spacerItem4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem4, 5, 1, 1, 1)
+        spacerItem5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem5, 5, 2, 1, 1)
+
+
+        self.label = QLabel()
+
+        self.txtBd = QLineEdit()
+
+        self.formLayout.addRow(u"Base de datos", self.txtBd)
+        self.formLayout.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+
+        self.gridLayout.addLayout(self.formLayout, 5, 3, 1, 1)
+        spacerItem6 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem6, 5, 4, 1, 1)
+        spacerItem7 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem7, 5, 5, 1, 1)
+        self.lblError = QLabel(self.frame)
+        self.lblError.setProperty("error", True)
+        self.gridLayout.addWidget(self.lblError, 6, 3, 1, 2)
+        spacerItem8 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem8, 7, 0, 1, 6)
+        self.buttonbox = QDialogButtonBox(self.frame)
+        self.buttonbox.setOrientation(Qt.Horizontal)
+        self.buttonbox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+        self.gridLayout.addWidget(self.buttonbox, 8, 0, 1, 5)
+        spacerItem9 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem9, 9, 0, 1, 6)
+        self.horizontalLayout.addWidget(self.frame)
+
+
+        self.txtApplication.setText(qApp.organizationName() +": "+ qApp.applicationName() )
+        self.lblError.setVisible(False)
+
+        #Centrar el dialogo en la pantalla
+        dw = QDesktopWidget()
+        geometry = dw.screenGeometry()
+        self.setGeometry( (geometry.width() -519) / 2, (geometry.height() -311)  / 2  , 519, 311)
+        
+        #mostrar redondeado el dialogo
+        pixmap = QPixmap(":/images/res/passwd-bg.png");
+        self.setMask(pixmap.mask());
+
+class dlgSmallUserLogin(dlgAbstractUserLogin):
+    """
+    Dialogo para autenticar a un usuario, contiene lo minimo necesario
+    """
+    def setupUi(self):
+        super(dlgSmallUserLogin, self).setupUi()
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.addLayout(self.formLayout)
+        self.verticalLayout.addWidget(self.lblError)
+        self.verticalLayout.addWidget(self.buttonbox)
+        self.setLayout(self.verticalLayout)
+    
 class dlgPasswordChange(QDialog):
+    """
+    Dialogo utilizado para cambiar la contraseña
+    """
     def __init__(self, user):
         super(dlgPasswordChange, self).__init__()
         self.setupUi(self)
@@ -81,6 +197,9 @@ class dlgPasswordChange(QDialog):
         self.buttonBox.rejected.connect(self.reject)
 
     def update(self, passwd):
+        """
+        Actualizar el valor de la barra indicadora de la fuerza de la contraseña, tambien ocultar o mostrar el texto de error
+        """
         self.bar.setValue(self.user.checkPassword(passwd))
         self.lblError.setText("" if self.txtNewPassword.text() == self.txtRepeatPassword.text() else u"Las contraseñas no coinciden" )
         self.lblError.setVisible(self.txtNewPassword.text() != self.txtRepeatPassword.text())
@@ -145,7 +264,6 @@ class dlgPasswordChange(QDialog):
         
         
 class User:
-#    TODO:Crear o utilizar algún algoritmo para determinar que tan buena es una contraseña
     secret = '7/46u23opA)P231popas;asdf3289AOP23'
     u"""
     @cvar: El hash usado en esta aplicación para los usuarios

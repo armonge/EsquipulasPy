@@ -3,9 +3,12 @@
 # Copyright (C) 2007 Thomas Zander <zander@kde.org>
 # The code is distributed under GPL 2 or any later version
 
+import functools
+
 from PyQt4.QtCore import Qt, QSize, SIGNAL, pyqtProperty, QPoint, QRect, pyqtSlot, pyqtSignature
 from PyQt4.QtGui import QAbstractButton, QStyleOptionToolButton, QStyle, QPainter, QWidget, QIcon, QStylePainter, QDockWidget, QStyleOptionDockWidgetV2, QHBoxLayout
-import functools
+
+
 
 
 def hasFeature( dockwidget, feature ):
@@ -223,7 +226,7 @@ class XDockMainWidgetWrapper( QWidget ):
 
     def setWidget( self, widget ):
         self.widget = widget
-        self.widget_height = widget.height
+        self.widget_height = widget.height()
         self.layout().addWidget( widget )
 
 
@@ -289,3 +292,23 @@ class XDockWidget( QDockWidget ):
 
 
 
+if __name__ == "__main__":
+    import sys
+    from PyQt4.QtGui import QApplication, QMainWindow, QComboBox, QPushButton, QTextEdit
+    import ui.res_rc
+    app = QApplication( sys.argv )
+    win = QMainWindow()
+    dock1 = XDockWidget( "1st dockwidget", win )
+    dock1.setFeatures(QDockWidget.DockWidgetFloatable|QDockWidget.DockWidgetMovable)
+    combo = QComboBox( dock1 )
+    dock1.setWidget( combo )
+    win.addDockWidget( Qt.LeftDockWidgetArea, dock1 )
+    dock2 = XDockWidget( "2nd dockwidget" )
+    button = QPushButton( "Hello, world!", dock2 )
+    dock2.setWidget( button )
+    win.addDockWidget( Qt.RightDockWidgetArea, dock2 )
+    edit = QTextEdit( win )
+    win.setCentralWidget( edit )
+    win.resize( 640, 480 )
+    win.show()
+    app.exec_()

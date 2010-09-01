@@ -245,7 +245,16 @@ class ArqueoModel( QAbstractTableModel ):
         Si un documento es valido
         @rtype: bool
         """
-        return self.exchangeRateId != 0 and self.printedDocumentNumber != "" and self.authorizationId != 0
+        if not self.exchangeRateId != 0:
+            self.validError = "No se ha definido un tipo de cambio"
+            return False
+        elif not self.printedDocumentNumber != "":
+            self.validError = "No se especificado el numero del arqueo"
+            return False
+        elif not self.authorizationId != 0:
+            self.validError = "No se ha autorizado el arqueo"
+            return False
+        return True
 
     def data( self, index, role = Qt.DisplayRole ):
         """

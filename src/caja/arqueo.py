@@ -8,17 +8,21 @@ from decimal import  Decimal, InvalidOperation
 import logging
 
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator, QMdiArea
-from PyQt4.QtCore import pyqtSlot,  QDateTime, QTimer, QModelIndex, Qt
+from PyQt4.QtCore import pyqtSlot,  QTime, QTimer, QModelIndex, Qt
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
+
+from utility import constantes
 from ui.Ui_arqueo import Ui_frmArqueo
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
 from utility.singleselectionmodel import  SingleSelectionModel
+from caja.mainwindow import *
+from utility.user import dlgSmallUserLogin
+
 from document.arqueo.arqueomodel import ArqueoModel, ArqueoProxyModel
 from document.arqueo.arqueodelegate import ArqueoDelegate
+import caja.mainwindow
 
-from utility import constantes
-from utility.reports import frmReportes
 #navmodel
 IDDOCUMMENTO, FECHA, NOMBRE, EFECTIVOC, EFECTIVOD, CHEQUEC, CHEQUED, DEPOSITOC, DEPOSITOD, TRANSFERENCIAC, TRANSFERENCIAD, TARJETAC, TARJETAD = range( 13 )
 #detailsmodel
@@ -227,12 +231,13 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             print self.parent.findChild(QMdiArea).subWindowList()
             for window in self.parent.findChild(QMdiArea).subWindowList():
                 if window.widget():
-                    raise UserWarning(u"Por favor cierre las otras pestañas la aplicación antes de continuar con el arqueo")
+                    raise UserWarning(u"Por favor cierre las otras pestañas de la aplicación antes de continuar con el arqueo")
 
 
             self.editmodel = ArqueoModel(self.parentWindow.datosSesion)
 
             self.editmodel.datetime.setDate(self.parentWindow.datosSesion.fecha)
+            self.editmodel.datetime.setTime(QTime.currentTime())
 
             self.dolarproxy = ArqueoProxyModel()
             self.dolarproxy.setSourceModel(self.editmodel)
@@ -266,7 +271,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.editmodel.exchangeRateId = self.parent.datosSesion.tipoCambioId
             self.editmodel.exchangeRate = self.parent.datosSesion.tipoCambioOficial
             
-            self.editmodel.datetime = self.parent.datosSesion.fecha
+            self.editmodel.datetime.setDate(self.parent.datosSesion.fecha)
             
             query = QSqlQuery( """
             CALL spTotalesSesion(%d);
@@ -345,7 +350,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.editmodel.setData(self.editmodel.index(0, MONEDA), constantes.IDDOLARES)
             self.editmodel.setData(self.editmodel.index(1, MONEDA), constantes.IDCORDOBAS)
             
-            self.dtPicker.setDate( self.parentWindow.datosSesion.fecha)
+            self.dtPicker.setDateTime( self.editmodel.datetime)
 
             self.lblUserName.setText( self.user.fullname )
             self.editmodel.dataChanged[QModelIndex,QModelIndex].connect(self.updateLabels)
@@ -407,11 +412,28 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
             if len(errors)>0:
                 raise UserWarning( "\n".join(errors))
-            super(frmArqueo, self).save()
+            dlgUser = dlgSmallUserLogin()
+            if dlgUser.exec_() == QDialog.Accepted:
+                if dlgUser.user.valid and dlgUser.user.hasRole('gerencia'):
+                    self.editmodel.authorizationId  = dlgUser.user.uid
+                    super(frmArqueo, self).save()
+                    self.parentWindow.datosSesion = caja.mainwindow.DatosSesion()
+                    self.parentWindow.status = False
+                else:
+                    QMessageBox.warning(self, "Llantera Esquipulas", "No se pudo autorizar el arqueo")
         except UserWarning as inst:
             if not self.editmodel.observations == "":
                 if QMessageBox.question(self, "Llantera Esquipulas", unicode(inst) + u"\n¿Desea Continuar?", QMessageBox.Yes| QMessageBox.No) == QMessageBox.Yes:
-                    super(frmArqueo, self).save()
+                    dlgUser = dlgSmallUserLogin()
+                    if dlgUser.exec_() == QDialog.Accepted:
+                        print "here"
+                        if dlgUser.user.valid and dlgUser.user.hasRole('gerencia'):
+                            self.editmodel.authorizationId  = dlgUser.user.uid
+                            super(frmArqueo, self).save()
+                            self.parentWindow.datosSesion = caja.mainwindow.DatosSesion()
+                            self.parentWindow.status = False
+                        else:
+                            QMessageBox.warning(self, "Llantera Esquipulas", "No se pudo autorizar el arqueo")
             else:
                 QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst) + u"\n Por favor especifique el motivo de la diferencia")
 

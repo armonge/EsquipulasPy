@@ -15,7 +15,6 @@ from factura import frmFactura
 from recibo import frmRecibo
 from ui.Ui_mainwindowcaja import Ui_MainWindow
 from apertura import dlgApertura
-#from utility.user import dlgUserLogin, User
 from utility.mainwindowbase import MainWindowBase
 from inventario.catalogos import frmCatConceptos
 from arqueo import frmArqueo
@@ -241,7 +240,6 @@ class DatosSesion():
         else:
             return True
         
-        print mensaje
         return False
     
         

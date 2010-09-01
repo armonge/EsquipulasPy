@@ -5,12 +5,16 @@ Created on 21/08/2010
 @author: Luis Carlos Mejia
 '''
 import logging
-from utility import constantes
+import functools
+
 from PyQt4.QtCore import pyqtSlot,Qt
 from PyQt4.QtGui import QMainWindow,QDataWidgetMapper,QMessageBox,QSortFilterProxyModel
-from ui.Ui_persona import Ui_frmPersona
-from utility.base import Base
 from PyQt4.QtSql import QSqlQueryModel,QSqlQuery, QSqlDatabase
+
+from ui.Ui_persona import Ui_frmPersona
+
+from utility import constantes
+from utility.base import Base
 
 TIPO,ID,NOMBRE,DIRECCION,TELEFONO,CORREO,RUC,ACTIVO = range(8)
 
@@ -122,7 +126,8 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
         
         try:
             if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
+                if not QSqlDatabase.database().open():
+                    raise UserWarning(u"No se pudo conectar con la base de datos")
             
             query = QSqlQuery()
             
@@ -166,10 +171,16 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
             result = True
             if editado:
                 self.mapper.setCurrentIndex(pos)
+
+        except UserWarning as inst:
+            logging.error(unicode(inst))
+            logging.error(query.lastError().text())
+            QMessageBox.critical(self, titulo, unicode(inst))
+            result = False
         except Exception as inst:
-            print inst
-            print query.lastError().text()
-            QMessageBox.critical(None,titulo,"El %s no pudo ser creado"%self.rol)
+            logging.critical(unicode(inst))
+            logging.critical(query.lastError().text())
+            QMessageBox.critical(self,titulo,"El %s no pudo ser creado"%self.rol)
             result = False
         finally:
             if QSqlDatabase.database().isOpen():
@@ -182,7 +193,16 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
         
         self.status = True
         self.navigate( 'last' )
-           
+
+    def addActionsToToolBar(self):
+        self.actionEditar = self.createAction(text="Editar", icon=":/icons/res/document-edit.png", slot = functools.partial(self.setStatus, 2))
+        self.toolBar.addActions([
+            self.actionEditar
+        ])
+        
+        super(frmPersona, self).addActionsToToolBar()
+
+        
     def setControls(self,status):
         
         
@@ -254,11 +274,7 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
         self.status = False        
     
     
-    @pyqtSlot(  )
-    def on_actionEditar_activated( self ):
-#        self.setEditControls(False)
-#        self.setControls(2)
-        self.status = 2
+
         
         
     @pyqtSlot( "int" )

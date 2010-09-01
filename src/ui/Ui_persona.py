@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\persona.ui'
+# Form implementation generated from reading ui file 'src/ui/persona.ui'
 #
-# Created: Sun Aug 29 01:27:05 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,13 +11,13 @@ from PyQt4 import QtCore, QtGui
 class Ui_frmPersona(object):
     def setupUi(self, frmPersona):
         frmPersona.setObjectName("frmPersona")
-        frmPersona.resize(657, 470)
+        frmPersona.resize(657, 450)
+        frmPersona.setMaximumSize(QtCore.QSize(16777215, 450))
         self.centralwidget = QtGui.QWidget(frmPersona)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.centralwidget)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.tabWidget = QtGui.QTabWidget(self.centralwidget)
-        self.tabWidget.setMaximumSize(QtCore.QSize(16777215, 400))
         self.tabWidget.setTabPosition(QtGui.QTabWidget.West)
         self.tabWidget.setObjectName("tabWidget")
         self.tabdetails = QtGui.QWidget()
@@ -163,10 +162,6 @@ class Ui_frmPersona(object):
         self.toolBar = QtGui.QToolBar(frmPersona)
         self.toolBar.setObjectName("toolBar")
         frmPersona.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
-        self.actionEditar = QtGui.QAction(frmPersona)
-        self.actionEditar.setIcon(icon)
-        self.actionEditar.setObjectName("actionEditar")
-        self.toolBar.addAction(self.actionEditar)
         self.label_6.setBuddy(self.txtruc)
         self.label_15.setBuddy(self.txtSearch)
 
@@ -175,7 +170,7 @@ class Ui_frmPersona(object):
         QtCore.QMetaObject.connectSlotsByName(frmPersona)
 
     def retranslateUi(self, frmPersona):
-        frmPersona.setWindowTitle(QtGui.QApplication.translate("frmPersona", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
+        frmPersona.setWindowTitle(QtGui.QApplication.translate("frmPersona", "Persona", None, QtGui.QApplication.UnicodeUTF8))
         self.lblnombre.setText(QtGui.QApplication.translate("frmPersona", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -207,7 +202,15 @@ class Ui_frmPersona(object):
         self.label_15.setText(QtGui.QApplication.translate("frmPersona", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmPersona", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionEditar.setText(QtGui.QApplication.translate("frmPersona", "Editar", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionEditar.setToolTip(QtGui.QApplication.translate("frmPersona", "Editar", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    frmPersona = QtGui.QMainWindow()
+    ui = Ui_frmPersona()
+    ui.setupUi(frmPersona)
+    frmPersona.show()
+    sys.exit(app.exec_())
+

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\liquidacion.ui'
+# Form implementation generated from reading ui file 'src/ui/liquidacion.ui'
 #
-# Created: Mon Aug 30 22:27:22 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -363,7 +362,7 @@ class Ui_frmLiquidacion(object):
         self.label.setBuddy(self.txtSearch)
 
         self.retranslateUi(frmLiquidacion)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.swProvider.setCurrentIndex(0)
         self.swWarehouse.setCurrentIndex(1)
         self.tabTotalsAccounts.setCurrentIndex(0)
@@ -431,3 +430,13 @@ class Ui_frmLiquidacion(object):
 
 from utility.widgets.xdockwidget import XDockWidget
 import res_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    frmLiquidacion = QtGui.QMainWindow()
+    ui = Ui_frmLiquidacion()
+    ui.setupUi(frmLiquidacion)
+    frmLiquidacion.show()
+    sys.exit(app.exec_())
+
