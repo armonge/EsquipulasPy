@@ -249,7 +249,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                                     raise Exception("No se pudo comenzar la transacción" )  
                                   
                                 #Cambiar estado Anulado=1 para documento
-                                query.prepare("UPDATE documentos d SET idestado=%d where iddocumento=%d LIMIT 1"%(constantes.ANULADO,doc) )
+                                query.prepare("UPDATE documentos d SET idestado=%d where iddocumento=%d LIMIT 1"%(constantes.ANULACIONPENDIENTE,doc) )
                                 if not query.exec_():
                                     raise Exception("No se logro cambiar el estado a el documento")
                                
@@ -260,7 +260,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                                 query.bindValue( ":ndocimpreso", 'S/N' )
                                 query.bindValue(":total",total.to_eng_string())
                                 query.bindValue( ":fechacreacion", QDate.currentDate() )
-                                query.bindValue( ":idtipodoc", constantes.IDDEVOLUCION )
+                                query.bindValue( ":idtipodoc", constantes.IDANULACION )
                                 query.bindValue( ":observacion", anulardialog.txtObservaciones.toPlainText() )                        
                                 query.bindValue( ":idestado", constantes.PENDIENTE )
                                 
