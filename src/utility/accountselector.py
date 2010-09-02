@@ -182,6 +182,7 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
             if i == -1:
                 i = 0
             editor.setCurrentIndex( i )
+            editor.lineEdit().selectAll()
         elif index.column() == MONTO:
             editor.setValue( index.model().data( index, Qt.EditRole ) if index.model().data( index, Qt.EditRole ) != "" else 0 )
         else:

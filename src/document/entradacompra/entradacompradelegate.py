@@ -57,6 +57,7 @@ class EntradaCompraDelegate( QStyledItemDelegate ):
             if i == -1:
                 i = 0
             editor.setCurrentIndex( i )
+            editor.lineEdit().selectAll()
         else:
             QStyledItemDelegate.setEditorData( self, editor, index )
 

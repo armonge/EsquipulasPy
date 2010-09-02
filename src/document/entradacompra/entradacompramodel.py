@@ -4,10 +4,13 @@ Created on 18/05/2010
 
 @author: Andrés Reyes Monge
 '''
+from decimal import Decimal
+import logging
+
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
+
 from lineaentradacompra import LineaEntradaCompra
-from decimal import Decimal
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movEntradaCompra
 from utility import constantes
@@ -302,7 +305,7 @@ class EntradaCompraModel( QAbstractTableModel ):
         self.dirty = True
         return True
 
-    def removeRows( self, position, rows = 1, index = QModelIndex ):
+    def removeRows( self, position, rows = 1, index = QModelIndex() ):
         """
         Borrar filas del modelo
         """
@@ -411,7 +414,7 @@ class EntradaCompraModel( QAbstractTableModel ):
 
 
             if self.isCheck:
-                raise NotImplementedError( "Todavia no es posible guardar entradas de compras pagadas con cheques" )
+                raise UserWarning( "Todavia no es posible guardar entradas de compras pagadas con cheques" )
 
             for nline, line in enumerate( self.lines ):
                 if line.valid:
@@ -433,9 +436,9 @@ class EntradaCompraModel( QAbstractTableModel ):
 
             if not QSqlDatabase.database().commit():
                 raise Exception( "No se pudo hacer commit" )
-        except Exception, e:
-            print  query.lastError().text()
-            print e
+        except Exception as inst:
+            logging.critical(query.lastError().text())
+            logging.critical(unicode(inst))
             QSqlDatabase.database().rollback()
             return False
 

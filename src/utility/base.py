@@ -66,10 +66,13 @@ class Base( object ):
             u"¿Está seguro que desea salir?",
             QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
                 event.ignore()
-                
+
+        #Guardar el tamaño y la posición
         settings = QSettings()
         settings.setValue( self.windowTitle() + "/Geometry", self.saveGeometry() )
         settings.setValue( self.windowTitle() + "/State", self.saveState() )
+
+        #quitar la toolbar
         self.parentWindow.removeToolBar( self.toolBar )
 
 
@@ -254,7 +257,32 @@ class Base( object ):
         self.editmodel.insertRows( row )
 
     def createAction(self, text, slot=None, shortcut=None, icon=None,
-        tip=None, checkable=False, signal="triggered()"):
+        tip=None, checkable=False, signal="triggered"):
+        """
+        Crear un objeto acción
+        @param text: El texto de la acción
+        @type text: string
+
+        @param slot: El slot que se ejecutara cuando se dispare esta acción
+        @type slot: callable
+
+        @param shortcut: El acceso directo que tiene asignada esta acción
+        @type shortcut: QKeySequence
+
+        @param icon: El icono de esta acción
+        @type icon: string
+
+        @param tip: El tooltip que tendra esta acción
+        @type tip: string
+
+        @param checkable: Si esta acción es checkable o no
+        @type checkable: bool
+
+        @param signal: La señal en la que esta acción ejecutara el slot
+        @type signal: string
+
+        @rtype: QAction
+        """
         action = QAction(text, self)
         if icon is not None:
             action.setIcon(QIcon(icon))
@@ -264,15 +292,22 @@ class Base( object ):
             action.setToolTip(tip)
             action.setStatusTip(tip)
         if slot is not None:
-            self.connect(action, SIGNAL(signal), slot)
+            getattr(action, signal).connect(slot)
         if checkable:
             action.setCheckable(True)
         return action
+        
     def newDocument(self):
+        """
+        Empezar la edición de un nuevo documento
+        """
         raise NotImplementedError()
 
 
     def cancel(self):
+        """
+        Cancelar la edición del nuevo documento
+        """
         raise NotImplementedError()
 
     @property
@@ -281,7 +316,8 @@ class Base( object ):
         La identificación de este documento para reporte, normalmente sera el iddocumento o el ndocimpreso
         @rtype:string
         """
-        raise NotImplementedError()
+        raise NotImplementedError(u"Esta propiedad debe de implementarse para proveer funciones de impresión")
+    
     def preview( self ):
         try:
             printer = QPrinter()
@@ -363,23 +399,23 @@ class Base( object ):
 
         
     def createActions(self):
-        self.actionNew = self.createAction(text="Nuevo", icon=":/icons/res/document-new.png", shortcut="Ctrl+n", slot=self.newDocument)
-        self.actionPreview = self.createAction(text="Previsualizar", icon=":/icons/res/document-preview.png",shortcut="Ctrl+p", slot=self.preview)
-        self.actionPrint = self.createAction(text="Imprimir", icon=":/icons/res/document-print.png", slot = self.printDocument)
-        self.actionSave = self.createAction(text="Guardar", icon=":/icons/res/document-save.png",shortcut="Ctrl+g", slot = self.save)
+        self.actionNew = self.createAction(text="Nuevo", tip="Crear un nuevo documento", icon=":/icons/res/document-new.png", shortcut="Ctrl+n", slot=self.newDocument)
+        self.actionPreview = self.createAction(text="Previsualizar", tip="Vista de impresión del documento", icon=":/icons/res/document-preview.png",shortcut="Ctrl+p", slot=self.preview)
+        self.actionPrint = self.createAction(text="Imprimir", tip="Imprimir el documento", icon=":/icons/res/document-print.png", slot = self.printDocument)
+        self.actionSave = self.createAction(text="Guardar", tip = "Guardar el documento", icon=":/icons/res/document-save.png",shortcut="Ctrl+g", slot = self.save)
         
-        self.actionCancel = self.createAction(text="Cancelar", icon=":/icons/res/dialog-cancel.png",shortcut="Esc", slot = self.cancel)
+        self.actionCancel = self.createAction(text="Cancelar", tip = "Cancelar la creación del nuevo documento", icon=":/icons/res/dialog-cancel.png",shortcut="Esc", slot = self.cancel)
         
         self.actionCopy = self.createAction(text="Copiar", icon=":/icons/res/edit-copy.png", shortcut="Ctrl+c")
         self.actionCut = self.createAction(text="Cortar", icon=":/icons/res/edit-cut.png", shortcut="Ctrl+x")
         self.actionPaste = self.createAction(text="Pegar", icon=":/icons/res/edit-paste.png", shortcut="Ctrl+v")
 
-        self.actionGoFirst = self.createAction(text="Ir al primer registro", icon=":/icons/res/go-first.png")
-        self.actionGoPrevious = self.createAction(text="Ir al registro anterior", icon=":/icons/res/go-previous.png")
-        self.actionGoLast = self.createAction(text="Ir al ultimo registro", icon=":/icons/res/go-last.png")
-        self.actionGoNext = self.createAction(text="Ir al siguiente registro", icon=":/icons/res/go-next.png")
+        self.actionGoFirst = self.createAction(text="Primer documento", tip ="Ir al primer documento",  icon=":/icons/res/go-first.png")
+        self.actionGoPrevious = self.createAction(text="Documento anterior", tip="Ir al documento anterior", icon=":/icons/res/go-previous.png")
+        self.actionGoLast = self.createAction(text="Ultimo documento", tip = "Ir al ultimo documento", icon=":/icons/res/go-last.png")
+        self.actionGoNext = self.createAction(text="Documento siguiente", tip = "Ir al siguiente documento" ,icon=":/icons/res/go-next.png")
 
-        self.actionDeleteRow = self.createAction(text="Ir al siguiente registro", icon=":/icons/res/edit-delete.png", slot=self.deleteRow)
+        self.actionDeleteRow = self.createAction(text="Borrar la fila", icon=":/icons/res/edit-delete.png", slot=self.deleteRow)
 
         self.addActionsToToolBar()
         

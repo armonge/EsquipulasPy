@@ -226,8 +226,8 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
         """
         try:
-            if not QSqlDatabase.database().isOpen():
-                if not QSqlDatabase.database().open():
+            if not self.database.isOpen():
+                if not self.database.open():
                     raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
 
             self.editmodel = EntradaCompraModel()
@@ -259,7 +259,9 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.addLine()
             self.dtPicker.setDateTime( QDateTime.currentDateTime() )
             self.editmodel.providerId = self.providersModel.record( self.cbProvider.currentIndex() ).value( "idpersona" ).toInt()[0]
-            self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+
+            self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
+            self.tabledetails.setColumnWidth(DESCRIPCION, 250)
             self.status = False
         except UserWarning as inst:
             QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
@@ -271,8 +273,8 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             logging.error(unicode(inst))
 #            self.status = True
 
-        if QSqlDatabase.database().isOpen():
-            QSqlDatabase.database().close()
+        if self.database.isOpen():
+            self.database.close()
 
 
     def cancel( self ):

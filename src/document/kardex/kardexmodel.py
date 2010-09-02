@@ -4,10 +4,13 @@ Created on 19/05/2010
 
 @author: Andrés Reyes Monge
 '''
+from decimal import Decimal
+import logging
+
 from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, SIGNAL
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 
-from decimal import Decimal
+
 from document.kardex.lineakardex import LineaKardex
 from utility import constantes
 from utility.movimientos import movKardex
@@ -264,8 +267,8 @@ class KardexModel( QAbstractTableModel ):
             
             return True
         except Exception as inst:
-            print query.lastError().text()
-            print inst
+            logging.critical(query.lastError().text())
+            logging.critical(unicode(inst))
             QSqlDatabase.database().rollback()
 
             return False

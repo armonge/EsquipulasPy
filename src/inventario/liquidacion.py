@@ -9,7 +9,7 @@ import logging
 from PyQt4.QtGui import QMainWindow, QAbstractItemView, \
 QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, QPrinter
 from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer
-from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
+from PyQt4.QtSql import  QSqlQuery, QSqlQueryModel
 from ui.Ui_liquidacion import Ui_frmLiquidacion
 
 from utility.moneyfmt import moneyfmt
@@ -257,8 +257,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     
     def updateModels( self ):
         try:
-            if not QSqlDatabase.database().isOpen():
-                if not QSqlDatabase.database().open():
+            if not self.database.isOpen():
+                if not self.database.open():
                     raise UserWarning( "No se pudo conectar con la base de datos ")
             query = u"""
                 SELECT
@@ -403,8 +403,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         Slot documentation goes here.
         """
         try:
-            if not QSqlDatabase.database().isOpen:
-                if not QSqlDatabase.database().open():
+            if not self.database.isOpen:
+                if not self.database.open():
                     raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
             
             query = QSqlQuery( "SELECT idtc FROM tiposcambio LIMIT 1" )
@@ -515,8 +515,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.status = 1
             logging.critical(inst)
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+            if self.database.isOpen():
+                self.database.close()
 
 
 
@@ -733,6 +733,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 raise UserWarning("No existen bodegas en el sistema")
             self.cbWarehouse.setModel( warehouseModel )
             self.cbWarehouse.setModelColumn( 1 )
+
+            self.cbWarehouse.setCurrentIndex(-1)
+            self.cbProvider.setCurrentIndex(-1)
 
 
                 

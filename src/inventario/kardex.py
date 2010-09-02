@@ -8,7 +8,7 @@ from decimal import Decimal
 import logging
 from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel, QVBoxLayout, QDialogButtonBox, \
 QFormLayout, QLineEdit, QDialog, QTableView, QAbstractItemView, QMessageBox
-from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
+from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 from PyQt4.QtCore import QTimer, Qt, pyqtSlot, QDateTime, QModelIndex
 
 from ui.Ui_kardex import Ui_frmKardex
@@ -178,8 +178,9 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
         """
         query = QSqlQuery()
         try:
-            if not QSqlDatabase.database().open():
-                raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
     
             dlgdoc = dlgSelectDoc(self.tiposdoc)
             if dlgdoc.exec_() == QDialog.Accepted:
