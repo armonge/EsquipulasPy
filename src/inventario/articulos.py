@@ -295,10 +295,10 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
         self.catvalid = False
         self.catId = 0
         self.brandId = 0
-        self.ISC = 0
-        self.DAI = 0
-        self.comission = 0
-        self.profit = 0
+        self.ISC = Decimal(0)
+        self.DAI = Decimal(0)
+        self.comission = Decimal(0)
+        self.profit = Decimal(0)
         
         
         self.categoriesview.setModel(self.catproxymodel)
