@@ -38,7 +38,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         '''
         super( frmFactura, self ).__init__( parent )
         self.readOnly = True
-        
+        self.user = user
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
