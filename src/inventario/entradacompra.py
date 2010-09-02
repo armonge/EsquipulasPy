@@ -355,6 +355,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.lblIVA.setText( "C$0.00" )
             self.lblTotal.setText( "C$0.00" )
             self.tabledetails.setEditTriggers( QAbstractItemView.AllEditTriggers )
+            self.tabledetails.setColumnHidden(IDARTICULO,True)
 
 
     @pyqtSlot( "QString" )

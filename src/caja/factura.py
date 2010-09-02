@@ -88,7 +88,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         self.readOnly = False
         self.clientesModel = QSqlQueryModel()
-        self.accounts = QSqlQueryModel()
+        self.existenciaModel = QSqlQueryModel()
         self.vendedoresModel = QSqlQueryModel()
         self.bodegasModel = QSqlQueryModel()
         
@@ -335,7 +335,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.editmodel.insertRow( 0 )
 
             self.editmodel.bodegaId = self.bodegasModel.record( index ).value( "idbodega" ).toInt()[0]
-            self.proxyAccounts.setFilterRegExp('%d'%self.editmodel.bodegaId)           
+            self.proxyexistenciaModel.setFilterRegExp('^%d$'%self.editmodel.bodegaId)           
             self.tabledetails.setColumnHidden(IDARTICULO,True)
             self.updateLabels()
 
@@ -452,6 +452,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.lblsubtotal.setText( moneyfmt( self.editmodel.subtotal, 4, "US$ " ) )
         self.lbliva.setText( moneyfmt( self.editmodel.IVA, 4, "US$ " ) )
         self.lbltotal.setText( moneyfmt( self.editmodel.total, 4, "US$ " ) )
+        self.lbltasaiva.setText(('0' if self.editmodel.bodegaId <> 1 else str(self.editmodel.ivaTasa)) + '%')
         self.tabledetails.resizeColumnsToContents()
         
     def updateModels( self ):
@@ -598,7 +599,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     return
         
             #Crear el delegado con los articulo y verificar si existen articulos
-                self.accounts.setQuery(QSqlQuery("""
+                self.existenciaModel.setQuery(QSqlQuery("""
                             SELECT
                     idarticulo,
                     descripcion,
@@ -610,11 +611,11 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 FROM vw_articulosenbodegas
                  WHERE existencia >0
                         """))
-                self.proxyAccounts = QSortFilterProxyModel()
-                self.proxyAccounts.setSourceModel(self.accounts)
-                self.proxyAccounts.setFilterKeyColumn(6)
+                self.proxyexistenciaModel = QSortFilterProxyModel()
+                self.proxyexistenciaModel.setSourceModel(self.existenciaModel)
+                self.proxyexistenciaModel.setFilterKeyColumn(6)
         
-                delegate = FacturaDelegate(self.proxyAccounts)
+                delegate = FacturaDelegate(self.proxyexistenciaModel)
                 if delegate.proxymodel.rowCount() == 0:
                     QMessageBox.information( None, "Factura", "No hay articulos en existencia" )
                     return
@@ -627,6 +628,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                                 b.nombrebodega as Bodega
                         FROM bodegas b
                         JOIN documentos d ON b.idbodega=d.idbodega
+                        JOIN docpadrehijos ph ON ph.idpadre =d.iddocumento
+                        JOIN documentos k ON ph.idhijo = k.iddocumento AND k.idtipodoc = 27
                 JOIN articulosxdocumento ad ON ad.iddocumento=d.iddocumento
                 GROUP BY b.idbodega
                 HAVING SUM(ad.unidades)>0    
@@ -652,7 +655,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         
         
                 self.editmodel.ivaId = query.value( 0 ).toInt()[0]
-                self.lbltasaiva.setText(query.value( 1 ).toString() + '%')
+                self.lbltasaiva.setText(('0' if self.editmodel.bodegaId <> 1 else str(self.editmodel.ivaTasa)) + '%')
                 self.editmodel.ivaTasa = Decimal( query.value( 1 ).toString() ) 
           
                     
