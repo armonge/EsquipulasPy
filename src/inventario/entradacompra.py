@@ -5,7 +5,7 @@ Module implementing frmEntradaCompra.
 from decimal import Decimal
 import logging
 
-from PyQt4.QtGui import QMainWindow,  QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter
+from PyQt4.QtGui import QMainWindow,  QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter, qApp
 from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QTimer, QDateTime, QModelIndex
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 
@@ -164,10 +164,10 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
 
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.error(unicode(inst))
         except Exception as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", "No se pudo cargar la lista de entradas locales")
+            QMessageBox.critical(self, qApp.organizationName(), "No se pudo cargar la lista de entradas locales")
             logging.critical(unicode(inst))
         finally:
             if self.database.isOpen():
@@ -264,11 +264,11 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.tabledetails.setColumnWidth(DESCRIPCION, 250)
             self.status = False
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.error(unicode(inst))
 #            self.status = True
         except Exception as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", "No se pudo iniciar una nueva entrada compra")
+            QMessageBox.critical(self, qApp.organizationName(), "No se pudo iniciar una nueva entrada compra")
             print inst
             logging.error(unicode(inst))
 #            self.status = True
@@ -281,7 +281,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         """
         Aca se cancela la edicion del documento
         """
-        if QMessageBox.question(self, "Llantera Esquipulas", u"¿Desea realmente cancelar?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+        if QMessageBox.question(self, qApp.organizationName(), u"¿Desea realmente cancelar?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
             self.editmodel = None
 
             self.tablenavigation.setModel( self.navproxymodel )

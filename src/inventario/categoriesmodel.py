@@ -6,6 +6,7 @@ Created on 14/07/2010
 '''
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from PyQt4.QtCore import Qt, QModelIndex, QAbstractItemModel
+from PyQt4.QtGui import QStandardItemModel
      
 class CategoryItem(object):
     def __init__(self, data, parent=None):
@@ -111,7 +112,6 @@ class CategoryItem(object):
             if not database.transaction():
                 raise Exception("No se pudo iniciar la transacción para borrar las categorias")
             for row in range(count):
-                print self.childItems[position].itemData
                 if not query.exec_("DELETE FROM categorias WHERE padre = %d" % self.childItems[position].itemData[1]):
                     raise Exception("No se pudieron borrar los hijos de la categoria: %s con id: %d" % (self.childItems[position].itemData[1], self.childItems[position].itemData[1] ))
                     print query.executedQuery()
@@ -133,6 +133,7 @@ class CategoryItem(object):
     
 
     def setData(self, column, value):
+        value = value.toList()
         if column < 0:
             return False
         if column == 0:
@@ -147,11 +148,10 @@ class CategoryItem(object):
                 """ % self.itemData[1]):
                     raise Exception("No se pudo preparar la consulta para actualizar la categoria")
 
-                query.bindValue(":nombre", value[column].strip())
+                query.bindValue(":nombre", value[column].toString().strip())
                 if not query.exec_():
                     raise Exception("No se pudo actualizar la categoria")
-                
-                
+
             except Exception as inst:
                 print inst
                 return False
@@ -192,7 +192,6 @@ class CategoriesModel(QAbstractItemModel):
             item = index.internalPointer()
             if item:
                 return item
-
         return self.rootItem
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
@@ -236,7 +235,6 @@ class CategoriesModel(QAbstractItemModel):
 
     def removeRows(self, position, rows, parent=QModelIndex()):
         parentItem = self.getItem(parent)
-        
         self.beginRemoveRows(parent, position, position + rows - 1)
         success = parentItem.removeChildren(position, rows)
         self.endRemoveRows()

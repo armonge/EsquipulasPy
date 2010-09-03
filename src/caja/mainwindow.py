@@ -8,7 +8,7 @@
 import logging
 from decimal import Decimal
 
-from PyQt4.QtGui import QMainWindow, QDialog, QMessageBox
+from PyQt4.QtGui import QMainWindow, QDialog, QMessageBox, qApp
 from PyQt4.QtCore import pyqtSlot, Qt
 from PyQt4.QtSql import QSqlDatabase,QSqlQuery
 from factura import frmFactura
@@ -33,8 +33,9 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         super( MainWindow, self ).__init__( parent )
         self.setupUi( self )
-        MainWindowBase.__init__( self )
         self.user = user
+        MainWindowBase.__init__( self )
+        
         
         
         self.datosSesion = DatosSesion()
@@ -53,7 +54,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
 #                return
                 
             
-#        if not QMessageBox.question(self, "Llantera Esquipulas", u"¿Está seguro que desea salir?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+#        if not QMessageBox.question(self, qApp.organizationName(), u"¿Está seguro que desea salir?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
 #            event.ignore()        
         
     def setControls( self, state ):
@@ -174,11 +175,11 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                     db.close()
 
             except UserWarning as inst:
-                QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+                QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
                 logging.error(unicode(inst))
                 logging.error(query.lastError().text())
             except Exception as inst:
-                QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un problema al tratar de abrir la caja")
+                QMessageBox.critical(self, qApp.organizationName(), "Hubo un problema al tratar de abrir la caja")
                 logging.critical(unicode(inst))
                 logging.error(query.lastError().text())
         else:

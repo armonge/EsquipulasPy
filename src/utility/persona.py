@@ -8,7 +8,7 @@ import logging
 import functools
 
 from PyQt4.QtCore import pyqtSlot,Qt
-from PyQt4.QtGui import QMainWindow,QDataWidgetMapper,QMessageBox,QSortFilterProxyModel
+from PyQt4.QtGui import QMainWindow,QDataWidgetMapper,QMessageBox,QSortFilterProxyModel, qApp
 from PyQt4.QtSql import QSqlQueryModel,QSqlQuery, QSqlDatabase
 
 from ui.Ui_persona import Ui_frmPersona
@@ -102,7 +102,7 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
             
         except UserWarning as inst:
             logging.error(inst)
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
             logging.critical(inst)
         finally:

@@ -12,7 +12,7 @@ from PyQt4.QtCore import pyqtSlot, SIGNAL, QModelIndex, Qt, QTimer, \
 
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
-     QLineEdit,QMessageBox
+     QLineEdit,QMessageBox, qApp
 
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from ui.Ui_creditodebito import Ui_frmCreditoDebito
@@ -133,11 +133,11 @@ class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
                 self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
                 self.status =  False 
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.errror(unicode(inst))
             self.status = True
         except Exception as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas",u"Hubo un error al cargar la lista de documentos")
+            QMessageBox.critical(self, qApp.organizationName(),u"Hubo un error al cargar la lista de documentos")
             logging.errror(unicode(inst))
             self.status = True
         finally:

@@ -6,7 +6,7 @@ Created on 01/07/2010
 '''
 import logging
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QItemSelectionModel, QDataWidgetMapper, QMessageBox
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QItemSelectionModel, QDataWidgetMapper, QMessageBox, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 from PyQt4.QtCore import pyqtSlot, QDateTime, SIGNAL, QTimer, QModelIndex, Qt
 
@@ -103,7 +103,7 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             self.tableNavigation.setColumnWidth( CONCEPTO, 250 )
         except UserWarning as inst:
             logging.error(inst)
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
             logging.critical(inst)
 
@@ -194,10 +194,10 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
             self.tableDetails.resizeColumnsToContents()
         except UserWarning as inst:
             self.status = False
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.error(unicode(inst))
         except Exception as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al tratar de iniciar un nuevo ajuste")
+            QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al tratar de iniciar un nuevo ajuste")
             logging.critical(unicode(inst))
             self.status = False
 
@@ -275,10 +275,10 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
 
             self.status = False
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.error(inst)
         except Exception as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al tratar de guardar su ajuste")
+            QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al tratar de guardar su ajuste")
             self.database.rollback()
             logging.critical(inst)
             logging.critical(query.lastError().text())

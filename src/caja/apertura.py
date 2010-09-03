@@ -7,7 +7,7 @@ Created on 02/06/2010
 from decimal import Decimal
 import logging
 
-from PyQt4.QtGui import QMessageBox, QDialog, QLineEdit, QIcon
+from PyQt4.QtGui import QMessageBox, QDialog, QLineEdit, QIcon, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 from PyQt4.QtCore import pyqtSlot, pyqtSignature, QDateTime,Qt
 from ui.Ui_apertura import Ui_dlgApertura
@@ -58,7 +58,7 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
                 if self.cajasmodel.rowCount()==0:
                     QMessageBox.critical(self, "Abrir Caja","No existe ninguna caja en la base de datos")
             except UserWarning as inst:
-                QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+                QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
                 logging.error(unicode(inst))
                 self.reject()
             except Exception as inst:
@@ -83,7 +83,7 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
             supervisor = User( self.txtUser.text(), self.txtPassword.text())
             if supervisor.valid:
                 if not supervisor.hasRole( 'root' ):
-                    QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación","El usuario %s no tiene permisos para autorizar la apertura de caja"% supervisor.user)
+                    QMessageBox.critical(self, qApp.organizationName() + u": Autenticación","El usuario %s no tiene permisos para autorizar la apertura de caja"% supervisor.user)
                     logging.info(u"El usuario %s intento autorizar la apertura de una sesión" % supervisor.user)
                     return
                     
@@ -92,7 +92,7 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
                 self.editmodel.datosSesion.fecha = self.dtFechaTime.date()
                 
                 if not self.editmodel.save():
-                    QMessageBox.warning( self,"Llantera Esquipulas", self.editmodel.error)
+                    QMessageBox.warning( self,qApp.organizationName(), self.editmodel.error)
                     logging.error(self.editmodel.error)
                     #else:
                         #QMessageBox.warning( None, u"La sesión no fue abierta", u"La sesión no fue abierta. Por favor Contacte al administrador del sistema")
@@ -101,7 +101,7 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
                     logging.info(u"El usuario %s ha abierto una sesión de caja autorizada por el usuario %s " %(self.parentWindow.user.user, supervisor.user))
                     super(dlgApertura,self).accept()
             else:
-                QMessageBox.critical(self, u"Llantera Esquipulas: Autenticación",supervisor.error)
+                QMessageBox.critical(self, qApp.organizationName() +u": Autenticación",supervisor.error)
                 self.txtUser.setFocus()
                 self.txtPassword.setText("")
         else:

@@ -4,7 +4,7 @@ Created on 25/05/2010
 @author: Luis Carlos Mejia
 '''
 from PyQt4 import QtGui,QtCore
-from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter,QDialog, QPrinter
+from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter,QDialog, QPrinter, qApp
 from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QModelIndex, QTimer, QDateTime,QDate
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 from decimal import Decimal
@@ -94,7 +94,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         
         
         if not self.updateModels():
-#            QMessageBox.critical(self, "Llantera Esquipulas", "No fue posible crear una nueva factura")
+#            QMessageBox.critical(self, qApp.organizationName(), "No fue posible crear una nueva factura")
             return 
         
         self.status = False                
@@ -129,7 +129,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         Actualizar los modelos de edición
         """
         if not self.readOnly:
-            if QMessageBox.question(self, "Llantera Esquipulas", u"Se perderán todos los cambios en la factura. ¿Esta seguro que desea actualizar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+            if QMessageBox.question(self, qApp.organizationName(), u"Se perderán todos los cambios en la factura. ¿Esta seguro que desea actualizar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
                 return
             
         if self.updateModels():
@@ -149,7 +149,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             if recibo.datosRecibo.retencionValida:
                 if recibo.datosRecibo.retencionModel.rowCount()==0:
                     QMessageBox.warning( None,
-                                     "Llantera Esquipulas",
+                                     qApp.organizationName(),
                                      """No es posible crear un recibo porque no existen retenciones en la base de datos""",
                                      QMessageBox.StandardButtons( \
                                     QMessageBox.Ok ),
@@ -168,7 +168,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 return
 
             
-        if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+        if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
                 
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
@@ -178,7 +178,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 recibo.datosRecibo.observaciones = recibo.txtobservaciones.toPlainText()
             if self.editmodel.save(recibo.datosRecibo if self.editmodel.escontado else None):
                 QMessageBox.information( None,
-                     "Llantera Esquipulas" ,
+                     qApp.organizationName() ,
                      u"""El documento se ha guardado con éxito""" ) 
                 self.btnrecibo.setHidden(not self.editmodel.escontado)
                 
@@ -189,7 +189,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.status = True
             else:
                 QMessageBox.critical( None,
-                    "Llantera Esquipulas" ,
+                    qApp.organizationName() ,
                      """Ha ocurrido un error al guardar la factura""" ) 
     
             if QSqlDatabase.database().isOpen():
@@ -233,7 +233,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
     #                
     #            else:            
 #            
-                if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea anular la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:                             
+                if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea anular la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
                     anulardialog = Anular(self.navmodel.record( self.mapper.currentIndex()).value( "No. Factura" ).toString())
                     if anulardialog.conceptosmodel.rowCount()==0:
                         QMessageBox.warning(None,"Anular Factura",u"No existen conceptos para la anulación")
@@ -241,7 +241,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     else:
                         if anulardialog.exec_() == QDialog.Accepted:
                             if anulardialog.cboConceptos.currentIndex()==-1 and anulardialog.txtObservaciones.toPlainText()=="":
-                                QMessageBox.critical( self, "Llantera Esquipulas", "No ingreso los datos correctos", QMessageBox.Ok )                                    
+                                QMessageBox.critical( self, qApp.organizationName(), "No ingreso los datos correctos", QMessageBox.Ok )
                             else:
                                 
                                 query = QSqlQuery()
@@ -294,7 +294,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                  
                                 if not self.database.commit():
                                     raise Exception("NO se hizo el commit para la Anulacion")
-                                QMessageBox.information( self, "Llantera Esquipulas", "Factura anulada Correctamente", QMessageBox.Ok )                            
+                                QMessageBox.information( self, qApp.organizationName(), "Factura anulada Correctamente", QMessageBox.Ok )
                                 self.updateModels()
                 
         except Exception as inst:
@@ -464,7 +464,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
                     QMessageBox.warning( None,
-                    "Llantera Esquipulas",
+                    qApp.organizationName(),
                     """Hubo un error al conectarse con la base de datos""",
                     QMessageBox.StandardButtons( \
                         QMessageBox.Ok ),

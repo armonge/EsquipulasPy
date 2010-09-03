@@ -4,7 +4,7 @@ Module implementing frmCatProveedores.
 """
 import logging
 
-from PyQt4.QtGui import QStyledItemDelegate, QAbstractItemView, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, QTextDocument
+from PyQt4.QtGui import QStyledItemDelegate, QAbstractItemView, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, QTextDocument, qApp
 from PyQt4.QtCore import  Qt, QRegExp, QSize, QVariant
 from utility.catgeneric import frmCatGeneric
 
@@ -34,7 +34,7 @@ class frmCatMarcas( frmCatGeneric ):
             return True
         except UserWarning as inst:
             logging.error(inst)
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
             logging.critical(inst)
         finally:

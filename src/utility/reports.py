@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from PyQt4.QtGui import  QPrinter, QPrintPreviewDialog,  QLineEdit, QMessageBox, QProgressBar, QPrintPreviewWidget
+from PyQt4.QtGui import  QPrinter, QPrintPreviewDialog,  QLineEdit, QMessageBox, QProgressBar, QPrintPreviewWidget, qApp
 from PyQt4.QtWebKit import QWebView
 from PyQt4.QtCore import  QUrl, QSettings, Qt
 
@@ -69,7 +69,7 @@ class frmReportes( QPrintPreviewDialog ):
         if self.progressbar.isVisible():
             self.progressbar.hide()
         if not status:
-            QMessageBox.critical(self, "Llantera Esquipulas", "El reporte no se pudo cargar")
+            QMessageBox.critical(self, qApp.organizationName(), "El reporte no se pudo cargar")
             logging.error("No se pudo cargar el reporte: %s" % self.report)
             self.accept()
         

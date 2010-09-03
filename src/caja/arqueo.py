@@ -7,7 +7,7 @@ Created on 07/06/2010
 from decimal import  Decimal, InvalidOperation
 import logging
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator, QMdiArea
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator, QMdiArea, qApp
 from PyQt4.QtCore import pyqtSlot,  QTime, QTimer, QModelIndex, Qt
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 
@@ -138,7 +138,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             
         except UserWarning as inst:
             logging.error(inst)
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
             logging.critical(inst)
         finally:
@@ -362,11 +362,11 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             
         except UserWarning as inst:
             logging.error(unicode(inst))
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             self.status = True
         except Exception  as inst:
             logging.critical(inst)
-            QMessageBox.critical(self, "Llantera Esquipulas", "El sistema no pudo iniciar un nuevo arqueo")
+            QMessageBox.critical(self, qApp.organizationName(), "El sistema no pudo iniciar un nuevo arqueo")
             self.status = True
         finally:
             if self.database.isOpen():
@@ -420,10 +420,10 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                     self.parentWindow.datosSesion = caja.mainwindow.DatosSesion()
                     self.parentWindow.status = False
                 else:
-                    QMessageBox.warning(self, "Llantera Esquipulas", "No se pudo autorizar el arqueo")
+                    QMessageBox.warning(self, qApp.organizationName(), "No se pudo autorizar el arqueo")
         except UserWarning as inst:
             if not self.editmodel.observations == "":
-                if QMessageBox.question(self, "Llantera Esquipulas", unicode(inst) + u"\n¿Desea Continuar?", QMessageBox.Yes| QMessageBox.No) == QMessageBox.Yes:
+                if QMessageBox.question(self, qApp.organizationName(), unicode(inst) + u"\n¿Desea Continuar?", QMessageBox.Yes| QMessageBox.No) == QMessageBox.Yes:
                     dlgUser = dlgSmallUserLogin()
                     if dlgUser.exec_() == QDialog.Accepted:
                         print "here"
@@ -433,9 +433,9 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                             self.parentWindow.datosSesion = caja.mainwindow.DatosSesion()
                             self.parentWindow.status = False
                         else:
-                            QMessageBox.warning(self, "Llantera Esquipulas", "No se pudo autorizar el arqueo")
+                            QMessageBox.warning(self, qApp.organizationName(), "No se pudo autorizar el arqueo")
             else:
-                QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst) + u"\n Por favor especifique el motivo de la diferencia")
+                QMessageBox.warning(self, qApp.organizationName(), unicode(inst) + u"\n Por favor especifique el motivo de la diferencia")
 
     @property
     def printIdentifier(self):

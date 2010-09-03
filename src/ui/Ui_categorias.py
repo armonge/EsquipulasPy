@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/categorias.ui'
 #
-# Created: Sat Aug  7 13:54:16 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -57,7 +56,6 @@ class Ui_frmCategorias(object):
         self.actionAddSub.setObjectName("actionAddSub")
         self.toolBar.addAction(self.actionAdd)
         self.toolBar.addAction(self.actionAddSub)
-        self.toolBar.addAction(self.actionDelete)
         self.toolBar.addAction(self.actionEditar)
         self.label.setBuddy(self.txtSearch)
 

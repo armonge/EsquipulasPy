@@ -11,7 +11,7 @@ from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSlot, SIGNAL, SLOT, QRegExp
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDialog, QLineEdit, \
 QVBoxLayout, QHBoxLayout, QDialogButtonBox, QCheckBox, QLabel, QRegExpValidator, QValidator, \
-QMessageBox
+QMessageBox, qApp
 from ui.Ui_cuentas import Ui_frmAccounts
 from utility.moneyfmt import moneyfmt
 from utility.treefilterproxymodel import TreeFilterProxyModel
@@ -67,7 +67,7 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
                                                    )
             except UserWarning as inst:
                 logging.error(inst)
-                QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+                QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             except Exception as inst:
                 logging.critical(inst)
 
@@ -467,12 +467,12 @@ class dlgAccountMod( QDialog ):
     def accept(self):
         result = True
         if self.txtDescription.text().strip() == '':
-            QMessageBox.warning(self, "Llantera Esquipulas", u"Verifique la descripción de la cuenta")
+            QMessageBox.warning(self, qApp.organizationName(), u"Verifique la descripción de la cuenta")
             result = False
         if result:
             for index, validator in enumerate(self.validators):
                 if validator.validate(self.txtCodes[index].text(),3)[0] != QValidator.Acceptable:
-                    QMessageBox.warning(self, "Llantera Esquipulas", "Verifique el codigo de la cuenta")
+                    QMessageBox.warning(self, qApp.organizationName(), "Verifique el codigo de la cuenta")
                     result = False
                     break
             super(dlgAccountMod, self).accept()

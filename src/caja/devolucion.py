@@ -7,7 +7,7 @@ from PyQt4.QtCore import pyqtSlot, SIGNAL, Qt, QTimer, \
     SLOT, QDateTime
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
-     QLineEdit,QMessageBox, QPrinter
+     QLineEdit,QMessageBox, QPrinter, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from ui.Ui_devolucion import Ui_frmDevoluciones
 from utility.base import Base
@@ -174,7 +174,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             self.tablenavigation.horizontalHeader().setStretchLastSection(True)
 
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
             print inst
         finally:
@@ -360,7 +360,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 
                 self.status =  False 
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             self.status = True
         except Exception as inst:
             print inst
@@ -398,14 +398,14 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 ##        self.datosRecibo.lineas = self.editmodel.lines
 #        self.datosRecibo.observaciones = self.txtObservations.toPlainText()
 #        if self.datosRecibo.valid(self):
-#            if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+#            if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
 #                if not QSqlDatabase.database().isOpen():
 #                    QSqlDatabase.database().open()
 #    
 #          
 #                if self.datosRecibo.save():
 #                    QMessageBox.information( None,
-#                        self.trUtf8( "Llantera Esquipulas" ),
+#                        self.trUtf8( qApp.organizationName() ),
 #                        self.trUtf8( u"""El documento se ha guardado con éxito""" ) )
 #                    self.editmodel = None
 #                    self.updateModels()
@@ -413,7 +413,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 #                    self.status = True
 #                else:
 #                    QMessageBox.critical( None,
-#                        self.trUtf8( "Llantera Esquipulas" ),
+#                        self.trUtf8( qApp.organizationName() ),
 #                        self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
 #    
 #                if QSqlDatabase.database().isOpen():

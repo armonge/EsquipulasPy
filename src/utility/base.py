@@ -5,7 +5,7 @@ import logging
 
 from PyQt4.QtCore import  pyqtSlot,  QSettings, SIGNAL, QUrl
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, QProgressBar, QPrinter, QPrintDialog, QDialog
+from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, QProgressBar, QPrinter, QPrintDialog, QDialog, qApp
 from PyQt4.QtWebKit import QWebView
 
 from utility.reports import frmReportes, Reports
@@ -62,7 +62,7 @@ class Base( object ):
         """
         if not self.status:
             if not QMessageBox.question(self,
-            "Llantera Esquipulas",
+            qApp.organizationName(),
             u"¿Está seguro que desea salir?",
             QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
                 event.ignore()
@@ -118,7 +118,7 @@ class Base( object ):
                 self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.index( 0, 0 ).data() )
                 self.editmodel.datetime = datetime
             except UserWarning  as inst :
-                QMessageBox.critical( self, "Llantera Esquipulas", str( inst ), QMessageBox.Ok )
+                QMessageBox.critical( self, qApp.organizationName(), str( inst ), QMessageBox.Ok )
                 self.dtPicker.setDateTime( self.editmodel.datetime )
                 logging.error(inst)
             except Exception as inst:
@@ -218,11 +218,11 @@ class Base( object ):
         """
         Guardar el documento actual
         """
-        if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+        if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
             if self.editmodel.valid:
                 if self.editmodel.save():
                     QMessageBox.information( self,
-                         "Llantera Esquipulas" ,
+                         qApp.organizationName() ,
                          u"El documento se ha guardado con éxito" )
                     self.editmodel = None
                     self.updateModels()
@@ -230,15 +230,15 @@ class Base( object ):
                     self.status = True
                 else:
                     QMessageBox.critical( self,
-                        "Llantera Esquipulas" ,
+                        qApp.organizationName() ,
                          "Ha ocurrido un error al guardar el documento" )
     
     
             else:
                 try:
-                    QMessageBox.warning( self,"Llantera Esquipulas" ,self.editmodel.validError)
+                    QMessageBox.warning( self,qApp.organizationName() ,self.editmodel.validError)
                 except AttributeError:
-                    QMessageBox.warning( self,"Llantera Esquipulas" ,u"El documento no puede guardarse ya que la información no esta completa")
+                    QMessageBox.warning( self,qApp.organizationName() ,u"El documento no puede guardarse ya que la información no esta completa")
 
     def setControls( self, status):
         """
@@ -327,10 +327,10 @@ class Base( object ):
             report = frmReportes( web, self.user, printer,self )
             report.exec_()
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.error(unicode(inst))
         except Exception as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al intentar mostrar su reporte")
+            QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al intentar mostrar su reporte")
             logging.critical(unicode(inst))
 
     def printDocument(self):
@@ -358,10 +358,10 @@ class Base( object ):
             self.webview.loadProgress[int].connect(self.on_webview_loadProgress)
         except UserWarning as inst:
             logging.error(unicode(inst))
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
             logging.critical(unicode(inst))
-            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un problema al intentar imprimir su reporte")
+            QMessageBox.critical(self, qApp.organizationName(), "Hubo un problema al intentar imprimir su reporte")
         
     def on_webview_loadProgress(self, progress):
         self.printProgressBar.setValue(progress)
@@ -371,7 +371,7 @@ class Base( object ):
         if self.printProgressBar.isVisible():
             self.printProgressBar.hide()
         if not status:
-            QMessageBox.critical(self, "Llantera Esquipulas", "El reporte no se pudo cargar")
+            QMessageBox.critical(self, qApp.organizationName(), "El reporte no se pudo cargar")
             logging.error("No se pudo cargar el reporte")
 
         self.loaded = True
@@ -400,7 +400,7 @@ class Base( object ):
         
     def createActions(self):
         self.actionNew = self.createAction(text="Nuevo", tip="Crear un nuevo documento", icon=":/icons/res/document-new.png", shortcut="Ctrl+n", slot=self.newDocument)
-        self.actionPreview = self.createAction(text="Previsualizar", tip="Vista de impresión del documento", icon=":/icons/res/document-preview.png",shortcut="Ctrl+p", slot=self.preview)
+        self.actionPreview = self.createAction(text="Previsualizar", tip=u"Vista de impresión del documento", icon=":/icons/res/document-preview.png",shortcut="Ctrl+p", slot=self.preview)
         self.actionPrint = self.createAction(text="Imprimir", tip="Imprimir el documento", icon=":/icons/res/document-print.png", slot = self.printDocument)
         self.actionSave = self.createAction(text="Guardar", tip = "Guardar el documento", icon=":/icons/res/document-save.png",shortcut="Ctrl+g", slot = self.save)
         

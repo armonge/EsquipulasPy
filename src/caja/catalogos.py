@@ -6,7 +6,7 @@ Created on 03/06/2010
 '''
 import logging
 
-from PyQt4.QtGui import  QStyledItemDelegate, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, QTextDocument, QMessageBox
+from PyQt4.QtGui import  QStyledItemDelegate, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, QTextDocument, QMessageBox, qApp
 from PyQt4.QtCore import  Qt, QRegExp, QSize, QVariant
 from PyQt4.QtSql import QSqlTableModel
 from utility.catgeneric import frmCatGeneric, PeopleDelegate
@@ -51,7 +51,7 @@ class frmCatClientes( frmCatGeneric ):
             self.backmodel.setHeaderData( EMAIL, Qt.Horizontal, "e-mail", Qt.DisplayRole );
         except UserWarning as inst:
             logging.error(inst)
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             return False
         except Exception as inst:
             logging.critical(inst)

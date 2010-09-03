@@ -6,7 +6,7 @@ Created on 11/06/2010
 '''
 from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot, QSize, QUrl
 from PyQt4.QtGui import QDialog, QMessageBox, QIcon, QWidget, QVBoxLayout, \
-QPushButton, qApp, QDesktopServices, QMdiSubWindow
+QPushButton, qApp, QDesktopServices, QMdiSubWindow, qApp
 from PyQt4.QtSql import QSqlDatabase
 from utility.user import dlgUserLogin, User, dlgPasswordChange
 
@@ -57,13 +57,18 @@ class MainWindowBase( object ):
         self.btnHelp.clicked.connect(self.about)
         self.btnPasswd.clicked.connect(self.changePassword)
 
-        self.setWindowTitle("Llantera Esquipulas %s: %s@%s" % (qApp.applicationName(),QSqlDatabase.database().databaseName() , QSqlDatabase.database().hostName()))
+        self.setWindowTitle(u"%s %s: Usuario %s conectado a %s@%s" % (qApp.organizationName(), \
+            qApp.applicationName(),\
+            self.user.user, \
+            QSqlDatabase.database().databaseName() , \
+            QSqlDatabase.database().hostName())
+        )
     
     def about(self):
-        QMessageBox.about(self, "Llantera Esquipulas", \
-                          """Llantera Esquipulas: %s
-                          
-Este programa ha sido desarrollado por Cusuco Software y se distribuye bajo una licencia GPL, usted deberia de haber recibido una copia de esta licencia junto con el programa.""" % qApp.applicationName())
+        QMessageBox.about(self, qApp.organizationName(), "%s: %s " +\
+        "Este programa ha sido desarrollado por Cusuco Software y se distribuye bajo " +\
+        "una licencia GPL, usted deberia de haber recibido una copia de esta licencia " +\
+        "junto con el programa." % (qApp.organizationName(), qApp.applicationName()))
         
     def help(self):
         settings = QSettings()
@@ -75,7 +80,7 @@ Este programa ha sido desarrollado por Cusuco Software y se distribuye bajo una 
     def changePassword(self):
         dlg = dlgPasswordChange(self.user)
         if dlg.exec_() == QDialog.Accepted:
-            QMessageBox.information(self, "Llantera Esquipulas", u"La contraseña se ha cambiado exitorsamente")
+            QMessageBox.information(self, qApp.organizationName(), u"La contraseña se ha cambiado exitorsamente")
     
     
     def showtoolbar( self, *args ):
@@ -117,14 +122,14 @@ Este programa ha sido desarrollado por Cusuco Software y se distribuye bajo una 
                     self.status = True
                 else:
                     QMessageBox.critical( self, \
-                                         "Llantera Esquipulas", \
+                                         qApp.organizationName(), \
                                          u"Usted esta intentando desbloquear "+\
                                          " una sesión que no le pertenece", \
                                          QMessageBox.Ok, \
                                          QMessageBox.Ok )
             else:
                 QMessageBox.critical( self, \
-                                         "Llantera Esquipulas", \
+                                         qApp.organizationName(), \
                                          u"No ha sido posible autenticarle", \
                                          QMessageBox.Ok, \
                                          QMessageBox.Ok )

@@ -4,7 +4,7 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtGui import QMainWindow,QDialog, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter
+from PyQt4.QtGui import QMainWindow,QDialog, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter, qApp
 from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, SIGNAL, QModelIndex, QTimer
 from PyQt4.QtSql import QSqlQueryModel,QSqlQuery, QSqlDatabase
 
@@ -115,7 +115,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 raise Exception( u"No se pudo establecer la conexión con la base de datos" )
 
             QMessageBox.warning( None,
-            "Llantera Esquipulas",
+            qApp.organizationName(),
             """Hubo un error al conectarse con la base de datos""",
             QMessageBox.StandardButtons( \
                 QMessageBox.Ok ),
@@ -233,14 +233,14 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 #        self.datosRecibo.lineas = self.editmodel.lines
         self.datosRecibo.observaciones = self.txtobservaciones.toPlainText()
         if self.datosRecibo.valid(self):
-            if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+            if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
                 if not QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().open()
     
           
                 if self.datosRecibo.save():
                     QMessageBox.information( None,
-                        self.trUtf8( "Llantera Esquipulas" ),
+                        self.trUtf8( qApp.organizationName() ),
                         self.trUtf8( u"""El documento se ha guardado con éxito""" ) )
                     self.editmodel = None
                     self.updateModels()
@@ -248,7 +248,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                     self.status = True
                 else:
                     QMessageBox.critical( None,
-                        self.trUtf8( "Llantera Esquipulas" ),
+                        self.trUtf8( qApp.organizationName() ),
                         self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
     
                 if QSqlDatabase.database().isOpen():
@@ -626,7 +626,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
                     raise Exception( u"No se pudo establecer la conexión con la base de datos" )
     
                 QMessageBox.warning( None,
-                "Llantera Esquipulas",
+                qApp.organizationName(),
                 """Hubo un error al conectarse con la base de datos""",
                 QMessageBox.StandardButtons( \
                     QMessageBox.Ok ),

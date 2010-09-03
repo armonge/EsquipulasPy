@@ -11,8 +11,8 @@ from PyQt4 import QtCore, QtGui
 class Ui_frmLiquidacion(object):
     def setupUi(self, frmLiquidacion):
         frmLiquidacion.setObjectName("frmLiquidacion")
-        frmLiquidacion.resize(879, 592)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Preferred)
+        frmLiquidacion.resize(833, 592)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(frmLiquidacion.sizePolicy().hasHeightForWidth())

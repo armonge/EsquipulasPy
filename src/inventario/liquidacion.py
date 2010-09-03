@@ -7,8 +7,8 @@ from decimal import Decimal
 import logging
 
 from PyQt4.QtGui import QMainWindow, QAbstractItemView, \
-QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, QPrinter
-from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer
+QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, QPrinter, qApp
+from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer, QSettings
 from PyQt4.QtSql import  QSqlQuery, QSqlQueryModel
 from ui.Ui_liquidacion import Ui_frmLiquidacion
 
@@ -213,6 +213,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabletotals.setColumnHidden(PESO, True)
             self.tabletotals.setColumnHidden(PROVEEDOR, True)
             self.tabletotals.setColumnHidden(TCAMBIO, True)
+            self.tabletotals.setColumnHidden(EXONERADO, True)
         elif status == 2: #editando
             self.sbAgency.setPrefix("C$ ")
             self.sbStore.setPrefix("C$ ")
@@ -341,13 +342,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     
             self.tableaccounts.setModel( self.accountsProxyModel )
 
-            #query = 
-            #self.totalsModel = QSqlQueryModel(query)
-            
     
-    
-    
-            #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
+            #Este objeto mapea una fila del modelo self.navproxymodel a los controles
     
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
             self.mapper.setModel( self.navproxymodel )
@@ -375,7 +371,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabledetails.setModel( self.detailsproxymodel )
             self.tabletotals.setModel(self.navproxyproxymodel)
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.error(inst)
         except Exception as inst:
             logging.critical(inst)
@@ -402,13 +398,13 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         """
         Slot documentation goes here.
         """
+        query = QSqlQuery()
         try:
-            if not self.database.isOpen:
+            if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
             
-            query = QSqlQuery( "SELECT idtc FROM tiposcambio LIMIT 1" )
-
+            query.prepare( "SELECT idtc FROM tiposcambio LIMIT 1" )
             query.exec_()
             if not query.first():
                 raise UserWarning( u"No existen tipos de cambio en la base de datos" )
@@ -416,7 +412,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.editmodel = LiquidacionModel( self.user.uid )
             self.editmodel.applyISO = self.ckISO.isChecked()
             self.addLine()
-            query = QSqlQuery( """
+            query.prepare( """
             SELECT 
                 c.idcostoagregado,
                 valorcosto,
@@ -508,10 +504,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
         except UserWarning as inst:
             self.status = 1
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.error(inst)
         except Exception as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", u"Hubo un error al intentar iniciar una nueva liquidación")
+            QMessageBox.critical(self, qApp.organizationName(), u"Hubo un error al intentar iniciar una nueva liquidación")
             self.status = 1
             logging.critical(inst)
         finally:
@@ -657,16 +653,35 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         self.navigate( 'last' )
         self.status = 1
 
+        
+    def closeEvent( self, event ):
+        u"""
+        reimplementando por que sel.status no sigue el formato True,. False
+        """
+        if self.status != 1:
+            if not QMessageBox.question(self,
+            qApp.organizationName(),
+            u"¿Está seguro que desea salir?",
+            QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+                event.ignore()
+
+        #Guardar el tamaño y la posición
+        settings = QSettings()
+        settings.setValue( self.windowTitle() + "/Geometry", self.saveGeometry() )
+        settings.setValue( self.windowTitle() + "/State", self.saveState() )
+
+        #quitar la toolbar
+        self.parentWindow.removeToolBar( self.toolBar )
     def save( self ):
         """
         Guardar el documento actual
         """
-        if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+        if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
             if self.status ==2:
                 if self.editmodel.valid:
                     if self.editmodel.save():
                         QMessageBox.information( self,
-                             "Llantera Esquipulas" ,
+                             qApp.organizationName(),
                              u"El documento se ha guardado con éxito")
                         self.editmodel = None
                         self.updateModels()
@@ -675,24 +690,24 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                         
                     else:
                         QMessageBox.critical( self,
-                            "Llantera Esquipulas" ,
+                            qApp.organizationName(),
                              "Ha ocurrido un error al guardar el documento")
 
 
                 else:
                     try:
-                        QMessageBox.warning( self,"Llantera Esquipulas" ,self.editmodel.validError)
+                        QMessageBox.warning( self,qApp.organizationName(),self.editmodel.validError)
                     except AttributeError:
-                        QMessageBox.warning( self,"Llantera Esquipulas" ,u"El documento no puede guardarse ya que la información no esta completa")
+                        QMessageBox.warning( self,qApp.organizationName(),u"El documento no puede guardarse ya que la información no esta completa")
             elif self.status == 3:
                 if self.accountsEditModel.valid:
                     if self.accountsEditModel.save():
-                        QMessageBox.information(self, "Llantera Esquipulas", "Las cuentas contables se han guardado correctamente")
+                        QMessageBox.information(self, qApp.organizationName(), "Las cuentas contables se han guardado correctamente")
                         self.updateModels()
                         self.status = 1
                         self.navigate('last')
                     else:
-                        QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al guardar las cuentas contables")
+                        QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al guardar las cuentas contables")
                 else:
                     QMessageBox.critical("Existe un error con sus cuentas contables, reviselo antes de guardar")
                 
@@ -740,12 +755,12 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
                 
         except UserWarning as inst:
-            QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.warning(self, qApp.organizationName(), unicode(inst))
             logging.error(query.lastError().text())
             logging.error(unicode(inst))
             self.cancel()
         except Exception as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error fatal al tratar de actualizar la lista de articulos, el sistema no puede recuperarse" + \
+            QMessageBox.critical(self, qApp.organizationName(), "Hubo un error fatal al tratar de actualizar la lista de articulos, el sistema no puede recuperarse" + \
                                                              " y sus cambios se han perdido")
             logging.error(query.lastError().text())
             logging.critical(unicode(inst))
@@ -786,12 +801,12 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tableaccounts.resizeColumnsToContents()
             self.status = 3
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             self.tableaccounts.setModel( self.accountsProxyModel )
             logging.error(unicode(inst))
             self.status = 1
         except Exception as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", u"El sistema no pudo iniciar la edición de las cuentas contables")
+            QMessageBox.critical(self, qApp.organizationName(), u"El sistema no pudo iniciar la edición de las cuentas contables")
             logging.critical(unicode(inst))
             self.tableaccounts.setModel( self.accountsProxyModel )
             self.status = 1

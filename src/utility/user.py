@@ -44,6 +44,7 @@ class dlgAbstractUserLogin(QDialog):
             super(dlgAbstractUserLogin, self).accept()
         else:
             self.txtPassword.setText("")
+            self.lblError.setText(u"Hay un error en su usuario o su contraseña")
             self.lblError.setVisible(True)
             self.attempts+=1
             QTimer.singleShot(3000, functools.partial(self.lblError.setVisible, False))

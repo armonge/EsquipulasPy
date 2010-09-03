@@ -10,7 +10,7 @@ import logging
 
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase,QSqlQuery
 from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, SIGNAL, QModelIndex, QTimer,QSize
-from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, QPrinter
+from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, QPrinter, qApp
 
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
@@ -238,7 +238,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                     
         except UserWarning as inst:
             logging.error(inst)
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
             logging.critical(inst)
                 
@@ -270,7 +270,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
            totalcuenta=query.value(1).toString()
            print totalcuenta
            if Decimal(str(self.subtotal.value()))>Decimal(totalcuenta):
-                QMessageBox.warning(self, "Llantera Esquipulas", "No existe suficiente saldo para crear el cheque")
+                QMessageBox.warning(self, qApp.organizationName(), "No existe suficiente saldo para crear el cheque")
            else:
                self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.totalCordobas)
                
@@ -460,7 +460,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             
             self.status = False
         except UserWarning as inst:
-            QMessageBox.warning(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.warning(self, qApp.organizationName(), unicode(inst))
             self.status = True
         except Exception as inst:
             print inst

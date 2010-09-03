@@ -8,7 +8,7 @@ import logging
 from decimal import Decimal
 
 from PyQt4.QtCore import SIGNAL, SLOT, pyqtSlot, Qt , QVariant, pyqtSlot
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog, QItemSelection
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog, QItemSelection, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from utility.catgeneric import Ui_frmCatGeneric
 from ui.Ui_articulos import Ui_frmArticlesNew
@@ -62,10 +62,10 @@ class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
             self.tableview.setModel( self.filtermodel )
         except UserWarning as inst:
             logging.error(unicode(inst))
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
             loggin.critical(unicode(inst))
-            QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al cargar la lista de articulos")
+            QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al cargar la lista de articulos")
         finally:
             if self.database.isOpen():
                 self.database.close()
@@ -146,11 +146,11 @@ class ArticlesModel( QSqlQueryModel ):
                 self.emit( SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), index, index )
                 return True
             except UserWarning as inst:
-                QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+                QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
                 logging.error(unicode(inst))
             except Exception as inst:
                 logging.critical(unicode(inst))
-                QMessageBox.critical(self, "Llantera Esquipulas", "Hubo un error al guardar su cambio")
+                QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al guardar su cambio")
         return False
             
     def setACTIVO( self, value, id ):
@@ -338,13 +338,13 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
     @pyqtSlot()
     def on_buttonBox_accepted(self):
         if self.valid:
-            if QMessageBox.question(self, "Llantera Esquipulas", u"¿Esta seguro que desea añadir el producto?", QMessageBox.Ok|QMessageBox.Cancel) == QMessageBox.Ok:
+            if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea añadir el producto?", QMessageBox.Ok|QMessageBox.Cancel) == QMessageBox.Ok:
                 if not self.save():
-                    QMessageBox.critical(self, "Llantera Esquipulas", "Lo sentimos pero no se ha podido guardar el articulo")
+                    QMessageBox.critical(self, qApp.organizationName(), "Lo sentimos pero no se ha podido guardar el articulo")
                 else:
                     super(frmArticlesNew, self).accept()
         else:
-            QMessageBox.warning(self, "Llantera Esquipulas", "Lo sentimos pero los datos no son validos, recuerde elegir una subcategoria y una marca")
+            QMessageBox.warning(self, qApp.organizationName(), "Lo sentimos pero los datos no son validos, recuerde elegir una subcategoria y una marca")
     
     
     def save(self):

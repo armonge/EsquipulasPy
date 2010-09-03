@@ -4,7 +4,7 @@ Created on 23/07/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, QAbstractItemView
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, QAbstractItemView, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QTimer,pyqtSlot, QDateTime
 from utility.base import Base
@@ -101,7 +101,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             
             
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
             print inst
     def newDocument(self):
@@ -153,10 +153,10 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             self.addLine()
             self.status = False
         except UserWarning as inst:
-            QMessageBox.critical(self,"Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self,qApp.organizationName(), unicode(inst))
             self.status = True
         except Exception as inst:
-            QMessageBox.critical(self,"Llantera Esquipulas", "El sistema no pudo iniciar una nueva entrada de kardex")
+            QMessageBox.critical(self,qApp.organizationName(), "El sistema no pudo iniciar una nueva entrada de kardex")
             self.status = True
             print inst
         

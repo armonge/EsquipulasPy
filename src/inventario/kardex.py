@@ -7,7 +7,7 @@ Created on 11/07/2010
 from decimal import Decimal
 import logging
 from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel, QVBoxLayout, QDialogButtonBox, \
-QFormLayout, QLineEdit, QDialog, QTableView, QAbstractItemView, QMessageBox
+QFormLayout, QLineEdit, QDialog, QTableView, QAbstractItemView, QMessageBox, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 from PyQt4.QtCore import QTimer, Qt, pyqtSlot, QDateTime, QModelIndex
 
@@ -116,7 +116,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
             
             self.tabledetails.horizontalHeader().setStretchLastSection(True)
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.error(inst)
         except Exception as inst:
             logging.critical(inst)
@@ -250,11 +250,11 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
                 self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
 
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.warning(inst)
             self.cancel()
         except Exception as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", "No se pudo iniciar el documento kardex")
+            QMessageBox.critical(self, qApp.organizationName(), "No se pudo iniciar el documento kardex")
             logging.critical(inst)
             self.cancel()
         finally:

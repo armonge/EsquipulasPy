@@ -6,7 +6,8 @@ Created on 03/06/2010
 '''
 import logging
 
-from PyQt4.QtGui import QMainWindow, QMessageBox, QAbstractItemView, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QStyledItemDelegate, QTextDocument, QIntValidator
+from PyQt4.QtGui import QMainWindow, QMessageBox, QAbstractItemView, QSortFilterProxyModel,\
+ QLineEdit, QRegExpValidator, QStyledItemDelegate, QTextDocument, QIntValidator, qApp
 from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QTimer, QSize, QRegExp, QVariant
 from PyQt4.QtSql import QSqlTableModel, QSqlDatabase
 from ui.Ui_catgeneric import Ui_frmCatGeneric
@@ -96,16 +97,16 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
                 raise Exception( self.backmodel.lastError().text() )
             else:
                 QMessageBox.information( None,
-                 "Llantera Esquipulas" ,
+                 qApp.organizationName() ,
                  """Sus cambios han sido guardados""" ) 
                 self.status = False
                 self.updateModels()
         except UserWarning as inst:
-            QMessageBox.critical(self, "Llantera Esquipulas", unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.error(inst)
         except Exception as ins:
             QMessageBox.critical( self,
-                     "Llantera Esquipulas" ,
+                     qApp.organizationName() ,
                      """Hubo un error al guardar sus cambios""" ) 
             logging.critical(inst)
             logging.critical(self.backmodel.lastError().text())
@@ -119,7 +120,7 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
         Cancelar los cambios
         """
         if QMessageBox.warning( None,
-             "Llantera Esquipulas" ,
+             qApp.organizationName() ,
              """Sus cambios seran borrados""" ,
             QMessageBox.StandardButtons( \
                 QMessageBox.Cancel | \
