@@ -10,8 +10,7 @@ from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
 from lineafactura import LineaFactura
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
-from utility import constantes
-from utility.movimientos import movFacturaContado , movFacturaCredito
+from utility.movimientos import movFacturaCredito
 from utility import constantes
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD = range( 5 )

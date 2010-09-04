@@ -82,7 +82,7 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
         if self.editmodel.valid:
             supervisor = User( self.txtUser.text(), self.txtPassword.text())
             if supervisor.valid:
-                if not supervisor.hasRole( 'root' ):
+                if not supervisor.hasRole( 'gerencia' ):
                     QMessageBox.critical(self, qApp.organizationName() + u": Autenticación","El usuario %s no tiene permisos para autorizar la apertura de caja"% supervisor.user)
                     logging.info(u"El usuario %s intento autorizar la apertura de una sesión" % supervisor.user)
                     return

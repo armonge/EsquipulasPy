@@ -294,7 +294,7 @@ class dlgSelectDoc( QDialog ):
 
 
 
-        self.setWindowTitle( "Seleccione el documento para bodega" )
+        self.setWindowTitle( u"Seleccione el documento con los artículos" )
         self.filtermodel = QSortFilterProxyModel()
         self.filtermodel.setSourceModel( self.model )
         self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )

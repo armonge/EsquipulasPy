@@ -174,14 +174,20 @@ def movFacturaCredito( iddoc, subtotal, impuesto, totalcosto ):
     "(" + CXCCLIENTE + "," + iddoc + ",:totalpagar)," +
     "(" + INVENTARIO + "," + iddoc + ",-" + totalcosto + ")," +
     "(" + COSTOSVENTAS + "," + iddoc + "," + totalcosto + ")" )
+   
     query.bindValue( ":subtotal", subtotal.to_eng_string() )
     query.bindValue( ":impuesto", impuesto.to_eng_string() )
     query.bindValue( ":totalpagar", ( subtotal + impuesto ).to_eng_string() )
-
-
+    
+    print subtotal
+    print impuesto
+    print (subtotal + impuesto )
+    
     if not query.exec_():
         print( query.lastError().text() )
         raise Exception( "NO SE PUDIERON INSERTAR LAS CUENTAS CONTABLES" )
+    
+    
 
 
 def movAbonoDeCliente( iddoc, total, retencion,ganancia ):
