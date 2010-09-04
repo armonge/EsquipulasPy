@@ -2,8 +2,15 @@
 
 DROP PROCEDURE IF EXISTS `spAutorizarAnulacionFactura` $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spAutorizarAnulacionFactura`(
-IDANULACION INT,
-IDGERENTE INT
+IDFACTURA INT,
+IDGERENTE INT,
+TIPOANULACION INT,
+TIPOFACTURA INT,
+TIPORECIBO INT,
+PENDIENTEANULAR INT,
+CONFIRMADO INT,
+ANULADO INT,
+ACCIONAUTORIZAR INT
 )
 BEGIN
 -- DECLARO UN ERROR HANDLER QUE HARA UN ROLLBACK EN CASO DE ERROR Y RETORNARA FALSE
@@ -17,34 +24,36 @@ BEGIN
     START TRANSACTION;
 
 -- OBTENGO EL ID DE LA FACTURA QUE FUE ANULADA
-     SELECT
-          anul.idestado AS anulacionEstado,
-          anul.idtipodoc ,
-          fac.iddocumento AS facturaId,
+      SELECT
+          fac.idestado AS anulacionEstado,
+          fac.idtipodoc ,
+          anul.iddocumento AS anulacionId,
           fac.escontado AS facturaContado
-     FROM documentos anul
-     JOIN docpadrehijos PH on ph.idhijo = IDANULACION
-      JOIN documentos fac ON ph.idpadre = fac.iddocumento AND fac.idtipodoc = 5
-      WHERE anul.iddocumento = IDANULACION
+      FROM documentos fac
+      JOIN docpadrehijos ph ON ph.idpadre = fac.iddocumento
+      JOIN documentos anul ON ph.idhijo = anul.iddocumento AND anul.idtipodoc = TIPOANULACION
+      WHERE fac.iddocumento = IDFACTURA
     INTO
     @anulEstado,
     @tipo,
-    @factura,
+    @anulacion,
     @esContado
      ;
 
     SELECT
-        rec.iddocumento
+        rec.iddocumento,
+        COUNT(iddocumento) as nrecibo
     FROM documentos rec
     JOIN  docpadrehijos ph ON ph.idhijo = rec.iddocumento
-    AND rec.idtipodoc=18
-    AND ph.idpadre = @factura
+    AND rec.idtipodoc=TIPORECIBO
+    AND ph.idpadre =IDFACTURA
     INTO
-    @recibo
+    @recibo,
+    @nrec
     ;
 
 
-  IF @tipo <> 2 OR (@anulEstado IN (1,NULL)) OR (@esContado = 0 AND (@recibo IS NOT NULL)) THEN
+  IF @tipo <> TIPOFACTURA OR (@anulEstado <> PENDIENTEANULAR) OR (@esContado = 0 AND (@nrec > 0)) THEN
 
       SELECT FALSE;
 
@@ -54,17 +63,17 @@ BEGIN
 
 
 -- INSERTO LA RELACION DE LA ANULACION CON LA PERSONA QUE LA AUTORIZA
-    INSERT INTO personasxdocumento(idpersona, iddocumento,idaccion) VALUES (IDGERENTE,IDANULACION,5);
+    INSERT INTO personasxdocumento(idpersona, iddocumento,idaccion) VALUES (IDGERENTE,@anulacion,ACCIONAUTORIZAR);
 
 -- REVIERTO LAS CUENTAS CONTABLES DE LA FACTURA, RELACIONANDOLAS CON LA ANULACION
     INSERT INTO cuentasxdocumento
       SELECT
-         IDANULACION,
+         @anulacion,
          cxd.idcuenta,
          SUM(-cxd.monto) AS monto,
          nlinea
          FROM documentos doc
-         JOIN cuentasxdocumento cxd ON  cxd.iddocumento = doc.iddocumento AND cxd.iddocumento IN (@factura,@recibo)
+         JOIN cuentasxdocumento cxd ON  cxd.iddocumento = doc.iddocumento AND cxd.iddocumento IN (IDFACTURA,@recibo)
          GROUP BY cxd.idcuenta
          HAVING SUM(-cxd.monto)<>0
          ;
@@ -74,15 +83,18 @@ BEGIN
 
 -- INSERTO LA RELACION ENTRE EL RECIBO Y  LA ANULACION, LA ANULACION ES EL HIJO.
       INSERT INTO docpadrehijos(idpadre,idhijo) VALUES
-      (@recibo,IDANULACION)
+      (@recibo,@anulacion)
        ;
 
 -- ACTUALIZO EL ESTADO DEL RECIBO A ANULADO
-      UPDATE documentos SET idestado = 2 where iddocumento = @recibo;
+      UPDATE documentos SET idestado = ANULADO where iddocumento = @recibo;
    END IF;
 
+-- ACTUALIZO EL ESTADO DE LA FACTURA A ANULADO
+      UPDATE documentos SET idestado = ANULADO where iddocumento = IDFACTURA;
+
 -- ACTUALIZO EL ESTADO DE LA ANULACION Y LO PASO A CONFIRMADO
-    UPDATE documentos SET idestado = 1 WHERE iddocumento = IDANULACION;
+    UPDATE documentos SET idestado = CONFIRMADO WHERE iddocumento = @anulacion;
 
 
     COMMIT;
