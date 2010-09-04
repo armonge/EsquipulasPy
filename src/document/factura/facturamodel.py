@@ -92,7 +92,7 @@ class FacturaModel( QAbstractTableModel ):
         """
         El IVA total del documento, se calcula en base a subtotal y rateIVA
         """
-        return ( Decimal( 0 ) if self.bodegaId != 1 else self.subtotal * ( self.ivaTasa / Decimal( 100 ) ) )
+        return  Decimal( 0 ) if self.bodegaId != 1 else self.subtotal * ( self.ivaTasa / Decimal( 100 ) )
 
     @property
     def validLines( self ):

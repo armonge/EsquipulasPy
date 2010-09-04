@@ -6,6 +6,7 @@ Modulo que contendra las funciones para insertar los movimientos contables a la 
 '''
 import logging
 from PyQt4.QtSql import QSqlQuery
+from decimal import Decimal,ROUND_HALF_UP
 
 
 PERDIDAS = "334"
@@ -86,58 +87,63 @@ El id de la cuenta PRODUCTOS FINANCIEROS, 640 001 000 000 000
 @type:string
 """
 
-def movFacturaContado( iddoc, subtotal, impuesto, retencion, totalcosto ):
-    '''
-    MOVIMIENTOS CONTABLE PARA LA FACTURA AL CONTADO
-    
-    (-)subtotal             > entra a Ventas netas: id=173, cod=410 003 000 000
-    
-    (-)impuesto             > entra a impuesto por pagar:id=133, cod=210 008 001 001 000
-    
-    (+)retencion                               > entra a retencion pagadas por anticipado: id=118, cod=210 006 000 000 000
-    
-    (+)total a pagar                           > entra a caja genera:id=5, cod=110 001 001 000 
+def redondear(valor):
+    valor = valor.quantize(Decimal('0.0001'),ROUND_HALF_UP)
+    return valor
 
-    (-)total precio costo   > Sale de Inventario:id=22, cod=110 003 001 000 000
-    
-    (+)total precio costo                      > entra a Costos de Ventas:id=182, cod=510 001 000 000 000
-    
-    @param iddoc: El id del documento que genera estos documentos
-    @type iddoc: int
-    
-    @param subtotal: TODO 
-    @type subtotal: Decimal
-    @param impuesto: TODO
-    @type impuesto: Decimal
-    @param retencion: TODO
-    @type retencion: Decimal
-    @param totalcosto: TODO
-    @type totalcosto: Decimal
-    
-
-    '''
-    totalcosto = totalcosto.to_eng_string()
-    iddoc = str( iddoc )
-    query = QSqlQuery()
-    query.prepare( "INSERT INTO cuentasxdocumento (idcuenta,iddocumento,monto) values " +
-    "(" + VENTASNETAS + "," + iddoc + ",-:subtotal)," +
-    ( "" if impuesto == 0 else "(" + IMPUESTOSXPAGAR + "," + iddoc + ",-:impuesto)," ) +
-    ( "" if retencion == 0 else "(" + RETENCIONPAGADA + "," + iddoc + ",:retencion)," ) +
-    "(" + CAJAGENERAL + "," + iddoc + ",:totalpagar)," +
-    "(" + INVENTARIO + "," + iddoc + ",-" + totalcosto + ")," +
-    "(" + COSTOSVENTAS + "," + iddoc + "," + totalcosto + ")" )
-    print( query.lastQuery() )
-    #query.bindValue(":iddoc", iddoc)
-    query.bindValue( ":subtotal", subtotal.to_eng_string() )
-    query.bindValue( ":impuesto", impuesto.to_eng_string() )
-    query.bindValue( ":retencion", retencion.to_eng_string() )
-    query.bindValue( ":totalpagar", ( subtotal + impuesto - retencion ).to_eng_string() )
-
-
-    if not query.exec_():
-        print( iddoc )
-        print( query.lastError().text() )
-        raise Exception( "NO SE PUDIERON INSERTAR LAS CUENTAS CONTABLES" )
+#    
+#def movFacturaContado( iddoc, subtotal, impuesto, retencion, totalcosto ):
+#    '''
+#    MOVIMIENTOS CONTABLE PARA LA FACTURA AL CONTADO
+#    
+#    (-)subtotal             > entra a Ventas netas: id=173, cod=410 003 000 000
+#    
+#    (-)impuesto             > entra a impuesto por pagar:id=133, cod=210 008 001 001 000
+#    
+#    (+)retencion                               > entra a retencion pagadas por anticipado: id=118, cod=210 006 000 000 000
+#    
+#    (+)total a pagar                           > entra a caja genera:id=5, cod=110 001 001 000 
+#
+#    (-)total precio costo   > Sale de Inventario:id=22, cod=110 003 001 000 000
+#    
+#    (+)total precio costo                      > entra a Costos de Ventas:id=182, cod=510 001 000 000 000
+#    
+#    @param iddoc: El id del documento que genera estos documentos
+#    @type iddoc: int
+#    
+#    @param subtotal: TODO 
+#    @type subtotal: Decimal
+#    @param impuesto: TODO
+#    @type impuesto: Decimal
+#    @param retencion: TODO
+#    @type retencion: Decimal
+#    @param totalcosto: TODO
+#    @type totalcosto: Decimal
+#    
+#
+#    '''
+#    totalcosto = totalcosto.to_eng_string()
+#    iddoc = str( iddoc )
+#    query = QSqlQuery()
+#    query.prepare( "INSERT INTO cuentasxdocumento (idcuenta,iddocumento,monto) values " +
+#    "(" + VENTASNETAS + "," + iddoc + ",-:subtotal)," +
+#    ( "" if impuesto == 0 else "(" + IMPUESTOSXPAGAR + "," + iddoc + ",-:impuesto)," ) +
+#    ( "" if retencion == 0 else "(" + RETENCIONPAGADA + "," + iddoc + ",:retencion)," ) +
+#    "(" + CAJAGENERAL + "," + iddoc + ",:totalpagar)," +
+#    "(" + INVENTARIO + "," + iddoc + ",-" + totalcosto + ")," +
+#    "(" + COSTOSVENTAS + "," + iddoc + "," + totalcosto + ")" )
+#    print( query.lastQuery() )
+#    #query.bindValue(":iddoc", iddoc)
+#    query.bindValue( ":subtotal", subtotal.to_eng_string() )
+#    query.bindValue( ":impuesto", impuesto.to_eng_string() )
+#    query.bindValue( ":retencion", retencion.to_eng_string() )
+#    query.bindValue( ":totalpagar", ( subtotal + impuesto - retencion ).to_eng_string() )
+#
+#
+#    if not query.exec_():
+#        print( iddoc )
+#        print( query.lastError().text() )
+#        raise Exception( "NO SE PUDIERON INSERTAR LAS CUENTAS CONTABLES" )
 
 def movFacturaCredito( iddoc, subtotal, impuesto, totalcosto ):
     '''
@@ -165,7 +171,12 @@ def movFacturaCredito( iddoc, subtotal, impuesto, totalcosto ):
 
     
     '''
+    totalcosto = redondear(totalcosto)
     totalcosto = totalcosto.to_eng_string()
+    
+    subtotal = redondear(subtotal)
+    impuesto = redondear(impuesto)
+    
     iddoc = str( iddoc )
     query = QSqlQuery()
     query.prepare( "INSERT INTO cuentasxdocumento (idcuenta,iddocumento,monto) values " +
@@ -179,6 +190,7 @@ def movFacturaCredito( iddoc, subtotal, impuesto, totalcosto ):
     query.bindValue( ":impuesto", impuesto.to_eng_string() )
     query.bindValue( ":totalpagar", ( subtotal + impuesto ).to_eng_string() )
     
+    print "movimientos contables"
     print subtotal
     print impuesto
     print (subtotal + impuesto )
@@ -208,6 +220,10 @@ def movAbonoDeCliente( iddoc, total, retencion,ganancia ):
     @param retencion: TODO
     @type retencion: Decimal
     '''    
+    total = redondear (total)
+    retencion = redondear(retencion)
+    ganancia = redondear (ganancia)
+    
     iddoc = str( iddoc )
     query = QSqlQuery()
      
@@ -239,7 +255,11 @@ def movAbonoDeCliente( iddoc, total, retencion,ganancia ):
         if not query.exec_():
             print( query.lastError().text() )
             raise Exception( "No fue posible insertar las cuentas Rencion Pagada para el recibo" )
-
+        
+    print "movimientos del recibo"
+    print retencion
+    print ganancia
+    print total
 
 def movPagoRealizado( iddoc, subtotal, impuesto , retencion , ctabanco_caja = CAJAGENERAL, ctaproveedor_gasto = PROVEEDORLOCAL ):
     '''

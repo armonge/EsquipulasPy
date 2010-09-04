@@ -115,6 +115,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
+        self.datosSesion.usuarioId = self.user.uid
         estado = not self.status
         query  = QSqlQuery()
         if estado:
