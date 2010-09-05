@@ -121,7 +121,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             LEFT JOIN costosxdocumento cxd ON cxd.iddocumento = padre.iddocumento
             LEFT JOIN costosagregados ca ON ca .idcostoagregado = cxd.idcostoagregado
             WHERE d.idtipodoc = %d AND p.tipopersona=%d
-            GROUP BY d.iddocumento""" %(constantes.IDDEVOLUCION,constantes.CLIENTE) 
+            GROUP BY d.iddocumento""" %(constantes.IDNC,constantes.CLIENTE) 
             
             self.navmodel.setQuery(query )
 
@@ -137,7 +137,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             JOIN vw_articulosdescritos ad ON axd.idarticulo = ad.idarticulo
             JOIN documentos d ON d.iddocumento = axd.iddocumento 
             WHERE d.idtipodoc = %d
-            """ % constantes.IDDEVOLUCION)
+            """ % constantes.IDNC)
 
 
 
@@ -267,6 +267,17 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             if not QSqlDatabase.database().open():
                 raise Exception( u"No se pudo establecer una conexión con la base de datos" )
             
+            self.conceptsmodel = QSqlQueryModel()
+            self.conceptsmodel.setQuery("""
+            SELECT idconcepto, descripcion 
+            FROM conceptos 
+            WHERE idtipodoc = %d
+            """ % constantes.IDNC)
+            
+            if self.conceptsmodel.rowCount()==0:
+                raise UserWarning( u"No se pudo calcular el numero de la devolución" )
+                
+            
             dlgbill = dlgSelectBill()
             if dlgbill.exec_() == QDialog.Accepted:
                 self.editmodel = DevolucionModel()
@@ -291,7 +302,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 
                 query = QSqlQuery( """
                 CALL spConsecutivo(%d,NULL);
-                """ % constantes.IDDEVOLUCION )
+                """ % constantes.IDNC )
                 if not query.exec_():
                     raise UserWarning( u"No se pudo calcular el numero de la devolución" )
                 query.first()
@@ -329,13 +340,6 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
     
                     self.editmodel.lines[row] = linea
                 
-                
-                self.conceptsmodel = QSqlQueryModel()
-                self.conceptsmodel.setQuery("""
-                SELECT idconcepto, descripcion 
-                FROM conceptos 
-                WHERE idtipodoc = %d
-                """ % constantes.IDDEVOLUCION)
                 
                 self.cbConcept.setModel(self.conceptsmodel)
                 self.cbConcept.setModelColumn(1)
@@ -467,7 +471,7 @@ class dlgSelectBill( QDialog ):
             GROUP BY factura.iddocumento
             ) as tbl
             WHERE unittotal > 0
-        """ % (constantes.IDDEVOLUCION, constantes.IDFACTURA, constantes.CLIENTE, constantes.IDKARDEX)
+        """ % (constantes.IDNC, constantes.IDFACTURA, constantes.CLIENTE, constantes.IDKARDEX)
         
         self.billsmodel.setQuery( query)
 
