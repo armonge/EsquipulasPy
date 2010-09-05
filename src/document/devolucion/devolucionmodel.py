@@ -18,7 +18,7 @@ class DevolucionModel( QAbstractTableModel ):
     """
     Esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
-    __documentType = constantes.IDDEVOLUCION
+    __documentType = constantes.IDNC
     """
     @cvar: El id del tipo de documento
     @type: int
@@ -334,12 +334,10 @@ class DevolucionModel( QAbstractTableModel ):
             """ ):
                 raise Exception(u"No se pudo preparar la consulta para añadir el documento")
 
-            query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
+            query.bindValue( ":ndocimpreso", 'S/N')
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
-            query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":pendiente", constantes.PENDIENTE)
-            query.bindValue( ":idpersona", self.clientId )
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.totalD.to_eng_string() )
             query.bindValue( ":idtipocambio", self.exchangeRateId )
@@ -377,6 +375,8 @@ class DevolucionModel( QAbstractTableModel ):
 
             if not query.exec_():
                 raise Exception(u"No se pudo añadir el usuario")
+            
+            
 
 #Insertar la revercion de los articulos
             for linea in self.lines:

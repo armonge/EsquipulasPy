@@ -1,0 +1,22 @@
+Se puede aceptar la devolucion de una factura declarada( que tiene documento cierre) pero los impuestos (Iva y Retencion) no se revertiran, es decir se podra devolver como maximo el SUBTOTAL de la factura.
+
+Si la factura no ha sido declarada se pueden revertir los impuestos.
+
+Para una devolucion de factura al contado
+DESDE LA APLICACION
+1. Crear el documento NC (nota de credito) con estado PENDIENTE [ creado desde la aplicacion]
+2. Crear la relacion docpadrehijos idpadre = factura, idhijo = NC. [ creado desde la aplicacion]
+3. Crear la relacion personasxdocumento para el CLIENTE y el USUARIO [ creado desde la aplicacion]
+4. Insertar los articulosxdocumento devueltos con su precio de venta y costo de compra, y especificados en la devolucion [ creado desde la aplicacion]
+
+DESDE EL STORED PROCEDURE
+5. Obtener el total de la devolucion y el Iva.
+6. Verificar que el total de la devolucion no exceda la suma de los abonos.
+5. Obtener la lista de los abonos a la factura.
+Para cada Abono
+6. Calcular el saldo actual de los abonos (Ya que con cada devolucion va disminuyendo)
+7. Calcular la cantidad que se le restara a cada abono tomando en cuenta su saldo.
+8. Insertar la relacion docpadrehijos entre la NC y cada uno de los recibos afectados especificando la cantidad correspondiente a cada recibo.
+	idpadre = recibo , idhijo = NC.
+9. Calcular el total de la retencion a revertir tomando en cuenta si se afecto un recibo con retencion.
+10. Revertir en las cuentas contables la retencion (si la hay), el iva (si lo hay), el monto en inventario,ventas, y costos
