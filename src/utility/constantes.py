@@ -6,13 +6,13 @@ Created on 06/07/2010
 '''
 #contantes de modulos
 IDCAJA = 2
-ROLCAJA = 'caja'
+ROLCAJA = ['caja']
 
 IDCONTABILIDAD = 3
-ROLCONTABILIDAD = 'contabilidad'
+ROLCONTABILIDAD = ['contabilidad']
 
 IDINVENTARIO = 4
-ROLINVENTARIO ='inventario'
+ROLINVENTARIO =['inventario', 'gerencia', 'inventario','contabilidad','kardex']
 
 #conceptos
 IDCONCEPTODEPOSITO = 0

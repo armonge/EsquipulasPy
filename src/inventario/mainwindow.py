@@ -38,7 +38,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
             #Quitar la pestaña de compras
             self.widget.setVisible(False)
             self.toolBox.removeItem(1)
-        else:
+        if not self.user.hasRole("inventario"):
             self.page.setVisible(False)
             self.toolBox.removeItem(2)
             
