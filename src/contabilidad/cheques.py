@@ -20,7 +20,7 @@ from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorL
 from utility import constantes
 from utility.widgets.searchpanel import SearchPanel
 from utility.reports import frmReportes
-IDDOCUMENTO,NCHEQUE,CUENTABANCARIA,NOMBRE,FECHA,CONCEPTO,TOTAL,ANULADO,TASARETENCION,TOTALRETENCION,TIPOCAMBIO,SUBTOTAL,IVA=range(13)
+IDDOCUMENTO,NCHEQUE,CUENTABANCARIA,NOMBRE,FECHA,CONCEPTO,TOTAL,SUBTOTAL,IVA,ESTADO,TOTALRET,TIPOCAMBIO,TASARETENCION=range(13)
 #accounts model
 IDDOC, IDCUENTA,CODIGO,DESCRIPCION, MONTO= range( 5 )
 class frmCheques( Ui_frmCheques, QMainWindow,Base ):
@@ -71,38 +71,48 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     #El modelo principal
     #FIXME Revisar escape del %
             
-        self.navmodel.setQuery(u"""SELECT  padre.iddocumento,
-        padre.ndocimpreso as 'No. Cheque',
-        cb.descripcion as 'Cuenta Bancaria',
-        p.nombre AS Nombre,
-        DATE(padre.fechacreacion) as 'Fecha',
-        c.descripcion as 'En concepto de',
-        IF (tm.simbolo="C$",CONCAT(tm.simbolo,padre.total*tc.tasa),CONCAT(tm.simbolo,padre.total)) as Total,
-        padre.anulado AS Anulado,
-        CONCAT(valorcosto, '%s') as 'Retencion',
-        IF(hijo.total IS NULL, '-' ,CONCAT(tm.simbolo,hijo.total))   as 'Total Ret C$',
-        tc.tasa as TipoCambio,
-        IF(hijo.total='-',@subtotal:=padre.total/1.15,@subtotal:=(padre.total+hijo.total)/1.15) as 'subtotal',
-        concat(tm.simbolo,format(padre.total+hijo.total- @subtotal,4)) as IVA
-        FROM documentos padre
-        JOIN tiposcambio tc on padre.idtipocambio=tc.idtc
-        JOIN personasxdocumento pd ON padre.iddocumento=pd.iddocumento
-        JOIN personas p ON p.idpersona=pd.idpersona
-        JOIN conceptos c ON  c.idconcepto=padre.idconcepto
+        self.navmodel.setQuery(u"""SELECT padre.iddocumento,
+            padre.ndocimpreso as 'No. Cheque',
+            cb.descripcion as 'Cuenta Bancaria',
+            p.nombre as Cliente,
+            DATE(padre.fechacreacion) as 'Fecha',
+            c.descripcion as 'En concepto de',
+            IF (tm.simbolo="C$",CONCAT(tm.simbolo,FORMAT(padre.total*tc.tasa,4)),CONCAT(tm.simbolo,FORMAT(padre.total,4))) as Total,
+            
+            IF (tm.simbolo="C$",ROUND(padre.total*tc.tasa/ (1+ IF(ca.valorcosto IS NULL,0,ca.valorcosto/100))),ROUND(padre.total/ (1+ IF(ca.valorcosto IS NULL,0,ca.valorcosto/100)))) as subtotal,
+            
+            IF (tm.simbolo="C$",CONCAT(tm.simbolo,FORMAT(tc.tasa*padre.total-(tc.tasa*padre.total/(1+ IF(ca.valorcosto IS NULL,0,ca.valorcosto/100))),4)),CONCAT(tm.simbolo,FORMAT(padre.total-(padre.total/(1+ IF(ca.valorcosto IS NULL,0,ca.valorcosto/100))),4))) as iva,
+            
+            ed.descripcion AS Estado,
+            IF(hijo.total IS NULL, CONCAT(tm.simbolo,'0.0000') ,CONCAT(tm.simbolo,hijo.total))   as 'Total Ret C$',
+            tc.tasa as TipoCambio,
+            caret.valorcosto as 'retencion'
 
-        LEFT JOIN costosxdocumento cd ON cd.iddocumento=padre.iddocumento
-        LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
-        LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
-        LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
-        JOIN cuentasxdocumento cuentasdoc on cuentasdoc.iddocumento=padre.iddocumento
-        JOIN cuentascontables cb ON cb.idcuenta=cuentasdoc.idcuenta
-        JOIN cuentasbancarias cbank on cb.idcuenta=cbank.idcuentacontable
-        JOIN tiposmoneda tm on tm.idtipomoneda=cbank.idtipomoneda 
-        WHERE padre.idtipodoc= %d AND p.tipopersona = %d
-        GROUP BY padre.iddocumento
-        ORDER BY CAST(padre.ndocimpreso AS SIGNED)
+            FROM documentos padre
+            JOIN estadosdocumento ed ON ed.idestado = padre.idestado
+            JOIN tiposcambio tc on padre.idtipocambio=tc.idtc
+            JOIN personasxdocumento pxd ON padre.iddocumento=pxd.iddocumento
+            JOIN personas p ON p.idpersona=pxd.idpersona
+            JOIN conceptos c ON  c.idconcepto=padre.idconcepto
+            
+            LEFT JOIN costosxdocumento cd ON cd.iddocumento=padre.iddocumento
+            LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
+            LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
+            LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
+            
+            LEFT JOIN costosxdocumento cdret ON cdret.iddocumento=hijo.iddocumento
+            LEFT JOIN  costosagregados caret ON caret.idcostoagregado=cdret.idcostoagregado            
+            
+            JOIN cuentasxdocumento cuentasdoc on cuentasdoc.iddocumento=padre.iddocumento
+            JOIN cuentascontables cb ON cb.idcuenta=cuentasdoc.idcuenta
+            JOIN cuentasbancarias cbank on cb.idcuenta=cbank.idcuentacontable
+            JOIN tiposmoneda tm on tm.idtipomoneda=cbank.idtipomoneda 
+            WHERE padre.idtipodoc= %d AND p.tipopersona = %d
+            GROUP BY padre.iddocumento
+            ORDER BY CAST(IF(padre.ndocimpreso="S/N",0, padre.ndocimpreso )AS SIGNED)
 
-        """ % ('%',constantes.IDCHEQUE,constantes.PROVEEDOR))
+
+        """ % (constantes.IDCHEQUE,constantes.PROVEEDOR))
 #        El modelo que filtra a self.navmodel
                 
         
@@ -136,20 +146,17 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.mapper.addMapping( self.lblbeneficiario, NOMBRE,"text")
         self.mapper.addMapping( self.total, TOTAL,"text" )
         self.mapper.addMapping( self.lblconcepto, CONCEPTO,"text" )
-        self.mapper.addMapping( self.retencion, TOTALRETENCION, "text" )
-        self.mapper.addMapping( self.lblretencion, TASARETENCION, "text" )
+        self.mapper.addMapping( self.retencion, TOTALRET, "text" )
         self.mapper.addMapping( self.lbltipocambio, TIPOCAMBIO, "text" )
         self.mapper.addMapping( self.subtotal, SUBTOTAL )
         self.mapper.addMapping( self.iva, IVA, "text" )   
         self.mapper.addMapping( self.lblcuenta, CUENTABANCARIA, "text" )
-        
+        self.mapper.addMapping( self.lblretencion, TASARETENCION,"text" )
         self.tablenavigation.setModel(self.navproxymodel)            
         self.tabledetails.setModel( self.accountsProxyModel )
 
         self.tabledetails.setColumnHidden( IDCUENTA, True )
         self.tabledetails.setColumnHidden( IDDOC, True )
-
-        self.tablenavigation.setColumnHidden( ANULADO, True )
         self.tablenavigation.setColumnHidden( TIPOCAMBIO, True )
         self.tablenavigation.setColumnHidden( SUBTOTAL, True )
         self.tablenavigation.setColumnHidden( IVA, True )
@@ -197,8 +204,34 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                 self.editmodel.hasretencion=True
             else:
                 self.retencionwidget.setCurrentIndex(0)
+                self.cboretencion.setCurrentIndex(-1)                
                 self.editmodel.hasretencion=False
             #self.cboretencion.    
+    
+    @pyqtSignature( "bool" )
+    def on_ckIva_toggled( self, on ):
+        """
+        """
+        if not self.editmodel is None:
+            #Verificar IVA    
+            query = QSqlQuery( """
+                    SELECT idcostoagregado, valorcosto 
+                    FROM costosagregados c 
+                    WHERE idtipocosto = 1 AND activo = 1 
+                    ORDER BY idtipocosto;
+                    """ )
+            query.exec_()
+            if not query.size() == 1:
+                QMessageBox.information( None, "Cheques", "No fue posible obtener el porcentaje del IVA" )            
+            if on :
+                self.editmodel.hasiva = True
+                query.first()  
+                self.editmodel.ivaId = query.value( 0 ).toInt()[0]
+        
+            else:
+                self.editmodel.hasiva = False
+            
+            self.updateTotals()
         
     @pyqtSlot( "int" )
     def on_cboconcepto_currentIndexChanged( self, index ):
@@ -258,26 +291,11 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     def on_subtotal_valueChanged(self,index):
         if not self.editmodel is None:
            self.updateTotals()
-           query=QSqlQuery("""SELECT
-                cc.idcuenta,
-                SUM(IFNULL(monto,0)) monto
-            FROM cuentascontables cc
-            LEFT JOIN cuentascontables ch ON cc.idcuenta = ch.padre
-            LEFT JOIN cuentasxdocumento cxd ON cc.idcuenta = cxd.idcuenta
-            WHERE cc.idcuenta = %d""" %(self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0]))
-           query.exec_()
-           query.first()
-           totalcuenta=query.value(1).toString()
-           print totalcuenta
-           if Decimal(str(self.subtotal.value()))>Decimal(totalcuenta):
-                QMessageBox.warning(self, qApp.organizationName(), "No existe suficiente saldo para crear el cheque")
-           else:
-               self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.totalCordobas)
-               
+        
                 
     def updateTotals(self):
         self.editmodel.subtotal=Decimal(str(self.subtotal.value()))
-        
+        self.editmodel.setData(self.editmodel.index(0,3), self.editmodel.totalCordobas)
         if self.editmodel.moneda==constantes.IDCORDOBAS:
                         
             self.total.setText(moneyfmt(self.editmodel.totalCordobas,4,self.editmodel.simbolo))
@@ -402,7 +420,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             completer.setCaseSensitivity( Qt.CaseInsensitive )
             completer.setModel( self.proveedoresmodel )
             completer.setCompletionColumn( 1 )
-    
+            
     #       Rellenar el combobox de los conceptos
             self.conceptosmodel = QSqlQueryModel()
             self.conceptosmodel.setQuery( """
@@ -479,7 +497,46 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         if self.editmodel is not None:
             super(frmCheques, self).on_dtPicker_dateTimeChanged(datetime)
             self.lbltipocambio.setText(str(self.editmodel.exchangeRate))
-            
+    
+    def save( self ):
+        """
+        Guardar el documento actual
+        """
+        query=QSqlQuery("""SELECT
+                cc.idcuenta,
+                SUM(IFNULL(monto,0)) monto
+            FROM cuentascontables cc
+            LEFT JOIN cuentascontables ch ON cc.idcuenta = ch.padre
+            LEFT JOIN cuentasxdocumento cxd ON cc.idcuenta = cxd.idcuenta
+            WHERE cc.idcuenta = %d""" %(self.cuentabancaria.record( self.cbocuenta.currentIndex() ).value( "idcuentacontable" ).toInt()[0]))
+        query.exec_()
+        query.first()
+        totalcuenta=query.value(1).toString()
+        if Decimal(str(self.subtotal.value()))>Decimal(totalcuenta):
+            QMessageBox.warning(self, qApp.organizationName(), "No existe suficiente saldo para crear el cheque")
+           
+        if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+            if self.editmodel.valid:
+                if self.editmodel.save():
+                    QMessageBox.information( self,
+                         qApp.organizationName() ,
+                         u"El documento se ha guardado con éxito" )
+                    self.editmodel = None
+                    self.updateModels()
+                    self.navigate( 'last' )
+                    self.status = True
+                else:
+                    QMessageBox.critical( self,
+                        qApp.organizationName() ,
+                       "Ha ocurrido un error al guardar el documento" )   
+    
+            else:
+                try:
+                    QMessageBox.warning( self,qApp.organizationName() ,self.editmodel.validError)
+                except AttributeError:
+                    QMessageBox.warning( self,qApp.organizationName() ,u"El documento no puede guardarse ya que la información no esta completa")
+
+    
 class ROAccountsModel( QSortFilterProxyModel ):
     def __init__( self,dbcursor = None):
         super( QSortFilterProxyModel, self ).__init__()

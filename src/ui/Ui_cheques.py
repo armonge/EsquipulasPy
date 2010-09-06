@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/cheques.ui'
+# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/cheques.ui'
 #
-# Created: Mon Aug 23 03:19:13 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -246,6 +245,9 @@ class Ui_frmCheques(object):
         self.ckretencion = QtGui.QCheckBox(self.tabdetails)
         self.ckretencion.setObjectName("ckretencion")
         self.gridLayout_2.addWidget(self.ckretencion, 1, 2, 1, 1)
+        self.ckIva = QtGui.QCheckBox(self.tabdetails)
+        self.ckIva.setObjectName("ckIva")
+        self.gridLayout_2.addWidget(self.ckIva, 3, 2, 1, 1)
         self.gridLayout_4.addLayout(self.gridLayout_2, 0, 0, 1, 1)
         self.frame_2 = QtGui.QFrame(self.tabdetails)
         self.frame_2.setFrameShape(QtGui.QFrame.StyledPanel)
@@ -366,6 +368,7 @@ class Ui_frmCheques(object):
         self.Concepto.setText(QtGui.QApplication.translate("frmCheques", "En Concepto de:", None, QtGui.QApplication.UnicodeUTF8))
         self.label_16.setText(QtGui.QApplication.translate("frmCheques", "Tipo de Cambio:", None, QtGui.QApplication.UnicodeUTF8))
         self.ckretencion.setText(QtGui.QApplication.translate("frmCheques", "Retencion", None, QtGui.QApplication.UnicodeUTF8))
+        self.ckIva.setText(QtGui.QApplication.translate("frmCheques", "IVA", None, QtGui.QApplication.UnicodeUTF8))
         self.label_15.setText(QtGui.QApplication.translate("frmCheques", "Observaciones", None, QtGui.QApplication.UnicodeUTF8))
         self.lblsub.setText(QtGui.QApplication.translate("frmCheques", "Subtotal Factura", None, QtGui.QApplication.UnicodeUTF8))
         self.lbliva.setText(QtGui.QApplication.translate("frmCheques", "IVA", None, QtGui.QApplication.UnicodeUTF8))
