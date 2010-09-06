@@ -19,7 +19,10 @@ from movimientosbancarios import frmMovimientosBancarios
 from balancegeneral import frmBalanceGeneral
 from cheques import frmCheques
 from creditodebito import frmCreditoDebito
+from utility.constantes import ROLCONTABILIDAD
+
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
+    ROL = ROLCONTABILIDAD
     def __init__( self, user, parent = None ):
         """
         Constructor
@@ -27,7 +30,11 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.user = user
         QMainWindow.__init__( self, parent )
         self.setupUi( self )
-        MainWindowBase.__init__( self )
+        MainWindowBase.__init__( self)
+        self.init()
+        
+        
+    def init(self):
         self.status = True
 
     def closeEvent( self, event ):

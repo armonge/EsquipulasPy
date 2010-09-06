@@ -139,6 +139,9 @@ class FacturaModel( QAbstractTableModel ):
 #                return Qt.AlignHCenter | Qt.AlignVCenter
             if column in (CANTIDAD,PRECIO,TOTALPROD):
                 return Qt.AlignRight | Qt.AlignVCenter
+        elif role == Qt.ToolTipRole:
+            if column == CANTIDAD:
+                return u"Máximo " + str(line.existencia) 
 
     def flags( self, index ):
         if not index.isValid():

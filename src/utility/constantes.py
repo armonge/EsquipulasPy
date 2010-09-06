@@ -5,8 +5,14 @@ Created on 06/07/2010
 @author: Luis Carlos Mejia
 '''
 #contantes de modulos
+IDCAJA = 2
+ROLCAJA = 'caja'
+
 IDCONTABILIDAD = 3
+ROLCONTABILIDAD = 'contabilidad'
+
 IDINVENTARIO = 4
+ROLINVENTARIO ='inventario'
 
 #conceptos
 IDCONCEPTODEPOSITO = 0

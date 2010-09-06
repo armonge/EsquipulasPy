@@ -21,6 +21,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 from PyQt4 import QtGui, QtCore
 from utility import database
+from utility import constantes
 from utility.user import dlgUserLogin, User
 from ui import res_rc
 
@@ -81,15 +82,18 @@ QMdiArea QMainWindow{
 if "--inventario" in sys.argv:
     app.setApplicationName( "Inventario" )
     from inventario.mainwindow import MainWindow
-    module = "inventario"
+#    module = "inventario"
+    module = constantes.ROLINVENTARIO
 elif "--caja" in sys.argv:
     app.setApplicationName( "Caja" )
     from caja.mainwindow import MainWindow
-    module = "caja"
+#    module = "caja"
+    module = constantes.ROLCAJA
 elif "--contabilidad" in sys.argv:
     app.setApplicationName( "Contabilidad" )
     from contabilidad.mainwindow import MainWindow
-    module = "contabilidad"
+#    module = "contabilidad"
+    module = constantes.ROLCONTABILIDAD
 else:
     raise Exception( "No se selecciono un modulo" )
 

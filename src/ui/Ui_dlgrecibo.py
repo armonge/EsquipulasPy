@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\dlgrecibo.ui'
 #
-# Created: Fri Aug 06 08:25:58 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created: Mon Sep 06 11:39:06 2010
+#      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_dlgRecibo(object):
     def setupUi(self, dlgRecibo):
         dlgRecibo.setObjectName("dlgRecibo")
-        dlgRecibo.resize(548, 413)
+        dlgRecibo.resize(714, 443)
         self.verticalLayout = QtGui.QVBoxLayout(dlgRecibo)
         self.verticalLayout.setObjectName("verticalLayout")
         self.groupBox_4 = QtGui.QGroupBox(dlgRecibo)

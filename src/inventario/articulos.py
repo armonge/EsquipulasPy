@@ -394,27 +394,30 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
     @pyqtSlot( )
     def on_btnAgregarMarca_pressed(self):
         marca =["",True]
-        while marca[0]=="" and marca[1]==True:
+        marcaDescripcion =""
+        while marcaDescripcion == "" and marca[1]==True:
             marca = QInputDialog.getText(self,"Agregar Marca","Ingrese la Marca")
-            if marca[0]!="":
+            marcaDescripcion = marca[0].strip()
+            if marcaDescripcion!="":
                 proxy = self.brandsproxymodel
-                proxy.setFilterRegExp("^" + marca[0] + "$")
+                proxy.setFilterRegExp("^" + marcaDescripcion + "$")
     
                 if proxy.rowCount()>0:
-                    QMessageBox.information(None,"Crear Marca","La marca " + marca[0] + " ya existe")
+                    QMessageBox.information(None,"Crear Marca","La marca " + marcaDescripcion + " ya existe")
                     marca = ["",True]
+                    marcaDescripcion = ""
         
         self.brandsproxymodel.setFilterRegExp("")
         
         if marca[1]:
-            if QMessageBox.question(None,"Crear Marca",u"¿Está seguro que desea crear la marca " + marca[0] + "?", QMessageBox.Yes | QMessageBox.No)==QMessageBox.Yes:
+            if QMessageBox.question(None,"Crear Marca",u"¿Está seguro que desea crear la marca " + marcaDescripcion + "?", QMessageBox.Yes | QMessageBox.No)==QMessageBox.Yes:
                 if not QSqlDatabase.database().isOpen():
                     if not QSqlDatabase.database().open():
                 
                         raise Exception("No se pudo abrir la base de datos")
                 query = QSqlQuery()
                 query.prepare("INSERT INTO marcas(nombre) VALUES (:marca)")
-                query.bindValue(":marca",marca[0])
+                query.bindValue(":marca",marcaDescripcion)
                 if not query.exec_():
                     logging.error(query.lastError().text())
                     QMessageBox.warning(None,"Error al crear la marca","No se pudo insertar la marca")

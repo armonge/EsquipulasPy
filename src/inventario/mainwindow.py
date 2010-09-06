@@ -22,16 +22,31 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     """
     Class documentation goes here.
     """
+    ROL = constantes.ROLINVENTARIO
     def __init__( self, user, parent = None ):
         """
         Constructor
         """
         self.user = user
-
-
         QMainWindow.__init__( self, parent )
         self.setupUi( self )
-        MainWindowBase.__init__( self )
+        MainWindowBase.__init__( self)
+        self.init()
+        
+    def init(self):
+        if not self.user.hasRole("bodega"):
+            #Quitar la pestaña de compras
+            self.widget.setVisible(False)
+            self.toolBox.removeItem(1)
+        else:
+            self.page.setVisible(False)
+            self.toolBox.removeItem(2)
+            
+            self.page_2.setVisible(False)
+            self.toolBox.removeItem(0)
+
+        
+            
 
 
 
