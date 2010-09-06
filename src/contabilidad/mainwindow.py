@@ -19,10 +19,10 @@ from movimientosbancarios import frmMovimientosBancarios
 from balancegeneral import frmBalanceGeneral
 from cheques import frmCheques
 from creditodebito import frmCreditoDebito
-from utility.constantes import ROLCONTABILIDAD
+from utility import constantes
 
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
-    ROL = ROLCONTABILIDAD
+    ROL = constantes.ACCESOCONTABILIDAD
     def __init__( self, user, parent = None ):
         """
         Constructor

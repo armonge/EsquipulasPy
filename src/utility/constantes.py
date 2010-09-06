@@ -4,15 +4,15 @@ Created on 06/07/2010
 
 @author: Luis Carlos Mejia
 '''
-#contantes de modulos
+
 IDCAJA = 2
-ROLCAJA = ['caja']
+ACCESOCAJA = ['caja']
 
 IDCONTABILIDAD = 3
-ROLCONTABILIDAD = ['contabilidad']
+ACCESOCONTABILIDAD = ['contabilidad']
 
 IDINVENTARIO = 4
-ROLINVENTARIO =['inventario', 'gerencia', 'inventario','contabilidad','kardex']
+ACCESOINVENTARIO =['inventario', 'gerencia','contabilidad','kardex']
 
 #conceptos
 IDCONCEPTODEPOSITO = 0

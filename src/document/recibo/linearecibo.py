@@ -20,19 +20,24 @@ class LineaRecibo:
         self.simboloMoneda ="US$"
         self.error = ""
     @property
-    def sinReferencia( self ):
-        return self.pagoId in (constantes.IDPAGOEFECTIVO,constantes.IDPAGOTARJETA)
+    def sinBanco( self ):
+        return self.pagoId in (0,constantes.IDPAGOEFECTIVO,constantes.IDPAGOTARJETA)
+    
+    @property
+    def conReferencia( self ):
+        return self.pagoId not in (0,constantes.IDPAGOEFECTIVO)    
+    
     @property
     def valid( self ):
         """
         es esta linea valida
         """
-        pedirRef =not (self.sinReferencia)
+        pedirRef =not (self.sinBanco)
         if  int( self.pagoId ) == 0:
             self.error = "Por favor elija un tipo de pago"    
         elif Decimal( self.montoDolar ) == 0:
             self.error = u"El monto en dólares no puede ser 0"
-        elif pedirRef and self.referencia == "" :
+        elif self.conReferencia and self.referencia == "" :
             self.error = "Por favor escriba la referencia del pago"
         elif pedirRef and self.bancoId <= 0: 
             if self.bancoId == 0: 

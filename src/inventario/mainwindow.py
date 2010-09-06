@@ -22,7 +22,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     """
     Class documentation goes here.
     """
-    ROL = constantes.ROLINVENTARIO
+    ROL = constantes.ACCESOINVENTARIO
     def __init__( self, user, parent = None ):
         """
         Constructor
@@ -34,22 +34,20 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.init()
         
     def init(self):
-        if not self.user.hasRole("bodega"):
-            #Quitar la pestaña de compras
+        if not self.user.hasRole('kardex') and not self.user.hasRole('contabilidad'):
+            #Quitar la pestaña de kardex
             self.widget.setVisible(False)
             self.toolBox.removeItem(1)
-        if not self.user.hasRole("inventario"):
+            
+        if not self.user.hasRole('inventario'):
             self.page.setVisible(False)
             self.toolBox.removeItem(2)
-            
             self.page_2.setVisible(False)
             self.toolBox.removeItem(0)
-
-        
             
-
-
-
+        if self.user.hasRole('contabilidad') and not self.user.hasRole('root'):
+            self.btnKExits.setVisible(False)  
+          
         
     def closeEvent( self, event ):
         u"""

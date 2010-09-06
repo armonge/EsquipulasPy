@@ -21,13 +21,13 @@ from arqueo import frmArqueo
 from utility import constantes
 from devolucion import frmDevolucion
 from utility.persona import frmPersona
-from utility.constantes import ROLCAJA
+from utility import constantes
 
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     """
     Esta clase implementa el MainWindow de Caja
     """
-    ROL = ROLCAJA
+    ROL = constantes.ACCESOCAJA
     def __init__( self, user, parent = None ):
         """
         Constructor

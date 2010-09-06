@@ -83,17 +83,17 @@ if "--inventario" in sys.argv:
     app.setApplicationName( "Inventario" )
     from inventario.mainwindow import MainWindow
 #    module = "inventario"
-    module = constantes.ROLINVENTARIO
+    module = constantes.ACCESOINVENTARIO
 elif "--caja" in sys.argv:
     app.setApplicationName( "Caja" )
     from caja.mainwindow import MainWindow
 #    module = "caja"
-    module = constantes.ROLCAJA
+    module = constantes.ACCESOCAJA
 elif "--contabilidad" in sys.argv:
     app.setApplicationName( "Contabilidad" )
     from contabilidad.mainwindow import MainWindow
 #    module = "contabilidad"
-    module = constantes.ROLCONTABILIDAD
+    module = constantes.ACCESOCONTABILIDAD
 else:
     raise Exception( "No se selecciono un modulo" )
 
@@ -116,6 +116,7 @@ if dlguser.exec_() == QtGui.QDialog.Accepted:
     user = dlguser.user
     if user.valid:
         if all([True for permission in user.roles if permission in module]) or user.hasRole('root'):
+
             mainwindow = MainWindow( user )
             mainwindow.showMaximized()
             x = app.exec_()

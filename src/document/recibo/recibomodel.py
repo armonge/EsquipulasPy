@@ -49,9 +49,9 @@ class ReciboModel( AccountsSelectorModel ):
 
         if index.column() == REFERENCIA:
             line = self.lines[index.row()]
-            return line.pagoId == 1 if line.pagoId != 0 else True
+            return line.pagoId in (0,1)
         elif index.column() == BANCO:
-            return self.lines[index.row()].sinReferencia
+            return self.lines[index.row()].sinBanco
         else:
             return False
     
@@ -112,7 +112,7 @@ class ReciboModel( AccountsSelectorModel ):
             line.simboloMoneda = value[3]
             index = self.index(index.row(),MONTO)
             line.monto =Decimal(str(line.montoDolar * self.tipoCambio)) if line.monedaId == 1 else line.montoDolar
-            if line.sinReferencia:
+            if line.sinBanco:
                 line.referencia = ""
                 line.bancoId = 0
                 line.banco = ""
