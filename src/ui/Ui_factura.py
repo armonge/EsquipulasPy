@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\factura.ui'
 #
-# Created: Sat Aug 28 23:44:49 2010
+# Created: Mon Sep 06 22:48:53 2010
 #      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -367,7 +367,7 @@ class Ui_frmFactura(object):
         self.toolBar.setObjectName("toolBar")
         frmFactura.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.actionAnular = QtGui.QAction(frmFactura)
-        self.actionAnular.setEnabled(False)
+        self.actionAnular.setEnabled(True)
         self.actionAnular.setIcon(icon4)
         self.actionAnular.setObjectName("actionAnular")
         self.toolBar.addAction(self.actionAnular)

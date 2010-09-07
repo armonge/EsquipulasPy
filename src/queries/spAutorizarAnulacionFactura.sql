@@ -7,6 +7,7 @@ IDGERENTE INT,
 TIPOANULACION INT,
 TIPOFACTURA INT,
 TIPORECIBO INT,
+TIPOKARDEX INT,
 PENDIENTEANULAR INT,
 CONFIRMADO INT,
 ANULADO INT,
@@ -27,16 +28,21 @@ BEGIN
       SELECT
           fac.idestado AS anulacionEstado,
           fac.idtipodoc ,
-          anul.iddocumento AS anulacionId,
+          SUM(IF(hijo.idtipodoc = TIPOANULACION,hijo.iddocumento,0)) AS anulacionId,
+          SUM(IF(hijo.idtipodoc = TIPOKARDEX,hijo.iddocumento,0)) AS kardexId,
           fac.escontado AS facturaContado
       FROM documentos fac
       JOIN docpadrehijos ph ON ph.idpadre = fac.iddocumento
-      JOIN documentos anul ON ph.idhijo = anul.iddocumento AND anul.idtipodoc = TIPOANULACION
-      WHERE fac.iddocumento = IDFACTURA
+      JOIN documentos hijo ON ph.idhijo = hijo.iddocumento AND hijo.idtipodoc in (TIPOANULACION,TIPOKARDEX)
+       WHERE
+      -- fac.idtipodoc =5
+       --  AND
+         fac.iddocumento = IDFACTURA
     INTO
     @anulEstado,
     @tipo,
     @anulacion,
+    @kardex,
     @esContado
      ;
 
@@ -77,6 +83,15 @@ BEGIN
          GROUP BY cxd.idcuenta
          HAVING SUM(-cxd.monto)<>0
          ;
+
+    IF @kardex = 0 THEN
+
+        INSERT INTO articulosxdocumento(iddocumento,idarticulo,unidades,costocompra,costounit,precioventa,nlinea)
+        SELECT @anulacion,idarticulo,-unidades,costocompra,costounit,precioventa,nlinea
+        FROM articulosxdocumento
+        WHERE iddocumento = IDFACTURA;
+
+    END IF;
 
     -- VERIFICO SI HAY RECIBO
     IF @recibo is not null then

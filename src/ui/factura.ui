@@ -674,7 +674,7 @@ color: rgb(255, 0, 0);</string>
   </widget>
   <action name="actionAnular">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="res.qrc">
