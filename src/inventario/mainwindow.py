@@ -34,19 +34,24 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.init()
         
     def init(self):
-        if not self.user.hasRole('kardex') and not self.user.hasRole('contabilidad'):
-            #Quitar la pestaña de kardex
-            self.widget.setVisible(False)
-            self.toolBox.removeItem(1)
-            
-        if not self.user.hasRole('inventario'):
+        if self.user.hasRole('root'):
+            return
+        
+        if not (self.user.hasRole('inventario') or self.user.hasRole('contabilidad') ) :
             self.page.setVisible(False)
             self.toolBox.removeItem(2)
             self.page_2.setVisible(False)
             self.toolBox.removeItem(0)
+        
+        if self.user.hasRole('contabilidad') and not self.user.hasRole('kardex'):
+            self.btnKExits.setVisible(False)
             
-        if self.user.hasRole('contabilidad') and not self.user.hasRole('root'):
-            self.btnKExits.setVisible(False)  
+        if not (self.user.hasRole('kardex') or self.user.hasRole('contabilidad')):
+            #Quitar la pestaña de kardex
+            self.widget.setVisible(False)
+            self.toolBox.removeItem(1)
+
+            
           
         
     def closeEvent( self, event ):

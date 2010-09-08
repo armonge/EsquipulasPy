@@ -12,7 +12,7 @@ IDCONTABILIDAD = 3
 ACCESOCONTABILIDAD = ['contabilidad']
 
 IDINVENTARIO = 4
-ACCESOINVENTARIO =['inventario', 'gerencia','contabilidad','kardex']
+ACCESOINVENTARIO =['inventario','contabilidad','kardex']
 
 #conceptos
 IDCONCEPTODEPOSITO = 0

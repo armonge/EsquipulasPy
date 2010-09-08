@@ -109,13 +109,23 @@ if "--reportconfig" in sys.argv:
 
 #Database.getDatabase("","--dbconfig" in sys.argv)
 dlguser = dlgUserLogin()
-cont = 0
-valido = False
+#cont = 0
+#valido = False
 dlguser.txtPassword.setText("")
 if dlguser.exec_() == QtGui.QDialog.Accepted:
     user = dlguser.user
     if user.valid:
-        if all([True for permission in user.roles if permission in module]) or user.hasRole('root'):
+        permitido = False
+        
+        if user.hasRole('root'):
+            permitido = True
+        else:
+             for permission in user.roles:
+                 if not permitido:
+                     permitido= permission in module
+            
+            
+        if permitido:
 
             mainwindow = MainWindow( user )
             mainwindow.showMaximized()
