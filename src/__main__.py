@@ -115,26 +115,13 @@ dlguser.txtPassword.setText("")
 if dlguser.exec_() == QtGui.QDialog.Accepted:
     user = dlguser.user
     if user.valid:
-        permitido = False
-        
-        if user.hasRole('root'):
-            permitido = True
-        else:
-             for permission in user.roles:
-                 if not permitido:
-                     permitido= permission in module
-            
-            
-        if permitido:
+        if  any([permission in module for permission in user.roles ])  or user.hasRole('root'):
+
 
             mainwindow = MainWindow( user )
             mainwindow.showMaximized()
-            x = app.exec_()
-            sys.exit()
-            if x == 3:
-                app.exec_()
-            else:
-                sys.exit()
+            sys.exit(app.exec_())
+
         else:
             QtGui.QMessageBox.critical( None,
             QtGui.qApp.organizationName(),

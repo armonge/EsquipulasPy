@@ -2,6 +2,8 @@
 """
 Module implementing frmDevolucion.
 """
+from decimal import Decimal
+import logging
 
 from PyQt4.QtCore import pyqtSlot, SIGNAL, Qt, QTimer, \
     SLOT, QDateTime
@@ -9,12 +11,14 @@ from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
      QLineEdit,QMessageBox, QPrinter, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
+
 from ui.Ui_devolucion import Ui_frmDevoluciones
 from utility.base import Base
-from decimal import Decimal
+
 from document.devolucion.devoluciondelegate import DevolucionDelegate
 from document.devolucion.devolucionmodel import DevolucionModel
 from document.devolucion.lineadevolucion import LineaDevolucion
+
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
 from utility import constantes
@@ -29,7 +33,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
     """
     Formulario para crear nuevas devoluciones
     """
-    web = "devoluciones.php?doc=%"  
+    web = "devoluciones.php?doc="  
     def __init__( self, user, parent = None ):
         """
         Constructor
@@ -153,7 +157,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             self.mapper.addMapping( self.txtBill, FACTURA, "text" )
             self.mapper.addMapping( self.lblTotal, TOTAL, "text" )
             self.mapper.addMapping( self.lblSubtotal, SUBTOTAL, "text" )
-            self.mapper.addMapping( self.lblCost, COSTO, "text" )
+            #self.mapper.addMapping( self.lblCost, COSTO, "text" )
             self.mapper.addMapping( self.lblTaxes, IMPUESTOS, "text" )
             self.mapper.addMapping( self.txtConcept, CONCEPTO, "text" )
             self.mapper.addMapping( self.txtWarehouse, NOMBREBODEGA, "text" )
@@ -175,7 +179,10 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 
         except UserWarning as inst:
             QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            logging.error(unicode(inst))
         except Exception as inst:
+            logging.critical(unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), u"Hubo un error al cargar la lista de devoluciones")
             print inst
         finally:
             if QSqlDatabase.database().isOpen():
@@ -190,7 +197,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         self.lblTotal.setText( moneyfmt( self.editmodel.totalD, 4, "US$" ) + " / " + moneyfmt( self.editmodel.totalC, 4, "C$" ) )
         self.lblSubtotal.setText( moneyfmt( self.editmodel.subtotalD, 4, "US$" ) + " / " + moneyfmt( self.editmodel.subtotalC, 4, "C$" ) )
         self.lblTaxes.setText( moneyfmt( self.editmodel.ivaD, 4, "US$" ) + " / " + moneyfmt( self.editmodel.ivaC, 4, "C$" ) )
-        self.lblCost.setText( moneyfmt( self.editmodel.totalCostD, 4, "US$" ) + " / " + moneyfmt( self.editmodel.totalCostC, 4, "C$" ) )
+        #self.lblCost.setText( moneyfmt( self.editmodel.totalCostD, 4, "US$" ) + " / " + moneyfmt( self.editmodel.totalCostC, 4, "C$" ) )
 
     def setControls( self, status ):
         """
@@ -223,7 +230,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             self.txtClient.setText( self.editmodel.clientName )
             self.txtObservations.setPlainText( "" )
             self.lblTotal.setText( "US$0.0000 / C$0.0000" )
-            self.lblCost.setText( "US$0.0000 / C$0.0000" )
+            #self.lblCost.setText( "US$0.0000 / C$0.0000" )
             self.lblTaxes.setText( "US$0.0000 / C$0.0000" )
             self.lblSubtotal.setText( "US$0.0000 / C$0.0000" )
             self.tabledetails.setEditTriggers( QAbstractItemView.AllEditTriggers )
@@ -275,7 +282,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             """ % constantes.IDNC)
             
             if self.conceptsmodel.rowCount()==0:
-                raise UserWarning( u"No se pudo calcular el numero de la devolución" )
+                raise UserWarning( u"No existen conceptos para devolución")
                 
             
             dlgbill = dlgSelectBill()

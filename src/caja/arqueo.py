@@ -16,7 +16,6 @@ from ui.Ui_arqueo import Ui_frmArqueo
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
 from utility.singleselectionmodel import  SingleSelectionModel
-from caja.mainwindow import *
 from utility.user import dlgSmallUserLogin
 
 from document.arqueo.arqueomodel import ArqueoModel, ArqueoProxyModel
@@ -137,10 +136,10 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                     
             
         except UserWarning as inst:
-            logging.error(inst)
+            logging.error(unicode(inst))
             QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
-            logging.critical(inst)
+            logging.critical(unicode(inst))
         finally:
             if self.database.isOpen():
                 self.database.close()
@@ -227,7 +226,11 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         """
         cargar todos los modelos para la edición
         """
+        query = QSqlQuery()
         try:
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning(u"No se pudo establecer la conexión con la base de datos")
             print self.parent.findChild(QMdiArea).subWindowList()
             for window in self.parent.findChild(QMdiArea).subWindowList():
                 if window.widget():
@@ -258,13 +261,34 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                 if not self.database.open():
                     raise UserWarning( "No se pudo conectar con la base de datos" )
 
+            #verificar si hay documentos pendientes de aprobación
+            query.prepare("""
+            SELECT
+                CONCAT_WS(' ', td.descripcion, d.ndocimpreso)
+            FROM documentos sesion
+            JOIN docpadrehijos dpd ON dpd.idpadre = sesion.iddocumento
+            JOIN documentos d ON dpd.idhijo  = d.iddocumento
+            JOIN tiposdoc td ON td.idtipodoc = d.idtipodoc
+            WHERE d.idestado NOT IN ( %d,%d)
+            """ % (constantes.CONFIRMADO, constantes.ANULADO))
 
+            if not query.exec_():
+                raise Exception(u"No se pudo ejecutar la consulta para determinar si existen documentos pendientes de aprobación")
+            if not query.size() == 0:
+                raise UserWarning(u"Existen documentos pendientes de aprobación en la sesión")
+
+            query.finish()
             #Obtener los datos de la sesión
-            query = QSqlQuery( """
+            q = """
             CALL spConsecutivo( %d, NULL )
-            """ % constantes.IDARQUEO)
-            if not query.exec_() or not query.size() > 0:
-                raise UserWarning( u"Error al obtener el numero del arqueo")
+            """ % constantes.IDARQUEO
+            #query.prepare( q )
+                
+            if not query.exec_(q):
+                raise Exception( u"No se pudo ejecutar la consulta para obtener el numero del arqueo")
+            if not query.size() > 0:
+                print query.size()
+                raise Exception( u"La consulta para obtener el numero del arqueo no devolvio ningún valor")
             query.first()
             
             self.editmodel.printedDocumentNumber = query.value(0).toString()
@@ -273,7 +297,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             
             self.editmodel.datetime.setDate(self.parent.datosSesion.fecha)
             
-            query = QSqlQuery( """
+            query.prepare( """
             CALL spTotalesSesion(%d);
             """ % self.parent.datosSesion.sesionId )
             if not query.exec_():
@@ -301,7 +325,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                     self.editmodel.expectedCardC = Decimal(query.value(5).toString())
 
                     
-            query = QSqlQuery( """
+            query.prepare( """
             SELECT 
                 d.iddenominacion, 
                 CONCAT_WS( ' ',d.valor, m.moneda), 
@@ -362,10 +386,12 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             
         except UserWarning as inst:
             logging.error(unicode(inst))
+            logging.error(query.lastError().text())
             QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             self.status = True
         except Exception  as inst:
-            logging.critical(inst)
+            logging.critical(unicode(inst))
+            logging.critical(query.lastError().text())
             QMessageBox.critical(self, qApp.organizationName(), "El sistema no pudo iniciar un nuevo arqueo")
             self.status = True
         finally:
@@ -416,9 +442,8 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             if dlgUser.exec_() == QDialog.Accepted:
                 if dlgUser.user.valid and dlgUser.user.hasRole('gerencia'):
                     self.editmodel.authorizationId  = dlgUser.user.uid
-                    super(frmArqueo, self).save()
-                    self.parentWindow.datosSesion = caja.mainwindow.DatosSesion()
-                    self.parentWindow.status = False
+                    super(frmArqueo, self).save(False)
+                    self.parentWindow.init()
                 else:
                     QMessageBox.warning(self, qApp.organizationName(), "No se pudo autorizar el arqueo")
         except UserWarning as inst:
@@ -429,7 +454,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                         print "here"
                         if dlgUser.user.valid and dlgUser.user.hasRole('gerencia'):
                             self.editmodel.authorizationId  = dlgUser.user.uid
-                            super(frmArqueo, self).save()
+                            super(frmArqueo, self).save(False)
                             self.parentWindow.datosSesion = caja.mainwindow.DatosSesion()
                             self.parentWindow.status = False
                         else:

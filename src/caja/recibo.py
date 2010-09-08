@@ -45,6 +45,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
+        self.user = user
 
         self.__status = True
 

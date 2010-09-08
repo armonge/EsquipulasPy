@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/devolucion.ui'
 #
-# Created: Mon Aug 23 03:14:33 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -194,28 +193,6 @@ class Ui_frmDevoluciones(object):
         self.lblTaxes.setSizePolicy(sizePolicy)
         self.lblTaxes.setObjectName("lblTaxes")
         self.gridLayout_2.addWidget(self.lblTaxes, 1, 1, 1, 1)
-        self.label_12 = QtGui.QLabel(self.groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_12.sizePolicy().hasHeightForWidth())
-        self.label_12.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setWeight(75)
-        font.setBold(True)
-        self.label_12.setFont(font)
-        self.label_12.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.label_12.setObjectName("label_12")
-        self.gridLayout_2.addWidget(self.label_12, 2, 0, 1, 1)
-        self.lblCost = QtGui.QLabel(self.groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblCost.sizePolicy().hasHeightForWidth())
-        self.lblCost.setSizePolicy(sizePolicy)
-        self.lblCost.setObjectName("lblCost")
-        self.gridLayout_2.addWidget(self.lblCost, 2, 1, 1, 1)
         self.label_13 = QtGui.QLabel(self.groupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -229,7 +206,7 @@ class Ui_frmDevoluciones(object):
         self.label_13.setFont(font)
         self.label_13.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_13.setObjectName("label_13")
-        self.gridLayout_2.addWidget(self.label_13, 3, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.label_13, 2, 0, 1, 1)
         self.lblTotal = QtGui.QLabel(self.groupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -237,7 +214,7 @@ class Ui_frmDevoluciones(object):
         sizePolicy.setHeightForWidth(self.lblTotal.sizePolicy().hasHeightForWidth())
         self.lblTotal.setSizePolicy(sizePolicy)
         self.lblTotal.setObjectName("lblTotal")
-        self.gridLayout_2.addWidget(self.lblTotal, 3, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.lblTotal, 2, 1, 1, 1)
         self.lblSubtotal = QtGui.QLabel(self.groupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -348,8 +325,6 @@ class Ui_frmDevoluciones(object):
         self.label_11.setText(QtGui.QApplication.translate("frmDevoluciones", "Subtotal: ", None, QtGui.QApplication.UnicodeUTF8))
         self.label_14.setText(QtGui.QApplication.translate("frmDevoluciones", "Impuesto: ", None, QtGui.QApplication.UnicodeUTF8))
         self.lblTaxes.setText(QtGui.QApplication.translate("frmDevoluciones", "C$ 0.00", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_12.setText(QtGui.QApplication.translate("frmDevoluciones", "Costo Total: ", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblCost.setText(QtGui.QApplication.translate("frmDevoluciones", "C$ 0.00", None, QtGui.QApplication.UnicodeUTF8))
         self.label_13.setText(QtGui.QApplication.translate("frmDevoluciones", "Total Devolución: ", None, QtGui.QApplication.UnicodeUTF8))
         self.lblTotal.setText(QtGui.QApplication.translate("frmDevoluciones", "C$ 0.00", None, QtGui.QApplication.UnicodeUTF8))
         self.lblSubtotal.setText(QtGui.QApplication.translate("frmDevoluciones", "C$ 0.00", None, QtGui.QApplication.UnicodeUTF8))

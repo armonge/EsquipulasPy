@@ -24,9 +24,10 @@ class dlgAbstractUserLogin(QDialog):
     """
     Clase base para todos los dialogos que requieren autenticar a un usuario
     """
-    def __init__(self, maxAttempts = 3):
+    def __init__(self, parent = None, maxAttempts = 3):
         super(dlgAbstractUserLogin, self).__init__()
         self.setupUi()
+        self.parent = parent
         self.user = None
         self.maxAttempts = maxAttempts
         self.attempts = 0

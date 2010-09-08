@@ -5,7 +5,8 @@ import logging
 
 from PyQt4.QtCore import  pyqtSlot,  QSettings, SIGNAL, QUrl
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, QProgressBar, QPrinter, QPrintDialog, QDialog, qApp
+from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, \
+QProgressBar, QPrinter, QPrintDialog, QDialog, qApp, QShortcut, QKeySequence
 from PyQt4.QtWebKit import QWebView
 
 from utility.reports import frmReportes, Reports
@@ -43,6 +44,10 @@ class Base( object ):
 
         self.printProgressBar= QProgressBar(self)
         self.printProgressBar.setVisible(False)
+
+        tab1shortcut = QShortcut(QKeySequence("Ctrl+1"),self,functools.partial(self.tabWidget.setCurrentIndex,0) )
+        tab2shortcut = QShortcut(QKeySequence("Ctrl+2"),self,functools.partial(self.tabWidget.setCurrentIndex,1) )
+
         
         self.mapper.currentIndexChanged[int].connect(self.updateDetailFilter)
         self.actionGoFirst.triggered.connect(functools.partial(self.navigate, 'first'))
@@ -107,11 +112,20 @@ class Base( object ):
                     if not self.database.open():
                         raise Exception( "No se pudo conectar a la base de datos para recuperar los tipos de cambio" )
 
-                query = QSqlQuery( "SELECT idtc, tasa FROM tiposcambio WHERE fecha = " + datetime.toString( "yyyyMMdd" ) + " LIMIT 1" )
+                q = """
+                    SELECT idtc, tasa
+                    FROM tiposcambio
+                    WHERE fecha = %s
+                    LIMIT 1
+                """ %  datetime.toString( "yyyyMMdd" )
+                query = QSqlQuery(q)
+                
                 if not query.exec_():
+                    logging.critical(query.lastError().text())
                     raise UserWarning( "No se pudieron recuperar los tipos de cambio" )
-                if not query.first():
-                    raise UserWarning( u"La consulta para el tipo de cambio no devolvio ningun valor" )
+                if not query.size() == 1:
+                    logging.critical(u"La consulta para obtener tipos de cambio devolvio más de un valor")
+                    raise UserWarning( u"Hubo un error al obtener los tipos de cambio" )
                 
                 self.editmodel.exchangeRateId = query.value( 0 ).toInt()[0]
                 self.editmodel.exchangeRate = Decimal( query.value( 1 ).toString() )
@@ -214,11 +228,13 @@ class Base( object ):
         self.mapper.setCurrentIndex( index.row() )
 
 
-    def save( self ):
+    def save( self , ask = True):
         """
         Guardar el documento actual
+        @param ask: Si se deberia o no preguntar al usuario si esta seguro antes de proceder
+        @type ask: bool
         """
-        if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+        if ask == False or QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
             if self.editmodel.valid:
                 if self.editmodel.save():
                     QMessageBox.information( self,

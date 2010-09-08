@@ -324,7 +324,7 @@ def movEntradaCompra( iddoc, total, impuestopagado ):
     @param iddoc: El id del documento que genera estos movimientos
     @type iddoc: int
     
-    @param total: TODO
+    @param total: El total de la entrada compra
     @type total: Decimal
     @param impuestopagado: TODO
     @type impuestopagado: Decimal
