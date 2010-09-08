@@ -241,7 +241,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         #            else:            
     #            
                     if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea anular la factura?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-                        anulardialog = Anular(self.navmodel.record( self.mapper.currentIndex()).value( "No. Factura" ).toString())
+                        nfac = self.navmodel.record( self.mapper.currentIndex()).value( "No. Factura" ).toString()
+                        anulardialog = Anular(nfac)
                         if anulardialog.conceptosmodel.rowCount()==0:
                             QMessageBox.warning(None,"Anular Factura",u"No existen conceptos para la anulación")
                         
@@ -262,11 +263,11 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                                    
                                     #Insertar documento anulacion
                                     if not query.prepare( """INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
-                                    VALUES(:ndocimpreso,:total,:fechacreacion,:idtipodoc,:observacion,:idestado)""" ):
+                                    VALUES(:ndocimpreso,:total,NOW(),:idtipodoc,:observacion,:idestado)""" ):
                                         raise Exception( query.lastError().text() )
-                                    query.bindValue( ":ndocimpreso", 'S/N' )
+                                    query.bindValue( ":ndocimpreso", nfac )
                                     query.bindValue(":total",total.to_eng_string())
-                                    query.bindValue( ":fechacreacion", QDate.currentDate() )
+#                                    query.bindValue( ":fechacreacion", QDateTime.currentDateTime().toString('yyyyMMddhhmmss') )
                                     query.bindValue( ":idtipodoc", constantes.IDANULACION )
                                     query.bindValue( ":observacion", anulardialog.txtObservaciones.toPlainText() )                        
                                     query.bindValue( ":idestado", constantes.PENDIENTE )

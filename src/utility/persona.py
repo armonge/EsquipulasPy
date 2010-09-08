@@ -51,6 +51,7 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
         self.status = True
         
     def updateDetailFilter( self, index ):
+        self.actionEditar.setEnabled(self.navproxymodel.rowCount()>0)
         if self.navmodel.record( index ).value( "activo" ).toBool():  
             self.rbactivo.setChecked(True)
         else:
@@ -78,6 +79,9 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
             """ %self.tipo
             self.navmodel.setQuery(query)
             self.navproxymodel.setSourceModel(self.navmodel)
+            
+            self.actionEditar.setEnabled(self.navproxymodel.rowCount()>0)
+            
             self.tablenavigation.setModel(self.navproxymodel)
             
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
@@ -204,7 +208,8 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
 
         
     def setControls(self,status):
-        
+        if status ==2 and self.navproxymodel.rowCount()==0:
+            return
         
         if status == False:
             self.txtnombre.setText("")
@@ -241,34 +246,7 @@ class frmPersona(Ui_frmPersona,QMainWindow,Base):
         self.txtruc.setReadOnly(status)
         self.txttelefono.setReadOnly(status)
 
-    def setEditControls(self,status):
 
-        self.rbactivo.setEnabled(not status)
-        self.rbinactivo.setEnabled(not status)
-        self.tablenavigation.setEnabled( status )
-        self.tabnavigation.setEnabled( status )
-        self.actionNew.setVisible( status )
-        self.actionEditar.setVisible(status)
-        self.actionCancel.setVisible( not status )
-        self.actionSave.setVisible( not status )
-        self.txtcorreo.setReadOnly(status)
-        self.txtdireccion.setReadOnly(status)
-        self.txtruc.setReadOnly(status)
-        self.txttelefono.setReadOnly(status)
-        
-        self.actionGoFirst.setEnabled(status)
-        self.actionGoLast.setEnabled(status)
-        self.actionGoNext.setEnabled(status)
-        self.actionGoPrevious.setEnabled(status)
-        
-        if not status:
-            self.tabWidget.setCurrentIndex(0)
-            self.txtdireccion.setFocus()
-        else:
-            self.tabWidget.setCurrentIndex(1)
-            self.tablenavigation.setFocus()
-            
-            
             
     def newDocument( self ):
         self.status = False        

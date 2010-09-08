@@ -26,6 +26,7 @@ BEGIN
 
 -- OBTENGO EL ID DE LA FACTURA QUE FUE ANULADA
       SELECT
+          fac.ndocimpreso,
           fac.idestado AS anulacionEstado,
           fac.idtipodoc ,
           SUM(IF(hijo.idtipodoc = TIPOANULACION,hijo.iddocumento,0)) AS anulacionId,
@@ -39,6 +40,7 @@ BEGIN
        --  AND
          fac.iddocumento = IDFACTURA
     INTO
+    @nfactura,
     @anulEstado,
     @tipo,
     @anulacion,
@@ -102,14 +104,14 @@ BEGIN
        ;
 
 -- ACTUALIZO EL ESTADO DEL RECIBO A ANULADO
-      UPDATE documentos SET idestado = ANULADO where iddocumento = @recibo;
+      UPDATE documentos SET idestado = ANULADO where iddocumento = @recibo LIMIT 1;
    END IF;
 
 -- ACTUALIZO EL ESTADO DE LA FACTURA A ANULADO
-      UPDATE documentos SET idestado = ANULADO where iddocumento = IDFACTURA;
+      UPDATE documentos SET idestado = ANULADO where iddocumento = IDFACTURA LIMIT 1;
 
--- ACTUALIZO EL ESTADO DE LA ANULACION Y LO PASO A CONFIRMADO
-    UPDATE documentos SET idestado = CONFIRMADO WHERE iddocumento = @anulacion;
+-- ACTUALIZO EL ESTADO DE LA ANULACION Y LO PASO A CONFIRMADO, Y LE PONGO EL NUMERO DE LA FACTURA EN NDOCIMPRESO
+    UPDATE documentos SET idestado = CONFIRMADO, ndocimpreso =@nfactura WHERE iddocumento = @anulacion LIMIT 1;
 
 
     COMMIT;

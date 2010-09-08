@@ -1,4 +1,4 @@
-﻿DELIMITER $$
+DELIMITER $$
 
 DROP PROCEDURE IF EXISTS `spAutorizarFactura` $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spAutorizarFactura`(
