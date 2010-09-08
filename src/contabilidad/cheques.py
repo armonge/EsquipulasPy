@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 '''
 Created on 03/07/2010
 
@@ -8,9 +8,10 @@ from decimal import Decimal, InvalidOperation
 import functools
 import logging
 
+from PyQt4 import QtGui,QtCore
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase,QSqlQuery
-from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, SIGNAL, QModelIndex, QTimer,QSize
-from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, QPrinter, qApp
+from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, SIGNAL, QModelIndex, QTimer,QSize,QDate
+from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, QPrinter, qApp,QDialog
 
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
@@ -20,7 +21,7 @@ from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorL
 from utility import constantes
 from utility.widgets.searchpanel import SearchPanel
 from utility.reports import frmReportes
-IDDOCUMENTO,NCHEQUE,CUENTABANCARIA,NOMBRE,FECHA,CONCEPTO,TOTAL,SUBTOTAL,IVA,ESTADO,TOTALRET,TIPOCAMBIO,TASARETENCION=range(13)
+IDDOCUMENTO,NCHEQUE,CUENTABANCARIA,NOMBRE,FECHA,CONCEPTO,TOTAL,SUBTOTAL,IVA,TOTALRET,TIPOCAMBIO,TASARETENCION,ESTADO,IDESTADO,TOTALCHEQUE=range(15)
 #accounts model
 IDDOC, IDCUENTA,CODIGO,DESCRIPCION, MONTO= range( 5 )
 class frmCheques( Ui_frmCheques, QMainWindow,Base ):
@@ -51,6 +52,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
         self.editmodel = None  
 
+        self.toolBar.removeAction(self.actionAnular)
+        self.toolBar.addAction(self.actionAnular)
         self.status = True
         #las acciones deberian de estar ocultas
         
@@ -65,7 +68,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.accountsProxyModel.setFilterKeyColumn( IDDOCUMENTO )
         self.accountsProxyModel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
-
+        self.actionAnular.setEnabled(self.navmodel.record( index ).value( "idestado" ).toInt()[0]==constantes.CONFIRMADO)
     def updateModels(self):
     #inicializando el documento
     #El modelo principal
@@ -82,12 +85,13 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             IF (tm.simbolo="C$",ROUND(padre.total*tc.tasa/ (1+ IF(ca.valorcosto IS NULL,0,ca.valorcosto/100))),ROUND(padre.total/ (1+ IF(ca.valorcosto IS NULL,0,ca.valorcosto/100)))) as subtotal,
             
             IF (tm.simbolo="C$",CONCAT(tm.simbolo,FORMAT(tc.tasa*padre.total-(tc.tasa*padre.total/(1+ IF(ca.valorcosto IS NULL,0,ca.valorcosto/100))),4)),CONCAT(tm.simbolo,FORMAT(padre.total-(padre.total/(1+ IF(ca.valorcosto IS NULL,0,ca.valorcosto/100))),4))) as iva,
-            
-            ed.descripcion AS Estado,
+                       
             IF(hijo.total IS NULL, CONCAT(tm.simbolo,'0.0000') ,CONCAT(tm.simbolo,hijo.total))   as 'Total Ret C$',
             tc.tasa as TipoCambio,
-            caret.valorcosto as 'retencion'
-
+            caret.valorcosto as 'retencion',
+            ed.descripcion AS Estado,
+            padre.idestado,
+            IF (tm.simbolo="C$",padre.total*tc.tasa,padre.total) as TotalCheque
             FROM documentos padre
             JOIN estadosdocumento ed ON ed.idestado = padre.idestado
             JOIN tiposcambio tc on padre.idtipocambio=tc.idtc
@@ -162,6 +166,9 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.tablenavigation.setColumnHidden( IVA, True )
         self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
         self.tablenavigation.setColumnHidden( CONCEPTO, True )
+        self.tablenavigation.setColumnHidden( CONCEPTO, True )
+        self.tablenavigation.setColumnHidden( IDESTADO, True )
+        self.tablenavigation.setColumnHidden( TOTALCHEQUE, True )
 
         self.tablenavigation.resizeColumnsToContents()
         
@@ -179,8 +186,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.actionNew.setVisible( status)
         self.actionPreview.setVisible( status)
         self.ckretencion.setEnabled(not status)
-
-
+        self.ckIva.setEnabled(not status)
         self.conceptowidget.setCurrentIndex(1 if not status else 0)
         self.beneficiariowidget.setCurrentIndex(1 if not status else 0)
         self.cuentawidget.setCurrentIndex(1 if not status else 0)
@@ -314,7 +320,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             self.total.setToolTip(moneyfmt(self.editmodel.totalCordobas,4,"C$"))
             self.iva.setToolTip(moneyfmt(self.editmodel.iva,4,"C$"))
             self.retencion.setToolTip(moneyfmt(self.editmodel.retencion,4,"C$"))
-            
+
     def cancel( self ):
         """
         Aca se cancela la edicion del documento
@@ -331,6 +337,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.retencion.setText("0.0")
         
         self.status = True
+        
+    
 
     @property
     def printIdentifier(self):
@@ -498,6 +506,102 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             super(frmCheques, self).on_dtPicker_dateTimeChanged(datetime)
             self.lbltipocambio.setText(str(self.editmodel.exchangeRate))
     
+    @pyqtSlot(  )
+    def on_actionAnular_activated( self ):
+        
+        doc=self.navmodel.record( self.mapper.currentIndex()).value( "iddocumento" ).toInt()[0]
+        estado= self.navmodel.record( self.mapper.currentIndex() ).value( "idestado" ).toInt()[0]
+        total = Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( "TotalCheque" ).toString())
+        try:
+            if not QSqlDatabase.database().isOpen():
+                if not QSqlDatabase.database().open():
+                    raise Exception("NO se pudo abrir la Base de datos")
+ 
+            if estado==3:
+                if QMessageBox.question(self, "Anular Cheque", u"Este cheque no ha sido confirmado, ¿Desea eliminarlo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+                    query=QSqlQuery()
+                    query.prepare( "CALL `esquipulasdb`.`spEliminarCheque`(:doc)" )
+                    query.bindValue( ":doc", doc)
+                    if not query.exec_():
+                        raise Exception("No se pudo eliminar el Cheque")
+                    
+                    QMessageBox.information( None, "Anular Cheque", "El cheque fue eliminado correctamente" )
+                    self.updateModels()
+            else:
+             
+                if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea anular el cheque?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+                    anulardialog = Anular(self.navmodel.record( self.mapper.currentIndex()).value( "No. Cheque" ).toString())
+                    if anulardialog.conceptosmodel.rowCount()==0:
+                        QMessageBox.warning(None,"Anular Cheque",u"No existen conceptos para la anulación")
+                    
+                    else:
+                        if anulardialog.exec_() == QDialog.Accepted:
+                            if anulardialog.cboConceptos.currentIndex()==-1 and anulardialog.txtObservaciones.toPlainText()=="":
+                                QMessageBox.critical( self, qApp.organizationName(), "No ingreso los datos correctos", QMessageBox.Ok )
+                            else:
+                                
+                                query = QSqlQuery()
+                                if not self.database.transaction():
+                                    raise Exception("No se pudo comenzar la transacción" )  
+                                  
+                                #Cambiar estado Anulado=1 para documento
+                                query.prepare("UPDATE documentos d SET idestado=%d where iddocumento=%d LIMIT 1"%(constantes.ANULACIONPENDIENTE,doc) )
+                                if not query.exec_():
+                                    raise Exception("No se logro cambiar el estado a el documento")
+                               
+                                #Insertar documento anulacion
+                                if not query.prepare( """INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
+                                VALUES(:ndocimpreso,:total,:fechacreacion,:idtipodoc,:observacion,:idestado)""" ):
+                                    raise Exception( query.lastError().text() )
+                                query.bindValue( ":ndocimpreso", 'S/N' )
+                                query.bindValue(":total",total.to_eng_string())
+                                query.bindValue( ":fechacreacion", QDate.currentDate() )
+                                query.bindValue( ":idtipodoc", constantes.IDANULACION )
+                                query.bindValue( ":observacion", anulardialog.txtObservaciones.toPlainText() )                        
+                                query.bindValue( ":idestado", constantes.PENDIENTE )
+                                
+                                if not query.exec_():
+                                    raise Exception("No se pudo insertar el documento Anulacion")
+                                
+                                insertedId=query.lastInsertId().toString()
+                                
+                                if not query.prepare( "INSERT INTO docpadrehijos (idpadre,idhijo) VALUES" + 
+                            "(:idcheque," + insertedId + ")"):
+#                                "(:usuario," + insertedId + ",0),"
+#                                "(:supervisor," + insertedId + ",1)"):
+                                    raise Exception( query.lastError().text()+"No se preparo la relacion de la anulacion con el Cheque" )                                
+                    
+                                query.bindValue( ":idcheque",doc )
+                                
+                                if not query.exec_():
+                                    raise Exception("No se pudo insertar la relacion de la Anulacion con la Cheque")
+        
+                                
+                                if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,idaccion) VALUES" + 
+                                "(:usuario," + insertedId + ",:accion)"):
+                                    raise Exception( query.lastError().text()+"No se inserto el usuario y autoriza" )                                
+                    
+                                query.bindValue( ":usuario", self.user.uid )
+                                query.bindValue (":accion", constantes.AUTOR)
+       
+                                if not query.exec_():
+                                    raise Exception("No se pudo Insertar la relacion de la anulacion con el usuario")
+
+                 
+                                if not self.database.commit():
+                                    raise Exception("NO se hizo el commit para la Anulacion")
+                                QMessageBox.information( self, qApp.organizationName(), "Cheque anulada Correctamente", QMessageBox.Ok )
+                                self.updateModels()
+                
+        except Exception as inst:
+            print inst
+            print query.lastError().text()
+            self.database.rollback()
+        finally:
+            if QSqlDatabase.database().isOpen():
+                QSqlDatabase.database().close()
+
+    
     def save( self ):
         """
         Guardar el documento actual
@@ -536,7 +640,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
                 except AttributeError:
                     QMessageBox.warning( self,qApp.organizationName() ,u"El documento no puede guardarse ya que la información no esta completa")
 
-    
+            
 class ROAccountsModel( QSortFilterProxyModel ):
     def __init__( self,dbcursor = None):
         super( QSortFilterProxyModel, self ).__init__()
@@ -598,3 +702,64 @@ class ChequesFiltroDelegate(AccountsSelectorDelegate):
             doublespinbox.setDecimals( 4 )
 
             return doublespinbox
+
+class Anular( QDialog ):
+    def __init__( self ,numero, parent = None):
+        super(Anular, self).__init__(parent )
+
+        self.setupUi()
+
+        
+        #QtCore.QMetaObject.connectSlotsByName(self)
+
+        self.conceptosmodel = QSqlQueryModel()
+        self.conceptosmodel.setQuery( """
+        SELECT idconcepto,descripcion
+        FROM conceptos c
+        WHERE idtipodoc = %d
+        ;
+        """% constantes.IDANULACION )
+        self.cboConceptos.setModel(self.conceptosmodel)
+        self.cboConceptos.setCurrentIndex( -1 )
+        self.cboConceptos.setModelColumn( 1 )
+        self.numero=numero
+
+        self.lblnCheque2.setText(str(self.numero))
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+    
+        
+    def setupUi(self):
+        self.setObjectName("frmAnulaciones")
+        self.setWindowTitle( "Seleccione la Cheque a anular" )
+        self.resize(485, 300)
+        self.gridLayout = QtGui.QGridLayout(self)
+        self.gridLayout.setObjectName("gridLayout")
+        self.lblnCheque = QtGui.QLabel(self)
+        self.lblnCheque.setObjectName("lblnCheque")
+        self.lblnCheque.setText("# Cheque")
+        self.gridLayout.addWidget(self.lblnCheque, 0, 0, 1, 1)
+        self.lblnCheque2 = QtGui.QLabel(self)
+        self.lblnCheque2.setFrameShape(QtGui.QFrame.Box)
+        self.lblnCheque2.setText("")
+        self.lblnCheque2.setObjectName("lblnCheque2")
+        self.gridLayout.addWidget(self.lblnCheque2, 0, 1, 1, 1)
+        self.lblconcepto = QtGui.QLabel(self)
+        self.lblconcepto.setObjectName("lblconcepto")
+        self.lblconcepto.setText("Concepto")
+        self.gridLayout.addWidget(self.lblconcepto, 1, 0, 1, 1)
+        self.cboConceptos = QtGui.QComboBox(self)
+        self.cboConceptos.setObjectName("cboConceptos")
+        self.gridLayout.addWidget(self.cboConceptos, 1, 1, 1, 1)
+        self.lblobservaciones = QtGui.QLabel(self)
+        self.lblobservaciones.setObjectName("lblobservaciones")
+        self.lblobservaciones.setText("Observaciones")
+        self.gridLayout.addWidget(self.lblobservaciones, 2, 0, 1, 1)
+        self.txtObservaciones = QtGui.QPlainTextEdit(self)
+        self.txtObservaciones.setObjectName("txtObservaciones")
+        self.gridLayout.addWidget(self.txtObservaciones, 3, 1, 1, 1)
+        self.buttonBox = QtGui.QDialogButtonBox(self)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.gridLayout.addWidget(self.buttonBox, 4, 0, 1, 2)
