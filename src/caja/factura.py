@@ -615,7 +615,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                     descripcion,
                     precio,
                     costodolar,
-                    costo,
+                    ROUND(costo,4) as costo,
                     Existencia,
                     idbodega
                 FROM vw_articulosenbodegas
