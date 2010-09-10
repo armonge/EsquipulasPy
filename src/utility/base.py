@@ -14,7 +14,8 @@ from utility import user
 
 class Base( object ):
     """
-    Esta clase sirve de base para muchos  formularios de inventario
+    Esta clase sirve de base para muchos  todos aquello formularios que siguen el estandar de dos pestañas, una para navegación
+    y otra para edición
     """
     orientation = QPrinter.Portrait
     pageSize = QPrinter.Letter
@@ -139,7 +140,7 @@ class Base( object ):
                 self.dtPicker.setDateTime( self.editmodel.datetime )
                 logging.error(inst)
             except Exception as inst:
-                QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al obtener los tipos de cambio", QMessageBox.Ok )
+                QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al obtener los tipos de cambio")
                 logging.critical(inst)
                 self.dtPicker.setDateTime( self.editmodel.datetime )
 
@@ -430,13 +431,14 @@ class Base( object ):
         self.actionPreview = self.createAction(text="Previsualizar", tip=u"Vista de impresión del documento", icon=":/icons/res/document-preview.png",shortcut="Ctrl+p", slot=self.preview)
         self.actionPrint = self.createAction(text="Imprimir", tip="Imprimir el documento", icon=":/icons/res/document-print.png", slot = self.printDocument)
         self.actionSave = self.createAction(text="Guardar", tip = "Guardar el documento", icon=":/icons/res/document-save.png",shortcut="Ctrl+g", slot = self.save)
-        
         self.actionCancel = self.createAction(text="Cancelar", tip = "Cancelar la creación del nuevo documento", icon=":/icons/res/dialog-cancel.png",shortcut="Esc", slot = self.cancel)
-        
+
+        #edicion, TODO: QUE FUNCIONEN ESTAS ACCIONES
         self.actionCopy = self.createAction(text="Copiar", icon=":/icons/res/edit-copy.png", shortcut="Ctrl+c")
         self.actionCut = self.createAction(text="Cortar", icon=":/icons/res/edit-cut.png", shortcut="Ctrl+x")
         self.actionPaste = self.createAction(text="Pegar", icon=":/icons/res/edit-paste.png", shortcut="Ctrl+v")
 
+        #navegación
         self.actionGoFirst = self.createAction(text="Primer documento", tip ="Ir al primer documento",  icon=":/icons/res/go-first.png")
         self.actionGoPrevious = self.createAction(text="Documento anterior", tip="Ir al documento anterior", icon=":/icons/res/go-previous.png")
         self.actionGoLast = self.createAction(text="Ultimo documento", tip = "Ir al ultimo documento", icon=":/icons/res/go-last.png")

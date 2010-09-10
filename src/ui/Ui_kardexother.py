@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/kardexother.ui'
 #
-# Created: Tue Aug 24 09:23:12 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -45,6 +44,7 @@ class Ui_frmKardexOther(object):
         self.dtPicker.setObjectName("dtPicker")
         self.gridLayout.addWidget(self.dtPicker, 0, 4, 1, 1)
         self.tabledetails = QtGui.QTableView(self.tabdetails)
+        self.tabledetails.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.tabledetails.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.tabledetails.setAlternatingRowColors(True)
         self.tabledetails.setObjectName("tabledetails")

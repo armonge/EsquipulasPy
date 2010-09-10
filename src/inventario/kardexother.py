@@ -4,21 +4,24 @@ Created on 23/07/2010
 
 @author: Andrés Reyes Monge
 '''
+import logging
+
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, QAbstractItemView, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QTimer,pyqtSlot, QDateTime
-from utility.base import Base
+
 from ui.Ui_kardexother import Ui_frmKardexOther
 
 from document.kardexother.kardexothermodel import KardexOtherModel
 from document.kardexother.kardexotherdelegate import KardexOtherDelegate
-
+from utility.base import Base
 from utility import constantes
+
+IDARTICULO, DESCRIPCION, CANTIDAD = range(3)
 class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
     '''
     classdocs
     '''
-
 
     def __init__(self,  parent=None):
         '''
@@ -67,7 +70,24 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         self.tabledetails.setEditTriggers(QAbstractItemView.NoEditTriggers if status else QAbstractItemView.AllEditTriggers)
         if not status:
             self.tabWidget.setCurrentIndex(0)
-        
+
+            self.tabledetails.setColumnHidden(IDARTICULO, True)
+
+            self.tabledetails.setColumnWidth(DESCRIPCION, 250)
+
+            self.tabledetails.addAction(self.actionDeleteRow)
+    def deleteRow(self):
+        """
+        Funcion usada para borrar lineas de la tabla
+        """
+        index = self.tabledetails.currentIndex()
+
+        if not index.isValid():
+            return
+        row = index.row()
+
+        self.editmodel.removeRows( row, 1 )
+
     def updateModels(self):
         try:
             if not QSqlDatabase.database().isOpen():
@@ -81,7 +101,8 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
                 d.fechacreacion, 
                 d.observacion,
                 b.nombrebodega, 
-                d.total
+                d.total,
+                d.idestado
             FROM documentos d 
             JOIN bodegas b ON b.idbodega = d.idbodega
             LEFT JOIN docpadrehijos dph ON dph.idhijo = d.iddocumento
@@ -101,8 +122,10 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             
         except UserWarning as inst:
             QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            logging.error(unicode(inst))
         except Exception as inst:
-            print inst
+            QMessageBox.critical(self, qApp.organizationName(), u"No se pudo iniciar un nuevo ajuste de kardex")
+            logging.critical(unicode( inst))
     def newDocument(self):
         try:
             if not QSqlDatabase.database().isOpen():
@@ -120,6 +143,9 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             FROM conceptos c
             WHERE c.idtipodoc = %d
             """ % constantes.IDKARDEX)
+
+            if conceptosmodel.rowCount() == 0:
+                raise UserWarning(u"No existen conceptos para los ajustes de bodega")
             
             self.cbConcept.setModel(conceptosmodel)
             self.cbConcept.setModelColumn(1)
@@ -131,6 +157,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             """ % constantes.IDKARDEX )
             if not query.exec_():
                 raise UserWarning( "No se pudo calcular el numero del kardex" )
+            
             query.first()
             self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
             self.txtPrintedDocumentNumber.setText(self.editmodel.printedDocumentNumber)
@@ -140,9 +167,12 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             articlesmodel = QSqlQueryModel()
             articlesmodel.setQuery("""
             SELECT
-                idarticulo,
-                descripcion
-            FROM vw_articulosdescritos
+                a.idarticulo,
+                a.descripcion,
+                ca.idcostoarticulo,
+                ca.valor
+            FROM vw_articulosdescritos a
+            JOIN costosarticulo ca ON a.idarticulo = ca.idarticulo AND ca.activo = 1
             """)
             
             delegate = KardexOtherDelegate(articlesmodel)

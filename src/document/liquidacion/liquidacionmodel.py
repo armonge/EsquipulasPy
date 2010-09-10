@@ -430,20 +430,23 @@ class LiquidacionModel( QAbstractTableModel ):
         @rtype: bool
         @return: si se pudo o no borrar la fila
         """
-        if len( self.lines ) > 1 and self.lines[position].valid and len( self.lines ):
-            self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
-            for n in range( rows ):
-                try:
-                    del self.lines[position + n]
-                except IndexError:
-                    pass
-            self.endRemoveRows()
-            self.dirty = True
-            self.updateFob()
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), QModelIndex(), QModelIndex() )
-            return True
-        else:
-            return False
+        #if len( self.lines ) > 1 and self.lines[position].valid :
+        self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
+        for n in range( rows ):
+            try:
+                del self.lines[position + n]
+            except IndexError:
+                pass
+        self.endRemoveRows()
+        self.dirty = True
+        self.updateFob()
+        self.dataChanged.emit(index, index)
+
+        if len(self.lines) == 0:
+            self.insertRow(0)
+        return True
+        #else:
+            #return False
 
     def save( self ):
         """
@@ -746,6 +749,9 @@ class LiquidacionModel( QAbstractTableModel ):
         elif role == Qt.EditRole:
             if column == COSTOUNIT:
                 return line.itemCost
+            elif column == IDARTICULO:
+                print "row: ", index.row(), "id: ", line.itemId
+                return line.itemId
         elif role == Qt.ToolTipRole:
             if column == CIF:
                 return "CIF Total = %s\nFOB Total = %s\nFOB Parcial %s" % ( \
@@ -822,7 +828,7 @@ class LiquidacionModel( QAbstractTableModel ):
                 self.insertRow( len( self.lines ) )
 
 
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.dataChanged.emit(index, index)
 
             return True
         return False
@@ -839,11 +845,11 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
         @param parent: Este es el modelo LiquidacionModel del cual se manejan los totales 
         @type parent: LiquidacionModel
         """
-        QAbstractTableModel.__init__( self )
+        super(LiquidacionTotalsModel, self).__init__( )
         self.parent = parent
-        self.connect( self.parent, SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.fn )
+        self.parent.dataChanged[QModelIndex, QModelIndex].connect(self.update)
 
-    def fn( self, index1, index2 ):
+    def update( self, index1, index2 ):
         """
         actualizar los totales cuando cambien los datos en el modelo Liquidacion
         """

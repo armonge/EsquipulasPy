@@ -24,7 +24,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabdetails">
        <attribute name="icon">
@@ -553,21 +553,6 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <action name="actionAnular">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="res.qrc">
-     <normaloff>:/icons/res/edit-delete.png</normaloff>:/icons/res/edit-delete.png</iconset>
-   </property>
-   <property name="text">
-    <string>anular</string>
-   </property>
-   <property name="toolTip">
-    <string>Anular la Factura</string>
-   </property>
-  </action>
  </widget>
  <tabstops>
   <tabstop>dtPicker</tabstop>

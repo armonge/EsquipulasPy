@@ -29,7 +29,6 @@ class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
         """
         super( frmArticulos, self ).__init__( parent )
         self.setupUi( self )
-        
         self.database = QSqlDatabase.database()
         
 #        self.__status = True
@@ -102,7 +101,7 @@ class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
         """
         Llama al Dialog para insertar un nuevo articulo
         """
-        self.nuevoarticulo = frmArticlesNew( self.user )
+        self.nuevoarticulo = frmArticlesNew( )
         if self.nuevoarticulo.exec_() == QDialog.Accepted:
             self.updateModels()
             

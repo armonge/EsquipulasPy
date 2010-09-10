@@ -335,16 +335,10 @@ class Ui_frmCheques(object):
         self.toolBar = QtGui.QToolBar(frmCheques)
         self.toolBar.setObjectName("toolBar")
         frmCheques.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
-        self.actionAnular = QtGui.QAction(frmCheques)
-        self.actionAnular.setEnabled(False)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/icons/res/edit-delete.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionAnular.setIcon(icon2)
-        self.actionAnular.setObjectName("actionAnular")
         self.label_4.setBuddy(self.txtSearch)
 
         self.retranslateUi(frmCheques)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.beneficiariowidget.setCurrentIndex(0)
         self.retencionwidget.setCurrentIndex(0)
         self.cboretencion.setCurrentIndex(-1)
@@ -387,8 +381,6 @@ class Ui_frmCheques(object):
         self.label_4.setText(QtGui.QApplication.translate("frmCheques", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmCheques", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionAnular.setText(QtGui.QApplication.translate("frmCheques", "anular", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionAnular.setToolTip(QtGui.QApplication.translate("frmCheques", "Anular la Factura", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
 

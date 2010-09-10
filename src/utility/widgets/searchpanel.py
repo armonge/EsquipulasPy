@@ -5,9 +5,49 @@ Created on 29/05/2010
 @author: Andrés Reyes Monge
 '''
 
-from PyQt4.QtGui import QTableView, QSortFilterProxyModel, QCompleter, QComboBox
+from PyQt4.QtGui import QTableView, QSortFilterProxyModel, QCompleter, QComboBox,QStyledItemDelegate
 from PyQt4.QtCore import Qt, SIGNAL, SLOT
 from utility.singleselectionmodel import SingleSelectionModel
+
+class SingleSelectionSearchPanelDelegate(QStyledItemDelegate):
+    def __init__( self, showTable=False , parent = None  ):
+        super(SingleSelectionSearchPanelDelegate, self).__init__( )
+
+        self.showTable = showTable
+        """
+        @ivar: Si se debera o no mostrar la tabla
+        @type: bool
+        """
+        
+        self.proxymodel = QSortFilterProxyModel()
+        """
+        @ivar:Este es el modelo proxy que utiliza el SearchPanel
+        @type: QSortFilterProxyModel
+        """
+        
+        
+
+    def createEditor( self, parent, option, index ):
+        """
+        Esta función debera reimplementarse en los hijos de esta clase, idealmente mandara a llamar a este metodo base despues de
+        haber actualizadao el proxymodel y solamente cuando la columna sea la indicada
+        """
+        value = index.model().index(index.row(),0).data().toString()
+        sp = SearchPanel( self.proxymodel, parent, self.showTable )
+        sp.setColumn( index.column() )
+        sp.lineEdit().selectAll()
+        
+        return sp
+
+
+    def filter(self, model, current):
+        filtro =  "|^".join( [str(line.itemId) for line in model.lines if line.itemId != 0 and line.itemId != current ] )
+        if filtro !="":
+            filtro = "[^" + filtro + "]"
+        return filtro
+
+
+
 
 class SearchPanel( QComboBox ):
     def __init__( self, model, parent = None,showTable=False  ):
@@ -40,7 +80,8 @@ class SearchPanel( QComboBox ):
 
         self.setColumn( 1 )
 
-        self.connect( self.lineEdit(), SIGNAL( "textEdited(  QString )" ), self.pFilterModel, SLOT( "setFilterFixedString(  QString )" ) if showTable==False else SLOT( "setFilterWildcard(  QString )" ) )
+        self.lineEdit().textEdited[unicode].connect(self.pFilterModel.setFilterFixedString if not showTable else self.pFilterModel.setFilterWildcard )
+        #self.connect( self.lineEdit(), SIGNAL( "textEdited(  QString )" ), self.pFilterModel, SLOT( "setFilterFixedString(  QString )" ) if showTable==False else SLOT( "setFilterWildcard(  QString )" ) )
 
     def setModel(self,model):
         QComboBox.setModel(self,model)
@@ -77,7 +118,7 @@ class SearchPanelView( QTableView ):
         '''
         Constructor
         '''
-        QTableView.__init__( self, parent )
+        super(SearchPanelView, self).__init__(  parent )
 
         self.setSelectionBehavior( QTableView.SelectRows )
         self.setSelectionMode( QTableView.SingleSelection )
@@ -98,7 +139,7 @@ class SearchPanelView( QTableView ):
         
         for column in self.hiddenColumns:
             self.setColumnHidden( column, True )
-        QTableView.paintEvent( self, event )
+        super(SearchPanelView, self).paintEvent(  event )
 
 
 

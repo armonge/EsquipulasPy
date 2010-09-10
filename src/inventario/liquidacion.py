@@ -8,7 +8,7 @@ import logging
 
 from PyQt4.QtGui import QMainWindow, QAbstractItemView, \
 QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, QPrinter, qApp
-from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer, QSettings
+from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer, QSettings, QAbstractTableModel, QModelIndex
 from PyQt4.QtSql import  QSqlQuery, QSqlQueryModel
 from ui.Ui_liquidacion import Ui_frmLiquidacion
 
@@ -213,6 +213,11 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabletotals.setColumnHidden(PROVEEDOR, True)
             self.tabletotals.setColumnHidden(TCAMBIO, True)
             self.tabletotals.setColumnHidden(EXONERADO, True)
+
+            self.tabledetails.removeAction( self.actionDeleteRow )
+            
+            self.tableaccounts.setEditTriggers( QTableView.NoEditTriggers )
+
         elif status == 2: #editando
             self.sbAgency.setPrefix("C$ ")
             self.sbStore.setPrefix("C$ ")
@@ -242,9 +247,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabTotalsAccounts.setCurrentIndex(0)
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
             self.actionEditAccounts.setVisible(False)
-        else:
-            self.tableaccounts.setEditTriggers( QTableView.NoEditTriggers )
-            self.tabledetails.removeAction( self.actionDeleteRow )
+            
 
     @pyqtSlot( "QDateTime" )
     def on_dtPicker_dateTimeChanged( self, datetime ):
@@ -444,8 +447,10 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         
             providersModel = QSqlQueryModel()
             providersModel.setQuery( """
-            SELECT idpersona, nombre FROM personas p WHERE tipopersona = 2 AND activo = 1
-            """ )
+            SELECT idpersona, nombre
+            FROM personas p
+            WHERE tipopersona = %d AND activo = 1
+            """ % constantes.PROVEEDOR )
             if not providersModel.rowCount() > 0:
                 raise UserWarning("No existen proveedores en el sistema")
             self.cbProvider.setModel( providersModel )
@@ -462,8 +467,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.cbWarehouse.setModel( warehouseModel )
             self.cbWarehouse.setModelColumn( 1 )
 
-            delegate = LiquidacionDelegate()
-            if delegate.prods.rowCount()==0:
+            self.editdelegate = LiquidacionDelegate()
+            self.updateArticleList(query)
+            if self.editdelegate.prods.rowCount()==0:
                 raise UserWarning(u"El sistema no tiene registrado ningún tipo de articulo, por favor añada articulos antes de hacer una liquidación")
                 
 
@@ -473,7 +479,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.tabWidget.setCurrentIndex( 0 )
             self.tabledetails.setModel( self.editmodel )
             
-            self.tabledetails.setItemDelegate( delegate )
+            self.tabledetails.setItemDelegate( self.editdelegate )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
 
 
@@ -513,7 +519,34 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             if self.database.isOpen():
                 self.database.close()
 
+    def updateArticleList(self, query):
+        """
+        Actualizar los valores de los articulos para el delegado
+        @param query: El objeto consulta en el que se van a tratar de obtener los nuevos valores de los articulos
+        @type query: QSqlQuery
+        """
 
+        query.prepare( """
+        SELECT
+            idarticulo,
+            Descripcion AS 'Articulo',
+            dai,
+            isc,
+            Comision as comision
+        FROM vw_articulosconcostosactuales
+        WHERE activo=1
+        """)
+
+        query.exec_()
+        self.editdelegate.prods = ArticlesModel()
+        while query.next():
+            self.editdelegate.prods.items.append( [
+                query.value( 0 ).toInt()[0],
+                query.value( 1 ).toString(),
+                Decimal( query.value( 2 ).toString() ),
+                Decimal( query.value( 3 ).toString() ),
+                Decimal( query.value( 4 ).toString() ),
+                                    ] )
 
 
 
@@ -723,7 +756,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
 
 
-            self.tabledetails.itemDelegate().update(query)
+            self.updateArticleList(query)
             for line in [line for line in self.editmodel.lines if line.itemId != 0]:
                 line.update(query)
 
@@ -841,3 +874,57 @@ class LiquidacionNavModel(QSqlQueryModel):
             elif index.column() == TOTALC:
                 return moneyfmt(Decimal(super(LiquidacionNavModel, self).data(index, role).toString()),4,"C$")
         return super(LiquidacionNavModel, self).data(index, role)
+
+        
+class ArticlesModel( QAbstractTableModel ):
+    def __init__( self ):
+        super( ArticlesModel, self ).__init__()
+        self.items = []
+
+    def data( self, index, role = Qt.DisplayRole ):
+        """
+        darle formato a los campos de la tabla
+        """
+        if not index.isValid() or not ( 0 <= index.row() < len( self.items ) ):
+            return ""
+        line = self.items[index.row()]
+        if role == Qt.DisplayRole:
+            if index.column() in ( 2, 3 ):
+                return line[index.column()].to_eng_string() + "%"
+            elif index.column() == 4:
+                return moneyfmt( line[index.column()], 4, "US$" )
+            return line[index.column()]
+# 0 = id articulo, 1 = descripcion articulo, 2 = dai, 3 = isc, 4 = comision
+        elif role == Qt.EditRole:
+                return line[index.column()]
+
+
+
+    def headerData( self, section, orientation, role = Qt.DisplayRole ):
+        if role == Qt.TextAlignmentRole:
+            if orientation == Qt.Horizontal:
+                return Qt.AlignLeft | Qt.AlignVCenter
+            return Qt.AlignRight | Qt.AlignVCenter
+
+        if role != Qt.DisplayRole:
+            return None
+
+        if orientation == Qt.Horizontal:
+            if section == 0:
+                return "id"
+            elif section == 1:
+                return "Articulo"
+            elif section == 2:
+                return "DAI"
+            elif section == 3:
+                return "ISC"
+            elif section == 4:
+                return u"Comisión"
+        return int( section + 1 )
+
+    def rowCount( self, index = QModelIndex() ):
+        return len( self.items )
+
+    def columnCount( self, index = QModelIndex ):
+        return 5
+

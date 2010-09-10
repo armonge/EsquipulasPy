@@ -71,6 +71,9 @@
         </item>
         <item row="1" column="0" colspan="5">
          <widget class="QTableView" name="tabledetails">
+          <property name="contextMenuPolicy">
+           <enum>Qt::ActionsContextMenu</enum>
+          </property>
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
           </property>

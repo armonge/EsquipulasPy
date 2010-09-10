@@ -47,4 +47,8 @@ RECIBOS
 NO se muestran los clientes morosos
 
 EN MODULO CAJA
-Cualquier usuario puede autorizar una apertura de caja
+-Cualquier usuario puede autorizar una apertura de caja
+-Al guardar una factura con una sesión de caja del dia anterior el modo edición muestra la fecha actual pero al guardar
+    se establece la fecha de la sesión
+- En la tabla creditos no se esta insertando nada
+- No funcionan las facturas de contado

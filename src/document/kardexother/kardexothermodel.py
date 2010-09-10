@@ -2,7 +2,7 @@
 '''
 Created on 09/08/2010
 
-@author: armonge
+@author: Andrés Reyes Monge
 '''
 from decimal import Decimal
 from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex, QDateTime
@@ -74,6 +74,7 @@ class KardexOtherModel(QAbstractTableModel):
 
         if role == Qt.DisplayRole:
             if column == IDARTICULO:
+                print "row: ", index.row(), "itemId: ", line.itemId
                 return line.itemId
             elif column == DESCRIPCION:
                 return line.description
@@ -102,17 +103,42 @@ class KardexOtherModel(QAbstractTableModel):
         if index.isValid() and 0 <= index.row() < len( self.lines ):
             line = self.lines[index.row()]
             if index.column() in (DESCRIPCION, IDARTICULO):
-                print value.toString()
                 line.itemId = value[0]
                 line.description = value[1]
             elif index.column() == CANTIDAD:
-                line.quantity == value.toInt()[0]
+                line.quantity = value.toInt()[0]
             self.dirty = True
+
+            if index.row() == len( self.lines ) - 1 and line.valid:
+                self.insertRow( len( self.lines ) )
+                
             self.dataChanged.emit(index, index)
+
+            
             return True
         return False
 
-        
+    def removeRows( self, position, rows = 1, index = QModelIndex() ):
+        """
+        Borrar filas del modelo
+        @rtype: bool
+        @return: si se pudo o no borrar la fila
+        """
+        #if len( self.lines ) > 1 and self.lines[position].valid :
+        self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
+        for n in range( rows ):
+            try:
+                del self.lines[position + n]
+            except IndexError:
+                pass
+        self.endRemoveRows()
+        self.dirty = True
+        self.dataChanged.emit(index, index)
+
+        if len(self.lines) == 0:
+            self.insertRow(0)
+        return True
+
     def rowCount( self, index = QModelIndex() ):
         return len( self.lines )
 
