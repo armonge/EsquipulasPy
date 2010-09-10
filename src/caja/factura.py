@@ -204,7 +204,9 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         elif self.anulable == 3:
             QMessageBox.warning(None,"Anular Factura",u"La factura no puede anularse porque no es del día de hoy")
         elif self.anulable == 4:
-            QMessageBox.warning(None,"Anular Factura",u"La factura no puede anularse porque tiene abonos")            
+            QMessageBox.warning(None,"Anular Factura",u"La factura no puede anularse porque tiene abonos")
+        elif self.anulable == 5:
+            QMessageBox.warning(None,"Anular Factura",u"La factura no puede anularse porque tiene devoluciones")                        
         elif self.anulable == 1:
         
             doc=self.navmodel.record( self.mapper.currentIndex()).value( "iddocumento" ).toInt()[0]
