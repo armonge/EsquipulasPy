@@ -13,12 +13,13 @@ from PyQt4.QtCore import pyqtSlot, QDateTime, SIGNAL, QTimer, QModelIndex, Qt
 from ui.Ui_operations import Ui_frmOperations
 from utility.accountselector import AccountsSelectorModel, AccountsSelectorDelegate
 from utility import constantes
+from utility import user
 
 IDDOCUMENTO, NDOCIMPRESO, FECHACREACION, CONCEPTO = range( 4 )
 
 IDCUENTA, CODIGO, DESCRIPCION, MONTO, IDDOCUMENTOC = range( 5 )
 class frmOperations( QMainWindow, Ui_frmOperations ):
-    def __init__( self, user, parent = None ):
+    def __init__( self,  parent = None ):
         super( frmOperations, self ).__init__( parent )
         self.setupUi( self )
         self.__status = False
@@ -40,7 +41,7 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
         self.mapper = QDataWidgetMapper( self )
         self.mapper.setModel( self.navproxymodel )
 
-        self.user = user
+        self.user = user.LoggedUser
 
         self.editModel = None
 

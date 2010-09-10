@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.DEBUG,
 from PyQt4 import QtGui, QtCore
 from utility import database
 from utility import constantes
-from utility.user import dlgUserLogin, User
+from utility import user 
 from ui import res_rc
 
 app = QtGui.QApplication( sys.argv )
@@ -108,17 +108,17 @@ if "--reportconfig" in sys.argv:
 
 
 #Database.getDatabase("","--dbconfig" in sys.argv)
-dlguser = dlgUserLogin()
+dlguser = user.dlgUserLogin()
 #cont = 0
 #valido = False
 dlguser.txtPassword.setText("")
 if dlguser.exec_() == QtGui.QDialog.Accepted:
-    user = dlguser.user
-    if user.valid:
-        if  any([permission in module for permission in user.roles ])  or user.hasRole('root'):
+    user.LoggedUser = dlguser.user
+    if user.LoggedUser.valid:
+        if  user.LoggedUser.hasAnyRole(module):
 
 
-            mainwindow = MainWindow( user )
+            mainwindow = MainWindow( )
             mainwindow.showMaximized()
             sys.exit(app.exec_())
 
@@ -130,7 +130,7 @@ if dlguser.exec_() == QtGui.QDialog.Accepted:
     else:
         QtGui.QMessageBox.critical( None,
         QtGui.qApp.organizationName(),
-        user.error,
+        user.LoggedUser.error,
         QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
 
 sys.exit()

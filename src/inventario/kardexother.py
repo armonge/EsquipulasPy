@@ -20,7 +20,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
     '''
 
 
-    def __init__(self, user, parent=None):
+    def __init__(self,  parent=None):
         '''
         Constructor
         '''
@@ -28,7 +28,6 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
-        self.user = user
         
         self.navigationmodel = QSqlQueryModel()
         

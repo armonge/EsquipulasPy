@@ -28,7 +28,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
     Implementacion de la interfaz grafica para entrada compra
     """
     web = "entradaslocales.php?doc="
-    def __init__( self, user, parent = None ):
+    def __init__( self, parent = None ):
         """
         Constructor
         """
@@ -38,7 +38,6 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         Base.__init__( self )
 
 
-        self.user = user
 
 
 

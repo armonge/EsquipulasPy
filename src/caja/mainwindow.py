@@ -28,13 +28,12 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     Esta clase implementa el MainWindow de Caja
     """
     ROL = constantes.ACCESOCAJA
-    def __init__( self, user, parent = None ):
+    def __init__( self,  parent = None ):
         """
         Constructor
         """
         super( MainWindow, self ).__init__( parent )
         self.setupUi( self )
-        self.user = user
         MainWindowBase.__init__( self )
         self.init()
         
@@ -97,7 +96,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
 
     @pyqtSlot(  )
     def on_btnArqueo_clicked( self ):
-        arqueo = frmArqueo( self.user, self )
+        arqueo = frmArqueo(  self )
         arqueo.show()
 
   
@@ -106,7 +105,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        recibo = frmRecibo( self.user, self )
+        recibo = frmRecibo(  self )
         recibo.setAttribute( Qt.WA_DeleteOnClose )
         self.mdiArea.addSubWindow( recibo )
         recibo.show()
@@ -185,7 +184,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 logging.critical(unicode(inst))
                 logging.error(query.lastError().text())
         else:
-            arqueo = frmArqueo( self.user, self )
+            arqueo = frmArqueo(  self )
             arqueo.show()
             
 
@@ -196,7 +195,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        factura = frmFactura( self.user , self )
+        factura = frmFactura( self )
         self.mdiArea.addSubWindow( factura )
         factura.show()
 
@@ -206,7 +205,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        devolucion = frmDevolucion( self.user, self )
+        devolucion = frmDevolucion(  self )
         devolucion.setAttribute( Qt.WA_DeleteOnClose )
         self.mdiArea.addSubWindow( devolucion )
         devolucion.show()

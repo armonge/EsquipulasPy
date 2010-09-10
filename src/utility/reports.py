@@ -3,7 +3,9 @@ import logging
 
 from PyQt4.QtGui import  QPrinter, QPrintPreviewDialog,  QLineEdit, QMessageBox, QProgressBar, QPrintPreviewWidget, qApp
 from PyQt4.QtWebKit import QWebView
-from PyQt4.QtCore import  QUrl, QSettings, Qt
+from PyQt4.QtCore import  QUrl, Qt
+
+from utility import user
 
 class Reports(object):
     instance = None
@@ -16,22 +18,20 @@ class frmReportes( QPrintPreviewDialog ):
     """
     Este es un formulario generico que muestra los reportes web generados para las 
     """
-    def __init__( self, web, user, printer ,parent = None, ):
+    def __init__( self, web,  printer ,parent = None ):
         """
-        @param user: El objeto usuario asociado con esta sesión
         @param web: La dirección web a la que apunta el reporte
         @param printer: El objeto QPrinter en el que se imprime, esto es usado por si se desea alguna configuración especifica del reporte
         """
         super(frmReportes, self).__init__(printer, parent )
-        settings = QSettings()
         r = Reports()
         base = r.url
+        
         if base == "":
             raise UserWarning(u"No existe una configuración para el servidor de reportes")
             
-
         
-        self.report =  base + web + "&uname=" + user.user + "&hash=" + user.hash
+        self.report =  base + web + "&uname=" + user.LoggedUser.user + "&hash=" + user.LoggedUser.hash
         self.webview = QWebView()
         self.setWindowFlags(self.windowFlags()|Qt.WindowMaximizeButtonHint)
 

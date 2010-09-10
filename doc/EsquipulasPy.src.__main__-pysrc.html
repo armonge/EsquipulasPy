@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>EsquipulasPy.src.__main__</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Paquete&nbsp;EsquipulasPy ::
+        <a href="EsquipulasPy.src-module.html">Paquete&nbsp;src</a> ::
+        Modulo&nbsp;__main__
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="EsquipulasPy.src.__main__-pysrc.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="EsquipulasPy.src.__main__-module.html">Modulo EsquipulasPy.src.__main__</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">u'''</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">El modulo de entrada a la aplicaci&#243;n</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">@author: Andr&#233;s Reyes Monge</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-docstring">G{importgraph}</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'__main__'</tt><tt class="py-op">:</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">sip</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">sys</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line">    <tt class="py-name">sip</tt><tt class="py-op">.</tt><tt class="py-name">setapi</tt><tt class="py-op">(</tt> <tt class="py-string">'QString'</tt><tt class="py-op">,</tt> <tt class="py-number">2</tt> <tt class="py-op">)</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line">     </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">logging</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line">    <tt class="py-name">LOG_FILENAME</tt> <tt class="py-op">=</tt> <tt class="py-string">"esquipulas.log"</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">    <tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">basicConfig</tt><tt class="py-op">(</tt><tt class="py-name">level</tt><tt class="py-op">=</tt><tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">DEBUG</tt><tt class="py-op">,</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">                    <tt class="py-name">format</tt><tt class="py-op">=</tt><tt class="py-string">'%(levelname)s -- %(asctime)s --En %(module)s funcion:%(funcName)s linea:%(lineno)d -- %(message)s'</tt><tt class="py-op">,</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">                    <tt class="py-name">filename</tt><tt class="py-op">=</tt><tt class="py-name">LOG_FILENAME</tt><tt class="py-op">,</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">                    <tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QtGui</tt><tt class="py-op">,</tt> <tt class="py-name">QtCore</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Paquete EsquipulasPy.src.utility=EsquipulasPy.src.utility-module.html"><a title="EsquipulasPy.src.utility" class="py-name" href="#" onclick="return doclink('link-0', 'utility', 'link-0');">utility</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Module EsquipulasPy.src.utility.database=EsquipulasPy.src.utility.database-module.html"><a title="EsquipulasPy.src.utility.database" class="py-name" href="#" onclick="return doclink('link-1', 'database', 'link-1');">database</a></tt>  </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt id="link-2" class="py-name"><a title="EsquipulasPy.src.utility" class="py-name" href="#" onclick="return doclink('link-2', 'utility', 'link-0');">utility</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Module EsquipulasPy.src.utility.user=EsquipulasPy.src.utility.user-module.html,Variable EsquipulasPy.src.utility.user.User.user=EsquipulasPy.src.utility.user.User-class.html#user"><a title="EsquipulasPy.src.utility.user
+EsquipulasPy.src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-3', 'user', 'link-3');">user</a></tt> <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Class EsquipulasPy.src.utility.user.dlgUserLogin=EsquipulasPy.src.utility.user.dlgUserLogin-class.html"><a title="EsquipulasPy.src.utility.user.dlgUserLogin" class="py-name" href="#" onclick="return doclink('link-4', 'dlgUserLogin', 'link-4');">dlgUserLogin</a></tt><tt class="py-op">,</tt> <tt id="link-5" class="py-name" targets="Class EsquipulasPy.src.utility.user.User=EsquipulasPy.src.utility.user.User-class.html"><a title="EsquipulasPy.src.utility.user.User" class="py-name" href="#" onclick="return doclink('link-5', 'User', 'link-5');">User</a></tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt id="link-6" class="py-name" targets="Paquete EsquipulasPy.src.ui=EsquipulasPy.src.ui-module.html"><a title="EsquipulasPy.src.ui" class="py-name" href="#" onclick="return doclink('link-6', 'ui', 'link-6');">ui</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">res_rc</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">     </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">    <tt class="py-name">app</tt> <tt class="py-op">=</tt> <tt class="py-name">QtGui</tt><tt class="py-op">.</tt><tt class="py-name">QApplication</tt><tt class="py-op">(</tt> <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt> <tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">    <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">setOrganizationName</tt><tt class="py-op">(</tt> <tt class="py-string">"Llantera Esquipulas"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">    <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">setOrganizationDomain</tt><tt class="py-op">(</tt> <tt class="py-string">"grupoeltriunfo.com.ni"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">     </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">    <tt class="py-name">translator</tt> <tt class="py-op">=</tt> <tt class="py-name">QtCore</tt><tt class="py-op">.</tt><tt class="py-name">QTranslator</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">    <tt class="py-name">locale</tt> <tt class="py-op">=</tt> <tt class="py-name">QtCore</tt><tt class="py-op">.</tt><tt class="py-name">QLocale</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">    <tt class="py-name">LOCALENAME</tt> <tt class="py-op">=</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">locale</tt><tt class="py-op">.</tt><tt class="py-name">system</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">name</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">    <tt class="py-name">translator</tt><tt class="py-op">.</tt><tt class="py-name">load</tt><tt class="py-op">(</tt><tt class="py-string">"qt_%s"</tt> <tt class="py-op">%</tt> <tt class="py-name">LOCALENAME</tt><tt class="py-op">,</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">dirname</tt><tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">abspath</tt><tt class="py-op">(</tt> <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">r"/translations/"</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">     </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">    <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">installTranslator</tt><tt class="py-op">(</tt><tt class="py-name">translator</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">    <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">setStyleSheet</tt><tt class="py-op">(</tt><tt class="py-string">"""</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-string">    QLabel{</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-string">        background:transparent;</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-string">    }</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"><tt class="py-string">    </tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"><tt class="py-string">    dlgUserLogin .QFrame{</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"><tt class="py-string">        background-image: url(:/images/res/passwd-bg.png);</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-string">        background-repeat:no-repeat;</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-string">        margin:0;</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-string">        padding:0;</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"><tt class="py-string">    }</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line"><tt class="py-string">    QMainWindow &gt; .QDockWidget, QMainWindow &gt; .QDockWidget .QWidget {</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"><tt class="py-string">        background-color:#5677FF;</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"><tt class="py-string">    }</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt class="py-string">    QDockWidget::title {</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"><tt class="py-string">        text-align: left; </tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"><tt class="py-string">        background: lightgray;</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt class="py-string">        margin:0;</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"><tt class="py-string">        padding: 5px;</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"><tt class="py-string">    }</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"><tt class="py-string">    QToolBox::tab {</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt class="py-string">        background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"><tt class="py-string">                                stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"><tt class="py-string">                                stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"><tt class="py-string">        border-radius: 5px;</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"><tt class="py-string">        </tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt class="py-string">    }</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"><tt class="py-string">    QToolBox .QWidget{</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"><tt class="py-string">        background-color:transparent;</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"><tt class="py-string">    }</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"><tt class="py-string">    QLabel[error=true]{</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-string">        color:red;</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-string">    }</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-string">    QMainWindow{</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-string">        background-image: url(:/images/res/logo-big.png);</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-string">        background-position:right bottom;</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt class="py-string">        background-repeat:no-repeat;</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-string">    }</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-string">    QMdiArea QMainWindow{</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-string">        background-image: url()</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-string">    }</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"><tt class="py-string">    """</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-string">"--inventario"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">setApplicationName</tt><tt class="py-op">(</tt> <tt class="py-string">"Inventario"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-keyword">from</tt> <tt id="link-7" class="py-name" targets="Paquete EsquipulasPy.src.inventario=EsquipulasPy.src.inventario-module.html"><a title="EsquipulasPy.src.inventario" class="py-name" href="#" onclick="return doclink('link-7', 'inventario', 'link-7');">inventario</a></tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Module EsquipulasPy.src.caja.mainwindow=EsquipulasPy.src.caja.mainwindow-module.html,Module EsquipulasPy.src.contabilidad.mainwindow=EsquipulasPy.src.contabilidad.mainwindow-module.html,Module EsquipulasPy.src.inventario.mainwindow=EsquipulasPy.src.inventario.mainwindow-module.html"><a title="EsquipulasPy.src.caja.mainwindow
+EsquipulasPy.src.contabilidad.mainwindow
+EsquipulasPy.src.inventario.mainwindow" class="py-name" href="#" onclick="return doclink('link-8', 'mainwindow', 'link-8');">mainwindow</a></tt> <tt class="py-keyword">import</tt> <tt id="link-9" class="py-name" targets="Class EsquipulasPy.src.caja.mainwindow.MainWindow=EsquipulasPy.src.caja.mainwindow.MainWindow-class.html,Class EsquipulasPy.src.contabilidad.mainwindow.MainWindow=EsquipulasPy.src.contabilidad.mainwindow.MainWindow-class.html,Class EsquipulasPy.src.inventario.mainwindow.MainWindow=EsquipulasPy.src.inventario.mainwindow.MainWindow-class.html"><a title="EsquipulasPy.src.caja.mainwindow.MainWindow
+EsquipulasPy.src.contabilidad.mainwindow.MainWindow
+EsquipulasPy.src.inventario.mainwindow.MainWindow" class="py-name" href="#" onclick="return doclink('link-9', 'MainWindow', 'link-9');">MainWindow</a></tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-name">module</tt> <tt class="py-op">=</tt> <tt class="py-string">"inventario"</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-string">"--caja"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt><tt class="py-op">:</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">setApplicationName</tt><tt class="py-op">(</tt> <tt class="py-string">"Caja"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt class="py-keyword">from</tt> <tt id="link-10" class="py-name" targets="Paquete EsquipulasPy.src.caja=EsquipulasPy.src.caja-module.html"><a title="EsquipulasPy.src.caja" class="py-name" href="#" onclick="return doclink('link-10', 'caja', 'link-10');">caja</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="EsquipulasPy.src.caja.mainwindow
+EsquipulasPy.src.contabilidad.mainwindow
+EsquipulasPy.src.inventario.mainwindow" class="py-name" href="#" onclick="return doclink('link-11', 'mainwindow', 'link-8');">mainwindow</a></tt> <tt class="py-keyword">import</tt> <tt id="link-12" class="py-name"><a title="EsquipulasPy.src.caja.mainwindow.MainWindow
+EsquipulasPy.src.contabilidad.mainwindow.MainWindow
+EsquipulasPy.src.inventario.mainwindow.MainWindow" class="py-name" href="#" onclick="return doclink('link-12', 'MainWindow', 'link-9');">MainWindow</a></tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-name">module</tt> <tt class="py-op">=</tt> <tt class="py-string">"caja"</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-string">"--contabilidad"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt><tt class="py-op">:</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-name">app</tt><tt class="py-op">.</tt><tt class="py-name">setApplicationName</tt><tt class="py-op">(</tt> <tt class="py-string">"Contabilidad"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-keyword">from</tt> <tt id="link-13" class="py-name" targets="Paquete EsquipulasPy.src.contabilidad=EsquipulasPy.src.contabilidad-module.html"><a title="EsquipulasPy.src.contabilidad" class="py-name" href="#" onclick="return doclink('link-13', 'contabilidad', 'link-13');">contabilidad</a></tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="EsquipulasPy.src.caja.mainwindow
+EsquipulasPy.src.contabilidad.mainwindow
+EsquipulasPy.src.inventario.mainwindow" class="py-name" href="#" onclick="return doclink('link-14', 'mainwindow', 'link-8');">mainwindow</a></tt> <tt class="py-keyword">import</tt> <tt id="link-15" class="py-name"><a title="EsquipulasPy.src.caja.mainwindow.MainWindow
+EsquipulasPy.src.contabilidad.mainwindow.MainWindow
+EsquipulasPy.src.inventario.mainwindow.MainWindow" class="py-name" href="#" onclick="return doclink('link-15', 'MainWindow', 'link-9');">MainWindow</a></tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-name">module</tt> <tt class="py-op">=</tt> <tt class="py-string">"contabilidad"</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt> <tt class="py-string">"No se selecciono un modulo"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">     </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-string">"--reportconfig"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt><tt class="py-op">:</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">        <tt class="py-name">settings</tt> <tt class="py-op">=</tt> <tt class="py-name">QtCore</tt><tt class="py-op">.</tt><tt class="py-name">QSettings</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-name">text</tt><tt class="py-op">,</tt> <tt class="py-name">result</tt> <tt class="py-op">=</tt> <tt class="py-name">QtGui</tt><tt class="py-op">.</tt><tt class="py-name">QInputDialog</tt><tt class="py-op">.</tt><tt class="py-name">getText</tt><tt class="py-op">(</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-string">u"Configuraci&#243;n del servidor de reportes"</tt><tt class="py-op">,</tt> <tt class="py-string">"Url base de los reportes"</tt><tt class="py-op">,</tt> <tt class="py-name">QtGui</tt><tt class="py-op">.</tt><tt class="py-name">QLineEdit</tt><tt class="py-op">.</tt><tt class="py-name">Normal</tt><tt class="py-op">,</tt> <tt class="py-name">settings</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">(</tt> <tt class="py-string">"Reports/Base"</tt><tt class="py-op">,</tt> <tt class="py-string">""</tt> <tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">toString</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">result</tt><tt class="py-op">:</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">            <tt class="py-name">settings</tt><tt class="py-op">.</tt><tt class="py-name">setValue</tt><tt class="py-op">(</tt> <tt class="py-string">"Reports/Base"</tt><tt class="py-op">,</tt> <tt class="py-name">text</tt> <tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">             </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">    <tt class="py-comment">#Database.getDatabase("","--dbconfig" in sys.argv)</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">    <tt class="py-name">dlguser</tt> <tt class="py-op">=</tt> <tt id="link-16" class="py-name"><a title="EsquipulasPy.src.utility.user.dlgUserLogin" class="py-name" href="#" onclick="return doclink('link-16', 'dlgUserLogin', 'link-4');">dlgUserLogin</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">    <tt class="py-name">cont</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">    <tt class="py-name">valido</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">    <tt class="py-name">dlguser</tt><tt class="py-op">.</tt><tt class="py-name">txtPassword</tt><tt class="py-op">.</tt><tt class="py-name">setText</tt><tt class="py-op">(</tt><tt class="py-string">""</tt><tt class="py-op">)</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">dlguser</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Method EsquipulasPy.src.contabilidad.conciliacion.dlgSelectCuenta.exec_()=EsquipulasPy.src.contabilidad.conciliacion.dlgSelectCuenta-class.html#exec_"><a title="EsquipulasPy.src.contabilidad.conciliacion.dlgSelectCuenta.exec_" class="py-name" href="#" onclick="return doclink('link-17', 'exec_', 'link-17');">exec_</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-name">QtGui</tt><tt class="py-op">.</tt><tt class="py-name">QDialog</tt><tt class="py-op">.</tt><tt class="py-name">Accepted</tt><tt class="py-op">:</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt id="link-18" class="py-name"><a title="EsquipulasPy.src.utility.user
+EsquipulasPy.src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-18', 'user', 'link-3');">user</a></tt> <tt class="py-op">=</tt> <tt class="py-name">dlguser</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="EsquipulasPy.src.utility.user
+EsquipulasPy.src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-19', 'user', 'link-3');">user</a></tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-20" class="py-name"><a title="EsquipulasPy.src.utility.user
+EsquipulasPy.src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-20', 'user', 'link-3');">user</a></tt><tt class="py-op">.</tt><tt id="link-21" class="py-name" targets="Variable EsquipulasPy.src.caja.apertura.AperturaModel.valid=EsquipulasPy.src.caja.apertura.AperturaModel-class.html#valid,Variable EsquipulasPy.src.caja.factura.frmFactura.valid=EsquipulasPy.src.caja.factura.frmFactura-class.html#valid,Variable EsquipulasPy.src.caja.mainwindow.DatosSesion.valid=EsquipulasPy.src.caja.mainwindow.DatosSesion-class.html#valid,Method EsquipulasPy.src.caja.recibo.DatosRecibo.valid()=EsquipulasPy.src.caja.recibo.DatosRecibo-class.html#valid,Variable EsquipulasPy.src.contabilidad.conciliacion.frmConciliacion.valid=EsquipulasPy.src.contabilidad.conciliacion.frmConciliacion-class.html#valid,Variable EsquipulasPy.src.document.arqueo.arqueomodel.ArqueoModel.valid=EsquipulasPy.src.document.arqueo.arqueomodel.ArqueoModel-class.html#valid,Variable EsquipulasPy.src.document.arqueo.lineaarqueo.LineaArqueo.valid=EsquipulasPy.src.document.arqueo.lineaarqueo.LineaArqueo-class.html#valid,Variable EsquipulasPy.src.document.cheque.chequemodel.ChequeModel.valid=EsquipulasPy.src.document.cheque.chequemodel.ChequeModel-class.html#valid,Variable EsquipulasPy.src.document.conciliacion.conciliacionmodel.ConciliacionModel.valid=EsquipulasPy.src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#valid,Variable EsquipulasPy.src.document.conciliacion.lineaconciliacion.LineaConciliacion.valid=EsquipulasPy.src.document.conciliacion.lineaconciliacion.LineaConciliacion-class.html#valid,Variable EsquipulasPy.src.document.devolucion.CreditoDebito.creditoDebitoModel.valid=EsquipulasPy.src.document.devolucion.CreditoDebito.creditoDebitoModel-class.html#valid,Variable EsquipulasPy.src.document.devolucion.devolucionmodel.DevolucionModel.valid=EsquipulasPy.src.document.devolucion.devolucionmodel.DevolucionModel-class.html#valid,Variable EsquipulasPy.src.document.devolucion.lineadevolucion.LineaDevolucion.valid=EsquipulasPy.src.document.devolucion.lineadevolucion.LineaDevolucion-class.html#valid,Variable EsquipulasPy.src.document.entradacompra.entradacompramodel.EntradaCompraModel.valid=EsquipulasPy.src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#valid,Variable EsquipulasPy.src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid=EsquipulasPy.src.document.entradacompra.lineaentradacompra.LineaEntradaCompra-class.html#valid,Variable EsquipulasPy.src.document.factura.lineafactura.LineaFactura.valid=EsquipulasPy.src.document.factura.lineafactura.LineaFactura-class.html#valid,Variable EsquipulasPy.src.document.kardex.kardexmodel.KardexModel.valid=EsquipulasPy.src.document.kardex.kardexmodel.KardexModel-class.html#valid,Variable EsquipulasPy.src.document.liquidacion.linealiquidacion.LineaLiquidacion.valid=EsquipulasPy.src.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#valid,Variable EsquipulasPy.src.document.liquidacion.liquidacionmodel.LiquidacionModel.valid=EsquipulasPy.src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#valid,Variable EsquipulasPy.src.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid=EsquipulasPy.src.document.movimientosbancarios.datosdocmodel.DatosDocModel-class.html#valid,Variable EsquipulasPy.src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid=EsquipulasPy.src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel-class.html#valid,Variable EsquipulasPy.src.document.recibo.abonomodel.AbonoModel.valid=EsquipulasPy.src.document.recibo.abonomodel.AbonoModel-class.html#valid,Variable EsquipulasPy.src.document.recibo.lineaabono.LineaAbono.valid=EsquipulasPy.src.document.recibo.lineaabono.LineaAbono-class.html#valid,Variable EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo.valid=EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo-class.html#valid,Variable EsquipulasPy.src.inventario.articulos.frmArticlesNew.valid=EsquipulasPy.src.inventario.articulos.frmArticlesNew-class.html#valid,Variable EsquipulasPy.src.utility.accountselector.AccountsSelectorLine.valid=EsquipulasPy.src.utility.accountselector.AccountsSelectorLine-class.html#valid,Variable EsquipulasPy.src.utility.accountselector.AccountsSelectorModel.valid=EsquipulasPy.src.utility.accountselector.AccountsSelectorModel-class.html#valid,Variable EsquipulasPy.src.utility.user.User.valid=EsquipulasPy.src.utility.user.User-class.html#valid"><a title="EsquipulasPy.src.caja.apertura.AperturaModel.valid
+EsquipulasPy.src.caja.factura.frmFactura.valid
+EsquipulasPy.src.caja.mainwindow.DatosSesion.valid
+EsquipulasPy.src.caja.recibo.DatosRecibo.valid
+EsquipulasPy.src.contabilidad.conciliacion.frmConciliacion.valid
+EsquipulasPy.src.document.arqueo.arqueomodel.ArqueoModel.valid
+EsquipulasPy.src.document.arqueo.lineaarqueo.LineaArqueo.valid
+EsquipulasPy.src.document.cheque.chequemodel.ChequeModel.valid
+EsquipulasPy.src.document.conciliacion.conciliacionmodel.ConciliacionModel.valid
+EsquipulasPy.src.document.conciliacion.lineaconciliacion.LineaConciliacion.valid
+EsquipulasPy.src.document.devolucion.CreditoDebito.creditoDebitoModel.valid
+EsquipulasPy.src.document.devolucion.devolucionmodel.DevolucionModel.valid
+EsquipulasPy.src.document.devolucion.lineadevolucion.LineaDevolucion.valid
+EsquipulasPy.src.document.entradacompra.entradacompramodel.EntradaCompraModel.valid
+EsquipulasPy.src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid
+EsquipulasPy.src.document.factura.lineafactura.LineaFactura.valid
+EsquipulasPy.src.document.kardex.kardexmodel.KardexModel.valid
+EsquipulasPy.src.document.liquidacion.linealiquidacion.LineaLiquidacion.valid
+EsquipulasPy.src.document.liquidacion.liquidacionmodel.LiquidacionModel.valid
+EsquipulasPy.src.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid
+EsquipulasPy.src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid
+EsquipulasPy.src.document.recibo.abonomodel.AbonoModel.valid
+EsquipulasPy.src.document.recibo.lineaabono.LineaAbono.valid
+EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo.valid
+EsquipulasPy.src.inventario.articulos.frmArticlesNew.valid
+EsquipulasPy.src.utility.accountselector.AccountsSelectorLine.valid
+EsquipulasPy.src.utility.accountselector.AccountsSelectorModel.valid
+EsquipulasPy.src.utility.user.User.valid" class="py-name" href="#" onclick="return doclink('link-21', 'valid', 'link-21');">valid</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt id="link-22" class="py-name"><a title="EsquipulasPy.src.utility.user
+EsquipulasPy.src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-22', 'user', 'link-3');">user</a></tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method EsquipulasPy.src.utility.user.User.hasRole()=EsquipulasPy.src.utility.user.User-class.html#hasRole"><a title="EsquipulasPy.src.utility.user.User.hasRole" class="py-name" href="#" onclick="return doclink('link-23', 'hasRole', 'link-23');">hasRole</a></tt><tt class="py-op">(</tt> <tt class="py-name">module</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">                <tt id="link-24" class="py-name"><a title="EsquipulasPy.src.caja.mainwindow
+EsquipulasPy.src.contabilidad.mainwindow
+EsquipulasPy.src.inventario.mainwindow" class="py-name" href="#" onclick="return doclink('link-24', 'mainwindow', 'link-8');">mainwindow</a></tt> <tt class="py-op">=</tt> <tt id="link-25" class="py-name"><a title="EsquipulasPy.src.caja.mainwindow.MainWindow
+EsquipulasPy.src.contabilidad.mainwindow.MainWindow
+EsquipulasPy.src.inventario.mainwindow.MainWindow" class="py-name" href="#" onclick="return doclink('link-25', 'MainWindow', 'link-9');">MainWindow</a></tt><tt class="py-op">(</tt> <tt id="link-26" class="py-name"><a title="EsquipulasPy.src.utility.user
+EsquipulasPy.src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-26', 'user', 'link-3');">user</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">                <tt id="link-27" class="py-name"><a title="EsquipulasPy.src.caja.mainwindow
+EsquipulasPy.src.contabilidad.mainwindow
+EsquipulasPy.src.inventario.mainwindow" class="py-name" href="#" onclick="return doclink('link-27', 'mainwindow', 'link-8');">mainwindow</a></tt><tt class="py-op">.</tt><tt class="py-name">showMaximized</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">                <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">exit</tt><tt class="py-op">(</tt> <tt class="py-name">app</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name"><a title="EsquipulasPy.src.contabilidad.conciliacion.dlgSelectCuenta.exec_" class="py-name" href="#" onclick="return doclink('link-28', 'exec_', 'link-17');">exec_</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">                <tt class="py-name">QtGui</tt><tt class="py-op">.</tt><tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">critical</tt><tt class="py-op">(</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">                <tt class="py-string">"Llantera Esquipulas"</tt><tt class="py-op">,</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">                <tt class="py-string">u"Usted no tiene permiso para acceder a este modulo"</tt><tt class="py-op">,</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">                <tt class="py-name">QtGui</tt><tt class="py-op">.</tt><tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">StandardButtons</tt><tt class="py-op">(</tt> <tt class="py-name">QtGui</tt><tt class="py-op">.</tt><tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">            <tt class="py-name">QtGui</tt><tt class="py-op">.</tt><tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">critical</tt><tt class="py-op">(</tt> <tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">            <tt class="py-string">"Llantera Esquipulas"</tt><tt class="py-op">,</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">            <tt id="link-29" class="py-name"><a title="EsquipulasPy.src.utility.user
+EsquipulasPy.src.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-29', 'user', 'link-3');">user</a></tt><tt class="py-op">.</tt><tt class="py-name">error</tt><tt class="py-op">,</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">            <tt class="py-name">QtGui</tt><tt class="py-op">.</tt><tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">StandardButtons</tt><tt class="py-op">(</tt> <tt class="py-name">QtGui</tt><tt class="py-op">.</tt><tt class="py-name">QMessageBox</tt><tt class="py-op">.</tt><tt class="py-name">Ok</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">                 </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">    <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

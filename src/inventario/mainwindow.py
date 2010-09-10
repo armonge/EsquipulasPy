@@ -23,12 +23,11 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     Class documentation goes here.
     """
     ROL = constantes.ACCESOINVENTARIO
-    def __init__( self, user, parent = None ):
+    def __init__( self,  parent = None ):
         """
         Constructor
         """
-        self.user = user
-        QMainWindow.__init__( self, parent )
+        super(MainWindow, self).__init__(  parent )
         self.setupUi( self )
         MainWindowBase.__init__( self)
         self.init()
@@ -99,7 +98,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        entradacompra = frmEntradaCompra( self.user, self )
+        entradacompra = frmEntradaCompra( self )
         self.mdiArea.addSubWindow( entradacompra )
         entradacompra.show()
 
@@ -149,7 +148,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        liquidacion = frmLiquidacion( self.user, self )
+        liquidacion = frmLiquidacion(  self )
         self.mdiArea.addSubWindow( liquidacion )
         liquidacion.show()
 
@@ -158,7 +157,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        kardex = frmKardex( self.user,[7,10,21], self )
+        kardex = frmKardex( [7,10,21], self )
         self.mdiArea.addSubWindow( kardex )
         kardex.show()
         
@@ -167,7 +166,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here
         """
-        kardex = frmKardexOther(self.user, self)
+        kardex = frmKardexOther( self)
         self.mdiArea.addSubWindow( kardex )
         kardex.show()
         
@@ -176,6 +175,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        kardex = frmKardex( self.user,[5], self, False )
+        kardex = frmKardex( [5], self, False )
         self.mdiArea.addSubWindow( kardex )
         kardex.show()

@@ -4,27 +4,31 @@ Created on 20/07/2010
 
 @author: Luis Carlos Mejia
 '''
+from decimal import Decimal
+
 from PyQt4.QtGui import QMainWindow,QAbstractItemView
-from ui.Ui_estadoresultado import Ui_frmEstadoResultado
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 from PyQt4.QtCore import QDate,pyqtSlot,Qt
-from decimal import Decimal
+
+from ui.Ui_estadoresultado import Ui_frmEstadoResultado
+
 from utility.moneyfmt import moneyfmt
+from utility import user
 CODIGO , DESCRIPCION, SALDO , TOTAL,ORDEN = range(5)
 class frmEstadoResultado( QMainWindow, Ui_frmEstadoResultado ):
     """
     Formulario para crear nuevas conciliaciones bancarias
     """
-    def __init__( self, user , parent = None ):
+    def __init__( self,  parent = None ):
         """
         Constructor
         """
         
-        QMainWindow.__init__( self, parent )
+        super(frmEstadoResultado, self).__init__(  parent )
         self.setupUi( self )
         self.parentWindow = parent        
 #        self.editmodel = None
-        self.user = user
+        self.user = user.LoggedUser
         self.status = True
         self.dtPicker.setMaximumDate(QDate.currentDate())
         self.dtPicker.setDate(QDate.currentDate())

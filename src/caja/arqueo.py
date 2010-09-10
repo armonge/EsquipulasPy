@@ -31,7 +31,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
     Esta clase implementa el formulario arqueo
     '''
     web = "arqueos.php?doc="
-    def __init__( self, user, parent = None ):
+    def __init__( self,  parent = None ):
         '''
         Constructor
         '''
@@ -45,7 +45,6 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         self.addToolBar(self.toolBar)
 
         self.editmodel = None
-        self.user = user
         self.parent = parent
 
 #        El modelo principal
@@ -262,7 +261,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                     raise UserWarning( "No se pudo conectar con la base de datos" )
 
             #verificar si hay documentos pendientes de aprobación
-            query.prepare("""
+            q = """
             SELECT
                 CONCAT_WS(' ', td.descripcion, d.ndocimpreso)
             FROM documentos sesion
@@ -270,14 +269,14 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             JOIN documentos d ON dpd.idhijo  = d.iddocumento
             JOIN tiposdoc td ON td.idtipodoc = d.idtipodoc
             WHERE d.idestado NOT IN ( %d,%d)
-            """ % (constantes.CONFIRMADO, constantes.ANULADO))
+            """ % (constantes.CONFIRMADO, constantes.ANULADO)
 
-            if not query.exec_():
+            if not query.exec_(q):
                 raise Exception(u"No se pudo ejecutar la consulta para determinar si existen documentos pendientes de aprobación")
             if not query.size() == 0:
                 raise UserWarning(u"Existen documentos pendientes de aprobación en la sesión")
 
-            query.finish()
+            
             #Obtener los datos de la sesión
             q = """
             CALL spConsecutivo( %d, NULL )
@@ -297,10 +296,11 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             
             self.editmodel.datetime.setDate(self.parent.datosSesion.fecha)
             
-            query.prepare( """
+            q =  """
             CALL spTotalesSesion(%d);
-            """ % self.parent.datosSesion.sesionId )
-            if not query.exec_():
+            """ % self.parent.datosSesion.sesionId
+            
+            if not query.exec_(q):
                 raise UserWarning( u"No se pudieron calcular los totales de la sesión" )
             while query.next():
                 if query.value(0).toInt()[0]  == constantes.IDPAGOEFECTIVO and query.value(2).toInt()[0] == constantes.IDDOLARES:
@@ -324,20 +324,19 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                 elif query.value(0).toInt()[0] == constantes.IDPAGOTARJETA  and query.value(2).toInt()[0] == constantes.IDCORDOBAS:
                     self.editmodel.expectedCardC = Decimal(query.value(5).toString())
 
-                    
-            query.prepare( """
-            SELECT 
-                d.iddenominacion, 
-                CONCAT_WS( ' ',d.valor, m.moneda), 
-                d.valor, 
+            q = """
+            SELECT
+                d.iddenominacion,
+                CONCAT_WS( ' ',d.valor, m.moneda),
+                d.valor,
                 d.idtipomoneda,
                 m.simbolo
             FROM denominaciones d
             JOIN tiposmoneda m ON d.idtipomoneda = m.idtipomoneda
             WHERE d.activo = 1
             ORDER BY d.idtipomoneda, d.valor
-            """ )
-            if not query.exec_():
+            """
+            if not query.exec_(q):
                 raise UserWarning( "No se pudo recuperar la lista de denominaciones" )
             denominationsmodelC = SingleSelectionModel()
             denominationsmodelC.headers = ["Id", u"Denominación", "Valor", "Id Moneda", "Simbolo"]

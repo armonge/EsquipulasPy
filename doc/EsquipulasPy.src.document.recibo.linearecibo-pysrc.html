@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>EsquipulasPy.src.document.recibo.linearecibo</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Paquete&nbsp;EsquipulasPy ::
+        <a href="EsquipulasPy.src-module.html">Paquete&nbsp;src</a> ::
+        <a href="EsquipulasPy.src.document-module.html">Paquete&nbsp;document</a> ::
+        <a href="EsquipulasPy.src.document.recibo-module.html">Paquete&nbsp;recibo</a> ::
+        Modulo&nbsp;linearecibo
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="EsquipulasPy.src.document.recibo.linearecibo-pysrc.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="EsquipulasPy.src.document.recibo.linearecibo-module.html">Modulo EsquipulasPy.src.document.recibo.linearecibo</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-docstring">Created on 18/05/2010</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-docstring">@author: Luis Carlos Mejia Garcia</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">decimal</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Decimal</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtSql</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QSqlQuery</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Paquete EsquipulasPy.src.utility=EsquipulasPy.src.utility-module.html"><a title="EsquipulasPy.src.utility" class="py-name" href="#" onclick="return doclink('link-0', 'utility', 'link-0');">utility</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Module EsquipulasPy.src.utility.constantes=EsquipulasPy.src.utility.constantes-module.html"><a title="EsquipulasPy.src.utility.constantes" class="py-name" href="#" onclick="return doclink('link-1', 'constantes', 'link-1');">constantes</a></tt> </tt>
+<a name="LineaRecibo"></a><div id="LineaRecibo-def"><a name="L10"></a><tt class="py-lineno">10</tt> <a class="py-toggle" href="#" id="LineaRecibo-toggle" onclick="return toggle('LineaRecibo');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo-class.html">LineaRecibo</a><tt class="py-op">:</tt> </tt>
+</div><div id="LineaRecibo-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="LineaRecibo-expanded"><a name="LineaRecibo.__init__"></a><div id="LineaRecibo.__init__-def"><a name="L11"></a><tt class="py-lineno">11</tt> <a class="py-toggle" href="#" id="LineaRecibo.__init__-toggle" onclick="return toggle('LineaRecibo.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo-class.html#__init__">__init__</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">parent</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaRecibo.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="LineaRecibo.__init__-expanded"><a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pagoId</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">bancoId</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">banco</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">monedaId</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pagoDescripcion</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">referencia</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">montoDolar</tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Variable EsquipulasPy.src.document.recibo.lineaabono.LineaAbono.monto=EsquipulasPy.src.document.recibo.lineaabono.LineaAbono-class.html#monto"><a title="EsquipulasPy.src.document.recibo.lineaabono.LineaAbono.monto" class="py-name" href="#" onclick="return doclink('link-2', 'monto', 'link-2');">monto</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">simboloMoneda</tt> <tt class="py-op">=</tt><tt class="py-string">"US$"</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">error</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+</div><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="LineaRecibo.sinReferencia"></a><div id="LineaRecibo.sinReferencia-def"><a name="L23"></a><tt class="py-lineno">23</tt> <a class="py-toggle" href="#" id="LineaRecibo.sinReferencia-toggle" onclick="return toggle('LineaRecibo.sinReferencia');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo-class.html#sinReferencia">sinReferencia</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaRecibo.sinReferencia-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="LineaRecibo.sinReferencia-expanded"><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pagoId</tt> <tt class="py-keyword">in</tt> <tt class="py-op">(</tt><tt id="link-3" class="py-name"><a title="EsquipulasPy.src.utility.constantes" class="py-name" href="#" onclick="return doclink('link-3', 'constantes', 'link-1');">constantes</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Variable EsquipulasPy.src.utility.constantes.IDPAGOEFECTIVO=EsquipulasPy.src.utility.constantes-module.html#IDPAGOEFECTIVO"><a title="EsquipulasPy.src.utility.constantes.IDPAGOEFECTIVO" class="py-name" href="#" onclick="return doclink('link-4', 'IDPAGOEFECTIVO', 'link-4');">IDPAGOEFECTIVO</a></tt><tt class="py-op">,</tt><tt id="link-5" class="py-name"><a title="EsquipulasPy.src.utility.constantes" class="py-name" href="#" onclick="return doclink('link-5', 'constantes', 'link-1');">constantes</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Variable EsquipulasPy.src.utility.constantes.IDPAGOTARJETA=EsquipulasPy.src.utility.constantes-module.html#IDPAGOTARJETA"><a title="EsquipulasPy.src.utility.constantes.IDPAGOTARJETA" class="py-name" href="#" onclick="return doclink('link-6', 'IDPAGOTARJETA', 'link-6');">IDPAGOTARJETA</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="LineaRecibo.valid"></a><div id="LineaRecibo.valid-def"><a name="L26"></a><tt class="py-lineno">26</tt> <a class="py-toggle" href="#" id="LineaRecibo.valid-toggle" onclick="return toggle('LineaRecibo.valid');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo-class.html#valid">valid</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaRecibo.valid-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="LineaRecibo.valid-expanded"><a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"><tt class="py-docstring">        es esta linea valida</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-name">pedirRef</tt> <tt class="py-op">=</tt><tt class="py-keyword">not</tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Variable EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo.sinReferencia=EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo-class.html#sinReferencia"><a title="EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo.sinReferencia" class="py-name" href="#" onclick="return doclink('link-7', 'sinReferencia', 'link-7');">sinReferencia</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt>  <tt class="py-name">int</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pagoId</tt> <tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">error</tt> <tt class="py-op">=</tt> <tt class="py-string">"Por favor elija un tipo de pago"</tt>     </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">montoDolar</tt> <tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">error</tt> <tt class="py-op">=</tt> <tt class="py-string">u"El monto en d&#243;lares no puede ser 0"</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-name">pedirRef</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">referencia</tt> <tt class="py-op">==</tt> <tt class="py-string">""</tt> <tt class="py-op">:</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">error</tt> <tt class="py-op">=</tt> <tt class="py-string">"Por favor escriba la referencia del pago"</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-name">pedirRef</tt> <tt class="py-keyword">and</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">bancoId</tt> <tt class="py-op">&lt;=</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt>  </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">bancoId</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt>  </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">error</tt> <tt class="py-op">=</tt> <tt class="py-string">"Por Favor especifique el banco relacionado al pago"</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">            <tt class="py-keyword">elif</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">bancoId</tt> <tt class="py-op">==</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">error</tt> <tt class="py-op">=</tt> <tt class="py-string">"No existen bancos en la base de datos"</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">             </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">error</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">True</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">False</tt> </tt>
+</div><a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"> </tt>
+<a name="LineaRecibo.save"></a><div id="LineaRecibo.save-def"><a name="L48"></a><tt class="py-lineno">48</tt> <a class="py-toggle" href="#" id="LineaRecibo.save-toggle" onclick="return toggle('LineaRecibo.save');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo-class.html#save">save</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">iddocumento</tt><tt class="py-op">,</tt> <tt class="py-param">linea</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaRecibo.save-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="LineaRecibo.save-expanded"><a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"><tt class="py-docstring">        Este metodo guarda la linea en la base de datos</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line"><tt class="py-docstring">        @param iddocumento: el id del documento al que esta enlazada la linea</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Variable EsquipulasPy.src.caja.apertura.AperturaModel.valid=EsquipulasPy.src.caja.apertura.AperturaModel-class.html#valid,Variable EsquipulasPy.src.caja.factura.frmFactura.valid=EsquipulasPy.src.caja.factura.frmFactura-class.html#valid,Variable EsquipulasPy.src.caja.mainwindow.DatosSesion.valid=EsquipulasPy.src.caja.mainwindow.DatosSesion-class.html#valid,Method EsquipulasPy.src.caja.recibo.DatosRecibo.valid()=EsquipulasPy.src.caja.recibo.DatosRecibo-class.html#valid,Variable EsquipulasPy.src.contabilidad.conciliacion.frmConciliacion.valid=EsquipulasPy.src.contabilidad.conciliacion.frmConciliacion-class.html#valid,Variable EsquipulasPy.src.document.arqueo.arqueomodel.ArqueoModel.valid=EsquipulasPy.src.document.arqueo.arqueomodel.ArqueoModel-class.html#valid,Variable EsquipulasPy.src.document.arqueo.lineaarqueo.LineaArqueo.valid=EsquipulasPy.src.document.arqueo.lineaarqueo.LineaArqueo-class.html#valid,Variable EsquipulasPy.src.document.cheque.chequemodel.ChequeModel.valid=EsquipulasPy.src.document.cheque.chequemodel.ChequeModel-class.html#valid,Variable EsquipulasPy.src.document.conciliacion.conciliacionmodel.ConciliacionModel.valid=EsquipulasPy.src.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#valid,Variable EsquipulasPy.src.document.conciliacion.lineaconciliacion.LineaConciliacion.valid=EsquipulasPy.src.document.conciliacion.lineaconciliacion.LineaConciliacion-class.html#valid,Variable EsquipulasPy.src.document.devolucion.CreditoDebito.creditoDebitoModel.valid=EsquipulasPy.src.document.devolucion.CreditoDebito.creditoDebitoModel-class.html#valid,Variable EsquipulasPy.src.document.devolucion.devolucionmodel.DevolucionModel.valid=EsquipulasPy.src.document.devolucion.devolucionmodel.DevolucionModel-class.html#valid,Variable EsquipulasPy.src.document.devolucion.lineadevolucion.LineaDevolucion.valid=EsquipulasPy.src.document.devolucion.lineadevolucion.LineaDevolucion-class.html#valid,Variable EsquipulasPy.src.document.entradacompra.entradacompramodel.EntradaCompraModel.valid=EsquipulasPy.src.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#valid,Variable EsquipulasPy.src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid=EsquipulasPy.src.document.entradacompra.lineaentradacompra.LineaEntradaCompra-class.html#valid,Variable EsquipulasPy.src.document.factura.lineafactura.LineaFactura.valid=EsquipulasPy.src.document.factura.lineafactura.LineaFactura-class.html#valid,Variable EsquipulasPy.src.document.kardex.kardexmodel.KardexModel.valid=EsquipulasPy.src.document.kardex.kardexmodel.KardexModel-class.html#valid,Variable EsquipulasPy.src.document.liquidacion.linealiquidacion.LineaLiquidacion.valid=EsquipulasPy.src.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#valid,Variable EsquipulasPy.src.document.liquidacion.liquidacionmodel.LiquidacionModel.valid=EsquipulasPy.src.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#valid,Variable EsquipulasPy.src.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid=EsquipulasPy.src.document.movimientosbancarios.datosdocmodel.DatosDocModel-class.html#valid,Variable EsquipulasPy.src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid=EsquipulasPy.src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel-class.html#valid,Variable EsquipulasPy.src.document.recibo.abonomodel.AbonoModel.valid=EsquipulasPy.src.document.recibo.abonomodel.AbonoModel-class.html#valid,Variable EsquipulasPy.src.document.recibo.lineaabono.LineaAbono.valid=EsquipulasPy.src.document.recibo.lineaabono.LineaAbono-class.html#valid,Variable EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo.valid=EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo-class.html#valid,Variable EsquipulasPy.src.inventario.articulos.frmArticlesNew.valid=EsquipulasPy.src.inventario.articulos.frmArticlesNew-class.html#valid,Variable EsquipulasPy.src.utility.accountselector.AccountsSelectorLine.valid=EsquipulasPy.src.utility.accountselector.AccountsSelectorLine-class.html#valid,Variable EsquipulasPy.src.utility.accountselector.AccountsSelectorModel.valid=EsquipulasPy.src.utility.accountselector.AccountsSelectorModel-class.html#valid,Variable EsquipulasPy.src.utility.user.User.valid=EsquipulasPy.src.utility.user.User-class.html#valid"><a title="EsquipulasPy.src.caja.apertura.AperturaModel.valid
+EsquipulasPy.src.caja.factura.frmFactura.valid
+EsquipulasPy.src.caja.mainwindow.DatosSesion.valid
+EsquipulasPy.src.caja.recibo.DatosRecibo.valid
+EsquipulasPy.src.contabilidad.conciliacion.frmConciliacion.valid
+EsquipulasPy.src.document.arqueo.arqueomodel.ArqueoModel.valid
+EsquipulasPy.src.document.arqueo.lineaarqueo.LineaArqueo.valid
+EsquipulasPy.src.document.cheque.chequemodel.ChequeModel.valid
+EsquipulasPy.src.document.conciliacion.conciliacionmodel.ConciliacionModel.valid
+EsquipulasPy.src.document.conciliacion.lineaconciliacion.LineaConciliacion.valid
+EsquipulasPy.src.document.devolucion.CreditoDebito.creditoDebitoModel.valid
+EsquipulasPy.src.document.devolucion.devolucionmodel.DevolucionModel.valid
+EsquipulasPy.src.document.devolucion.lineadevolucion.LineaDevolucion.valid
+EsquipulasPy.src.document.entradacompra.entradacompramodel.EntradaCompraModel.valid
+EsquipulasPy.src.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid
+EsquipulasPy.src.document.factura.lineafactura.LineaFactura.valid
+EsquipulasPy.src.document.kardex.kardexmodel.KardexModel.valid
+EsquipulasPy.src.document.liquidacion.linealiquidacion.LineaLiquidacion.valid
+EsquipulasPy.src.document.liquidacion.liquidacionmodel.LiquidacionModel.valid
+EsquipulasPy.src.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid
+EsquipulasPy.src.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid
+EsquipulasPy.src.document.recibo.abonomodel.AbonoModel.valid
+EsquipulasPy.src.document.recibo.lineaabono.LineaAbono.valid
+EsquipulasPy.src.document.recibo.linearecibo.LineaRecibo.valid
+EsquipulasPy.src.inventario.articulos.frmArticlesNew.valid
+EsquipulasPy.src.utility.accountselector.AccountsSelectorLine.valid
+EsquipulasPy.src.utility.accountselector.AccountsSelectorModel.valid
+EsquipulasPy.src.utility.user.User.valid" class="py-name" href="#" onclick="return doclink('link-8', 'valid', 'link-8');">valid</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt> <tt class="py-string">"Se intento guardar una linea no valida"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">        <tt class="py-name">idbanco</tt> <tt class="py-op">=</tt> <tt class="py-string">'null'</tt> <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pagoId</tt> <tt class="py-keyword">in</tt> <tt class="py-op">(</tt><tt id="link-9" class="py-name"><a title="EsquipulasPy.src.utility.constantes" class="py-name" href="#" onclick="return doclink('link-9', 'constantes', 'link-1');">constantes</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="EsquipulasPy.src.utility.constantes.IDPAGOEFECTIVO" class="py-name" href="#" onclick="return doclink('link-10', 'IDPAGOEFECTIVO', 'link-4');">IDPAGOEFECTIVO</a></tt><tt class="py-op">,</tt><tt id="link-11" class="py-name"><a title="EsquipulasPy.src.utility.constantes" class="py-name" href="#" onclick="return doclink('link-11', 'constantes', 'link-1');">constantes</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="EsquipulasPy.src.utility.constantes.IDPAGOTARJETA" class="py-name" href="#" onclick="return doclink('link-12', 'IDPAGOTARJETA', 'link-6');">IDPAGOTARJETA</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">else</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">bancoId</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">        <tt class="py-name">query</tt> <tt class="py-op">=</tt> <tt class="py-name">QSqlQuery</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">prepare</tt><tt class="py-op">(</tt><tt class="py-string">"INSERT INTO movimientoscaja(iddocumento, idtipomovimiento, idtipomoneda, monto,refexterna,idbanco,nlinea )"</tt> <tt class="py-op">+</tt>   </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">        <tt class="py-string">"VALUES( :iddocumento, :idpago, :idmoneda, :monto,:ref,"</tt> <tt class="py-op">+</tt> <tt class="py-name">idbanco</tt> <tt class="py-op">+</tt><tt class="py-string">",:linea )"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt> <tt class="py-string">"la linea #%d de los pagos no esta preparada"</tt><tt class="py-op">%</tt><tt class="py-name">linea</tt> <tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line"> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":iddocumento"</tt><tt class="py-op">,</tt> <tt class="py-name">iddocumento</tt> <tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":idpago"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pagoId</tt> <tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":idmoneda"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">monedaId</tt> <tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":monto"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="EsquipulasPy.src.document.recibo.lineaabono.LineaAbono.monto" class="py-name" href="#" onclick="return doclink('link-13', 'monto', 'link-2');">monto</a></tt><tt class="py-op">.</tt><tt class="py-name">to_eng_string</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":ref"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">referencia</tt> <tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":linea"</tt><tt class="py-op">,</tt> <tt class="py-name">linea</tt> <tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line"> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method EsquipulasPy.src.contabilidad.conciliacion.dlgSelectCuenta.exec_()=EsquipulasPy.src.contabilidad.conciliacion.dlgSelectCuenta-class.html#exec_"><a title="EsquipulasPy.src.contabilidad.conciliacion.dlgSelectCuenta.exec_" class="py-name" href="#" onclick="return doclink('link-14', 'exec_', 'link-14');">exec_</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">lastError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt> <tt class="py-string">"No se pudo insertar la linea "</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt> <tt class="py-name">linea</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div></div><a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

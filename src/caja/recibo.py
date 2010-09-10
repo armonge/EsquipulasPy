@@ -37,7 +37,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
     """
     web =  "recibos.php?doc="
 
-    def __init__( self, user, parent ):
+    def __init__( self,  parent ):
         '''
         Constructor
         '''
@@ -45,7 +45,6 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
-        self.user = user
 
         self.__status = True
 

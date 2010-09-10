@@ -15,11 +15,11 @@ from PyQt4.QtCore import  Qt, QTimer, QSize
 from PyQt4.QtGui import QDialog,  qApp, QDesktopWidget, QPixmap, QDialogButtonBox,\
 QFormLayout, QVBoxLayout, QLineEdit,  QMessageBox, QLabel, QProgressBar, QHBoxLayout, \
 QFrame, QGridLayout, QSpacerItem, QSizePolicy, QFont, qApp
-from utility import database 
+import database
 from ui import res_rc
 
 UID, FULLNAME, ROLE = range( 3 )
-
+LoggedUser = None
 class dlgAbstractUserLogin(QDialog):
     """
     Clase base para todos los dialogos que requieren autenticar a un usuario
@@ -352,6 +352,8 @@ class User:
         finally:
             if self.db.isOpen():
                 self.db.close()
+
+    
     @property
     def user( self ):
         """
@@ -408,6 +410,7 @@ class User:
         """
         Esta función comprueba si  un usuario tiene determinado permiso
         @param role: este parametro es el rol que se quiere comprobar
+        @type role: string
         @rtype: bool 
         """
         if self.valid:
@@ -417,6 +420,19 @@ class User:
                 return role in self.__roles
         return False
 
+    def hasAnyRole(self, rolelist):
+        """
+        Esta función comprueba tiene algún  rol de una lista de roles
+        @param rolelist: La lista de roles a comprobar
+        @type rolelist: list
+        @rtype:bool
+        """
+        if self.valid:
+            if 'root' in self.__roles:
+                return True
+            else:
+                return any([permission in rolelist for permission in self.roles ])
+        return False
     def __createPassword(self, password):
         u"""
         Esta función crea la contraseña nueva a ingresar al servidor de bases de datos
@@ -490,11 +506,3 @@ class User:
             score = score + 1
 
         return score
-
-        
-        
-        
-        
-        
-        
-        

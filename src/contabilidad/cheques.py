@@ -28,8 +28,8 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
-    web = "cheques.php?doc="    
-    def __init__( self, user, parent ):
+    web = "cheques.php?doc="
+    def __init__( self,  parent ):
         '''
         Constructor
         '''
@@ -38,7 +38,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
-        self.user = user
+        
         self.navmodel = QSqlQueryModel( self )
         self.navproxymodel = QSortFilterProxyModel( self )
         self.navproxymodel.setSourceModel( self.navmodel )
@@ -52,8 +52,6 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
         self.editmodel = None  
 
-        self.toolBar.removeAction(self.actionAnular)
-        self.toolBar.addAction(self.actionAnular)
         self.status = True
         #las acciones deberian de estar ocultas
         
@@ -171,7 +169,26 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         self.tablenavigation.setColumnHidden( TOTALCHEQUE, True )
 
         self.tablenavigation.resizeColumnsToContents()
-        
+    def addActionsToToolBar(self):
+        self.actionAnular = self.createAction(text="Anular", icon=":/icons/res/edit-delete.png", slot=self.anular)
+
+        self.toolBar.addActions([
+            self.actionNew,
+            self.actionPreview,
+            self.actionPrint,
+            self.actionSave,
+            self.actionCancel,
+            self.actionAnular
+        ])
+        self.toolBar.addSeparator()
+        self.toolBar.addActions([
+            self.actionGoFirst,
+            self.actionGoPrevious,
+            self.actionGoLast,
+            self.actionGoNext,
+            self.actionGoLast
+        ])
+
     def setControls( self, status ):
         """
         @param status: false = editando        true = navegando
@@ -507,7 +524,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
             self.lbltipocambio.setText(str(self.editmodel.exchangeRate))
     
     @pyqtSlot(  )
-    def on_actionAnular_activated( self ):
+    def anular( self ):
         
         doc=self.navmodel.record( self.mapper.currentIndex()).value( "iddocumento" ).toInt()[0]
         estado= self.navmodel.record( self.mapper.currentIndex() ).value( "idestado" ).toInt()[0]

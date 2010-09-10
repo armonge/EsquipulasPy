@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>EsquipulasPy.src.utility.mainwindowbase.MainWindowBase</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Paquete&nbsp;EsquipulasPy ::
+        <a href="EsquipulasPy.src-module.html">Paquete&nbsp;src</a> ::
+        <a href="EsquipulasPy.src.utility-module.html">Paquete&nbsp;utility</a> ::
+        <a href="EsquipulasPy.src.utility.mainwindowbase-module.html">Modulo&nbsp;mainwindowbase</a> ::
+        Clase&nbsp;MainWindowBase
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS Descripci&#243;n ==================== -->
+<h1 class="epydoc">Class MainWindowBase</h1><p class="nomargin-top"><span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase">Codigo&nbsp;fuente</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_esquipul_148" name="uml_class_diagram_for_esquipul_148">
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#status" title="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase.status" alt="" coords="17,31,253,49"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#__init__" title="Constructor" alt="" coords="17,52,253,71"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#about" title="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase.about" alt="" coords="17,71,253,89"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#help" title="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase.help" alt="" coords="17,89,253,108"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#changePassword" title="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase.changePassword" alt="" coords="17,108,253,127"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#showtoolbar" title="mostrar la toolbar de la ventana que se acaba de mostrar" alt="" coords="17,127,253,145"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#setStatus" title="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase.setStatus" alt="" coords="17,145,253,164"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#getStatus" title="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase.getStatus" alt="" coords="17,164,253,183"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#setControls" title="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase.setControls" alt="" coords="17,183,253,201"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#closeEvent" title="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase.closeEvent" alt="" coords="17,201,253,220"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#on_actionLockSession_triggered" title="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase.on_actionLockSession_triggered" alt="" coords="17,220,253,239"/>
+<area shape="rect" id="node903" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#on_actionUnlockSession_triggered" title="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase.on_actionUnlockSession_triggered" alt="" coords="17,239,253,257"/>
+<area shape="rect" id="node1" href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html" title="classdocs" alt="" coords="5,6,264,263"/>
+</map>
+  <img src="uml_class_diagram_for_esquipul_148.gif" alt='' usemap="#uml_class_diagram_for_esquipul_148" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>classdocs</p>
+
+<!-- ==================== METODOS DE INSTANCIA ==================== -->
+<a name="section-MetodosdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Metodos de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MetodosdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Constructor</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="about"></a><span class="summary-sig-name">about</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.about">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="help"></a><span class="summary-sig-name">help</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.help">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="changePassword"></a><span class="summary-sig-name">changePassword</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.changePassword">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="showtoolbar"></a><span class="summary-sig-name">showtoolbar</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      mostrar la toolbar de la ventana que se acaba de mostrar</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.showtoolbar">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setStatus"></a><span class="summary-sig-name">setStatus</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">status</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.setStatus">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getStatus"></a><span class="summary-sig-name">getStatus</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.getStatus">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setControls"></a><span class="summary-sig-name">setControls</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">status</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.setControls">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="closeEvent"></a><span class="summary-sig-name">closeEvent</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">event</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.closeEvent">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#on_actionLockSession_triggered" class="summary-sig-name">on_actionLockSession_triggered</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.on_actionLockSession_triggered">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#on_actionUnlockSession_triggered" class="summary-sig-name">on_actionUnlockSession_triggered</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.on_actionUnlockSession_triggered">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPIEDADES ==================== -->
+<a name="section-Propiedades"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Propiedades</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Propiedades"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#status" class="summary-name">status</a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== DETALLE DE LOS METODOS ==================== -->
+<a name="section-Detalledelosmetodos"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de los metodos</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelosmetodos"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.__init__">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Constructor</p>
+  <dl class="fields">
+    <dt>Reemplaza:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_actionLockSession_triggered"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_actionLockSession_triggered</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.on_actionLockSession_triggered">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot()</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_actionUnlockSession_triggered"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_actionUnlockSession_triggered</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="EsquipulasPy.src.utility.mainwindowbase-pysrc.html#MainWindowBase.on_actionUnlockSession_triggered">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot()</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== DETALLE DE LAS PROPIEDADES ==================== -->
+<a name="section-Detalledelaspropiedades"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de las propiedades</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelaspropiedades"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="status"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">status</h3>
+  
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><a href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#getStatus" class="summary-sig-name">getStatus</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd>
+    <dt>Metodo Set :</dt>
+    <dd class="value"><span class="summary-sig"><a href="EsquipulasPy.src.utility.mainwindowbase.MainWindowBase-class.html#setStatus" class="summary-sig-name">setStatus</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">status</span>)</span>
+    </dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

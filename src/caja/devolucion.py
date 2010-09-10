@@ -34,7 +34,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
     Formulario para crear nuevas devoluciones
     """
     web = "devoluciones.php?doc="  
-    def __init__( self, user, parent = None ):
+    def __init__( self,  parent = None ):
         """
         Constructor
         """
@@ -44,7 +44,6 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         Base.__init__( self )
 
 
-        self.user = user
 
         self.editmodel = None
 

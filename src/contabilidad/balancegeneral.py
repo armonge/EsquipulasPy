@@ -119,7 +119,7 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
         printer = QPrinter()
         printer.setPageSize(QPrinter.Letter)
         web = "balancegeneral.php?date=%d+%d" % ( self.dtPicker.date().month() ,self.dtPicker.date().year() ) 
-        report = frmReportes( web , self.user, printer, self )
+        report = frmReportes( web , printer, self )
         report.exec_()
         
 

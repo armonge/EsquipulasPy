@@ -32,13 +32,12 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
     Implementacion de la interfaz grafica para entrada compra
     """
     web = "facturas.php?doc="
-    def __init__( self, user, parent ):
+    def __init__( self,  parent ):
         '''
         Constructor
         '''
         super( frmFactura, self ).__init__( parent )
         self.readOnly = True
-        self.user = user
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )

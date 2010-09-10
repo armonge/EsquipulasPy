@@ -28,7 +28,7 @@ class frmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
     """
     Formulario para crear nuevas conciliaciones bancarias
     """
-    def __init__( self, user , parent = None ):
+    def __init__( self , parent = None ):
         """
         Constructor
         """
@@ -40,7 +40,6 @@ class frmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
 
         
         self.editmodel = None
-        self.user = user
         self.status = True
 
 #        las acciones deberian de estar ocultas

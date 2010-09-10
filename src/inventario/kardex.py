@@ -28,7 +28,7 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
     '''
     classdocs
     '''
-    def __init__(self, user, tiposdoc, parent = None, edit = True):
+    def __init__(self,  tiposdoc, parent = None, edit = True):
         '''
         Constructor
         '''
@@ -36,7 +36,6 @@ class frmKardex(QMainWindow, Ui_frmKardex, Base):
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
-        self.user = user
         self.tiposdoc = ",".join([str(item) for item in tiposdoc])
         
         self.edit = edit

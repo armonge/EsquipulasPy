@@ -8,7 +8,8 @@ from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot, QSize, QUrl
 from PyQt4.QtGui import QDialog, QMessageBox, QIcon, QWidget, QVBoxLayout, \
 QPushButton, qApp, QDesktopServices, QMdiSubWindow, qApp
 from PyQt4.QtSql import QSqlDatabase
-from utility.user import dlgUserLogin, User, dlgPasswordChange
+
+import utility.user
 
 class MainWindowBase( object ):
     '''
@@ -19,6 +20,7 @@ class MainWindowBase( object ):
         Constructor
         '''
         
+        self.user = utility.user.LoggedUser
         
         dockaction  = self.dockWidget.toggleViewAction()
         dockaction.setIcon(QIcon(":/icons/res/utilities-desktop-extra.png"))
@@ -74,14 +76,14 @@ class MainWindowBase( object ):
         )
     
         
-    def logOut(self):   
+    def logOut(self):
         self.setVisible(False)
 
         for hijo in self.mdiArea.subWindowList():
             if not hijo.close():
                 return
 
-        dlguser = dlgUserLogin()
+        dlguser = utility.user.dlgUserLogin()
         cont = 0
         valido = False
         dlguser.txtPassword.setText("")
@@ -116,10 +118,10 @@ class MainWindowBase( object ):
         raise NotImplementedError()
         
     def about(self):
-        QMessageBox.about(self, qApp.organizationName(), "%s: %s " +\
-        "Este programa ha sido desarrollado por Cusuco Software y se distribuye bajo " +\
-        "una licencia GPL, usted deberia de haber recibido una copia de esta licencia " +\
-        "junto con el programa." % (qApp.organizationName(), qApp.applicationName()))
+        QMessageBox.about(self, qApp.organizationName(),
+        r"%s: %s  Este programa ha sido desarrollado por Cusuco Software y se distribuye bajo \
+        una licencia GPL, usted deberia de haber recibido una copia de esta licencia \
+        junto con el programa." % (qApp.organizationName(), qApp.applicationName()) )
         
     def help(self):
         settings = QSettings()
@@ -129,7 +131,7 @@ class MainWindowBase( object ):
         ds.openUrl(QUrl(base + "../help/"))
         
     def changePassword(self):
-        dlg = dlgPasswordChange(self.user)
+        dlg = utility.user.dlgPasswordChange(self.user)
         if dlg.exec_() == QDialog.Accepted:
             QMessageBox.information(self, qApp.organizationName(), u"La contraseña se ha cambiado exitorsamente")
     
@@ -165,9 +167,9 @@ class MainWindowBase( object ):
 
     @pyqtSlot(  )
     def on_actionUnlockSession_triggered( self ):
-        dlg = dlgUserLogin( self )
+        dlg = user.dlgUserLogin( self )
         if dlg.exec_() == QDialog.Accepted:
-            tmpuser = User( dlg.txtUser.text(), dlg.txtPassword.text() )
+            tmpuser = user.User( dlg.txtUser.text(), dlg.txtPassword.text() )
             if tmpuser.valid:
                 if tmpuser.uid == self.user.uid or tmpuser.hasRole( 'root' ):
                     self.status = True

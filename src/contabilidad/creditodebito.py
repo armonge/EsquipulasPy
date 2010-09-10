@@ -25,14 +25,13 @@ class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
-    def __init__( self, user, parent ):
+    def __init__( self,  parent ):
         super( frmCreditoDebito, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
 
 
-        self.user = user
 
         self.editmodel = None
 

@@ -10,21 +10,25 @@ from decimal import Decimal
 from PyQt4.QtCore import SIGNAL, SLOT, pyqtSlot, Qt , QVariant, pyqtSlot
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog, QItemSelection, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
-from utility.catgeneric import Ui_frmCatGeneric
+
+
 from ui.Ui_articulos import Ui_frmArticlesNew
+
 from categoriesmodel import CategoriesModel
+
+from utility.catgeneric import Ui_frmCatGeneric
 from utility.treefilterproxymodel import TreeFilterProxyModel
+from utility import user
 
 ID, DESCRIPCION, DAI, ISC, COMISION, GANANCIA, ACTIVO = range( 7 )
 
 class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
-    def __init__( self, user, parent = None ):
+    def __init__( self,  parent = None ):
         """
         @param user: El id del usuario que ha creado este documento 
         """
         super( frmArticulos, self ).__init__( parent )
         self.setupUi( self )
-        self.user = user
         
         self.database = QSqlDatabase.database()
         
@@ -276,12 +280,12 @@ class frmArticlesNew(QDialog, Ui_frmArticlesNew):
     '''
 
 
-    def __init__(self, user,parent=None):
+    def __init__(self, parent=None):
         '''
         Constructor
         '''
         super(frmArticlesNew, self).__init__(parent)
-        self.user = user
+        self.user = user.LoggedUser
         self.setupUi(self)
         self.catmodel = CategoriesModel()
         

@@ -18,7 +18,7 @@ from utility.widgets.searchpanel import SearchPanel
 
 IDDOCUMENTO, FECHA, CUENTA,TIPODOC,CONCEPTO,OBSERVACION,NCUENTA = range(7)
 class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
-    def __init__( self, user, parent ):
+    def __init__( self,  parent ):
         super( frmMovimientosBancarios, self ).__init__( parent )
 
         self.setupUi( self )
@@ -26,7 +26,6 @@ class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
         Base.__init__( self )
 
 
-        self.user = user
         self.__status = True        
         
         self.cbcuenta = SearchPanel(None,None,True)

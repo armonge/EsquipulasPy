@@ -10,6 +10,7 @@ QProgressBar, QPrinter, QPrintDialog, QDialog, qApp, QShortcut, QKeySequence
 from PyQt4.QtWebKit import QWebView
 
 from utility.reports import frmReportes, Reports
+from utility import user
 
 class Base( object ):
     """
@@ -20,6 +21,7 @@ class Base( object ):
     web = ""
     
     def __init__( self ):
+        self.user = user.LoggedUser
         self.mapper = QDataWidgetMapper( self )
         u"""
         @type: QDataWidgetMapper
@@ -119,14 +121,15 @@ class Base( object ):
                     LIMIT 1
                 """ %  datetime.toString( "yyyyMMdd" )
                 query = QSqlQuery(q)
-                
+
                 if not query.exec_():
                     logging.critical(query.lastError().text())
                     raise UserWarning( "No se pudieron recuperar los tipos de cambio" )
                 if not query.size() == 1:
                     logging.critical(u"La consulta para obtener tipos de cambio devolvio más de un valor")
                     raise UserWarning( u"Hubo un error al obtener los tipos de cambio" )
-                
+
+                query.first()
                 self.editmodel.exchangeRateId = query.value( 0 ).toInt()[0]
                 self.editmodel.exchangeRate = Decimal( query.value( 1 ).toString() )
                 self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.index( 0, 0 ).data() )
@@ -136,6 +139,7 @@ class Base( object ):
                 self.dtPicker.setDateTime( self.editmodel.datetime )
                 logging.error(inst)
             except Exception as inst:
+                QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al obtener los tipos de cambio", QMessageBox.Ok )
                 logging.critical(inst)
                 self.dtPicker.setDateTime( self.editmodel.datetime )
 
@@ -177,6 +181,7 @@ class Base( object ):
         @param index: Este es el indice del mapper en el que actualmente se encuentra navegando
         @type index: int 
         """
+        QMessageBox.information(self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada")
         raise NotImplementedError()
 
     def loadModels( self ):
@@ -262,6 +267,7 @@ class Base( object ):
         @param status: 
         @type status: bool
         """
+        QMessageBox.information(self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada")
         raise NotImplementedError()
 
     def addLine( self ):
@@ -317,6 +323,7 @@ class Base( object ):
         """
         Empezar la edición de un nuevo documento
         """
+        QMessageBox.information(self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada")
         raise NotImplementedError()
 
 
@@ -324,6 +331,7 @@ class Base( object ):
         """
         Cancelar la edición del nuevo documento
         """
+        QMessageBox.information(self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada")
         raise NotImplementedError()
 
     @property
@@ -332,7 +340,7 @@ class Base( object ):
         La identificación de este documento para reporte, normalmente sera el iddocumento o el ndocimpreso
         @rtype:string
         """
-        raise NotImplementedError(u"Esta propiedad debe de implementarse para proveer funciones de impresión")
+        raise NotImplementedError(u"printIdentifier debe implementarse para poder imprimir")
     
     def preview( self ):
         try:
@@ -340,8 +348,11 @@ class Base( object ):
             printer.setOrientation(self.orientation)
             printer.setPageSize(self.pageSize)
             web = self.web + self.printIdentifier
-            report = frmReportes( web, self.user, printer,self )
+            report = frmReportes( web, printer,self )
             report.exec_()
+        except NotImplementedError as inst:
+            QMessageBox.information(self, qApp.organizationName(), u"No se ha implementado la función de impresión para este modulo")
+            logging.error(unicode(inst))
         except UserWarning as inst:
             QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             logging.error(unicode(inst))

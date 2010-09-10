@@ -15,14 +15,16 @@ QMessageBox, qApp
 from ui.Ui_cuentas import Ui_frmAccounts
 from utility.moneyfmt import moneyfmt
 from utility.treefilterproxymodel import TreeFilterProxyModel
+from utility import user
 
 CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, IDCUENTA, ACUMULADO = range( 8 )
 headers = [ "Codigo", u"Descripción", "Es Debe", "hijos", "Monto", "Padre", "Id", "Acumulado"]
 class frmAccounts( QMainWindow, Ui_frmAccounts ):
-    def __init__( self, user, parent = None ):
+    def __init__( self,  parent = None ):
         super( frmAccounts, self ).__init__( parent )
+        
         self.setupUi( self )
-        self.user = user
+        self.user = user.LoggedUser
 
         QSqlDatabase.database().open()
 #        self.accountsTree.setModel( AccountsModel( 1 ) )

@@ -39,7 +39,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     web = "liquidaciones.php?doc="
     orientation = QPrinter.Landscape
     pageSize = QPrinter.Legal
-    def __init__( self, user, parent = None ):
+    def __init__( self,  parent = None ):
         """
         @param user: EL objeto usuario que esta asociado con esta sesión
         """
@@ -49,7 +49,6 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
         Base.__init__( self )
 
 
-        self.user = user
         #los modelos de edicion
         self.editmodel = None
         self.accountseditmodel = None
