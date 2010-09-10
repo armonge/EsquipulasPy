@@ -80,7 +80,7 @@ QMdiArea QMainWindow{
 }
 """)
 if "--inventario" in sys.argv:
-    app.setApplicationName( "Inventario" )
+    app.setApplicationName( "Compras e Inventario" )
     from inventario.mainwindow import MainWindow
 #    module = "inventario"
     module = constantes.ACCESOINVENTARIO
