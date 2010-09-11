@@ -371,7 +371,7 @@ class LiquidacionModel( QAbstractTableModel ):
         M{IVATOTAL = TOTALDOLARES * PORCENTAJEIVA}
         @rtype: Decimal
         """
-        return self.totalD * (  self.ivaRate / 100) if self.applyIVA else Decimal( 0 )
+        return ( self.daiTotal + self.iscTotal  + self.cifTotal + self.tsimTotal ) * (self.ivaRate / 100) if self.applyIVA else Decimal(0)
 
     @property
     def daiTotal( self ):
