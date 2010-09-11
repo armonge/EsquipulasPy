@@ -48,7 +48,10 @@ class LiquidacionDelegate( SingleSelectionSearchPanelDelegate ):
             self.proxymodel.setSourceModel(self.prods)
             current = index.model().data(index.model().index(index.row(), IDARTICULO) )
             self.proxymodel.setFilterRegExp( self.filter(index.model(),current ))
-            return super(LiquidacionDelegate, self).createEditor(parent, option, index)
+            sp =  super(LiquidacionDelegate, self).createEditor(parent, option, index)
+            sp.setColumnHidden(IDARTICULO)
+            sp.setMinimumWidth(600)
+            return sp
 
         else:
             QStyledItemDelegate.createEditor( self, parent, option, index )

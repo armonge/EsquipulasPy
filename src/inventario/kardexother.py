@@ -5,6 +5,7 @@ Created on 23/07/2010
 @author: Andrés Reyes Monge
 '''
 import logging
+from decimal import Decimal
 
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, QAbstractItemView, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
@@ -15,9 +16,14 @@ from ui.Ui_kardexother import Ui_frmKardexOther
 from document.kardexother.kardexothermodel import KardexOtherModel
 from document.kardexother.kardexotherdelegate import KardexOtherDelegate
 from utility.base import Base
-from utility import constantes
+from utility import constantes, movimientos
+from utility.accountselector import AccountsSelectorDelegate, AccountsSelectorLine
 
-IDARTICULO, DESCRIPCION, CANTIDAD = range(3)
+                
+IDDOCUMENTO, NDOCIMPRESO, FECHA, OBSERVACIONES,BODEGA, TOTAL, ESTADO, CONCEPT=range(8)
+IDARTICULO, DESCRIPCION,COSTO, CANTIDAD, IDDOCUMENTOD = range(5)
+IDCUENTA, CODIGO, NOMBRECUENTA, MONTOCUENTA, IDDOCUMENTOC = range(5) 
+
 class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
     '''
     classdocs
@@ -32,20 +38,22 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         self.parentWindow = parent
         Base.__init__( self )
         
-        self.navigationmodel = QSqlQueryModel()
+        self.navmodel = QSqlQueryModel()
         
         self.detailsModel = QSqlQueryModel()
         
         
         self.navproxymodel = QSortFilterProxyModel()
-        self.navproxymodel.setSourceModel(self.navigationmodel)
+        self.navproxymodel.setSourceModel(self.navmodel)
         
         self.detailsproxymodel = QSortFilterProxyModel()
         self.detailsproxymodel.setSourceModel(self.detailsModel)
+
+        self.accountsnavmodel = QSqlQueryModel()
+        self.accountsproxymodel = QSortFilterProxyModel()
+        self.accountsproxymodel.setSourceModel(self.accountsnavmodel)
         
-        
-        self.tabledetails.setModel(self.detailsproxymodel)
-        self.tablenavigation.setModel(self.navproxymodel)
+
         
         self.editmodel=None
                 
@@ -65,17 +73,31 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         self.actionSave.setVisible(not status)
         
         self.swConcept.setCurrentIndex(0 if status else 1)
+        self.swWarehouse.setCurrentIndex(0 if status else 1)
         self.tabnavigation.setEnabled(status)
 
+        self.txtObservations.setReadOnly(status)
+
         self.tabledetails.setEditTriggers(QAbstractItemView.NoEditTriggers if status else QAbstractItemView.AllEditTriggers)
+        
+        
         if not status:
             self.tabWidget.setCurrentIndex(0)
-
-            self.tabledetails.setColumnHidden(IDARTICULO, True)
-
             self.tabledetails.setColumnWidth(DESCRIPCION, 250)
-
             self.tabledetails.addAction(self.actionDeleteRow)
+        else:
+            self.tabledetails.removeAction(self.actionDeleteRow)
+
+            self.tabledetails.setModel(self.detailsproxymodel)
+            self.tablenavigation.setModel(self.navproxymodel)
+            self.tableaccounts.setModel(self.accountsproxymodel)
+
+
+        self.tabledetails.setColumnHidden(IDARTICULO, True)
+        self.tabledetails.setColumnHidden(IDDOCUMENTOD, True)
+
+        self.tableaccounts.setColumnHidden(IDDOCUMENTOC, True)
+        self.tableaccounts.setColumnHidden(IDCUENTA, True)
     def deleteRow(self):
         """
         Funcion usada para borrar lineas de la tabla
@@ -102,23 +124,49 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
                 d.observacion,
                 b.nombrebodega, 
                 d.total,
-                d.idestado
+                d.idestado,
+                c.descripcion
             FROM documentos d 
             JOIN bodegas b ON b.idbodega = d.idbodega
+            JOIN conceptos c ON c.idconcepto = d.idconcepto
             LEFT JOIN docpadrehijos dph ON dph.idhijo = d.iddocumento
             WHERE d.idtipodoc = %d AND dph.idhijo IS NULL
-            """ % constantes.IDKARDEX
-            self.navigationmodel.setQuery(query)
-            
+            """ % constantes.IDAJUSTEBODEGA
+            self.navmodel.setQuery(query)
             query = """
-            SELECT * 
-            FROM articulosxdocumento axd
+            SELECT
+                a.idarticulo,
+                a.descripcion,
+                axd.costounit,
+                axd.unidades,
+                axd.iddocumento
+            FROM vw_articulosdescritos a
+            JOIN articulosxdocumento axd ON axd.idarticulo = a.idarticulo
             JOIN documentos d ON d.iddocumento = axd.iddocumento AND d.idtipodoc = %d
             LEFT JOIN docpadrehijos dph ON dph.idhijo = d.iddocumento
             WHERE dph.idhijo IS NULL
-            """ % constantes.IDKARDEX
+            """ % constantes.IDAJUSTEBODEGA
             self.detailsModel.setQuery(query)
+
+            query = """
+            SELECT
+                cc.idcuenta,
+                cc.codigo,
+                cc.descripcion,
+                cxd.monto,
+                cxd.iddocumento
+            FROM cuentasxdocumento cxd
+            JOIN documentos d ON d.iddocumento = cxd.iddocumento AND d.idtipodoc = %d
+            JOIN cuentascontables cc ON cxd.idcuenta = cc.idcuenta
+            """ % constantes.IDAJUSTEBODEGA
+            self.accountsnavmodel.setQuery(query)
             
+            self.mapper.setModel( self.navproxymodel )
+            self.mapper.addMapping( self.txtPrintedDocumentNumber, NDOCIMPRESO )
+            self.mapper.addMapping( self.txtConcept, CONCEPT )
+            self.mapper.addMapping( self.txtWarehouse, BODEGA )
+            self.mapper.addMapping( self.txtObservations, OBSERVACIONES )
+            self.mapper.addMapping(self.dtPicker, FECHA )
             
         except UserWarning as inst:
             QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
@@ -126,6 +174,15 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         except Exception as inst:
             QMessageBox.critical(self, qApp.organizationName(), u"No se pudo iniciar un nuevo ajuste de kardex")
             logging.critical(unicode( inst))
+
+
+    def updateDetailFilter(self, index):
+        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOD )
+        self.detailsproxymodel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
+
+        self.accountsproxymodel.setFilterKeyColumn( IDDOCUMENTOC )
+        self.accountsproxymodel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
+        
     def newDocument(self):
         try:
             if not QSqlDatabase.database().isOpen():
@@ -133,7 +190,8 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
                     raise UserWarning("No se pudo conectar con la base de datos")
             
             self.editmodel = KardexOtherModel()
-            
+
+            self.editmodel.uid = self.user.uid
             
             conceptosmodel = QSqlQueryModel()
             conceptosmodel.setQuery("""
@@ -142,7 +200,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             	c.descripcion
             FROM conceptos c
             WHERE c.idtipodoc = %d
-            """ % constantes.IDKARDEX)
+            """ % constantes.IDAJUSTEBODEGA)
 
             if conceptosmodel.rowCount() == 0:
                 raise UserWarning(u"No existen conceptos para los ajustes de bodega")
@@ -150,11 +208,20 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             self.cbConcept.setModel(conceptosmodel)
             self.cbConcept.setModelColumn(1)
 
+            warehouseModel = QSqlQueryModel()
+            warehouseModel.setQuery("""
+            SELECT idbodega, nombrebodega
+            FROM bodegas b
+            ORDER BY idbodega
+            """)
+
+            self.cbWarehouse.setModel(warehouseModel)
+            self.cbWarehouse.setModelColumn(1)
 
             #Calcular el numero de kardex
             query = QSqlQuery( """
             CALL spConsecutivo(%d,NULL);
-            """ % constantes.IDKARDEX )
+            """ % constantes.IDAJUSTEBODEGA )
             if not query.exec_():
                 raise UserWarning( "No se pudo calcular el numero del kardex" )
             
@@ -163,14 +230,14 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             self.txtPrintedDocumentNumber.setText(self.editmodel.printedDocumentNumber)
 
             
-            self.dtPicker.setDateTime(QDateTime.currentDateTime())
+            
+            
             articlesmodel = QSqlQueryModel()
             articlesmodel.setQuery("""
             SELECT
                 a.idarticulo,
                 a.descripcion,
-                ca.idcostoarticulo,
-                ca.valor
+                ca.valor as costo
             FROM vw_articulosdescritos a
             JOIN costosarticulo ca ON a.idarticulo = ca.idarticulo AND ca.activo = 1
             """)
@@ -179,7 +246,27 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             self.tabledetails.setItemDelegate(delegate)
             self.tabledetails.setModel(self.editmodel)
 
+            accountsdelegate = AccountsSelectorDelegate(QSqlQuery( """
+             SELECT c.idcuenta, c.codigo, c.descripcion
+             FROM cuentascontables c
+             JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
+             WHERE c.padre != 1 AND c.idcuenta != 22
+             """ ),True )
+            self.tableaccounts.setItemDelegate( accountsdelegate )
+
+            self.tableaccounts.setModel(self.editmodel.accountsmodel)
+
+            self.editmodel.accountsmodel.insertRows( 0,2 )
+
+            line = AccountsSelectorLine()
+            line.itemId = int(movimientos.INVENTARIO)
+            line.code = "110 003 001 000 000"
+            line.name = "INV Inventario de Bodega"
+
+            self.editmodel.accountsmodel.lines[0] = line
+            
             self.addLine()
+            self.dtPicker.setDateTime(QDateTime.currentDateTime())
             self.status = False
         except UserWarning as inst:
             QMessageBox.critical(self,qApp.organizationName(), unicode(inst))
@@ -197,4 +284,14 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         """
         self.editmodel = None
         self.tabledetails.setModel(self.detailsproxymodel)
-        self.status = True    
+        self.status = True
+
+    @pyqtSlot( "int" )
+    def on_cbWarehouse_currentIndexChanged( self, index ):
+        if not self.editmodel is None:
+            self.editmodel.warehouseId = self.cbWarehouse.model().index( index, 0 ).data().toInt()[0]
+            
+    @pyqtSlot( "int" )
+    def on_cbConcept_currentIndexChanged( self, index ):
+        if not self.editmodel is None:
+            self.editmodel.conceptId= self.cbConcept.model().index( index, 0 ).data().toInt()[0]

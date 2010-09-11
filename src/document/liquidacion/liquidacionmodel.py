@@ -19,7 +19,7 @@ IDARTICULO, ARTICULO, CANTIDAD, COSTOUNIT, FOB, FLETE, SEGURO, OTROS, CIF, IMPUE
 class LiquidacionModel( QAbstractTableModel ):
     """
     Este modelo es el que se utiliza para realizar todos los calculos relacionados a una liquidacion,
-    tambien se encarga de guardarla en la base de datos y darle formato
+    de costos
     """
     __documentType = constantes.IDLIQUIDACION
     """
@@ -483,7 +483,7 @@ class LiquidacionModel( QAbstractTableModel ):
                 raise Exception( "No se pudo insertar el documento" )
 
 
-            insertedId = query.lastInsertId() #el id del documento que se acaba de insertar
+            insertedId = query.lastInsertId().toInt()[0] #el id del documento que se acaba de insertar
 
             #insertar el usuario
             if not query.prepare( """
@@ -545,6 +545,8 @@ class LiquidacionModel( QAbstractTableModel ):
             if not query.exec_():
                 raise Exception( "No se pudo insertar el tsim" )
 
+            print "inserto tsim"
+
             #insertar el spe
             if not query.prepare( """
             INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) VALUES (:iddocumento, :idcostoagregado )
@@ -555,6 +557,7 @@ class LiquidacionModel( QAbstractTableModel ):
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el spe" )
+
 
             #insertar el iva si aplica
             if self.applyIVA:
@@ -567,7 +570,8 @@ class LiquidacionModel( QAbstractTableModel ):
 
                 if not query.exec_():
                     raise Exception( "No se pudo insertar el iva" )
-
+                
+                print "inserto iva"
             #insertar el iso si aplica
             if self.applyISO and self.applyTaxes:
                 if not query.prepare( """
@@ -580,13 +584,11 @@ class LiquidacionModel( QAbstractTableModel ):
                 if not query.exec_():
                     raise Exception( "No se pudo insertar el iso" )
 
+                print "inserto iso"
 
 
-            i =1 
-            for line in self.lines:
-                if line.valid:
+            for i, line in enumerate([line for line in  self.lines if line.valid]):
                     line.save( insertedId,i )
-                    i +=1
 
 
 
@@ -968,7 +970,7 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
             query.bindValue(":iddocumento", self.docid)
             query.bindValue(":accion", constantes.ACCCONTABILIZA)
             
-            for number, line in enumerate(self.lines):
+            for number, line in enumerate([ linea for linea in self.lines if linea.valid ]):
                 line.save(self.docid, number)
 
 

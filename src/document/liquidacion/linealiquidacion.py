@@ -4,7 +4,9 @@ Created on 21/05/2010
 
 @author: Andrés Reyes Monge
 '''
+import logging
 from decimal import Decimal,InvalidOperation
+
 from PyQt4.QtSql import QSqlQuery
 class LineaLiquidacion( object ):
     def __init__( self, parent ):
@@ -372,8 +374,11 @@ class LineaLiquidacion( object ):
         Este metodo guarda la linea en la base de datos
         
         @param iddocumento: El id del documento al que esta enlazada la LineAddrTable
-        """
+        @type iddocumento: int
 
+        @param nlinea: El numero de la linea en el documento
+        @type nlinea: int
+        """
         if not self.valid:
             raise Exception ( "Se intento guardar una linea no valida" )
 
@@ -391,7 +396,9 @@ class LineaLiquidacion( object ):
         query.bindValue( ":costocompra", self.itemCost.to_eng_string() )
         query.bindValue( ":linea",nlinea )
 
+
         if not query.exec_():
+            logging.critical(query.lastError().text())
             raise Exception( "Error al insertar una de las lineas del documento" )
 
         idarticuloxdocumento = query.lastInsertId()
@@ -408,6 +415,6 @@ class LineaLiquidacion( object ):
         query.bindValue( ":comision", self.comisionParcial.to_eng_string() )
 
         if not query.exec_():
-            print query.lastError().text()
+            logging.error(query.lastError().text())
             raise Exception( "Error al insertar los costos de una de las lineas de la factura " )
 

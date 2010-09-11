@@ -6,7 +6,7 @@ Created on 29/05/2010
 '''
 
 from PyQt4.QtGui import QTableView, QSortFilterProxyModel, QCompleter, QComboBox,QStyledItemDelegate
-from PyQt4.QtCore import Qt, SIGNAL, SLOT
+from PyQt4.QtCore import Qt
 from utility.singleselectionmodel import SingleSelectionModel
 
 class SingleSelectionSearchPanelDelegate(QStyledItemDelegate):
@@ -63,6 +63,7 @@ class SearchPanel( QComboBox ):
         self.pFilterModel = QSortFilterProxyModel( self )
         self.pFilterModel.setFilterCaseSensitivity( Qt.CaseInsensitive )
         self.showTable = showTable
+        
         if model !=None:
             self.setModel(model )
 #        self.pFilterModel.setSourceModel( model );
@@ -81,7 +82,6 @@ class SearchPanel( QComboBox ):
         self.setColumn( 1 )
 
         self.lineEdit().textEdited[unicode].connect(self.pFilterModel.setFilterFixedString if not showTable else self.pFilterModel.setFilterWildcard )
-        #self.connect( self.lineEdit(), SIGNAL( "textEdited(  QString )" ), self.pFilterModel, SLOT( "setFilterFixedString(  QString )" ) if showTable==False else SLOT( "setFilterWildcard(  QString )" ) )
 
     def setModel(self,model):
         QComboBox.setModel(self,model)
@@ -104,11 +104,16 @@ class SearchPanel( QComboBox ):
     
     def setColumnHidden(self,col):
         self.completerTable.hiddenColumns.append(col)
+        self.tabla.hiddenColumns.append(col)
         if self.showTable:
             self.tabla.hiddenColumns.append(col)
 
 
-
+    def setMinimumWidth(self, width):
+        self.completerTable.setMinimumWidth(width)
+        if self.showTable:
+            self.tabla.setMinimumWidth(width)
+        
 
 class SearchPanelView( QTableView ):
     '''
@@ -131,14 +136,15 @@ class SearchPanelView( QTableView ):
 
 
     def paintEvent( self, event ):
+        for column in self.hiddenColumns:
+            self.setColumnHidden( column, True )
+            
         if not self.set:
             self.resizeColumnsToContents()
-            self.setColumnHidden( 0, True )
             self.set = True
             self.horizontalHeader().setStretchLastSection( True )
         
-        for column in self.hiddenColumns:
-            self.setColumnHidden( column, True )
+        
         super(SearchPanelView, self).paintEvent(  event )
 
 

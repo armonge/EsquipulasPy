@@ -22,7 +22,6 @@ from utility.singleselectionmodel import SingleSelectionModel
 
 IDCUENTA, CODCUENTA, NCUENTA, MONTO = range( 4 )
 
-
 class AccountsSelectorModel( QAbstractTableModel ):
     def __init__( self ):
         QAbstractTableModel.__init__( self )
@@ -109,8 +108,9 @@ class AccountsSelectorModel( QAbstractTableModel ):
             elif self.valid and not self.lines[-1].valid:
                 if len( self.lines ) > 1:
                     self.removeRows( len( self.lines ) - 1, 1 )
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.index(MONTO, len(self.lines) ),self.index(MONTO, len(self.lines) ))
+            self.dataChanged.emit(index, index)
+
+            self.dataChanged.emit(self.index(MONTO, len(self.lines) ) , self.index(MONTO, len(self.lines) ) )
             
             return True
         return False

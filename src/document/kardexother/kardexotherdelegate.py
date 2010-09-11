@@ -15,7 +15,7 @@ from utility.moneyfmt import moneyfmt
 
 
 
-IDARTICULO, DESCRIPCION, CANTIDAD = range(3)
+IDARTICULO, DESCRIPCION, COSTO, CANTIDAD = range(4)
 class KardexOtherDelegate( SingleSelectionSearchPanelDelegate ):
     def __init__( self, model, showTable=True , parent = None  ):
         super(KardexOtherDelegate, self).__init__( )
@@ -38,8 +38,11 @@ class KardexOtherDelegate( SingleSelectionSearchPanelDelegate ):
         elif index.column() in (DESCRIPCION, IDARTICULO):
             current = index.model().data(index.model().index( index.row(), IDARTICULO) )
             self.proxymodel.setFilterRegExp( self.filter(index.model(),current ))
-
-            return super(KardexOtherDelegate, self).createEditor(parent, option, index)
+            
+            sp =  super(KardexOtherDelegate, self).createEditor(parent, option, index)
+            sp.setColumnHidden(IDARTICULO)
+            sp.setColumnHidden(COSTO)
+            return sp
         else:
             super(KardexOtherDelegate, self).createEditor(parent,  option,  index)
 
@@ -64,22 +67,21 @@ class KardexOtherDelegate( SingleSelectionSearchPanelDelegate ):
         """
         En este evento se toma el resultado del editor y se introduco en el modelo
         """
-        if index.column() in (DESCRIPCION, IDARTICULO):
+        if index.column() in (DESCRIPCION, COSTO):
             if self.proxymodel.rowCount()>0:
 
                 fila = editor.currentIndex()
                 modelo = self.proxymodel
                 model.setData( index, [
-                                       modelo.index(fila , IDARTICULO ).data(Qt.EditRole).toInt()[0],
+                                       modelo.index(fila , 0).data(Qt.EditRole).toInt()[0],
                                        modelo.index(fila, DESCRIPCION ).data(Qt.EditRole).toString(),
+                                       Decimal(modelo.index(fila, COSTO ).data(Qt.EditRole).toString())
                         ])
         else:
             super(KardexOtherDelegate, self).setModelData(editor,  model,  index)
 
     def sizeHint( self, option, index ):
         fm = option.fontMetrics
-        if index.column() == IDARTICULO:
-            return QSize( fm.width( "99" ), fm.height() )
         if index.column() == DESCRIPCION:
             return QSize( 250, fm.height() )
 
@@ -98,4 +100,6 @@ class SingleSelectionModel( QSortFilterProxyModel ):
                 return u"Descripción"
             elif section == IDARTICULO:
                 return "Id"
+            elif section == COSTO:
+                return "Costo"
         return int( section + 1 )

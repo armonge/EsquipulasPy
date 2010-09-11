@@ -121,19 +121,21 @@ class Base( object ):
                     WHERE fecha = %s
                     LIMIT 1
                 """ %  datetime.toString( "yyyyMMdd" )
-                query = QSqlQuery(q)
+                query = QSqlQuery()
 
-                if not query.exec_():
+                if not query.exec_(q):
                     logging.critical(query.lastError().text())
                     raise UserWarning( "No se pudieron recuperar los tipos de cambio" )
                 if not query.size() == 1:
-                    logging.critical(u"La consulta para obtener tipos de cambio devolvio más de un valor")
+                    logging.critical(u"La consulta para obtener tipos de cambio no devolvio exactamente un valor")
                     raise UserWarning( u"Hubo un error al obtener los tipos de cambio" )
-
+                
                 query.first()
                 self.editmodel.exchangeRateId = query.value( 0 ).toInt()[0]
                 self.editmodel.exchangeRate = Decimal( query.value( 1 ).toString() )
-                self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.index( 0, 0 ).data() )
+                
+                #self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.index( 0, 0 ).data() )
+                
                 self.editmodel.datetime = datetime
             except UserWarning  as inst :
                 QMessageBox.critical( self, qApp.organizationName(), str( inst ), QMessageBox.Ok )

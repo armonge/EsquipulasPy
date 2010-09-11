@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/mainwindowcontabilidad.ui'
 #
-# Created: Mon Aug 30 13:15:36 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -27,9 +26,6 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.mdiArea.sizePolicy().hasHeightForWidth())
         self.mdiArea.setSizePolicy(sizePolicy)
-        brush = QtGui.QBrush(QtGui.QColor(121, 116, 113))
-        brush.setStyle(QtCore.Qt.NoBrush)
-        self.mdiArea.setBackground(brush)
         self.mdiArea.setViewMode(QtGui.QMdiArea.TabbedView)
         self.mdiArea.setTabShape(QtGui.QTabWidget.Rounded)
         self.mdiArea.setTabPosition(QtGui.QTabWidget.North)

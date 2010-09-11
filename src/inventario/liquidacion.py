@@ -279,7 +279,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                     d.peso AS 'Peso',
                     d.Proveedor AS 'Proveedor',
                     d.bodega AS 'Bodega',
-                    IF(SUM(IF(ca.idtipocosto = 6 AND ca.valorcosto IS NOT NULL,ca.valorcosto,0)) != 0, 1,0) as  'APLICA ISO',
+                    IF(SUM(IF(ca.idtipocosto = %d AND ca.valorcosto IS NOT NULL,ca.valorcosto,0)) != 0, 1,0) as  'APLICA ISO',
                     d.tasa,
                     d.estado,
                     lt.fobtotal,
@@ -295,7 +295,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 JOIN articulosxdocumento axd ON d.iddocumento = axd.iddocumento
                 JOIN costosxarticuloliquidacion caxl ON caxl.idarticuloxdocumento = axd.idarticuloxdocumento
                 GROUP BY d.iddocumento;
-            """ % ( constantes.ISO, constantes.IVA)
+            """ % ( constantes.ISO, constantes.ISO, constantes.IVA)
             self.navmodel.setQuery( query )
             query = u"""
             SELECT
