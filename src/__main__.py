@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.DEBUG,
 from PyQt4 import QtGui, QtCore
 from utility import database
 from utility import constantes
-from utility import user 
+from utility import user
 from ui import res_rc
 
 app = QtGui.QApplication( sys.argv )

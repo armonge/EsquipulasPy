@@ -129,9 +129,9 @@ class Ui_frmKardexOther(object):
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.verticalLayout_6 = QtGui.QVBoxLayout(self.layoutWidget1)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
-        self.label_7 = QtGui.QLabel(self.layoutWidget1)
-        self.label_7.setObjectName("label_7")
-        self.verticalLayout_6.addWidget(self.label_7)
+        self.lblaccounts = QtGui.QLabel(self.layoutWidget1)
+        self.lblaccounts.setObjectName("lblaccounts")
+        self.verticalLayout_6.addWidget(self.lblaccounts)
         self.tableaccounts = QtGui.QTableView(self.layoutWidget1)
         self.tableaccounts.setObjectName("tableaccounts")
         self.verticalLayout_6.addWidget(self.tableaccounts)
@@ -176,28 +176,47 @@ class Ui_frmKardexOther(object):
         self.label_5.setBuddy(self.dtPicker)
         self.label_3.setBuddy(self.cbConcept)
         self.label_4.setBuddy(self.cbWarehouse)
+        self.label_6.setBuddy(self.txtObservations)
+        self.lblaccounts.setBuddy(self.tableaccounts)
         self.label.setBuddy(self.lineEdit)
 
         self.retranslateUi(frmKardexOther)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         self.swConcept.setCurrentIndex(0)
         self.swWarehouse.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(frmKardexOther)
-        frmKardexOther.setTabOrder(self.txtPrintedDocumentNumber, self.cbConcept)
-        frmKardexOther.setTabOrder(self.cbConcept, self.dtPicker)
-        frmKardexOther.setTabOrder(self.dtPicker, self.tabledetails)
-        frmKardexOther.setTabOrder(self.tabledetails, self.txtConcept)
+        frmKardexOther.setTabOrder(self.txtPrintedDocumentNumber, self.dtPicker)
+        frmKardexOther.setTabOrder(self.dtPicker, self.cbConcept)
+        frmKardexOther.setTabOrder(self.cbConcept, self.cbWarehouse)
+        frmKardexOther.setTabOrder(self.cbWarehouse, self.tabledetails)
+        frmKardexOther.setTabOrder(self.tabledetails, self.txtObservations)
+        frmKardexOther.setTabOrder(self.txtObservations, self.tableaccounts)
+        frmKardexOther.setTabOrder(self.tableaccounts, self.tabWidget)
+        frmKardexOther.setTabOrder(self.tabWidget, self.txtWarehouse)
+        frmKardexOther.setTabOrder(self.txtWarehouse, self.txtConcept)
         frmKardexOther.setTabOrder(self.txtConcept, self.tablenavigation)
         frmKardexOther.setTabOrder(self.tablenavigation, self.lineEdit)
 
     def retranslateUi(self, frmKardexOther):
         frmKardexOther.setWindowTitle(QtGui.QApplication.translate("frmKardexOther", "Otros Movimientos de Kardex", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("frmKardexOther", "Numero de Kardex:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("frmKardexOther", "&Fecha", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("frmKardexOther", "Concepto:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("frmKardexOther", "&Bodega", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("frmKardexOther", "Comentarios", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_7.setText(QtGui.QApplication.translate("frmKardexOther", "Movimientos", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("frmKardexOther", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Sans Serif\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">&amp;Numero de Ajuste de Bodega:</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtGui.QApplication.translate("frmKardexOther", "<b>&Fecha</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("frmKardexOther", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Sans Serif\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">&amp;Concepto:</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_4.setText(QtGui.QApplication.translate("frmKardexOther", "<b>&Bodega</b>", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setText(QtGui.QApplication.translate("frmKardexOther", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Sans Serif\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Comentario&amp;s</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblaccounts.setText(QtGui.QApplication.translate("frmKardexOther", "<b>&Movimientos</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), None)
         self.label.setText(QtGui.QApplication.translate("frmKardexOther", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), None)

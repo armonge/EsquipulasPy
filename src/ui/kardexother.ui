@@ -21,7 +21,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabdetails">
        <attribute name="icon">
@@ -37,7 +37,11 @@
           <item>
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Numero de Kardex:</string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;amp;Numero de Ajuste de Bodega:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="buddy">
              <cstring>txtPrintedDocumentNumber</cstring>
@@ -54,7 +58,7 @@
           <item>
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>&amp;Fecha</string>
+             <string>&lt;b&gt;&amp;Fecha&lt;/b&gt;</string>
             </property>
             <property name="buddy">
              <cstring>dtPicker</cstring>
@@ -78,7 +82,11 @@
           <item>
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Concepto:</string>
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;amp;Concepto:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="buddy">
              <cstring>cbConcept</cstring>
@@ -123,7 +131,7 @@
           <item>
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>&amp;Bodega</string>
+             <string>&lt;b&gt;&amp;Bodega&lt;/b&gt;</string>
             </property>
             <property name="buddy">
              <cstring>cbWarehouse</cstring>
@@ -198,7 +206,14 @@
              <item>
               <widget class="QLabel" name="label_6">
                <property name="text">
-                <string>Comentarios</string>
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Comentario&amp;amp;s&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="buddy">
+                <cstring>txtObservations</cstring>
                </property>
               </widget>
              </item>
@@ -210,9 +225,12 @@
            <widget class="QWidget" name="layoutWidget">
             <layout class="QVBoxLayout" name="verticalLayout_6">
              <item>
-              <widget class="QLabel" name="label_7">
+              <widget class="QLabel" name="lblaccounts">
                <property name="text">
-                <string>Movimientos</string>
+                <string>&lt;b&gt;&amp;Movimientos&lt;/b&gt;</string>
+               </property>
+               <property name="buddy">
+                <cstring>tableaccounts</cstring>
                </property>
               </widget>
              </item>
@@ -298,9 +316,14 @@
  </widget>
  <tabstops>
   <tabstop>txtPrintedDocumentNumber</tabstop>
-  <tabstop>cbConcept</tabstop>
   <tabstop>dtPicker</tabstop>
+  <tabstop>cbConcept</tabstop>
+  <tabstop>cbWarehouse</tabstop>
   <tabstop>tabledetails</tabstop>
+  <tabstop>txtObservations</tabstop>
+  <tabstop>tableaccounts</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>txtWarehouse</tabstop>
   <tabstop>txtConcept</tabstop>
   <tabstop>tablenavigation</tabstop>
   <tabstop>lineEdit</tabstop>

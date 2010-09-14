@@ -20,7 +20,7 @@ from utility import constantes, movimientos
 from utility.accountselector import AccountsSelectorDelegate, AccountsSelectorLine
 
                 
-IDDOCUMENTO, NDOCIMPRESO, FECHA, OBSERVACIONES,BODEGA, TOTAL, ESTADO, CONCEPT=range(8)
+IDDOCUMENTO, NDOCIMPRESO, FECHA, OBSERVACIONES,BODEGA, TOTAL, ESTADO, CONCEPT, PENDIENTE=range(9)
 IDARTICULO, DESCRIPCION,COSTO, CANTIDAD, IDDOCUMENTOD = range(5)
 IDCUENTA, CODIGO, NOMBRECUENTA, MONTOCUENTA, IDDOCUMENTOC = range(5) 
 
@@ -56,7 +56,11 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
 
         
         self.editmodel=None
-                
+
+        if not self.user.hasRole("contabilidad"):
+            self.tableaccounts.setVisible(False)
+            self.lblaccounts.setVisible(False)
+
         QTimer.singleShot(0, self.loadModels)
         
     def setControls(self,status):
@@ -83,7 +87,6 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         
         if not status:
             self.tabWidget.setCurrentIndex(0)
-            self.tabledetails.setColumnWidth(DESCRIPCION, 250)
             self.tabledetails.addAction(self.actionDeleteRow)
         else:
             self.tabledetails.removeAction(self.actionDeleteRow)
@@ -98,6 +101,95 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
 
         self.tableaccounts.setColumnHidden(IDDOCUMENTOC, True)
         self.tableaccounts.setColumnHidden(IDCUENTA, True)
+
+        if not self.user.hasRole("contabilidad"):
+            self.actionNew.setVisible(False)
+
+        self.tabledetails.setColumnWidth(DESCRIPCION, 300)
+
+        self.tablenavigation.setColumnHidden(IDDOCUMENTO, True)
+        self.tablenavigation.setColumnHidden(ESTADO, True)
+        self.tablenavigation.setColumnHidden(OBSERVACIONES, True)
+        
+        
+    def addActionsToToolBar(self):
+        if self.user.hasRole("contabilidad"):
+            self.toolBar.addActions([
+                self.actionNew,
+                self.actionPreview,
+                self.actionPrint,
+                self.actionSave,
+                self.actionCancel
+            ])
+        else:
+            self.toolBar.addActions([
+                self.actionPreview,
+                self.actionPrint,
+            ])
+        self.toolBar.addSeparator()
+        self.toolBar.addActions([
+            self.actionGoFirst,
+            self.actionGoPrevious,
+            self.actionGoLast,
+            self.actionGoNext,
+            self.actionGoLast
+        ])
+        if self.user.hasRole("kardex"): #si el usuario no es de kardex no deberia de poder dar entrada a bodega
+            self.actionGiveEntry = self.createAction(text="Dar entrada al documento", icon=":/icons/res/dialog-ok-apply.png", slot=self.giveEntry)
+            self.toolBar.addActions([
+                self.actionGiveEntry
+            ])
+    def giveEntry(self):
+        """
+        Dar entrada a un kardex
+        """
+        if QMessageBox.question(self, qApp.organizationName(), u"¿Realmente desea dar entrada a este documento?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+            iddoc = self.navmodel.record( self.mapper.currentIndex() ).value( IDDOCUMENTO ).toInt()[0]
+
+
+            query = QSqlQuery()
+            try:
+                if not self.database.isOpen():
+                    if not self.database.open():
+                        raise UserWarning(u"No se pudo conectar con la base de datos")
+
+                if not self.database.transaction():
+                    raise Exception(u"No se pudo iniciar la transacción para confirmar el kardex")
+
+                q = """
+                UPDATE documentos d SET idestado = %d  WHERE d.iddocumento = %d LIMIT 1
+                """ % (constantes.CONFIRMADO, iddoc)
+                if not query.exec_(q):
+                    raise Exception(u"No se pudo actualizar el estado del documento")
+
+                if not query.exec_("""
+                    INSERT INTO documentos (ndocimpreso, fechacreacion, idtipodoc, total, idtipocambio, idbodega)
+                    SELECT fnConsecutivo(%d,NULL), NOW(), %d, total, idtipocambio, idbodega FROM documentos
+                    WHERE iddocumento = %d;
+                """ % (constantes.IDKARDEX, constantes.IDKARDEX, iddoc)):
+                    raise Exception(u"No se pudo insertar el documento kardex")
+
+                insertedId = query.lastInsertId().toInt()[0]
+                
+                if not query.exec_("""
+                    INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (%d, %d)
+                """ % (iddoc, insertedId)):
+                    raise Exception(u"No se pudo crear la relación entre el documento ajuste de bodega y su kardex")
+
+                QMessageBox.information(self, qApp.organizationName(),"El documento se ha guardado con exito")
+                self.updateModels()
+            except UserWarning as inst:
+                logging.error(unicode(inst))
+                self.database.rollback()
+                QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            except Exception as inst:
+                logging.critical(unicode(inst))
+                self.database.rollback()
+                QMessageBox.critical(self, qApp.organizationName(), u"No se pudo confirmar la entrada de este documento")
+
+                
+                
+
     def deleteRow(self):
         """
         Funcion usada para borrar lineas de la tabla
@@ -117,21 +209,23 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
                     raise UserWarning("No se pudo conectar con la base datos")
             
             query = """
-            SELECT 
-                d.iddocumento, 
-                d.ndocimpreso, 
-                d.fechacreacion, 
+            SELECT
+                d.iddocumento,
+                d.ndocimpreso AS 'Ndoc',
+                d.fechacreacion,
                 d.observacion,
-                b.nombrebodega, 
-                d.total,
+                b.nombrebodega AS 'Bodega',
+                d.total AS 'Total',
                 d.idestado,
-                c.descripcion
-            FROM documentos d 
+                c.descripcion AS 'Concepto',
+                IF( dph.idhijo IS NULL, 1, 0) AS 'Pendiente'
+            FROM documentos d
             JOIN bodegas b ON b.idbodega = d.idbodega
             JOIN conceptos c ON c.idconcepto = d.idconcepto
-            LEFT JOIN docpadrehijos dph ON dph.idhijo = d.iddocumento
-            WHERE d.idtipodoc = %d AND dph.idhijo IS NULL
-            """ % constantes.IDAJUSTEBODEGA
+            LEFT JOIN docpadrehijos dph ON dph.idpadre = d.iddocumento
+            LEFT JOIN documentos kardex ON dph.idhijo = kardex.iddocumento AND kardex.idtipodoc = %d
+            WHERE d.idtipodoc = %d
+            """ % ( constantes.IDKARDEX, constantes.IDAJUSTEBODEGA)
             self.navmodel.setQuery(query)
             query = """
             SELECT
@@ -148,18 +242,20 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             """ % constantes.IDAJUSTEBODEGA
             self.detailsModel.setQuery(query)
 
-            query = """
-            SELECT
-                cc.idcuenta,
-                cc.codigo,
-                cc.descripcion,
-                cxd.monto,
-                cxd.iddocumento
-            FROM cuentasxdocumento cxd
-            JOIN documentos d ON d.iddocumento = cxd.iddocumento AND d.idtipodoc = %d
-            JOIN cuentascontables cc ON cxd.idcuenta = cc.idcuenta
-            """ % constantes.IDAJUSTEBODEGA
-            self.accountsnavmodel.setQuery(query)
+
+            if self.user.hasAnyRole(["inventario", "contabilidad"]):
+                query = """
+                SELECT
+                    cc.idcuenta,
+                    cc.codigo,
+                    cc.descripcion,
+                    cxd.monto,
+                    cxd.iddocumento
+                FROM cuentasxdocumento cxd
+                JOIN documentos d ON d.iddocumento = cxd.iddocumento AND d.idtipodoc = %d
+                JOIN cuentascontables cc ON cxd.idcuenta = cc.idcuenta
+                """ % constantes.IDAJUSTEBODEGA
+                self.accountsnavmodel.setQuery(query)
             
             self.mapper.setModel( self.navproxymodel )
             self.mapper.addMapping( self.txtPrintedDocumentNumber, NDOCIMPRESO )
@@ -167,6 +263,8 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
             self.mapper.addMapping( self.txtWarehouse, BODEGA )
             self.mapper.addMapping( self.txtObservations, OBSERVACIONES )
             self.mapper.addMapping(self.dtPicker, FECHA )
+
+
             
         except UserWarning as inst:
             QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
@@ -182,7 +280,10 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
 
         self.accountsproxymodel.setFilterKeyColumn( IDDOCUMENTOC )
         self.accountsproxymodel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
-        
+
+        estado = self.navmodel.record( index ).value( PENDIENTE ).toInt()[0]
+        self.actionGiveEntry.setVisible( estado == 1 )
+
     def newDocument(self):
         try:
             if not QSqlDatabase.database().isOpen():

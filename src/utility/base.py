@@ -386,6 +386,9 @@ class Base( object ):
 
             self.webview.loadFinished[bool].connect(self.on_webview_loadFinished)
             self.webview.loadProgress[int].connect(self.on_webview_loadProgress)
+        except NotImplementedError as inst:
+            logging.error(unicode(inst))
+            QMessageBox.information(self, qApp.organizationName(), u"La función de impresión no se ha implementado para este modulo")
         except UserWarning as inst:
             logging.error(unicode(inst))
             QMessageBox.critical(self, qApp.organizationName(), unicode(inst))

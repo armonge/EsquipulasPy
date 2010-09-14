@@ -119,9 +119,10 @@ class MainWindowBase( object ):
         
     def about(self):
         QMessageBox.about(self, qApp.organizationName(),
-        r"%s: %s  Este programa ha sido desarrollado por Cusuco Software y se distribuye bajo \
-        una licencia GPL, usted deberia de haber recibido una copia de esta licencia \
-        junto con el programa." % (qApp.organizationName(), qApp.applicationName()) )
+        "<b>%s: %s</b><br />" % ( qApp.organizationName(), qApp.applicationName() )  + \
+        "Este programa ha sido desarrollado por Cusuco Software y se distribuye bajo" \
+        "una licencia GPL, usted deberia de haber recibido una copia de esta licencia " +\
+        "junto con el programa."  )
         
     def help(self):
         settings = QSettings()

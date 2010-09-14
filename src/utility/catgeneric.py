@@ -17,7 +17,7 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
     """
     def __init__( self, table, parent = None ):
         """
-        @param table: Esta es la tabla que se mostrara 
+        @param table: Esta es la tabla que se mostrara
         """
         super( frmCatGeneric, self ).__init__( parent )
         self.setupUi( self )
@@ -58,7 +58,7 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( "No se pudo abrir la base de datos" )
-                
+
             self.backmodel.setTable( self.table )
             self.backmodel.select()
 
@@ -98,7 +98,7 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
             else:
                 QMessageBox.information( None,
                  qApp.organizationName() ,
-                 """Sus cambios han sido guardados""" ) 
+                 """Sus cambios han sido guardados""" )
                 self.status = False
                 self.updateModels()
         except UserWarning as inst:
@@ -107,7 +107,7 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
         except Exception as ins:
             QMessageBox.critical( self,
                      qApp.organizationName() ,
-                     """Hubo un error al guardar sus cambios""" ) 
+                     """Hubo un error al guardar sus cambios""" )
             logging.critical(inst)
             logging.critical(self.backmodel.lastError().text())
         finally:
@@ -139,7 +139,7 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
         self.status = True
 
     def setStatus( self, status ):
-        
+
         if status:
             self.tableview.setEditTriggers( QAbstractItemView.AllEditTriggers )
             self.tableview.edit( self.tableview.selectionModel().currentIndex() )
