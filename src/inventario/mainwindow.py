@@ -5,7 +5,7 @@ Module implementing MainWindow.
 """
 
 from PyQt4.QtGui import QMainWindow, QIcon
-from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, SLOT
+from PyQt4.QtCore import pyqtSlot, Qt
 from entradacompra import frmEntradaCompra
 from catalogos import frmCatProveedores, frmCatMarcas,  frmCatConceptos
 from liquidacion import frmLiquidacion

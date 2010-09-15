@@ -4,7 +4,7 @@ Created on 19/05/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, SIGNAL
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 
 from decimal import Decimal
@@ -269,7 +269,7 @@ class creditoDebitoModel( QAbstractTableModel ):
 
             self.dirty = True
 
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.dataChanged.emit(index, index)
 
             return True
         return False

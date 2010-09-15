@@ -7,8 +7,8 @@ Created on 04/08/2010
 import logging
 from decimal import Decimal
 
-from PyQt4.QtCore import pyqtSlot, SIGNAL, QModelIndex, Qt, QTimer, \
-    SLOT, QDateTime
+from PyQt4.QtCore import pyqtSlot, QModelIndex, Qt, QTimer, \
+    QDateTime
 
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
@@ -248,9 +248,9 @@ class dlgSelectBill( QDialog ):
         self.setLayout( layout )
 
         self.setMinimumWidth( 400 )
-        self.connect( buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
-        self.connect( buttonbox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) )
-        self.connect( self.txtSearch, SIGNAL( "textChanged(QString)" ), self.updateFilter )
+        self.accepted.connect(self.accept)
+        self.rejected.connect(self.reject)
+        self.txtSearch.textChanged[unicode].connect(self.updateFilter)
 
 #FIXME: Que pasa cuando no hay facturas?
 #    def exec_( self ):

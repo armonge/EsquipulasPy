@@ -7,7 +7,7 @@ Created on 07/06/2010
 #TODO: Creo que podria utilizar un arreglo o algún tipo de estructura para los totales en lugar de utilizar una variable para uno
 import logging
 
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
 from PyQt4.QtGui import QSortFilterProxyModel
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from document.arqueo.lineaarqueo import LineaArqueo
@@ -304,7 +304,7 @@ class ArqueoModel( QAbstractTableModel ):
                 
             self.dirty = True
 
-            self.emit( SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), index, index )
+            self.dataChanged.emit(index, index)
             return True
         return False
 

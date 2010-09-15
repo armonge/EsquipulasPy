@@ -4,7 +4,7 @@ Created on 18/05/2010
 
 @author: Luis Carlos Mejia Garcia
 '''
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime,QSize
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime,QSize
 
 from lineaabono import LineaAbono
 from PyQt4.QtGui import QStyledItemDelegate, QDoubleSpinBox,QSortFilterProxyModel
@@ -110,7 +110,7 @@ class AbonoModel( QAbstractTableModel ):
                 line.saldo = line.totalFac - line.monto
             self.dirty = True
 
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.dataChanged.emit(index, index)
 #            #si la linea es valida y es la ultima entonces aniadir una nueva
 #            if  index.row() == len(self.lines) -1 and line.valid:
 #                self.insertRows(len(self.lines))

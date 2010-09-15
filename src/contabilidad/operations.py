@@ -6,9 +6,10 @@ Created on 01/07/2010
 '''
 import logging
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QItemSelectionModel, QDataWidgetMapper, QMessageBox, qApp
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QItemSelectionModel, \
+QItemSelection, QDataWidgetMapper, QMessageBox, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
-from PyQt4.QtCore import pyqtSlot, QDateTime, SIGNAL, QTimer, QModelIndex, Qt
+from PyQt4.QtCore import pyqtSlot, QDateTime, QTimer, QModelIndex, Qt
 
 from ui.Ui_operations import Ui_frmOperations
 from utility.accountselector import AccountsSelectorModel, AccountsSelectorDelegate
@@ -54,7 +55,7 @@ class frmOperations( QMainWindow, Ui_frmOperations ):
 
 
         self.buttonBox.accepted.connect( self.save )
-        self.connect( self.tableNavigation.selectionModel(), SIGNAL( "selectionChanged(QItemSelection, QItemSelection)" ), self.updateDetails )
+        self.tableNavigation.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect(self.updateDetails)
 
         QTimer.singleShot( 0, self.updateModels )
 

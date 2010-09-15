@@ -6,7 +6,7 @@ from decimal import Decimal
 import logging
 
 from PyQt4.QtGui import QMainWindow,  QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter, qApp
-from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QTimer, QDateTime, QModelIndex
+from PyQt4.QtCore import pyqtSlot, Qt, QTimer, QDateTime, QModelIndex
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 
 from utility.base import Base

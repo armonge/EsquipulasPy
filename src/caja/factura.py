@@ -5,7 +5,7 @@ Created on 25/05/2010
 '''
 from PyQt4 import QtGui,QtCore
 from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter,QDialog, QPrinter, qApp
-from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QModelIndex, QTimer, QDateTime,QDate
+from PyQt4.QtCore import pyqtSlot, Qt,  QModelIndex, QTimer, QDateTime,QDate
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 from decimal import Decimal
 import functools
@@ -704,7 +704,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
                         
                 self.tabledetails.setModel( self.editmodel )
                 self.addLine()
-                self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+                self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
 
                 self.rbcontado.setChecked(True)
                 self.txtobservaciones.setPlainText( "" )

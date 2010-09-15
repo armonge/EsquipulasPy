@@ -13,7 +13,7 @@ from decimal import  Decimal
 import logging
 
 from PyQt4.QtGui import  QStyledItemDelegate, QDoubleSpinBox
-from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex, QVariant, SIGNAL, QSize
+from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex, QVariant, QSize
 from PyQt4.QtSql import QSqlQuery
 from utility.widgets.searchpanel import SearchPanel
 from utility.moneyfmt import moneyfmt

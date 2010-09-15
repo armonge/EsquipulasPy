@@ -5,8 +5,8 @@ Module implementing frmDevolucion.
 from decimal import Decimal
 import logging
 
-from PyQt4.QtCore import pyqtSlot, SIGNAL, Qt, QTimer, \
-    SLOT, QDateTime
+from PyQt4.QtCore import pyqtSlot, Qt, QTimer, \
+     QDateTime, QModelIndex
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
      QLineEdit,QMessageBox, QPrinter, qApp
@@ -361,7 +361,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 
                 self.tabledetails.resizeColumnsToContents()
                 self.dtPicker.setDateTime( QDateTime.currentDateTime() )
-                self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+                self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
                 
                 
                 self.txtDocumentNumber.setText( self.editmodel.printedDocumentNumber)
@@ -523,10 +523,9 @@ class dlgSelectBill( QDialog ):
         self.setLayout( layout )
 
         self.setMinimumWidth( 400 )
-        self.connect( buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
-        self.connect( buttonbox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) )
-        self.connect( self.txtSearch, SIGNAL( "textChanged(QString)" ), self.updateFilter )
-
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+        self.txtSearch.textChanged[unicode].connect(self.updateDetailFilter)
 #FIXME: Que pasa cuando no hay facturas?
 #    def exec_( self ):
 #        if self.billsmodel.rowCount() == 0:

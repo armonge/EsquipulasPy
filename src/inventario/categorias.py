@@ -5,7 +5,7 @@ Created on 10/07/2010
 @author: Andrés Reyes Monge
 '''
 from PyQt4.QtGui import QMainWindow, QLineEdit, QVBoxLayout, QFormLayout, QDialogButtonBox, QDialog, QSortFilterProxyModel, QMessageBox, qApp
-from PyQt4.QtCore import  Qt, SIGNAL, SLOT, pyqtSlot
+from PyQt4.QtCore import  Qt, pyqtSlot
 from PyQt4.QtSql import  QSqlDatabase
 
 from ui.Ui_categorias import Ui_frmCategorias

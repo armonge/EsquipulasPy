@@ -11,7 +11,7 @@ from utility.base import Base
 from decimal import Decimal
 import functools
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
-from PyQt4.QtCore import pyqtSignature,pyqtSlot, QDate,Qt, SIGNAL,SLOT, QTimer
+from PyQt4.QtCore import pyqtSignature,pyqtSlot, QDate,Qt, QTimer
 from utility.moneyfmt import moneyfmt
 from document.movimientosbancarios.movimientosbancariosmodel import MovimientosBancariosModel
 from utility.widgets.searchpanel import SearchPanel
@@ -47,12 +47,10 @@ class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
         self.editmodel = None
 
         #general events
-#        self.connect( self.actionEditCell, SIGNAL( "triggered()" ), self.editCell )
-#        self.connect( self.actionDeleteRow, SIGNAL( "triggered()" ), self.removeLine )
-        self.connect( self.actionGoFirst, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'first' ) )
-        self.connect( self.actionGoPrevious, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'previous' ) )
-        self.connect( self.actionGoNext, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'next' ) )
-        self.connect( self.actionGoLast, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'last' ) )
+        self.actionGoFirst.triggered.connect(functools.partial(self.navigate, 'first'))
+        self.actionGoPrevious.triggered.connect(functools.partial(self.navigate, 'previous'))
+        self.actionGoNext.triggered.connect(functools.partial(self.navigate, 'next'))
+        self.actionGoLast.triggered.connect(functools.partial(self.navigate, 'last'))
 
         QTimer.singleShot( 0, self.loadModels )
                 
@@ -70,7 +68,7 @@ class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
         
         
         self.editmodel.setCuentasBancarias(self.cbcuenta,self.swcuenta)
-        self.connect(self.cbcuenta, SIGNAL("currentIndexChanged( int )"), self.on_cbcuenta_currentIndexChanged)
+        self.cbcuenta.currentIndexChanged[int].connect(self.on_cbcuenta_currentIndexChanged)
         
         self.editmodel.setTiposDoc(self.cbtipodoc, self.swtipodoc)
 #        self.tabledetails.setModel(None)
@@ -271,9 +269,9 @@ class dlgMovimientosBancarios( QDialog,Ui_dlgMovimientosBancarios):
         self.editmodel.setTiposDoc(self.cbtipodoc)
         self.cbtipodoc.setEnabled(True)
         self.editmodel.setAccountTable(self.tabledetails)
-        
-        self.connect(self.buttonBox,SIGNAL("accepted()"),self.agregar)
-        self.connect(self.buttonBox,SIGNAL("rejected()"), self, SLOT( "reject()" ) )
+
+        self.buttonBox.accepted.connect(self.agregar)
+        self.buttonBox.rejected.connect(self.reject)
         
         if QSqlDatabase.database().isOpen():
             QSqlDatabase.database().close()

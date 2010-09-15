@@ -9,7 +9,7 @@ from utility.accountselector import AccountsSelectorModel,QModelIndex
 from utility.moneyfmt import moneyfmt
 from linearecibo import LineaRecibo
 from decimal import  Decimal
-from PyQt4.QtCore import QAbstractTableModel, Qt,SIGNAL
+from PyQt4.QtCore import QAbstractTableModel, Qt
 
 IDPAGO, DESCRIPCION, REFERENCIA,BANCO, MONTO, MONTODOLAR, IDMONEDA = range( 7 )
 class ReciboModel( AccountsSelectorModel ):
@@ -159,9 +159,9 @@ class ReciboModel( AccountsSelectorModel ):
             line.monto = Decimal(str(line.monto))
 
          
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.dataChanged.emit(index, index)
             index = self.index(index.row(),MONTODOLAR)
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.dataChanged.emit(index, index)
 #            print line.montoDolar
             if ultimaFila >0:
                 if 0== line.montoDolar:

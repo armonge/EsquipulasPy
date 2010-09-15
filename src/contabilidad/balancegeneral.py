@@ -7,7 +7,7 @@ Created on 15/07/2010
 from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel, QPrinter
 from ui.Ui_balancegeneral import Ui_frmBalanceGeneral
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QDate,pyqtSlot,QAbstractItemModel, SIGNAL, QModelIndex, Qt
+from PyQt4.QtCore import QDate,pyqtSlot,QAbstractItemModel, QModelIndex, Qt
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
@@ -165,7 +165,7 @@ class CuentasModel( QAbstractItemModel ):
         result = item.setData( index.column(), value )
 
         if result:
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.dataChanged.emit(index, index)
 
         return result
 

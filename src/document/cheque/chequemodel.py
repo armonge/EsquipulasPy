@@ -7,7 +7,7 @@ Created on 18/05/2010
 from PyQt4.QtGui import QMessageBox
 from PyQt4 import QtGui
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
 from decimal import Decimal,InvalidOperation
 from utility.moneyfmt import moneyfmt
 from utility.accountselector import AccountsSelectorModel

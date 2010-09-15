@@ -8,7 +8,7 @@ from decimal import Decimal
 import logging
 
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSlot, SIGNAL, SLOT, QRegExp
+from PyQt4.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSlot, QRegExp
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDialog, QLineEdit, \
 QVBoxLayout, QHBoxLayout, QDialogButtonBox, QCheckBox, QLabel, QRegExpValidator, QValidator, \
 QMessageBox, qApp
@@ -171,7 +171,7 @@ class AccountsModel( QAbstractItemModel ):
         result = item.setData( index.column(), value )
 
         if result:
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.dataChanged.emit(index, index)
 
         return result
 
@@ -463,8 +463,8 @@ class dlgAccountMod( QDialog ):
 
         self.setLayout( verticallayout )
 
-        self.connect( self.buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
-        self.connect( self.buttonbox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) )
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
     def accept(self):
         result = True

@@ -6,7 +6,7 @@ Created on 18/05/2010
 '''
 from PyQt4 import QtGui
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
 from lineafactura import LineaFactura
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
@@ -174,8 +174,7 @@ class FacturaModel( QAbstractTableModel ):
             self.dirty = True
 
 
-
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.dataChanged.emit(index, index)
             #si la linea es valida y es la ultima entonces aniadir una nueva
             if  index.row() == len( self.lines ) - 1 and line.valid:
                 self.insertRows( len( self.lines ) )

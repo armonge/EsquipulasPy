@@ -3,7 +3,7 @@ Created on 03/06/2010
 
 @author: Administrator
 '''
-from PyQt4.QtCore import SIGNAL,SLOT,pyqtSlot, Qt
+from PyQt4.QtCore import pyqtSlot, Qt
 from PyQt4.QtGui import QWidget, QSortFilterProxyModel,QAbstractItemView
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel
 from utility.catgeneric import frmCatGeneric

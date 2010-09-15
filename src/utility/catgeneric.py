@@ -8,7 +8,7 @@ import logging
 
 from PyQt4.QtGui import QMainWindow, QMessageBox, QAbstractItemView, QSortFilterProxyModel,\
  QLineEdit, QRegExpValidator, QStyledItemDelegate, QTextDocument, QIntValidator, qApp
-from PyQt4.QtCore import pyqtSlot, Qt, SIGNAL, QTimer, QSize, QRegExp, QVariant
+from PyQt4.QtCore import pyqtSlot, Qt, QTimer, QSize, QRegExp, QVariant
 from PyQt4.QtSql import QSqlTableModel, QSqlDatabase
 from ui.Ui_catgeneric import Ui_frmCatGeneric
 class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
@@ -42,8 +42,8 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
         self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
 
 
-        self.connect( self.actionEdit, SIGNAL( "triggered()" ), self.edit )
-        self.connect( self.actionNew, SIGNAL( "triggered()" ), self.new )
+        self.actionEdit.triggered.connect(self.edit)
+        self.actionNew.triggered.connect(self.new)
 
         QTimer.singleShot( 0, self.updateModels )
 

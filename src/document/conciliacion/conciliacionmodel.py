@@ -4,7 +4,7 @@ Created on 03/07/2010
 
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtCore import QAbstractTableModel, QVariant, QModelIndex, Qt, SIGNAL
+from PyQt4.QtCore import QAbstractTableModel, QVariant, QModelIndex, Qt
 from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from utility.moneyfmt import moneyfmt
@@ -230,8 +230,8 @@ class ConciliacionModel( QAbstractTableModel ):
             return False
         if index.column() == CONCILIADO and role == Qt.CheckStateRole:
             if index.row()>0:
-                self.lines[index.row()].conciliado = 1 if data.toBool() else 0 
-                self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+                self.lines[index.row()].conciliado = 1 if data.toBool() else 0
+                self.dataChanged.emit(index, index)
             return True
     
     

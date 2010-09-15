@@ -5,7 +5,7 @@ Created on 25/05/2010
 @author: Luis Carlos Mejia
 '''
 from PyQt4.QtGui import QMainWindow,QDialog, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter, qApp
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, SIGNAL, QModelIndex, QTimer
+from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, QModelIndex, QTimer
 from PyQt4.QtSql import QSqlQueryModel,QSqlQuery, QSqlDatabase
 
 from decimal import Decimal
@@ -215,8 +215,8 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.status = False
             self.frbotones.setVisible( True )
             self.updateFacturasFilter()
-            
-            self.connect( self.abonoeditmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+
+            self.abonoeditmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
 
         if QSqlDatabase.database().isOpen():
             QSqlDatabase.database().close()
@@ -619,7 +619,6 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         else:
             self.txtcliente.setText(factura.cbcliente.currentText())
             self.totalFactura = Decimal(0)
-#            self.connect( self.buttonBox, SIGNAL( "accepted()" ), self.aceptar )
             self.lbltotal.setText(factura.lbltotal.text())
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
@@ -650,7 +649,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
             linea.monto = factura.editmodel.total
             linea.montoDolar =factura.editmodel.total 
             index= self.editmodel.index(0,MONTO)
-            self.editmodel.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.editmodel.dataChanged.emit(index, index)
             
             self.lblfecha.setText(self.datosRecibo.datosSesion.fecha.toString("dd/MM/yyyy"))
             

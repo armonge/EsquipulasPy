@@ -3,8 +3,8 @@
 Module implementing frmConciliacion.
 """
 
-from PyQt4.QtCore import pyqtSlot, SIGNAL, QModelIndex, Qt, QTimer, \
-    SLOT,  QDate, QVariant
+from PyQt4.QtCore import pyqtSlot, QModelIndex, Qt, QTimer, \
+    QDate, QVariant
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
      QLineEdit, QDateTimeEdit, QMessageBox
@@ -58,12 +58,12 @@ class frmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
         self.detailsmodel = ReadOnlyTableModel( self )  
 #        CREAR TODOS LOS PROXY MODEL
         self.crearModelosFiltrados()
-        
-        self.connect( self.actionGoFirst, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'first' ) )
-        self.connect( self.actionGoPrevious, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'previous' ) )
-        self.connect( self.actionGoNext, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'next' ) )
-        self.connect( self.actionGoLast, SIGNAL( "triggered()" ), functools.partial( self.navigate, 'last' ) )
-        self.connect( self.detailsmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+
+        self.actionGoFirst.triggered.connect(functools.partial(self.navigate,'first'))
+        self.actionGoPrevious.triggered.connect(functools.partial(self.navigate,'previous'))
+        self.actionGoNext.triggered.connect(functools.partial(self.navigate,'next'))
+        self.actionGoLast.triggered.connect(functools.partial(self.navigate,'last'))
+        self.detailsmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
 #        Cargar los modelos en un hilo aparte
         QTimer.singleShot( 0, self.loadModels )
         
@@ -359,8 +359,8 @@ class frmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
         self.tabledetails.resizeColumnsToContents()
         
         self.ocultarCols()
-        
-        self.connect( self.editmodel, SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), self.updateLabels )
+
+        self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
 
 
         if QSqlDatabase.database().isOpen():
@@ -454,7 +454,7 @@ class frmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
                 self.editmodel.insertRows( row )
                 self.editmodel.lines[row] = linea                
                 index = self.editmodel.index(row, CONCILIADO)
-                self.editmodel.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+                self.editmodel.dataChanged.emit(index, index)
                 
     @pyqtSlot("bool")
     def on_btnremove_clicked( self,checked  ):
@@ -559,11 +559,11 @@ class dlgSelectCuenta( QDialog ):
         self.setLayout( layout )
 
         self.setMinimumWidth( 400 )
-#        self.connect( buttonbox, SIGNAL( "accepted()" ), self, SLOT( "accept()" ) )
-        self.connect( buttonbox, SIGNAL( "accepted()" ), self.aceptar )
-        self.connect( buttonbox, SIGNAL( "rejected()" ), self, SLOT( "reject()" ) )
-        self.connect( self.txtSearch, SIGNAL( "textChanged(QString)" ), self.updateFilter )
-        self.connect( self.tblCuenta.selectionModel(), SIGNAL( "currentChanged(QModelIndex,QModelIndex)" ), self.on_tblCuenta_currentChanged )
+
+        self.buttonbox.accepted.connect(self.aceptar)
+        self.buttonbox.rejected.connect(self.reject)
+        self.txtSearch.textChanged[unicode].connect(self.updateDetailFilter)
+        self.tblCuenta.selectionModel().currentChanged[QModelIndex, QModelIndex].connect(self.on_tblCuenta_currentChanged)
 
         self.setModal(True)
         self.setWindowFlags( Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint | Qt.WindowTitleHint)        
@@ -801,7 +801,7 @@ class DetalleTableModel( QSortFilterProxyModel ):
             if role == Qt.EditRole:
                 return QSortFilterProxyModel.data( self, index, Qt.EditRole )
             elif role == Qt.DisplayRole:
-                self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+                self.dataChanged.emit(index, index)
                 return moneyfmt(value,4,'')       
         else:
             return QSortFilterProxyModel.data( self, index, role )

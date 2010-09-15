@@ -6,7 +6,7 @@ Created on 13/07/2010
 '''
 from PyQt4.QtGui import QDialog, QCompleter,QAbstractItemView,QSortFilterProxyModel,QMessageBox,QStyledItemDelegate,QDoubleSpinBox
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDate , QVariant,SIGNAL
+from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDate , QVariant
 from utility.accountselector import AccountsSelectorModel
 from utility.constantes import IDCONTABILIDAD,IDERROR,IDCONCILIACION,IDDEPOSITO,IDCONCEPTODEPOSITO
 from utility.searchpaneldelegate import SearchPanelDelegate
@@ -165,9 +165,9 @@ class MovimientosBancariosModel(object):
                 self.editmodel.lines[1].code = "" 
                 self.editmodel.lines[1].name = ""
                 celda = self.editmodel.index(1,2)
-                self.editmodel.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), celda, celda )
+                self.editmodel.dataChanged.emit(celda, celda)
                 celda = self.editmodel.index(1,1)
-                self.editmodel.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), celda, celda )
+                self.editmodel.dataChanged.emit(celda, celda)
                 cbconcepto.setEnabled(True)
                 cbconcepto.setCurrentIndex(-1)
 
@@ -183,9 +183,9 @@ class MovimientosBancariosModel(object):
             self.editmodel.lines[1].code = "110 001 001 000 000" 
             self.editmodel.lines[1].name = "CYB Caja General"
             celda = self.editmodel.index(1,2)
-            self.editmodel.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), celda, celda )
+            self.editmodel.dataChanged.emit(celda, celda)
             celda = self.editmodel.index(1,1)
-            self.editmodel.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), celda, celda )
+            self.editmodel.dataChanged.emit(celda, celda)
             cbconcepto.setEnabled(False)
             if cbconcepto.currentIndex()!=IDCONCEPTODEPOSITO:
                 cbconcepto.setCurrentIndex(IDCONCEPTODEPOSITO)
@@ -224,9 +224,9 @@ class MovimientosBancariosModel(object):
         self.editmodel.lines[0].code = self.cuentasModel.record( index ).value( "Codigo Contable" ).toString() 
         self.editmodel.lines[0].name = self.cuentasModel.record( index ).value( "Cuenta Contable" ).toString()
         celda = self.editmodel.index(0,2)
-        self.editmodel.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), celda, celda )
+        self.editmodel.dataChanged.emit(celda,celda)
         celda = self.editmodel.index(0,1)
-        self.editmodel.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), celda, celda )
+        self.editmodel.dataChanged.emit(celda,celda)
         
         tabledetails.resizeColumnsToContents()
         value= self.cuentasModel.record( index ).value( "Conciliado" ).toString()

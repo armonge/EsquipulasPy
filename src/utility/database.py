@@ -4,7 +4,7 @@ Modulo utilizado para manejar la configuración de la base de datos
 """
 from PyQt4.QtSql import QSqlDatabase
 from PyQt4.QtGui import QDialog, QFormLayout, QVBoxLayout, QLineEdit, QDialogButtonBox
-from PyQt4.QtCore import   SLOT, SIGNAL, QObject, QSettings
+from PyQt4.QtCore import   QObject, QSettings
 
 from utility.reports import Reports
 

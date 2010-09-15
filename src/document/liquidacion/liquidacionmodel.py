@@ -4,11 +4,15 @@ Created on 21/05/2010
 
 @author: Andrés Reyes Monge
 '''
-#import math
+if __name__ == "__main__":
+    import sip
+    sip.setapi( 'QString', 2 )
+
+    
 from decimal import Decimal, ROUND_CEILING
 import logging
 
-from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt, SIGNAL
+from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from document.liquidacion.linealiquidacion import LineaLiquidacion
 from utility.moneyfmt import moneyfmt
@@ -24,12 +28,12 @@ class LiquidacionModel( QAbstractTableModel ):
     __documentType = constantes.IDLIQUIDACION
     """
     @cvar:EL id del tipo de documento
-    @type:int 
+    @type:int
     """
 
     def __init__( self, uid ):
         """
-        @param uid: El id del usuario que ha creado este documento 
+        @param uid: El id del usuario que ha creado este documento
         """
         super( LiquidacionModel, self ).__init__()
         self.lines = []
@@ -240,24 +244,24 @@ class LiquidacionModel( QAbstractTableModel ):
         Una liquidación es valida cuando:
         =================================
             self.printedDocumentNumber != ""
-            
+
             self.providerId > 0
-            
+
             self.warehouseId > 0
-            
+
             self.exchangeRateId > 0
-            
+
             self.validLines > 0
-            
+
             self.origin != ""
-            
+
             self.tsimId   > 0
-            
+
         @rtype: bool
         """
         if not self.printedDocumentNumber.strip() != "":
             self.validError = "No ha introducido un numero de Poliza"
-            return False 
+            return False
         elif not int( self.providerId ) > 0:
             self.validError = "No ha seleccionado un proveedor"
             return False
@@ -279,13 +283,13 @@ class LiquidacionModel( QAbstractTableModel ):
         elif not int( self.speId ) > 0:
             self.validError = "No existe un valor SPE"
             return False
-        
+
         return True
-            
+
 
     def getISORate( self ):
         """
-        El porcentaje ISO usado en esta liqudiacion
+        El porcentaje ISO usado en esta liquidacion
         @rtype: Decimal
         """
         return self.__isoRate if self.applyISO and self.applyTaxes else Decimal( 0 )
@@ -296,7 +300,7 @@ class LiquidacionModel( QAbstractTableModel ):
 
     def updateFob( self ):
         """
-        Esta función se ejecuta cuando se cambia el costo o la cantidad de un articulo  
+        Esta función se ejecuta cuando se cambia el costo o la cantidad de un articulo
         """
         fob = sum( [linea.fobParcial for linea in self.lines if linea.valid ] )
         self.fobTotal = fob if fob > 0 else Decimal( 0 )
@@ -314,12 +318,12 @@ class LiquidacionModel( QAbstractTableModel ):
         El CIF total del documento en cordobas
         """
         return self.cifTotal * self.exchangeRate
-    
+
     @property
     def cifTotal( self ):
         """
         El CIF total del documento
-        
+
         M{CIFTOTAL = FOBTOTAL + FLETETOTAL + SEGUROTOTAL + OTROSGASTOSTOTAL }
         @rtype: Decimal
         """
@@ -329,7 +333,7 @@ class LiquidacionModel( QAbstractTableModel ):
     def iscTotal( self ):
         """
         El ISC total del documento
-        
+
         M{ISCTOTAL = S{sum}ISCPARCIAL}
         @rtype: Decimal
         """
@@ -340,7 +344,7 @@ class LiquidacionModel( QAbstractTableModel ):
     def isoTotal( self ):
         """
         El ISO Total del documento
-        
+
         M{ISOTOTAL = CIFTOTAL * PORCENTAJEISO}
         @rtype: Decimal
         """
@@ -350,7 +354,7 @@ class LiquidacionModel( QAbstractTableModel ):
     def taxesTotal( self ):
         """
         El total de impuestos del documento
-        
+
         M{IMPUESTOSTOTAL = DAITOTAL + ISCTOTAL + IVATOTAL + TSIMTOTAL + SPETOTAL + ISOTOTAL}
         @rtype: Decimal
         """
@@ -362,12 +366,12 @@ class LiquidacionModel( QAbstractTableModel ):
         El total en cordobas de los impuestos del documento
         """
         return self.taxesTotal * self.exchangeRate
-        
+
     @property
     def ivaTotal( self ):
         """
         El iva total del documento
-        
+
         M{IVATOTAL = TOTALDOLARES * PORCENTAJEIVA}
         @rtype: Decimal
         """
@@ -377,7 +381,7 @@ class LiquidacionModel( QAbstractTableModel ):
     def daiTotal( self ):
         """
         La sumatoria de los dai parcial
-        
+
         M{DAITOTAL = S{sum}DAIPARCIAL }
         @rtype: Decimal
         """
@@ -388,7 +392,7 @@ class LiquidacionModel( QAbstractTableModel ):
     def tsimTotal( self ):
         """
         El TSIM total del documento
-        
+
         M{TSIMTOTAL = ( PESO / FACTORPESO )S{uarr} * PORCENTAJETSIM}
         @rtype: Decimal
         """
@@ -407,7 +411,7 @@ class LiquidacionModel( QAbstractTableModel ):
     def totalD( self ):
         """
         La sumatoria de todos los totales parciales
-        
+
         M{TOTALDOLARES = S{sum}COSTODOLARPARCIAL}
         @rtype: Decimal
         """
@@ -418,8 +422,8 @@ class LiquidacionModel( QAbstractTableModel ):
     def totalC( self ):
         """
         El total en cordobas del documento
-        
-        M{TOTALCORDOBAS = TOTALDOLARES * TIPOCAMBIO }        
+
+        M{TOTALCORDOBAS = TOTALDOLARES * TIPOCAMBIO }
         @rtype: Decimal
         """
         return self.totalD * self.exchangeRate
@@ -452,7 +456,7 @@ class LiquidacionModel( QAbstractTableModel ):
         """
         Este metodo guarda el documento actual en la base de datos
         @rtype: bool
-        @return: Si el documento se pudo guardar o no 
+        @return: Si el documento se pudo guardar o no
         """
         if not self.valid:
             raise Exception ( "El documento a salvar no es valido" )
@@ -487,7 +491,7 @@ class LiquidacionModel( QAbstractTableModel ):
 
             #insertar el usuario
             if not query.prepare( """
-            INSERT INTO personasxdocumento (idpersona, iddocumento, idaccion) 
+            INSERT INTO personasxdocumento (idpersona, iddocumento, idaccion)
             VALUE (:idusuario, :iddocumento, :accion)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
@@ -500,7 +504,7 @@ class LiquidacionModel( QAbstractTableModel ):
 
             #insertar el proveedor
             if not query.prepare( """
-            INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion) 
+            INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion)
             VALUE (:idproveedor, :iddocumento,:accion)
             """ ):
                 raise Exception( "No se pudo preparar la consulta para ingresar proveedor" )
@@ -545,7 +549,6 @@ class LiquidacionModel( QAbstractTableModel ):
             if not query.exec_():
                 raise Exception( "No se pudo insertar el tsim" )
 
-            print "inserto tsim"
 
             #insertar el spe
             if not query.prepare( """
@@ -570,8 +573,7 @@ class LiquidacionModel( QAbstractTableModel ):
 
                 if not query.exec_():
                     raise Exception( "No se pudo insertar el iva" )
-                
-                print "inserto iva"
+
             #insertar el iso si aplica
             if self.applyISO and self.applyTaxes:
                 if not query.prepare( """
@@ -584,7 +586,6 @@ class LiquidacionModel( QAbstractTableModel ):
                 if not query.exec_():
                     raise Exception( "No se pudo insertar el iso" )
 
-                print "inserto iso"
 
 
             for i, line in enumerate([line for line in  self.lines if line.valid]):
@@ -752,7 +753,6 @@ class LiquidacionModel( QAbstractTableModel ):
             if column == COSTOUNIT:
                 return line.itemCost
             elif column == IDARTICULO:
-                print "row: ", index.row(), "id: ", line.itemId
                 return line.itemId
         elif role == Qt.ToolTipRole:
             if column == CIF:
@@ -792,13 +792,13 @@ class LiquidacionModel( QAbstractTableModel ):
         Modificar los datos del modelo
         @param index: El indice en el que se van cambiar los datos
         @type index: QModelIndex
-        
+
         @param value: El nuevo valor para el elemento del modelo
         @type value: Variant
-        
+
         @param role: El rol al que se le van a cambiar los datos
         @type role: ItemDataRole
-        
+
         @rtype: bool
         @return: Si se pudo o no cambiar el valor del modelo
         """
@@ -823,7 +823,7 @@ class LiquidacionModel( QAbstractTableModel ):
             self.dirty = True
 
 
-            if column  in ( CANTIDAD, COSTOUNIT, ARTICULO ):
+            if column  in ( CANTIDAD, COSTOUNIT, ARTICULO, IDARTICULO ):
                 self.updateFob()
 
             if index.row() == len( self.lines ) - 1 and line.valid:
@@ -844,7 +844,7 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
     """
     def __init__( self, parent ):
         """
-        @param parent: Este es el modelo LiquidacionModel del cual se manejan los totales 
+        @param parent: Este es el modelo LiquidacionModel del cual se manejan los totales
         @type parent: LiquidacionModel
         """
         super(LiquidacionTotalsModel, self).__init__( )
@@ -855,7 +855,7 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
         """
         actualizar los totales cuando cambien los datos en el modelo Liquidacion
         """
-        self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), self.index( 0, 0 ), self.index( 0, self.columnCount( QModelIndex() ) ) )
+        self.dataChanged.emit(self.index(0,0), self.index( 0, self.columnCount(  ) ) )
 
 
     def columnCount( self, index = QModelIndex() ):
@@ -953,7 +953,7 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
             UPDATE documentos SET idestado = :estado WHERE iddocumento = :iddocumento LIMIT 1
             """):
                 raise Exception("No se pudo preparar la consulta para actualizar el documento")
-            
+
             query.bindValue(":estado", constantes.CONFIRMADO)
             query.bindValue(":iddocumento", self.docid)
 
@@ -969,7 +969,7 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
             query.bindValue(":idpersona", self.user.uid)
             query.bindValue(":iddocumento", self.docid)
             query.bindValue(":accion", constantes.ACCCONTABILIZA)
-            
+
             for number, line in enumerate([ linea for linea in self.lines if linea.valid ]):
                 line.save(self.docid, number)
 
@@ -983,3 +983,67 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
             logging.critical(unicode(inst))
             logging.critical(query.lastError().text())
             return False
+
+
+
+if __name__ == "__main__":
+    import unittest
+    import sip
+    sip.setapi( 'QString', 2 )
+    from PyQt4.QtCore import QCoreApplication, QVariant
+
+    class TestLiquidacionSimple(unittest.TestCase):
+        def setUp(self):
+            app = QCoreApplication([])
+
+            self.liquidacion = LiquidacionModel(1)
+            
+            self.liquidacion.exchangeRate = Decimal('21.5689')
+            self.liquidacion.speTotal = 5
+            self.liquidacion.isoRate = Decimal('35')
+            self.liquidacion.ivaRate = Decimal('15')
+            self.liquidacion.tsimRate = Decimal('0.5')
+            self.liquidacion.weightFactor = 1000
+            
+            self.liquidacion.insertRow(0)
+
+            self.liquidacion.setData(self.liquidacion.index(0,COSTOUNIT),QVariant("1"))
+            self.liquidacion.setData(self.liquidacion.index(0,ARTICULO),[
+                1,
+                "FRICCIONES* BATERIA  N-150 DURUN",
+                Decimal('5'),
+                Decimal('76'),
+                0
+                ])
+            self.liquidacion.setData(self.liquidacion.index(0,CANTIDAD), QVariant("1"))
+
+        def test_dai(self):
+            self.assertEqual(self.liquidacion.daiTotal, Decimal('0.05'))
+
+        def test_isc(self):
+            self.assertEqual(self.liquidacion.iscTotal, Decimal('0.7980'))
+
+        def test_cif(self):
+            self.assertEqual(self.liquidacion.cifTotal, Decimal('1'))
+
+        def test_iva(self):
+            self.assertEqual(self.liquidacion.ivaTotal, Decimal('0.2772'))
+
+        def test_taxes(self):
+            self.assertEqual(self.liquidacion.taxesTotal, Decimal('6.4752'))
+
+        def test_speTotal(self):
+            self.assertEqual(self.liquidacion.speTotal, Decimal('5'))
+            
+        def test_total(self):
+            self.assertEqual(self.liquidacion.totalC,Decimal('161.23184128'))
+            self.assertEqual(self.liquidacion.totalD,Decimal('7.4752'))
+
+        def test_fob(self):
+            self.assertEqual(self.liquidacion.fobTotal,1)
+            
+        def test_numrows(self):
+            self.assertEqual(self.liquidacion.rowCount(),2)
+
+
+    unittest.main()

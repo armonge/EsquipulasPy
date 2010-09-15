@@ -3,7 +3,7 @@ from decimal import  Decimal
 import functools
 import logging
 
-from PyQt4.QtCore import  pyqtSlot,  QSettings, SIGNAL, QUrl
+from PyQt4.QtCore import  pyqtSlot,  QSettings, QUrl
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, \
 QProgressBar, QPrinter, QPrintDialog, QDialog, qApp, QShortcut, QKeySequence

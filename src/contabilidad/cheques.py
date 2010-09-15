@@ -10,7 +10,7 @@ import logging
 
 from PyQt4 import QtGui,QtCore
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase,QSqlQuery
-from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, SIGNAL, QModelIndex, QTimer,QSize,QDate
+from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, QModelIndex, QTimer,QSize,QDate
 from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, QPrinter, qApp,QDialog
 
 from utility.base import Base

@@ -8,7 +8,7 @@ from decimal import Decimal
 import logging
 
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
 
 from lineaentradacompra import LineaEntradaCompra
 from utility.moneyfmt import moneyfmt
@@ -285,7 +285,7 @@ class EntradaCompraModel( QAbstractTableModel ):
 
 
 
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+            self.dataChanged.emit(index, index)
             #si la linea es valida y es la ultima entonces aniadir una nueva
             if  index.row() == len( self.lines ) - 1 and line.valid:
                 self.insertRows( len( self.lines ) )

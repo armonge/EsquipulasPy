@@ -7,7 +7,7 @@ Created on 19/05/2010
 from decimal import Decimal
 import logging
 
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, SIGNAL
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 
 
@@ -168,7 +168,8 @@ class KardexModel( QAbstractTableModel ):
 
             self.dirty = True
 
-            self.emit( SIGNAL( "dataChanged(QModelIndex, QModelIndex)" ), index, index )
+
+            self.dataChanged.emit(index, index)
 
             return True
         return False

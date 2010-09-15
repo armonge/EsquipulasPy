@@ -7,7 +7,7 @@ Created on 28/05/2010
 import logging
 from decimal import Decimal
 
-from PyQt4.QtCore import SIGNAL, SLOT, pyqtSlot, Qt , QVariant, pyqtSlot
+from PyQt4.QtCore import pyqtSlot, Qt , QVariant, pyqtSlot
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog, QItemSelection, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 
@@ -146,7 +146,7 @@ class ArticlesModel( QSqlQueryModel ):
                     self.queries.append( self.setACTIVO( value.toBool(), primarykey ) )
                 self.refresh()
                 self.dirty = True
-                self.emit( SIGNAL( "dataChanged(QModelIndex,QModelIndex)" ), index, index )
+                self.dataChanged.emit(index, index)
                 return True
             except UserWarning as inst:
                 QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
