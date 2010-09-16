@@ -4,23 +4,27 @@ Created on 21/05/2010
 
 @author: Andrés Reyes Monge
 '''
+import unittest
 if __name__ == "__main__":
     import sip
     sip.setapi( 'QString', 2 )
 
-    
-from decimal import Decimal, ROUND_CEILING
+from decimal import Decimal, ROUND_CEILING, InvalidOperation
 import logging
 
-from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt
+
+from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt, QCoreApplication, QVariant
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
+
 from document.liquidacion.linealiquidacion import LineaLiquidacion
 from utility.moneyfmt import moneyfmt
 from utility import constantes
 from utility.accountselector import AccountsSelectorModel
+from utility.docbase import DocumentBase
+
 
 IDARTICULO, ARTICULO, CANTIDAD, COSTOUNIT, FOB, FLETE, SEGURO, OTROS, CIF, IMPUESTOS, COMISION, AGENCIA, ALMACEN, PAPELERIA, TRANSPORTE, TCOSTOD, COSTOD, TCOSTOC, COSTOC = range( 19 )
-class LiquidacionModel( QAbstractTableModel ):
+class LiquidacionModel( QAbstractTableModel, DocumentBase ):
     """
     Este modelo es el que se utiliza para realizar todos los calculos relacionados a una liquidacion,
     de costos
@@ -396,16 +400,12 @@ class LiquidacionModel( QAbstractTableModel ):
         M{TSIMTOTAL = ( PESO / FACTORPESO )S{uarr} * PORCENTAJETSIM}
         @rtype: Decimal
         """
-        return ( self.weight / self.weightFactor ).to_integral_exact( rounding = ROUND_CEILING) * self.tsimRate
+        try:
+            return ( self.weight / self.weightFactor ).to_integral_exact( rounding = ROUND_CEILING) * self.tsimRate
+        except InvalidOperation:
+            return Decimal(0)
 
 
-    @property
-    def validLines( self ):
-        """
-        El total de lineas con la propiedad valid = True
-        @rtype: int
-        """
-        return len( [line for line in self.lines if line.valid] )
 
     @property
     def totalD( self ):
@@ -986,64 +986,68 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
 
 
 
+    
+
+class TestLiquidacionSimple(unittest.TestCase):
+    """
+    Esta clase es un TesCase para LiquidacionModel reproduce un caso común y
+    verifica los resultados del modelo con los esperados
+    """
+    def setUp(self):
+        app = QCoreApplication([])
+
+        self.liquidacion = LiquidacionModel(1)
+
+        self.liquidacion.exchangeRate = Decimal('21.5689')
+        self.liquidacion.speTotal = 5
+        self.liquidacion.isoRate = Decimal('35')
+        self.liquidacion.ivaRate = Decimal('15')
+        self.liquidacion.tsimRate = Decimal('0.5')
+        self.liquidacion.weightFactor = 1000
+
+        self.liquidacion.insertRow(0)
+
+        self.liquidacion.setData(self.liquidacion.index(0,COSTOUNIT),QVariant("1"))
+        self.liquidacion.setData(self.liquidacion.index(0,ARTICULO),[
+            1,
+            "FRICCIONES* BATERIA  N-150 DURUN",
+            Decimal('5'),
+            Decimal('76'),
+            0
+            ])
+        self.liquidacion.setData(self.liquidacion.index(0,CANTIDAD), QVariant("1"))
+
+    def test_dai(self):
+        self.assertEqual(self.liquidacion.daiTotal, Decimal('0.05'))
+
+    def test_isc(self):
+        self.assertEqual(self.liquidacion.iscTotal, Decimal('0.7980'))
+
+    def test_cif(self):
+        self.assertEqual(self.liquidacion.cifTotal, Decimal('1'))
+
+    def test_iva(self):
+        self.assertEqual(self.liquidacion.ivaTotal, Decimal('0.2772'))
+
+    def test_taxes(self):
+        self.assertEqual(self.liquidacion.taxesTotal, Decimal('6.4752'))
+
+    def test_speTotal(self):
+        self.assertEqual(self.liquidacion.speTotal, Decimal('5'))
+
+    def test_total(self):
+        self.assertEqual(self.liquidacion.totalC,Decimal('161.23184128'))
+        self.assertEqual(self.liquidacion.totalD,Decimal('7.4752'))
+
+    def test_fob(self):
+        self.assertEqual(self.liquidacion.fobTotal,1)
+        self.assertEqual(self.liquidacion.fobTotalC,Decimal('21.5689'))
+
+    def test_numrows(self):
+        self.assertEqual(self.liquidacion.rowCount(),2)
+
+    def test_iso(self):
+        self.assertEqual(self.liquidacion.isoTotal, Decimal('0.35'))
+
 if __name__ == "__main__":
-    import unittest
-    import sip
-    sip.setapi( 'QString', 2 )
-    from PyQt4.QtCore import QCoreApplication, QVariant
-
-    class TestLiquidacionSimple(unittest.TestCase):
-        def setUp(self):
-            app = QCoreApplication([])
-
-            self.liquidacion = LiquidacionModel(1)
-            
-            self.liquidacion.exchangeRate = Decimal('21.5689')
-            self.liquidacion.speTotal = 5
-            self.liquidacion.isoRate = Decimal('35')
-            self.liquidacion.ivaRate = Decimal('15')
-            self.liquidacion.tsimRate = Decimal('0.5')
-            self.liquidacion.weightFactor = 1000
-            
-            self.liquidacion.insertRow(0)
-
-            self.liquidacion.setData(self.liquidacion.index(0,COSTOUNIT),QVariant("1"))
-            self.liquidacion.setData(self.liquidacion.index(0,ARTICULO),[
-                1,
-                "FRICCIONES* BATERIA  N-150 DURUN",
-                Decimal('5'),
-                Decimal('76'),
-                0
-                ])
-            self.liquidacion.setData(self.liquidacion.index(0,CANTIDAD), QVariant("1"))
-
-        def test_dai(self):
-            self.assertEqual(self.liquidacion.daiTotal, Decimal('0.05'))
-
-        def test_isc(self):
-            self.assertEqual(self.liquidacion.iscTotal, Decimal('0.7980'))
-
-        def test_cif(self):
-            self.assertEqual(self.liquidacion.cifTotal, Decimal('1'))
-
-        def test_iva(self):
-            self.assertEqual(self.liquidacion.ivaTotal, Decimal('0.2772'))
-
-        def test_taxes(self):
-            self.assertEqual(self.liquidacion.taxesTotal, Decimal('6.4752'))
-
-        def test_speTotal(self):
-            self.assertEqual(self.liquidacion.speTotal, Decimal('5'))
-            
-        def test_total(self):
-            self.assertEqual(self.liquidacion.totalC,Decimal('161.23184128'))
-            self.assertEqual(self.liquidacion.totalD,Decimal('7.4752'))
-
-        def test_fob(self):
-            self.assertEqual(self.liquidacion.fobTotal,1)
-            
-        def test_numrows(self):
-            self.assertEqual(self.liquidacion.rowCount(),2)
-
-
     unittest.main()

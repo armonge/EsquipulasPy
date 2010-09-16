@@ -7,12 +7,9 @@ from PyQt4.QtCore import  QUrl, Qt
 
 from utility import user
 
-class Reports(object):
-    instance = None
-    def __new__(cls, *args, **kargs):
-        if cls.instance is None:
-            cls.instance = object.__new__(cls, *args, **kargs)
-        return cls.instance
+
+class ReportConfig(object):
+    url = ""
 
 class frmReportes( QPrintPreviewDialog ):
     """
@@ -24,8 +21,8 @@ class frmReportes( QPrintPreviewDialog ):
         @param printer: El objeto QPrinter en el que se imprime, esto es usado por si se desea alguna configuración especifica del reporte
         """
         super(frmReportes, self).__init__(printer, parent )
-        r = Reports()
-        base = r.url
+        
+        base = Reports.url
         
         if base == "":
             raise UserWarning(u"No existe una configuración para el servidor de reportes")
@@ -79,3 +76,4 @@ class frmReportes( QPrintPreviewDialog ):
         w.updatePreview()
         
         
+Reports = ReportConfig()

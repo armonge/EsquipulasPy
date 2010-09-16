@@ -9,7 +9,7 @@ from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, \
 QProgressBar, QPrinter, QPrintDialog, QDialog, qApp, QShortcut, QKeySequence
 from PyQt4.QtWebKit import QWebView
 
-from utility.reports import frmReportes, Reports
+from utility import reports 
 from utility import user
 
 class Base( object ):
@@ -351,7 +351,7 @@ class Base( object ):
             printer.setOrientation(self.orientation)
             printer.setPageSize(self.pageSize)
             web = self.web + self.printIdentifier
-            report = frmReportes( web, printer,self )
+            report = reports.frmReportes( web, printer,self )
             report.exec_()
         except NotImplementedError as inst:
             QMessageBox.information(self, qApp.organizationName(), u"No se ha implementado la función de impresión para este modulo")
@@ -366,8 +366,7 @@ class Base( object ):
     def printDocument(self):
         try:
             settings = QSettings()
-            r = Reports()
-            base = r.url
+            base = reports.Reports.url
 
             if base == "":
                 raise UserWarning(u"No existe una configuración para el servidor de reportes")

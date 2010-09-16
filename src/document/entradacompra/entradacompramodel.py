@@ -4,19 +4,25 @@ Created on 18/05/2010
 
 @author: Andrés Reyes Monge
 '''
+import unittest
+if __name__ == "__main__":
+    import sip
+    sip.setapi( 'QString', 2 )
+
 from decimal import Decimal
 import logging
 
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, QCoreApplication, QVariant
 
 from lineaentradacompra import LineaEntradaCompra
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movEntradaCompra
 from utility import constantes
+from utility.docbase import DocumentBase
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, PRECIOD, TOTALC, TOTALD = range( 7 )
-class EntradaCompraModel( QAbstractTableModel ):
+class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
@@ -40,7 +46,7 @@ class EntradaCompraModel( QAbstractTableModel ):
         @type:string
         """
 
-        self.rIVA = Decimal( 0 )
+        self.rateIVA = Decimal( 0 )
         """
         @ivar:El porcentaje de IVA del documento
         @type:Decimal
@@ -168,7 +174,16 @@ class EntradaCompraModel( QAbstractTableModel ):
         El total neto del documento, despues de haber aplicado IVA
         @rtype: Decimal
         """
-        return Decimal( self.subtotalC ) + Decimal( self.IVAC )
+        return self.subtotalC  + self.IVAC
+
+    @property
+    def subtotalD(self):
+        """
+        El subtotal del documento, esto es el total antes de aplicarse el IVA
+        @rtype: Decimal
+        """
+        subtotal = sum( [x.totalD for x in self.lines if x.valid ] )
+        return subtotal if subtotal > 0 else Decimal( 0 )
 
     @property
     def totalD( self ):
@@ -176,15 +191,7 @@ class EntradaCompraModel( QAbstractTableModel ):
         El total en dolares del documento
         @rtype: Decimal
         """
-        return self.totalC / self.exchangeRate if self.exchangeRate != 0 else Decimal( 0 )
-
-    @property
-    def IVAC( self ):
-        """
-        El IVA total del documento, se calcula en base a subtotal y rateIVA, en cordobas
-        @rtype: Decimal
-        """
-        return self.subtotalC * ( self.rIVA / Decimal( 100 ) )
+        return  self.subtotalD  + self.IVAD
 
     @property
     def IVAD( self ):
@@ -192,25 +199,19 @@ class EntradaCompraModel( QAbstractTableModel ):
         El IVA total del documento, se calcula en base a subtotal y rateIVA, en dolares
         @rtype: Decimal
         """
-
-        return self.IVAC / self.exchangeRate if self.exchangeRate != 0 else Decimal( 0 )
+        return self.subtotalD * ( self.rateIVA / Decimal( 100 ) )
 
     @property
-    def getRateIVA( self ):
+    def IVAC( self ):
         """
-        El porcentaje de IVA que se le aplica a esta linea
+        El IVA total del documento, se calcula en base a subtotal y rateIVA, en cordobas
         @rtype: Decimal
         """
-        return self.rIVA
+
+        return self.subtotalC * ( self.rateIVA / Decimal( 100 ) )
 
 
-    @property
-    def validLines( self ):
-        """
-        La cantidad de lineas validas que hay en el documento
-        @rtype: int
-        """
-        return len( [line for line in self.lines if line.valid ] )
+
 
     #Clases especificas del modelo
     def rowCount( self, index = QModelIndex() ):
@@ -379,7 +380,6 @@ class EntradaCompraModel( QAbstractTableModel ):
 
 
             if not query.exec_():
-                print query.lastQuery()
                 raise Exception( "No se pudo insertar el documento" )
 
             insertedId = query.lastInsertId().toInt()[0]
@@ -443,3 +443,51 @@ class EntradaCompraModel( QAbstractTableModel ):
             return False
 
         return True
+
+        
+class TestEntradaCompraSimple(unittest.TestCase):
+    """
+    Esta clase es un TesCase para EntradaCompraModel reproduce un caso común y
+    verifica los resultados del modelo con los esperados
+    """
+    def setUp(self):
+        app = QCoreApplication([])
+
+        self.entrada = EntradaCompraModel()
+
+        
+        self.entrada.insertRow(0)
+        self.entrada.exchangeRate = Decimal("21.21")
+        self.entrada.rateIVA = Decimal('15')
+        self.entrada.exchangeRateId = 1
+        self.entrada.exchangeRate = Decimal('21')
+        
+        self.entrada.setData(self.entrada.index(0,CANTIDAD), QVariant("1"))
+        self.entrada.setData(self.entrada.index(0,PRECIO), QVariant("1"))
+        self.entrada.setData(self.entrada.index(0,DESCRIPCION),[
+            1,
+            "FRICCIONES* BATERIA  N-150 DURUN"
+        ])
+        
+
+    def valid(self):
+        self.assertTrue(self.entrada.valid, "El documento deberia tener un estado de valido")
+    
+    def test_validLines(self):
+        self.assertEqual(self.entrada.validLines, 1, "El documento deberia tener exactamente una linea valida")
+        
+    def test_iva(self):
+        self.assertEqual(self.entrada.IVAC, Decimal('0.15'), "El iva en cordobas deberia ser exactamente 0.15 y es %s" % self.entrada.IVAC.to_eng_string())
+        self.assertEqual(self.entrada.IVAD, Decimal('0.007142857142857142857142857143'))
+
+    def test_total(self):
+        self.assertEqual(self.entrada.totalC,Decimal('1.15'))
+        self.assertEqual(self.entrada.totalD,Decimal('0.05476190476190476190476190476'))
+
+
+    def test_numrows(self):
+        self.assertEqual(self.entrada.rowCount(),2, "El documento deberia tener 2 lineas")
+
+
+if __name__ == "__main__":
+    unittest.main()

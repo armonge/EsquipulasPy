@@ -4,11 +4,21 @@ Created on 21/05/2010
 
 @author: Andrés Reyes Monge
 '''
+import unittest
+if __name__ == "__main__":
+    import sip
+    sip.setapi( 'QString', 2 )
+
+
 import logging
 from decimal import Decimal,InvalidOperation
 
+from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtSql import QSqlQuery
-class LineaLiquidacion( object ):
+
+from utility.docbase import ifValid, LineaBase
+
+class LineaLiquidacion( LineaBase ):
     def __init__( self, parent ):
 
         self.parent = parent
@@ -80,6 +90,7 @@ class LineaLiquidacion( object ):
         return self.quantity > 0 and self.itemCost > 0 and self.itemId != 0
 
     @property
+    @ifValid
     def fobParcial( self ):
         """
         El FOB de este articulo
@@ -87,7 +98,7 @@ class LineaLiquidacion( object ):
         M{FOBPARCIAL = CANTIDAD * COSTOCOMPRA }
         @rtype: Decimal
         """
-        return self.quantity * self.itemCost  if self.valid else Decimal( 0 )
+        return self.quantity * self.itemCost 
 
     @property
     def cifParcial( self ):
@@ -418,3 +429,50 @@ class LineaLiquidacion( object ):
             logging.error(query.lastError().text())
             raise Exception( "Error al insertar los costos de una de las lineas de la factura " )
 
+class TestLineaLiquidacion(unittest.TestCase):
+    """
+    Esta clase es un TesCase para LineaLiquidacion reproduce un caso común y
+    verifica los resultados del modelo con los esperados
+    """
+    def setUp(self):
+        app = QCoreApplication([])
+
+        self.line = LineaLiquidacion(self)
+        self.line.quantity = 1
+        self.line.itemCost = Decimal('1')
+        self.line.rateDAI = Decimal('5')
+        self.line.rateISC = Decimal('76')
+        self.line.comisionValue = Decimal('0')
+        self.line.itemId = 1
+        
+        self.cifTotal = Decimal('1')
+        self.fobTotal = Decimal('1')
+        self.agencyTotal = Decimal('0')
+        self.storeTotal = Decimal('0')
+        self.paperworkRate = Decimal('0')
+        self.transportRate = Decimal('0')
+        self.applyTaxes = True
+        self.tsimTotal = Decimal('0')
+        self.ivaRate = Decimal('15')
+        self.speTotal = Decimal('5')
+        self.isoRate = Decimal('35')
+        self.exchangeRate = Decimal('21.5718')
+
+    def test_valid(self):
+        self.assertTrue(self.line.valid)
+        
+    def test_comision(self):
+        self.assertEqual(self.line.comisionParcial, Decimal('0'))
+
+    def test_isc(self):
+        self.assertEqual(self.line.iscParcial, Decimal('0.7980'))
+        
+    def test_dai(self):
+        self.assertEqual(self.line.daiParcial, Decimal('0.05'))
+        
+    def test_costo(self):
+        self.assertEqual(self.line.costoDolarT, Decimal('7.4752'))
+        self.assertNotAlmostEqual(self.line.costoCordobaT, Decimal('161.2535'))
+
+if __name__ == "__main__":
+    unittest.main()

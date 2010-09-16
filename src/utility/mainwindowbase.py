@@ -125,11 +125,12 @@ class MainWindowBase( object ):
         "junto con el programa."  )
         
     def help(self):
-        settings = QSettings()
-        base = settings.value( "Reports/base" ).toString()
+        pass
+        #settings = QSettings()
+        #base = settings.value( "Reports/base" ).toString()
         
-        ds = QDesktopServices()
-        ds.openUrl(QUrl(base + "../help/"))
+        #ds = QDesktopServices()
+        #ds.openUrl(QUrl(base + "../help/"))
         
     def changePassword(self):
         dlg = utility.user.dlgPasswordChange(self.user)

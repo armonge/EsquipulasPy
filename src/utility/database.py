@@ -6,7 +6,7 @@ from PyQt4.QtSql import QSqlDatabase
 from PyQt4.QtGui import QDialog, QFormLayout, QVBoxLayout, QLineEdit, QDialogButtonBox
 from PyQt4.QtCore import   QObject, QSettings
 
-from utility.reports import Reports
+from utility import reports
 
 class dlgDatabaseConfig( QDialog ):
     u"""
@@ -74,8 +74,7 @@ def newconfiguration(cfg):
         settings.setValue( "%s/DBUser"%cfg, dbconfig.txtUser.text() )
         settings.setValue( "%s/DBPassword"%cfg, dbconfig.txtPassword.text() )
         settings.setValue( "%s/DBReports"%cfg, dbconfig.txtReports.text() )
-        r = Reports()
-        r.url = dbconfig.txtReports.text()
+        reports.Reports.url = dbconfig.txtReports.text()
 
 def getDatabase(db, newsettings = False ):
     u"""
@@ -94,8 +93,8 @@ def getDatabase(db, newsettings = False ):
         database.setUserName( settings.value( "%s/DBUser"%db ).toString() )
         database.setPassword( settings.value( "%s/DBPassword"%db ).toString() )
 
-        r = Reports()
-        r.url  = settings.value( "%s/DBReports"%db ).toString()
+        
+        reports.Reports.url  = settings.value( "%s/DBReports"%db ).toString()
     else:
         newconfiguration(db)
 
