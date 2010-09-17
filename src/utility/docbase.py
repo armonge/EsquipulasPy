@@ -15,6 +15,8 @@ def ifValid(fn):
     def wrapper(self=None):
         return fn(self) if self.valid else Decimal(0)
     return wrapper
+
+
 class DocumentBase(object):
     __documentType = NotImplementedError()
     """
@@ -40,6 +42,7 @@ class DocumentBase(object):
 
     def save(self):
         raise NotImplementedError()
+    
 class LineaBase(object):
     """
     Esta se convertira en un futuro en la clase base para las nuevas lineas,
