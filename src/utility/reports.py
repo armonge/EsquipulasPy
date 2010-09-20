@@ -5,7 +5,7 @@ from PyQt4.QtGui import  QPrinter, QPrintPreviewDialog,  QLineEdit, QMessageBox,
 from PyQt4.QtWebKit import QWebView
 from PyQt4.QtCore import  QUrl, Qt
 
-from utility import user
+import  user
 
 
 class ReportConfig(object):

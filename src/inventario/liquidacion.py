@@ -41,7 +41,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     pageSize = QPrinter.Legal
     def __init__( self,  parent = None ):
         """
-        @param user: EL objeto usuario que esta asociado con esta sesión
+        @param parent: El formulario padre de este documento
         """
         QMainWindow.__init__( self, parent )
         self.setupUi( self )
@@ -741,7 +741,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                     else:
                         QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al guardar las cuentas contables")
                 else:
-                    QMessageBox.critical("Existe un error con sus cuentas contables, reviselo antes de guardar")
+                    QMessageBox.critical(self, qApp.organizationName(),"Existe un error con sus cuentas contables, reviselo antes de guardar")
                 
                     
     def updateArticles(self):
@@ -826,7 +826,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             line.code = "110 003 001 000 000"
             line.name = "INV Inventario de Bodega"
 
-            line.amount = Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( TOTALC ).toString())
+            line.amount = Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( TOTALC ).toString()).quantize(Decimal('0.0001'))
             self.accountsEditModel.lines[0] = line
             self.tabWidget.setCurrentIndex( 0 )
             

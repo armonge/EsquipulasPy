@@ -4,11 +4,19 @@ Created on 19/05/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
+import unittest
+if __name__ == "__main__":
+    import sip
+    sip.setapi( 'QString', 2 )
+from decimal import Decimal
+import logging
+    
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, QCoreApplication
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 
-from decimal import Decimal
+
 from document.devolucion.lineadevolucion import LineaDevolucion
+
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movFacturaCredito
 from utility import constantes
@@ -480,10 +488,41 @@ class DevolucionModel( QAbstractTableModel ):
 
 
         except Exception as inst:
-            print query.lastError().text()
-            print inst
+            logging.critical( query.lastError().text() )
+            logging.critical(unicode( inst ))
             QSqlDatabase.database().rollback()
 
             return False
 
         return True
+
+class TestDevolucionModel(unittest.TestCase):
+    def setUp(self):
+        app = QCoreApplication([])
+
+        self.devolucion = DevolucionModel()
+        self.devolucion.insertRow(0)
+
+    def test_total(self):
+        self.assertEqual(self.devolucion.totalC, Decimal('0') )
+        self.assertEqual(self.devolucion.totalD, Decimal('0') )
+
+    def test_cost(self):
+        self.assertEqual(self.devolucion.totalCostC, Decimal('0'))
+        self.assertEqual(self.devolucion.totalCostD, Decimal('0'))
+        
+    def test_numrows(self):
+        self.assertEqual(self.devolucion.rowCount(), 1)
+
+    def test_validLines(self):
+        self.assertEqual(self.devolucion.validLines, 0)
+
+    def test_valid(self):
+        self.assertFalse(self.devolucion.valid)
+
+    def test_subtotal(self):
+        self.assertEqual(self.devolucion.subtotalD, Decimal('0') )
+        self.assertEqual(self.devolucion.subtotalC, Decimal('0') )
+
+if __name__ == "__main__":
+    unittest.main()

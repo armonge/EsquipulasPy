@@ -7,7 +7,9 @@ Created on 07/06/2010
 from decimal import  Decimal, InvalidOperation
 import logging
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator, QMdiArea, qApp
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, \
+QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator, QMdiArea, \
+qApp, QDialog
 from PyQt4.QtCore import pyqtSlot,  QTime, QTimer, QModelIndex, Qt
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 
@@ -23,9 +25,10 @@ from document.arqueo.arqueodelegate import ArqueoDelegate
 import caja.mainwindow
 
 #navmodel
-IDDOCUMMENTO, FECHA, NOMBRE, EFECTIVOC, EFECTIVOD, CHEQUEC, CHEQUED, DEPOSITOC, DEPOSITOD, TRANSFERENCIAC, TRANSFERENCIAD, TARJETAC, TARJETAD = range( 13 )
+IDDOCUMMENTO, FECHA, NOMBRE, EFECTIVOC, EFECTIVOD, CHEQUEC, CHEQUED, DEPOSITOC,\
+ DEPOSITOD, TRANSFERENCIAC, TRANSFERENCIAD, TARJETAC, TARJETAD = range( 13 )
 #detailsmodel
-CANTIDAD, DENOMINACION,  TOTAL, MONEDA, IDDOCUMMENTOT = range( 5 )
+CANTIDAD, DENOMINACION,  TOTAL, MONEDA, IDDOCUMMENTOT, IDDENOMINACION = range( 6 )
 class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
     '''
     Esta clase implementa el formulario arqueo
@@ -174,9 +177,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
         self.txtObservations.setReadOnly(status)
 
-        self.tabledetailsC.setColumnHidden( MONEDA, True )
-        self.tabledetailsD.setColumnHidden( MONEDA, True )
-
+        self.tablenavigation.setColumnHidden( IDDOCUMMENTO, True )
 
         
         if not self.status:
@@ -185,22 +186,34 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.tabledetailsD.setEditTriggers( QTableView.AllEditTriggers )
             self.tabledetailsD.setColumnHidden( IDDOCUMMENTOT, False )
             self.tabWidget.setCurrentIndex( 0 )
-            self.tablenavigation.setColumnHidden( IDDOCUMMENTO, False )
+
+            self.tabledetailsC.setColumnHidden(IDDOCUMMENTOT, True)
+            self.tabledetailsC.setColumnHidden(IDDENOMINACION, True)
+
+            self.tabledetailsD.setColumnHidden(IDDOCUMMENTOT, True)
+            self.tabledetailsD.setColumnHidden(IDDENOMINACION, True)
 
 
 #            doublevalidator = QDoubleValidator(0, 99999999, 4, self)
             
         else:
             self.tabledetailsC.setModel( self.detailsproxymodelC )
-            self.tabledetailsC.setColumnHidden( IDDOCUMMENTOT, True )
-            
-            
             self.tabledetailsD.setModel( self.detailsproxymodelD )
-            self.tabledetailsD.setColumnHidden( IDDOCUMMENTOT, True )
             
             
             self.tablenavigation.setModel( self.navproxymodel )
             self.tablenavigation.setColumnHidden( IDDOCUMMENTO, True )
+
+            self.tabledetailsC.setColumnHidden( MONEDA, True )
+            self.tabledetailsD.setColumnHidden( MONEDA, True )
+
+            self.tabledetailsC.setColumnHidden(IDDOCUMMENTOT, True)
+            self.tabledetailsC.setColumnHidden(IDDENOMINACION, True)
+
+            self.tabledetailsD.setColumnHidden(IDDOCUMMENTOT, True)
+            self.tabledetailsD.setColumnHidden(IDDENOMINACION, True)
+
+
 
 
         
@@ -378,7 +391,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             self.lblUserName.setText( self.user.fullname )
             self.editmodel.dataChanged[QModelIndex,QModelIndex].connect(self.updateLabels)
 
-            self.tabledetailsC.setColumnWidth(DENOMINACION, 200)
+            self.tabledetailsC.setColumnWidth(DENOMINACION, 200) 
             self.tabledetailsD.setColumnWidth(DENOMINACION, 200)
             self.updateLabels()
             self.status = False
@@ -443,6 +456,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                     self.editmodel.authorizationId  = dlgUser.user.uid
                     super(frmArqueo, self).save(False)
                     self.parentWindow.init()
+                    self.close()
                 else:
                     QMessageBox.warning(self, qApp.organizationName(), "No se pudo autorizar el arqueo")
         except UserWarning as inst:
@@ -454,8 +468,8 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                         if dlgUser.user.valid and dlgUser.user.hasRole('gerencia'):
                             self.editmodel.authorizationId  = dlgUser.user.uid
                             super(frmArqueo, self).save(False)
-                            self.parentWindow.datosSesion = caja.mainwindow.DatosSesion()
-                            self.parentWindow.status = False
+                            self.parentWindow.init()
+                            self.close()
                         else:
                             QMessageBox.warning(self, qApp.organizationName(), "No se pudo autorizar el arqueo")
             else:

@@ -25,7 +25,7 @@ ID, DESCRIPCION, DAI, ISC, COMISION, GANANCIA, ACTIVO = range( 7 )
 class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
     def __init__( self,  parent = None ):
         """
-        @param user: El id del usuario que ha creado este documento 
+        @param parent: El formulario padre de este frm
         """
         super( frmArticulos, self ).__init__( parent )
         self.setupUi( self )

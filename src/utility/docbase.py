@@ -8,7 +8,7 @@ import functools
 from decimal import Decimal
 
 def ifValid(fn):
-    """
+    u"""
     Decorador que retorna 0 si la linea no es valida, esto es más facil que usar "if valid else Decimal(0)" en todos lados
     """
     @functools.wraps(fn)
@@ -44,7 +44,7 @@ class DocumentBase(object):
         raise NotImplementedError()
     
 class LineaBase(object):
-    """
+    u"""
     Esta se convertira en un futuro en la clase base para las nuevas lineas,
     con suerte se podran pasar aca muchos metodos genericos
     """

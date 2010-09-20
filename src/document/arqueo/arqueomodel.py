@@ -17,7 +17,7 @@ from decimal import Decimal
 from  utility import constantes
 from utility import movimientos
 
-CANTIDAD, DENOMINACION,  TOTAL, MONEDA, IDDOCUMMENTOT = range( 5 )
+CANTIDAD, DENOMINACION,  TOTAL, MONEDA, IDDOCUMMENTOT, IDDENOMINACION = range( 6 )
 class ArqueoModel( QAbstractTableModel ):
     """
     Esta clase es el modelo utilizado para crear nuevos arqueos
@@ -275,6 +275,8 @@ class ArqueoModel( QAbstractTableModel ):
                 return line.denomination
             elif column == MONEDA:
                 return line.currencyId
+            elif column == IDDENOMINACION:
+                return line.denominationId
                 
         elif role == Qt.EditRole:
             if column == DENOMINACION:
@@ -343,7 +345,7 @@ class ArqueoModel( QAbstractTableModel ):
         El numero de columnas en el modelo
         @rtype: int
         """
-        return 4
+        return 6
 
     def save( self ):
         """
@@ -520,7 +522,7 @@ class ArqueoProxyModel(QSortFilterProxyModel):
         result = super(ArqueoProxyModel, self).setData(index, value, role)
         row = self.mapToSource(  index  ).row()
         line = self.sourceModel().lines[row]
-        if line.valid and index.row() == self.rowCount()-1:
-            self.sourceModel().insertRow(self.sourceModel().rowCount())
-            self.sourceModel().setData( self.sourceModel().index(self.sourceModel().rowCount()-1, MONEDA), line.currencyId)
+        if line.valid and index.row() == self.rowCount() - 1 :
+            self.sourceModel().insertRow( self.sourceModel().rowCount() )
+            self.sourceModel().setData(  self.sourceModel().index(self.sourceModel().rowCount()-1 , MONEDA ), line.currencyId )
         return result    

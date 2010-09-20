@@ -98,7 +98,7 @@ class AccountsSelectorModel( QAbstractTableModel ):
                 line.code = value[1]
                 line.name = value[2]
             if column == MONTO:
-                line.amount = Decimal( value.toString() ) if type( value ) != Decimal else value
+                line.amount = Decimal( value.toString() ).quantize(Decimal('0.0001')) if type( value ) != Decimal else value.quantize(Decimal('0.0001'))
 
 
             if not self.valid and self.lines[-1].valid:

@@ -35,7 +35,6 @@ class SingleSelectionSearchPanelDelegate(QStyledItemDelegate):
         value = index.model().index(index.row(),0).data().toString()
         sp = SearchPanel( self.proxymodel, parent, self.showTable )
         sp.setColumn( index.column() )
-        sp.lineEdit().selectAll()
         
         return sp
 
@@ -104,7 +103,6 @@ class SearchPanel( QComboBox ):
     
     def setColumnHidden(self,col):
         self.completerTable.hiddenColumns.append(col)
-        self.tabla.hiddenColumns.append(col)
         if self.showTable:
             self.tabla.hiddenColumns.append(col)
 

@@ -9,8 +9,8 @@ from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, \
 QProgressBar, QPrinter, QPrintDialog, QDialog, qApp, QShortcut, QKeySequence
 from PyQt4.QtWebKit import QWebView
 
-from utility import reports 
-from utility import user
+import reports
+import user
 
 class Base( object ):
     """
