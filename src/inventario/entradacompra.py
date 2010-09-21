@@ -247,7 +247,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
                 raise UserWarning("No se pudo obtener el valor del IVA para iniciar la entrada compra")
             query.first()
             self.editmodel.idIVA = query.value( 0 ).toInt()[0]
-            self.editmodel.rIVA = Decimal( query.value( 1 ).toString() )
+            self.editmodel.rateIVA = Decimal( query.value( 1 ).toString() )
 
 
             self.updateEditModels()
