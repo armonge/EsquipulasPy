@@ -169,9 +169,9 @@ class MainWindowBase( object ):
 
     @pyqtSlot(  )
     def on_actionUnlockSession_triggered( self ):
-        dlg = user.dlgUserLogin( self )
+        dlg = utility.user.dlgUserLogin( self )
         if dlg.exec_() == QDialog.Accepted:
-            tmpuser = user.User( dlg.txtUser.text(), dlg.txtPassword.text() )
+            tmpuser = utility.user.User( dlg.txtUser.text(), dlg.txtPassword.text() )
             if tmpuser.valid:
                 if tmpuser.uid == self.user.uid or tmpuser.hasRole( 'root' ):
                     self.status = True

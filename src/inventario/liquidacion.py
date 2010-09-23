@@ -394,7 +394,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
     @property
     def printIdentifier(self):
-        return self.txtPolicy.text()
+        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
     def newDocument( self ):
         """

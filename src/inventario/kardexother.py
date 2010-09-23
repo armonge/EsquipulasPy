@@ -176,6 +176,8 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
                 """ % (iddoc, insertedId)):
                     raise Exception(u"No se pudo crear la relación entre el documento ajuste de bodega y su kardex")
 
+                if not self.database.commit():
+                    raise Exception(u"No se pudo hacer commit")
                 QMessageBox.information(self, qApp.organizationName(),"El documento se ha guardado con exito")
                 self.updateModels()
             except UserWarning as inst:
@@ -281,8 +283,9 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         self.accountsproxymodel.setFilterKeyColumn( IDDOCUMENTOC )
         self.accountsproxymodel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
 
-        estado = self.navmodel.record( index ).value( PENDIENTE ).toInt()[0]
-        self.actionGiveEntry.setVisible( estado == 1 )
+        if self.user.hasRole('kardex'):
+            estado = self.navmodel.record( index ).value( PENDIENTE ).toInt()[0]
+            self.actionGiveEntry.setVisible( estado == 1 )
 
     def newDocument(self):
         try:
