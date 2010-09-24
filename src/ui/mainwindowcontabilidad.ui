@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1151</width>
-    <height>713</height>
+    <height>708</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,7 +48,7 @@
    <property name="minimumSize">
     <size>
      <width>230</width>
-     <height>156</height>
+     <height>158</height>
     </size>
    </property>
    <property name="features">
@@ -420,7 +420,7 @@ Bancarios</string>
            </property>
            <property name="icon">
             <iconset resource="res.qrc">
-             <normaloff>:/images/res/view-pim-tasks.png</normaloff>:/images/res/view-pim-tasks.png</iconset>
+             <normaloff>:/images/res/view-bank-account-checking.png</normaloff>:/images/res/view-bank-account-checking.png</iconset>
            </property>
            <property name="iconSize">
             <size>

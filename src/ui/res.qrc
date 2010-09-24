@@ -54,6 +54,7 @@
     <file>res/skrooge_merge_import2.png</file>
     <file>res/preferences-desktop-personal.png</file>
     <file>res/estante.jpg</file>
+    <file>res/view-bank-account-checking.png</file>
     <file>res/hi48-actions-lemon-box.png</file>
   </qresource>
 </RCC>

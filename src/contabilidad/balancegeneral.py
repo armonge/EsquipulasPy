@@ -8,7 +8,7 @@ from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel, QPrinter
 from ui.Ui_balancegeneral import Ui_frmBalanceGeneral
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QDate,pyqtSlot,QAbstractItemModel, QModelIndex, Qt
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
 
@@ -52,7 +52,7 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
             self.activoTree.setColumnWidth( CODIGO, 80 )
             self.activoTree.setColumnWidth( DESCRIPCION, 200 )
             
-            total = 0
+            total = Decimal(0)
             for i in range(self.activofiltermodel.rowCount()):
                 total += Decimal(self.activofiltermodel.index(i,ACUMULADO).data(Qt.EditRole).toString())
             self.txtactivo.setText(moneyfmt(total,4,'C$' ))
@@ -72,7 +72,7 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
             self.pasivoTree.setColumnWidth( CODIGO, 80 )
             self.pasivoTree.setColumnWidth( DESCRIPCION, 200 )
             
-            total1 =0
+            total1 = Decimal(0)
             for i in range(self.pasivofiltermodel.rowCount()):
                 total1 += Decimal(self.pasivofiltermodel.index(i,ACUMULADO).data(Qt.EditRole).toString())
             self.txtpasivo.setText(moneyfmt(total1,4,'C$' ))
@@ -90,7 +90,7 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
             self.capitalTree.setColumnWidth( CODIGO, 80 )
             self.capitalTree.setColumnWidth( DESCRIPCION, 200 )
             
-            total2 = 0
+            total2 = Decimal(0)
             for i in range(self.capitalfiltermodel.rowCount()):
                 total2 += Decimal(self.capitalfiltermodel.index(i,ACUMULADO).data(Qt.EditRole).toString())
                            
@@ -155,7 +155,6 @@ class CuentasModel( QAbstractItemModel ):
 #            return None
 
         item = index.internalPointer()
-
         return item.data( index.column(), role )
     def setData( self, index, value, role ):
         if role != Qt.EditRole:
@@ -278,6 +277,7 @@ class CuentaPadre( object ):
         self.code = modelo.index(fila, CODIGO ).data().toString()
         self.description = modelo.index(fila, DESCRIPCION ).data().toString()
         self.monto = Decimal(modelo.index(fila, MONTO ).data().toString())
+        
         self.esdebe =modelo.index(fila, ESDEBE ).data().toInt()[0]
         self.idpadre = modelo.index(fila, PADRE ).data().toInt()[0]
         
@@ -359,7 +359,7 @@ class CuentaPadre( object ):
             elif column == MONTO:
                 return self.monto
             elif column == ACUMULADO:
-                return self.acumulado
+                return self.acumulado.to_eng_string()
             
 
     def parent( self ):

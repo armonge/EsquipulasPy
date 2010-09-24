@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/mainwindowcontabilidad.ui'
+# Form implementation generated from reading ui file 'src/ui/mainwindowcontabilidad.ui'
 #
 # Created by: PyQt4 UI code generator 4.7.3
 #
@@ -12,7 +12,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setWindowModality(QtCore.Qt.ApplicationModal)
-        MainWindow.resize(1151, 713)
+        MainWindow.resize(1151, 708)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/res/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -36,7 +36,7 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.dockWidget = QtGui.QDockWidget(MainWindow)
-        self.dockWidget.setMinimumSize(QtCore.QSize(230, 156))
+        self.dockWidget.setMinimumSize(QtCore.QSize(230, 158))
         self.dockWidget.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.dockWidget.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.RightDockWidgetArea)
         self.dockWidget.setObjectName("dockWidget")
@@ -183,7 +183,9 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         font.setBold(True)
         self.btnNotasCD.setFont(font)
-        self.btnNotasCD.setIcon(icon1)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(":/images/res/view-bank-account-checking.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnNotasCD.setIcon(icon4)
         self.btnNotasCD.setIconSize(QtCore.QSize(48, 48))
         self.btnNotasCD.setAutoDefault(False)
         self.btnNotasCD.setDefault(False)
@@ -216,14 +218,14 @@ class Ui_MainWindow(object):
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.actionLockSession = QtGui.QAction(MainWindow)
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(":/icons/res/object-locked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionLockSession.setIcon(icon4)
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(":/icons/res/object-locked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionLockSession.setIcon(icon5)
         self.actionLockSession.setObjectName("actionLockSession")
         self.actionUnlockSession = QtGui.QAction(MainWindow)
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(":/icons/res/object-unlocked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionUnlockSession.setIcon(icon5)
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap(":/icons/res/object-unlocked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionUnlockSession.setIcon(icon6)
         self.actionUnlockSession.setVisible(False)
         self.actionUnlockSession.setObjectName("actionUnlockSession")
         self.toolBar.addAction(self.actionLockSession)

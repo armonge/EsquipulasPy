@@ -164,7 +164,6 @@ class ChequeModel( AccountsSelectorModel ):
 
 
 
-    #TODO: INSERCION
     def save( self ):
         """
         Este metodo guarda el documento actual en la base de datos
