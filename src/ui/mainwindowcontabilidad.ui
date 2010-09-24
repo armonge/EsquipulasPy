@@ -84,8 +84,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>157</width>
-          <height>78</height>
+          <width>214</width>
+          <height>570</height>
          </rect>
         </property>
         <attribute name="label">
@@ -148,7 +148,7 @@ Contables</string>
           <x>0</x>
           <y>0</y>
           <width>214</width>
-          <height>568</height>
+          <height>570</height>
          </rect>
         </property>
         <attribute name="label">
@@ -443,7 +443,7 @@ Bancarios</string>
           </widget>
          </item>
          <item row="6" column="0">
-          <widget class="QPushButton" name="btnCreditoDebito">
+          <widget class="QPushButton" name="btnCierreMensual">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -463,8 +463,7 @@ Bancarios</string>
             </font>
            </property>
            <property name="text">
-            <string>Notas 
-Credito-Debito</string>
+            <string>Cierre Mensual</string>
            </property>
            <property name="icon">
             <iconset resource="res.qrc">

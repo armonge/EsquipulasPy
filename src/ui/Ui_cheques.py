@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/cheques.ui'
+# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/cheques.ui'
 #
 # Created by: PyQt4 UI code generator 4.7.3
 #

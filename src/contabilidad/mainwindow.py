@@ -19,8 +19,9 @@ from movimientosbancarios import frmMovimientosBancarios
 from balancegeneral import frmBalanceGeneral
 from cheques import frmCheques
 from creditodebito import frmCreditoDebito
+from cierrecontable import frmCierreContable
 from utility import constantes
-
+from cierrecontable import frmCierreContable
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     ROL = constantes.ACCESOCONTABILIDAD
     def __init__( self,  parent = None ):
@@ -69,6 +70,15 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         conceptos=frmCatConceptos(3,self)
         self.mdiArea.addSubWindow(conceptos)
         conceptos.show()
+    
+    @pyqtSlot(  )
+    def on_btnCierreMensual_clicked( self ):
+        """
+        Catalogo de conceptos de modulo de contabilidad
+        """
+        cierre=frmCierreContable(self)
+        self.mdiArea.addSubWindow(cierre)
+        cierre.show()
         
     @pyqtSlot(  )
     def on_btnCheques_clicked( self ):
