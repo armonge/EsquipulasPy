@@ -46,3 +46,12 @@ SET @concierre := (SELECT d.iddocumento FROM documentos d WHERE d.idtipodoc=IDCI
 END$$
 
 DELIMITER ;
+
+
+
+
+
+SELECT cc.*
+FROM cuentascontables c
+JOIN cuentascontables cc ON cc.codigo LIKE CONCAT(LEFT(c.codigo,3),'%')
+WHERE c.idcuenta = 3
