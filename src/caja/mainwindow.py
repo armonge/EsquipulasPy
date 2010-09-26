@@ -13,6 +13,7 @@ from PyQt4.QtCore import pyqtSlot, Qt
 from PyQt4.QtSql import QSqlDatabase,QSqlQuery
 from factura import frmFactura
 from recibo import frmRecibo
+from pago import frmPago
 from ui.Ui_mainwindowcaja import Ui_MainWindow
 from apertura import dlgApertura
 from utility.mainwindowbase import MainWindowBase
@@ -199,6 +200,14 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow( factura )
         factura.show()
 
+
+    @pyqtSlot(  )
+    def on_btnpago_clicked( self ):
+        """
+        Slot documentation goes here.
+        """
+        pago = frmPago( self )
+        pago.show()
 
     @pyqtSlot( )
     def on_btnDevolutions_clicked( self ):

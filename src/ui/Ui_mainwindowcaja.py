@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/mainwindowcaja.ui'
+# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\mainwindowcaja.ui'
 #
-# Created by: PyQt4 UI code generator 4.7.3
+# Created: Thu Sep 09 19:30:15 2010
+#      by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -50,7 +51,7 @@ class Ui_MainWindow(object):
         self.toolBox.setObjectName("toolBox")
         self.page_2 = QtGui.QWidget()
         self.page_2.setEnabled(True)
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 593))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 230, 601))
         self.page_2.setObjectName("page_2")
         self.gridLayout_2 = QtGui.QGridLayout(self.page_2)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -115,6 +116,9 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         font.setBold(True)
         self.btnpago.setFont(font)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/icons/res/view-bank-account.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnpago.setIcon(icon2)
         self.btnpago.setIconSize(QtCore.QSize(32, 32))
         self.btnpago.setFlat(False)
         self.btnpago.setObjectName("btnpago")
@@ -160,20 +164,20 @@ class Ui_MainWindow(object):
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.actionLockSession = QtGui.QAction(MainWindow)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/icons/res/object-locked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionLockSession.setIcon(icon2)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(":/icons/res/object-locked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionLockSession.setIcon(icon3)
         self.actionLockSession.setObjectName("actionLockSession")
         self.actionUnlockSession = QtGui.QAction(MainWindow)
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(":/icons/res/object-unlocked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionUnlockSession.setIcon(icon3)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(":/icons/res/object-unlocked.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionUnlockSession.setIcon(icon4)
         self.actionUnlockSession.setVisible(False)
         self.actionUnlockSession.setObjectName("actionUnlockSession")
         self.actionClients = QtGui.QAction(MainWindow)
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(":/images/res/preferences-desktop-personal.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionClients.setIcon(icon4)
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(":/images/res/preferences-desktop-personal.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionClients.setIcon(icon5)
         self.actionClients.setObjectName("actionClients")
         self.toolBar.addAction(self.actionLockSession)
         self.toolBar.addAction(self.actionUnlockSession)
@@ -200,13 +204,3 @@ class Ui_MainWindow(object):
         self.actionClients.setToolTip(QtGui.QApplication.translate("MainWindow", "Crear un Nuevo Cliente", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    MainWindow = QtGui.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
-

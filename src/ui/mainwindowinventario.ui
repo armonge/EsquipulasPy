@@ -177,6 +177,44 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="btnServices">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>70</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Otras Compras</string>
+           </property>
+           <property name="icon">
+            <iconset resource="res.qrc">
+             <normaloff>:/icons/res/view-bank-account.png</normaloff>:/icons/res/view-bank-account.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>64</width>
+             <height>64</height>
+            </size>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="widget">
@@ -184,8 +222,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>119</width>
-          <height>240</height>
+          <width>230</width>
+          <height>547</height>
          </rect>
         </property>
         <attribute name="label">
@@ -306,8 +344,8 @@ Movimientos</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>170</width>
-          <height>316</height>
+          <width>230</width>
+          <height>547</height>
          </rect>
         </property>
         <attribute name="label">

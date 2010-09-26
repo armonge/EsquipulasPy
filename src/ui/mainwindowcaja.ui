@@ -90,8 +90,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
-          <height>593</height>
+          <width>230</width>
+          <height>601</height>
          </rect>
         </property>
         <attribute name="label">
@@ -237,6 +237,10 @@
            </property>
            <property name="text">
             <string>Pagos en Efectivo</string>
+           </property>
+           <property name="icon">
+            <iconset resource="res.qrc">
+             <normaloff>:/icons/res/view-bank-account.png</normaloff>:/icons/res/view-bank-account.png</iconset>
            </property>
            <property name="iconSize">
             <size>

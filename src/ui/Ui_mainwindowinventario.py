@@ -9,7 +9,6 @@
 
 from PyQt4 import QtCore, QtGui
 
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -93,6 +92,24 @@ class Ui_MainWindow(object):
         self.btnEntries.setFlat(False)
         self.btnEntries.setObjectName("btnEntries")
         self.verticalLayout_2.addWidget(self.btnEntries)
+        self.btnServices = QtGui.QPushButton(self.page_2)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btnServices.sizePolicy().hasHeightForWidth())
+        self.btnServices.setSizePolicy(sizePolicy)
+        self.btnServices.setMinimumSize(QtCore.QSize(0, 70))
+        font = QtGui.QFont()
+        font.setWeight(75)
+        font.setBold(True)
+        self.btnServices.setFont(font)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/icons/res/view-bank-account.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnServices.setIcon(icon2)
+        self.btnServices.setIconSize(QtCore.QSize(64, 64))
+        self.btnServices.setFlat(False)
+        self.btnServices.setObjectName("btnServices")
+        self.verticalLayout_2.addWidget(self.btnServices)
         self.toolBox.addItem(self.page_2, "")
         self.widget = QtGui.QWidget()
         self.widget.setGeometry(QtCore.QRect(0, 0, 143, 226))
@@ -241,6 +258,7 @@ class Ui_MainWindow(object):
         self.dockWidget.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Inventario", None, QtGui.QApplication.UnicodeUTF8))
         self.btnLiquidations.setText(QtGui.QApplication.translate("MainWindow", "Liquidaciones", None, QtGui.QApplication.UnicodeUTF8))
         self.btnEntries.setText(QtGui.QApplication.translate("MainWindow", "Entradas", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnServices.setText(QtGui.QApplication.translate("MainWindow", "Compras o Servicios", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), QtGui.QApplication.translate("MainWindow", "Movimientos", None, QtGui.QApplication.UnicodeUTF8))
         self.btnKEntries.setText(QtGui.QApplication.translate("MainWindow", "Entradas\n"
 "Locales,\n"

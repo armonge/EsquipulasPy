@@ -35,7 +35,7 @@ class LineaFactura:
         @type: Decimal
         """
 
-        #FIXME: Donde se ocupa esta propiedad???
+#FIXME: Donde se ocupa esta propiedad???
         self.costodolar =  Decimal( 0 )
         """
         @ivar: El costo en dolares de este articulo
@@ -56,7 +56,7 @@ class LineaFactura:
         
         self.costo = 0
         """
-        @ivar: FIXME: que significa esta variable? para que es entonces costodolar
+        @ivar: El costo unitario en cordobas para cada linea de la factura
         @type: int
         """
         

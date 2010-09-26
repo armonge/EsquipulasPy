@@ -221,9 +221,6 @@ class FacturaModel( QAbstractTableModel ):
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
 
-#            if not self.escontado:
-#                self.printedDocumentNumber = "S/N"
-#                
             if not query.prepare( """
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,observacion,total,idbodega,escontado,idtipocambio,idcaja,idestado) 
             VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:bodega,:escontado,:idtc,:caja,:estado)

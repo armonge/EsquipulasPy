@@ -379,8 +379,8 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         if not self.editmodel is None:
             self.editmodel.escontado = 1 if on else 0
-        else:
-            self.btnrecibo.setHidden(not on)
+#        else:
+#            self.btnrecibo.setHidden(not on)
 
 
     def setControls( self, status ):
