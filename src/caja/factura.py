@@ -869,25 +869,3 @@ class Anular( QDialog ):
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout.addWidget(self.buttonBox, 4, 0, 1, 2)
-#<<<<<<< .mine
-#
-#        
-#        self.buttonBox.accepted.connect(self.accept)
-#        self.buttonBox.rejected.connect(self.reject)
-#        #QtCore.QMetaObject.connectSlotsByName(self)
-#        
-#        self.conceptosmodel = QSqlQueryModel()
-#        self.conceptosmodel.setQuery( """
-#        SELECT idconcepto,descripcion FROM conceptos c WHERE idtipodoc = %d ;
-#        """%constantes.IDANULACION )
-#        
-#            
-#        self.cboConceptos.setModel(self.conceptosmodel)
-#        self.cboConceptos.setCurrentIndex( -1 )
-#        self.cboConceptos.setModelColumn( 1 )
-#        self.numero=numero
-#    
-#    def updateFilter( self, string ):
-#        self.filtermodel.setFilterWildcard( string )
-#                =======
-#>>>>>>> .r255

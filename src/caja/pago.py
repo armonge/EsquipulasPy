@@ -108,8 +108,19 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
         """
         if not QSqlDatabase.database().isOpen():
             raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
-        
+        query = QSqlQuery()
         try:
+
+#            Rellenar el combobox de las CONCEPTOS
+            self.conceptosModel = QSqlQueryModel()
+            self.conceptosModel.setQuery( """
+               SELECT idconcepto, descripcion FROM conceptos c WHERE idtipodoc = %d;
+            """%constantes.IDPAGO )
+            
+            if self.conceptosModel.rowCount() == 0:
+                raise UserWarning(u"No existen conceptos en la base de datos para los pagos")
+
+
             query = QSqlQuery("SELECT fnCONSECUTIVO(%d,null);" %constantes.IDPAGO)
             if not query.exec_():
                 raise UserWarning(u"No pudo obtenerse el número del comprobante") 
@@ -154,14 +165,6 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
             self.retencionId =0
             
                 
-#            Rellenar el combobox de las CONCEPTOS
-            self.conceptosModel = QSqlQueryModel()
-            self.conceptosModel.setQuery( """
-               SELECT idconcepto, descripcion FROM conceptos c WHERE idtipodoc = %d;
-            """%constantes.IDPAGO )
-            
-            if self.conceptosModel.rowCount() == 0:
-                raise UserWarning(u"No existen conceptos en la base de datos para los pagos")
 
             self.cbbeneficiario.setModel( self.beneficiariosModel )
             self.cbbeneficiario.setCurrentIndex( -1 )
