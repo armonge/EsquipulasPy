@@ -118,18 +118,7 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
             """%constantes.IDPAGO )
             
             if self.conceptosModel.rowCount() == 0:
-                raise UserWarning(u"No existen conceptos en la base de datos para los pagos")
-
-
-            query = QSqlQuery("SELECT fnCONSECUTIVO(%d,null);" %constantes.IDPAGO)
-            if not query.exec_():
-                raise UserWarning(u"No pudo obtenerse el número del comprobante") 
-            query.first()
-            ndoc = query.value(0).toString()
-            self.lblnpago.setText(ndoc)
-            
-            self.txttipocambio.setText(moneyfmt(self.parentWindow.datosSesion.tipoCambioBanco,4))
-            
+                raise UserWarning(u"No existen conceptos en la base de datos para los pagos")            
             
             self.beneficiariosModel = QSqlQueryModel()
             self.beneficiariosModel.setQuery( """
@@ -159,6 +148,36 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
             if self.retencionModel.rowCount() == 0:
                 raise UserWarning(u"No existe ninguna tasa de retención en la base de datos")
 
+            query = QSqlQuery(
+            """
+            SELECT
+                SUM(IF(m.idtipomoneda = %d,m.monto,0)) as totalC,
+                SUM(IF(m.idtipomoneda = %d,m.monto,0)) as totalD
+            FROM
+            movimientoscaja m
+            JOIN documentos d ON d.iddocumento = m.iddocumento
+            WHERE d.idcaja = %d AND m.idtipomovimiento=%d
+            ;
+            """%(constantes.IDCORDOBAS,constantes.IDDOLARES,self.parentWindow.datosSesion.cajaId,constantes.IDPAGOEFECTIVO))
+            if not query.exec_():
+                raise UserWarning(u"No pudo obtenerse el número del comprobante") 
+            query.first()
+            maxCordoba = Decimal(query.value(0).toString())
+            maxDolar = Decimal(query.value(1).toString())
+              
+            if maxCordoba <=0 and maxDolar <=0:
+                raise UserWarning(u"No hay Efectivo en Caja")
+
+
+            query = QSqlQuery("SELECT fnCONSECUTIVO(%d,null);" %constantes.IDPAGO)
+            if not query.exec_():
+                raise UserWarning(u"No pudo obtenerse el número del comprobante") 
+            query.first()
+            ndoc = query.value(0).toString()
+            self.lblnpago.setText(ndoc)
+            
+            self.txttipocambio.setText(moneyfmt(self.parentWindow.datosSesion.tipoCambioBanco,4))
+
             self.cbtasaret.setModel( self.retencionModel )
             self.cbtasaret.setModelColumn( 1 )
             self.cbtasaret.setCurrentIndex(-1)
@@ -185,6 +204,13 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
 
             self.editmodel = PagoModel(self.parentWindow.datosSesion)
             self.editmodel.docImpreso = ndoc
+            
+            self.editmodel.maxCordoba = maxCordoba
+            self.editmodel.maxDolar = maxDolar
+            self.sbtotalc.setToolTip("Max= " + moneyfmt(maxCordoba,4,'C$'))
+            self.sbtotald.setToolTip("Max= " + moneyfmt(maxDolar,4,'US$'))
+            self.sbtotalc.setMaximum(maxCordoba)
+            self.sbtotald.setMaximum(maxDolar)
             
             query = QSqlQuery("SELECT idcostoagregado, valorcosto FROM costosagregados c  WHERE idtipocosto = %d AND activo = 1;" %constantes.IVA)
             if not query.exec_():
@@ -221,12 +247,12 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
         """
         Slot documentation goes here.
         """
-        if self.editmodel.valid:
+        if self.valid:
             if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar el pago?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
                 if not QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().open()
                 
-                self.editmodel.observaciones = self.txtobservaciones.text()
+                self.editmodel.observaciones = self.txtobservaciones.toPlainText()
                 if self.editmodel.save():
                     QMessageBox.information( None,
                         self.trUtf8( qApp.organizationName() ),
@@ -243,58 +269,26 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
                 if QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().close()
 
-#      
-#    @pyqtSlot( "bool" )
-#    def on_btnadd_clicked( self, on ):
-#        """
-#        Asignar el contenido al objeto documeto
-#        """
-#        cindex = self..currentIndex()
-#        if not cindex.model() is None:
-#            if not self.tablefacturas.isRowHidden( cindex.row() ):
-#                i = self.abonoeditmodel.rowCount()
-#                self.agregarFactura(i,cindex.row())
-#                self.updateLabels()
-                
-
-#    
-#    @pyqtSlot( "bool" )
-#    def on_btnaddall_clicked( self, on ):
-#        """
-#        Asignar el contenido al objeto documeto
-#        """
-#        i = self.abonoeditmodel.rowCount()
-#        for n in range( self.facturasproxymodel.rowCount() ):
-#            if not self.tablefacturas.isRowHidden( n ):
-#                self.agregarFactura(i, n)
-#                i = i + 1
-#        self.updateLabels()
-#      
-
-#    @pyqtSlot( "bool" )
-#    def on_btnremove_clicked( self, on ):
-#        """
-#        Asignar el contenido al objeto documeto
-#        """
-#        if self.abonoeditmodel.rowCount() > 0 and r > -1:
-#            self.abonoeditmodel.removeRows( r, self.tablefacturas )
-#            self.updateLabels()
-
-#    @pyqtSlot( "bool" )
-#    def on_btnremoveall_clicked( self, on ):
-#        """
-#        Asignar el contenido al objeto documeto
-#        """
-#        rows = self.abonoeditmodel.rowCount()
-#        if  rows > 0:
-#            self.abonoeditmodel.removeRows( 0, self.tablefacturas, rows )
-#            self.updateLabels()
-#
-#    @pyqtSlot(  )
-#    def on_txtpersona_editingFinished( self ):
-#        if not  self.__status:
-#            self.datos.observaciones = self.txtpersona.text()
-
+    @property
+    def valid(self):
+        mensaje = "Ocurrio un Error al guardar"
+        if self.editmodel.beneficiarioId ==0:
+            mensaje = "Por favor elija el beneficiario"
+            self.cbbeneficiario.setFocus()
+        elif self.editmodel.conceptoId ==0:
+            mensaje = "Por favor elija el concepto del pago"
+            self.cbconcepto.setFocus()
+        elif self.editmodel.totalD == 0 and self.editmodel.totalC==0:
+            mensaje = "Por favor escriba el monto del pago"
+            if self.editmodel.maxCordoba >0 :
+                self.sbtotalc.setFocus()
+            else:
+                self.sbtotald.setFocus()
+        else:
+            return True
+        
+        QMessageBox.information( None,"Guardar Pago",mensaje)
+        return False
 
     @pyqtSlot( "int" )
     def on_cbbeneficiario_currentIndexChanged( self, index ):
@@ -324,6 +318,10 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
         asignar la retencion al objeto self.editmodel
         """
         if self.editmodel != None:
+            
+            self.editmodel.retencionId = self.retencionModel.record(index).value( "idcostoagregado" ).toInt()[0]
+            value =self.retencionModel.record( index ).value( "tasa" ).toString()
+            self.editmodel.retencionTasa = Decimal( value if value!="" else 0 )
             self.updateLabels()
 
 # MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
@@ -412,9 +410,10 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
             self.swconcepto.setCurrentIndex( 0 )
             self.swtasaret.setCurrentIndex( 0 )
             self.txtobservaciones.setPlainText( "" )
+            self.lbltotal.setText( "US$ 0.0000" )
+            self.lblretencion.setText( "US$ 0.0000" )
             self.lbltotalpago.setText( "US$ 0.0000" )
-#            self.lbltotal.setText( "US$ 0.0000" )
-#            self.lbltotalrecibo.setText( "US$ 0.0000" )
+
             self.cbbeneficiario.setFocus()
             self.ckretener.setChecked(False)
 #            self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
@@ -448,14 +447,18 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
         """
         """
         self.ckretener.setEnabled(self.editmodel.tieneRetencion)
-        retencion = self.editmodel.retencionDolar
-        self.lblretencion.setText( moneyfmt(retencion, 4, "US$ "  ) )
-        self.lblretencion.setToolTip( moneyfmt((retencion) * self.editmodel.datosSesion.tipoCambioBanco, 4, "C$ ") )
+        retencion = self.editmodel.retencionCordoba
+        print retencion
+        self.lblretencion.setText( moneyfmt(retencion / self.editmodel.datosSesion.tipoCambioBanco, 4, "US$ "  ) )
+        self.lblretencion.setToolTip( moneyfmt(retencion, 4, "C$ ") )
 
         
         self.lbltotal.setText( moneyfmt(self.editmodel.totalDolar, 4, "US$ "  ) )
         self.lbltotal.setToolTip( moneyfmt(self.editmodel.totalCordoba, 4, "C$ ") )
-
+        
+        total = self.editmodel.totalCordoba - retencion 
+        self.lbltotalpago.setText( moneyfmt(total/ self.editmodel.datosSesion.tipoCambioBanco , 4, "US$ "  ) )
+        self.lbltotalpago.setToolTip( moneyfmt(total, 4, "C$ ") )
 
 
     def updateModels( self ):
@@ -469,31 +472,42 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
 #        El modelo principal
 #FIXME: como escapar el % ???
             self.navmodel.setQuery( """
-                        SELECT
-                            padre.iddocumento,
-                            DATE(padre.fechacreacion) as 'Fecha',
-                            padre.ndocimpreso as 'No. Recibo',
-                            p.nombre as 'Beneficiario',
-                            padre.total + IFNULL(hijo.total,0) as 'Total',
-                            c.descripcion as 'En cocepto de',
-                            IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
-                            IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%s')) as 'Retencion',
-                            IFNULL(hijo.total,'-') as 'Total Ret C$',
-                            padre.total as 'Total Pagado', 
-                           padre.observacion ,
-                           IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion'
-            FROM documentos padre
-            JOIN personasxdocumento pxd ON pxd.iddocumento = padre.iddocumento
-            JOIN personas p ON p.idpersona = pxd.idpersona
-            JOIN conceptos c ON  c.idconcepto=padre.idconcepto
-            LEFT JOIN costosxdocumento cd ON cd.iddocumento=padre.iddocumento
-            LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
-            LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
-            LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
-            WHERE padre.idtipodoc=%d
-            AND p.tipopersona=%d
-            ORDER BY padre.iddocumento
-            """%('%',constantes.IDPAGO,constantes.PROVEEDOR))
+                SELECT
+                pago.iddocumento,
+                pago.ndocimpreso  as 'No. Comprobante',
+                pago.nombre as Beneficiario,
+                pago.Concepto,
+                SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totalc,
+                SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totald,
+                pago.fecha,
+                pago.tasa,
+                pago.total,
+                pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) as subtotal,
+                (pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (%d,%d),ca.valorcosto/100,0)) as retencion
+                FROM costosagregados ca
+                JOIN costosxdocumento cxd ON ca.idcostoagregado = cxd.idcostoagregado
+                JOIN movimientoscaja mc ON mc.iddocumento = cxd.iddocumento
+                JOIN
+                (
+                SELECT
+                d.iddocumento,
+                d.ndocimpreso,
+                GROUP_CONCAT(IF(pxd.idaccion=%,p.nombre,'') SEPARATOR '') as nombre,
+                DATE_FORMAT(d.fechacreacion,%s) AS fecha,
+                d.observacion,
+                con.descripcion as concepto,
+                tc.tasa,
+                d.total
+                FROM documentos d
+                JOIN conceptos con ON con.idconcepto = d.idconcepto
+                JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
+                JOIN personas p ON p.idpersona = pxd.idpersona
+                JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
+                WHERE d.idtipodoc=%d
+                GROUP BY d.iddocumento
+                ) pago on pago.iddocumento = cxd.iddocumento
+                GROUP BY pago.iddocumento
+                ; """ %(constantes.IVA,constantes.,constantes.CORDOBAS,constantes.DOLARES,constantes.RETENCIONFUENTE,constantes.RETENCIONPROFESIONALES,constantes.PROVEEDOR,'%d/%m/%Y',constantes.IDPAGO))
   
             self.navproxymodel = QSortFilterProxyModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )

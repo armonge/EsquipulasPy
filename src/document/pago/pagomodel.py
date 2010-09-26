@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 '''
 Created on 18/05/2010
-
 @author: Luis Carlos Mejia Garcia
 '''
 from decimal import  Decimal
 from utility import constantes
 from utility.movimientos import redondear
+from PyQt4.QtSql import QSqlQueryModel,QSqlQuery, QSqlDatabase
+from PyQt4.QtCore import QDateTime
 
 class PagoModel( object ):
     def __init__( self ,datosSesion):
+        
         object.__init__(self)
         
         self.__documentType = constantes.IDPAGO
-        
-        
+        self.maxCordoba = Decimal(0)
+        self.maxDolar = Decimal(0)
         self.docImpreso = ""
         self.observaciones = ""
         self.totalC =Decimal(0)
@@ -40,10 +42,6 @@ class PagoModel( object ):
      
 
     def getRetencionTasa(self):
-        print "tasa ret"
-        print  self.__retencionTasa
-        print "aplicar ret" 
-        print self.aplicarRet 
         return self.__retencionTasa if self.aplicarRet else Decimal(0)
     
     def setRetencionTasa(self,value):
@@ -53,31 +51,34 @@ class PagoModel( object ):
     retencionTasa = property(getRetencionTasa,setRetencionTasa)
     
     def save(self):
-        query = QSqlQuery()
+        
 
         try:
 
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
+            
+            query = QSqlQuery()
 
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,observacion,total,escontado,idtipocambio,idcaja,idestado) 
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:escontado,:idtc,:caja,:estado)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,observacion,total,idtipocambio,idcaja,idconcepto) 
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:idtc,:caja,:con)
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.docImpreso )
             query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString("hhmmss") )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":observacion", self.observaciones )
-            total = self.total
+            total = self.totalDolar - (self.retencionCordoba * self.datosSesion.tipoCambioBanco)
             query.bindValue( ":total", total.to_eng_string() )
-            query.bindValue( ":escontado", self.escontado )
+#            query.bindValue( ":escontado", self.escontado )
             query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
-            query.bindValue( ":caja", self.datosSesion.cajaId)
-            query.bindValue( ":estado",  constantes.INCOMPLETO)
+            query.bindValue( ":caja", self.datosSesion.cajaId)         
+            query.bindValue( ":con", self.conceptoId)
+#            query.bindValue( ":estado",  constantes.INCOMPLETO)
 
             if not query.exec_():
-                raise Exception( "No se pudo insertar el documento" )
+                raise Exception( "No se pudo insertar el PAGO" )
 
             
             insertedId = query.lastInsertId().toString()
@@ -108,8 +109,30 @@ class PagoModel( object ):
             
 
             if not query.exec_():
+                print "iddocumento = " + insertedId
+                print "idusuario = " + str(self.datosSesion.usuarioId)
+                print "idbeneficiario = " + str(self.beneficiarioId)
                 raise Exception( "No se Inserto la relacion entre el documento y las personas" )
 
+
+            if self.totalC!=0:
+                if not query.prepare( "INSERT INTO movimientoscaja(iddocumento,idtipomovimiento,idtipomoneda,monto) VALUES " +
+                "(" + insertedId + ",1,1,-:totalCordoba)"):
+                    raise Exception( query.lastError().text() )
+                query.bindValue( ":totalCordoba", self.totalC.to_eng_string() )
+                if not query.exec_():
+                    raise Exception( "No se Inserto el movimiento caja en dolares" )
+
+            
+            if self.totalD!=0:
+                if not query.prepare( "INSERT INTO movimientoscaja(iddocumento,idtipomovimiento,idtipomoneda,monto) VALUES " +
+                "(" + insertedId + ",1,2,-:totalDolar)"):
+                    raise Exception( query.lastError().text() )
+                query.bindValue (":totalDolar", self.totalD.to_eng_string())
+                if not query.exec_():
+                    raise Exception( "No se Inserto el movimiento caja en dolares" )
+
+       
 
 #VERIFICO SI el id del iva es cero. NO SERA CERO CUANDO LA BODEGA=1 PORQUE ESTA NO ES exonerada                                 
             if self.aplicarIva:
@@ -135,11 +158,14 @@ class PagoModel( object ):
                     print insertedId
                     print self.retencionId
                     raise Exception( "La retencion NO SE INSERTO" )
+                
+            
 
             if not QSqlDatabase.database().commit():
                 raise Exception( "No se pudo guardar el pago" )
             
         except Exception as inst:
+
             print  query.lastError().databaseText()
             print query.lastError().driverText()
             print inst.args
@@ -147,16 +173,6 @@ class PagoModel( object ):
             return False
 
         return True
-
-    
-    @property
-    def valid(self):
-        if self.docImpreso == "":
-            raise Exception("El documento no tiene el numero impreso")
-        else:
-            return True
-        
-        return False
     
     @property
     def totalDolar( self ):
@@ -184,10 +200,10 @@ class PagoModel( object ):
         return sub>1000 
         
     @property
-    def retencionDolar(self):
+    def retencionCordoba(self):
         rt = self.retencionTasa
         if rt >0 :
-            ret = self.totalDolar / ( (100 + self.ivaTasa)/rt)
+            ret = self.subTotalCordoba * (self.retencionTasa / 100)
             return ret if ret != 0 else Decimal(0)
         else:
             return Decimal(0)
