@@ -42,7 +42,8 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.datosSesion = DatosSesion()
         self.datosSesion.usuarioId = self.user.uid
         self.cajaNombre = ""
-        self.status = False
+        self.abierto = False
+        self.setControls(True)
     
 #    def closeEvent( self, event ):
 #        u"""
@@ -63,26 +64,34 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param state: false = bloqueado        true = desbloqueado
         """
-        if state and self.datosSesion.sesionId != 0:
-            self.btnApertura.setText("Cierre de Caja")
-        elif self.datosSesion.sesionId == 0:
-            self.btnApertura.setText("Abrir Caja")
-        else:
-            self.btnApertura.setEnabled(state)
+        self.actionUnlockSession.setVisible( not state )
         
-        if self.datosSesion!= None:
-            self.actionUnlockSession.setVisible( not state )
 
-        self.btnArqueo.setEnabled( state )
+        self.abierto = (state and self.datosSesion.sesionId != 0) 
+        if self.datosSesion.sesionId != 0:
+            self.btnApertura.setText("Cierre de Caja")
+        else:
+            self.btnApertura.setText("Aperturar Caja")
+            
+        self.btnApertura.setEnabled(state)
+        self.actionClients.setEnabled(state)
+        
+        self.btnArqueo.setEnabled( self.abierto )
+
 #        self.btnClients.setEnabled( state )
-        self.btnrecibo.setEnabled( state )
-        self.btnfactura.setEnabled( state )
-        self.btnDevolutions.setEnabled( state )
-        self.mdiArea.setEnabled( state )
-        self.mdiArea.setVisible( state )
-        self.actionLockSession.setVisible( state )
-        self.btnpago.setEnabled(state)
 
+        self.btnrecibo.setEnabled( self.abierto )
+        self.btnfactura.setEnabled( self.abierto )
+        self.btnDevolutions.setEnabled( self.abierto )
+        self.mdiArea.setEnabled( self.abierto )
+        self.mdiArea.setVisible( self.abierto )
+        self.btnpago.setEnabled(self.abierto)
+        
+        
+        self.actionLockSession.setVisible(  state )
+
+        
+        
     @pyqtSlot(  )
     def on_actionClients_activated( self ):
         clientes = frmPersona(constantes.CLIENTE,"Cliente",self)
@@ -117,73 +126,74 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         Slot documentation goes here.
         """
         self.datosSesion.usuarioId = self.user.uid
-        estado = not self.status
+        estado = not self.abierto
         query  = QSqlQuery()
         if estado:
             db = QSqlDatabase.database()
-            try:
-                if not db.isOpen():
-                    if not db.open():
-                        raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
-                q = """
-                    SELECT
-                        apertura.iddocumento,
-                        apertura.idtipocambio,
-                        tc.fecha,
-                        tc.tasa,
-                        IFNULL(tc.tasabanco,tc.tasa) as tasabanco,
-                        apertura.idcaja
-                    FROM `esquipulasdb`.`documentos` apertura
-                    JOIN tiposcambio tc ON tc.idtc = apertura.idtipocambio
-                    JOIN personasxdocumento pd ON pd.iddocumento = apertura.iddocumento AND pd.idaccion=%d
-                    LEFT JOIN docpadrehijos ph ON apertura.iddocumento=ph.idpadre
-                    LEFT JOIN documentos cierre ON cierre.iddocumento = ph.idhijo AND cierre.idtipodoc=%d
-                    WHERE apertura.idtipodoc=%d AND pd.idpersona=%d
-                    GROUP BY apertura.iddocumento
-                    HAVING SUM(IFNULL(cierre.idtipodoc,0)) = 0;
-                   """%(constantes.AUTOR, constantes.IDARQUEO,constantes.IDAPERTURA, self.datosSesion.usuarioId)
-                if not query.prepare(q):
-                    raise Exception(u"No se pudo preparar la consulta para recuperar la información de la sesión")
-                if not query.exec_():
-                    raise Exception(u"No se pudo ejecutar la consulta para recuperar la información de la sesión")
+#            try:
+            if not db.isOpen():
+                if not db.open():
+                    raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
+                
+            q = """
+                SELECT
+                    apertura.iddocumento,
+                    apertura.idtipocambio,
+                    tc.fecha,
+                    tc.tasa,
+                    IFNULL(tc.tasabanco,tc.tasa) as tasabanco,
+                    apertura.idcaja
+                FROM `esquipulasdb`.`documentos` apertura
+                JOIN tiposcambio tc ON tc.idtc = apertura.idtipocambio
+                JOIN personasxdocumento pd ON pd.iddocumento = apertura.iddocumento AND pd.idaccion=%d
+                LEFT JOIN docpadrehijos ph ON apertura.iddocumento=ph.idpadre
+                LEFT JOIN documentos cierre ON cierre.iddocumento = ph.idhijo AND cierre.idtipodoc=%d
+                WHERE apertura.idtipodoc=%d AND pd.idpersona=%d
+                GROUP BY apertura.iddocumento
+                HAVING SUM(IFNULL(cierre.idtipodoc,0)) = 0;
+               """%(constantes.AUTOR, constantes.IDARQUEO,constantes.IDAPERTURA, self.datosSesion.usuarioId)
+            if not query.prepare(q):
+                raise Exception(u"No se pudo preparar la consulta para recuperar la información de la sesión")
+            if not query.exec_():
+                raise Exception(u"No se pudo ejecutar la consulta para recuperar la información de la sesión")
 
-                # Si existe al menos una sesion abierta no muestra el dialogo de iniciar caja
-                if query.size()>0:
-                    reply=QMessageBox.question(None, 'Abrir Caja',u"Usted tiene una sesión de caja abierta. Desea continuar?", QMessageBox.Yes, QMessageBox.No)
-                    if reply == QMessageBox.Yes:
+            # Si existe al menos una sesion abierta no muestra el dialogo de iniciar caja
+            if query.size()>0:
+                reply=QMessageBox.question(None, 'Abrir Caja',u"Usted tiene una sesión de caja abierta. Desea continuar?", QMessageBox.Yes, QMessageBox.No)
+                if reply == QMessageBox.Yes:
 
-                        query.first()
+                    query.first()
 
-                        self.datosSesion.usuarioId = self.user.uid
-                        self.datosSesion.sesionId = query.value(0).toInt()[0]
-                        self.datosSesion.tipoCambioId = query.value(1).toInt()[0]
-                        self.datosSesion.fecha = query.value(2).toDate()
-                        self.datosSesion.tipoCambioOficial = Decimal (query.value(3).toString())
-                        self.datosSesion.tipoCambioBanco =  Decimal (query.value(4).toString())
-                        self.datosSesion.cajaId =  query.value(5).toInt()[0]
+                    self.datosSesion.usuarioId = self.user.uid
+                    self.datosSesion.sesionId = query.value(0).toInt()[0]
+                    self.datosSesion.tipoCambioId = query.value(1).toInt()[0]
+                    self.datosSesion.fecha = query.value(2).toDate()
+                    self.datosSesion.tipoCambioOficial = Decimal (query.value(3).toString())
+                    self.datosSesion.tipoCambioBanco =  Decimal (query.value(4).toString())
+                    self.datosSesion.cajaId =  query.value(5).toInt()[0]
 
-                        if self.datosSesion.valid:
-                            self.status = estado
-                            logging.info(u"El usuario %s ha continuado una sesión de caja" % self.user.user)
-                        else:
-                            QMessageBox.critical( None, u"La sesión no fue abierta", u"No fue posible abrir la sesión anterior. Por favor contacte al administrador del sistema")
-                            logging.error(u"No se pudo continuar con la sesión de caja del usuario %s ")
-                else:
-                    apertura = dlgApertura( self )
-                    if apertura.exec_() == QDialog.Accepted:
+                    if self.datosSesion.valid:
                         self.status = estado
+                        logging.info(u"El usuario %s ha continuado una sesión de caja" % self.user.user)
+                    else:
+                        QMessageBox.critical( None, u"La sesión no fue abierta", u"No fue posible abrir la sesión anterior. Por favor contacte al administrador del sistema")
+                        logging.error(u"No se pudo continuar con la sesión de caja del usuario %s ")
+            else:
+                apertura = dlgApertura( self )
+                if apertura.exec_() == QDialog.Accepted:
+                    self.status = estado
 
-                if db.isOpen():
-                    db.close()
-
-            except UserWarning as inst:
-                QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-                logging.error(unicode(inst))
-                logging.error(query.lastError().text())
-            except Exception as inst:
-                QMessageBox.critical(self, qApp.organizationName(), "Hubo un problema al tratar de abrir la caja")
-                logging.critical(unicode(inst))
-                logging.error(query.lastError().text())
+            if db.isOpen():
+                db.close()
+#
+#            except UserWarning as inst:
+#                QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+#                logging.error(unicode(inst))
+#                logging.error(query.lastError().text())
+#            except Exception as inst:
+#                QMessageBox.critical(self, qApp.organizationName(), "Hubo un problema al tratar de abrir la caja")
+#                logging.critical(unicode(inst))
+#                logging.error(query.lastError().text())
         else:
             arqueo = frmArqueo(  self )
             arqueo.show()

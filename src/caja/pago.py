@@ -4,6 +4,8 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
+
+
 import logging
 from PyQt4.QtGui import QMainWindow,QDialog, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter, qApp
 from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, SIGNAL, QModelIndex, QTimer
@@ -25,13 +27,8 @@ from utility import constantes
 #from PyQt4.QtGui import QMainWindow
 
 #controles
-IDDOCUMENTO,FECHA, NDOCIMPRESO,NOMBREBENEFICIARIO,TOTAL,  CONCEPTO, NRETENCION, TASARETENCION, TOTALRETENCION,TOTALPAGADO, OBSERVACION, CONIVA,CONRETENCION = range( 13 )
+IDDOCUMENTO,FECHA, NDOCIMPRESO,NOMBREBENEFICIARIO,TOTAL, TOTALC, TOTALD, NRETENCION, TASARETENCION, TOTALRETENCION,TOTALPAGADO, OBSERVACION, CONIVA,CONRETENCION,CONCEPTO = range( 15 )
 
-#table
-IDDOCUMENTOT, DESCRIPCION, REFERENCIA,BANCO, MONTO,MONTODOLAR,IDMONEDA = range( 7 )
-IDPAGO=0
-TOTALFAC=3
-IDRECIBODOC, NFAC, SALDO, TASAIVA,IDBENEFICIARIO,SALDOFINAL = range( 6 )
 class frmPago( Ui_frmPago, QMainWindow, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
@@ -469,45 +466,45 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
 
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
-#        El modelo principal
-#FIXME: como escapar el % ???
-            #self.navmodel.setQuery( """
-                #SELECT
-                #pago.iddocumento,
-                #pago.ndocimpreso  as 'No. Comprobante',
-                #pago.nombre as Beneficiario,
-                #pago.Concepto,
-                #SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totalc,
-                #SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totald,
-                #pago.fecha,
-                #pago.tasa,
-                #pago.total,
-                #pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) as subtotal,
-                #(pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (%d,%d),ca.valorcosto/100,0)) as retencion
-                #FROM costosagregados ca
-                #JOIN costosxdocumento cxd ON ca.idcostoagregado = cxd.idcostoagregado
-                #JOIN movimientoscaja mc ON mc.iddocumento = cxd.iddocumento
-                #JOIN
-                #(
-                #SELECT
-                #d.iddocumento,
-                #d.ndocimpreso,
-                #GROUP_CONCAT(IF(pxd.idaccion=%,p.nombre,'') SEPARATOR '') as nombre,
-                #DATE_FORMAT(d.fechacreacion,%s) AS fecha,
-                #d.observacion,
-                #con.descripcion as concepto,
-                #tc.tasa,
-                #d.total
-                #FROM documentos d
-                #JOIN conceptos con ON con.idconcepto = d.idconcepto
-                #JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
-                #JOIN personas p ON p.idpersona = pxd.idpersona
-                #JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
-                #WHERE d.idtipodoc=%d
-                #GROUP BY d.iddocumento
-                #) pago on pago.iddocumento = cxd.iddocumento
-                #GROUP BY pago.iddocumento
-                #; """ %(constantes.IVA,constantes.,constantes.CORDOBAS,constantes.DOLARES,constantes.RETENCIONFUENTE,constantes.RETENCIONPROFESIONALES,constantes.PROVEEDOR,'%d/%m/%Y',constantes.IDPAGO))
+
+        
+            self.navmodel.setQuery( """
+                SELECT
+                pago.iddocumento,
+                pago.fecha,
+                pago.ndocimpreso  as 'No. Comprobante',
+                pago.nombre as Beneficiario,
+                SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totalc,
+                SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totald,
+                pago.tasa,
+                pago.total,
+                pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) as subtotal,
+                (pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (%d,%d),ca.valorcosto/100,0)) as retencion,
+                pago.Concepto
+                FROM costosagregados ca
+                JOIN costosxdocumento cxd ON ca.idcostoagregado = cxd.idcostoagregado
+                JOIN movimientoscaja mc ON mc.iddocumento = cxd.iddocumento
+                JOIN
+                (
+                SELECT
+                d.iddocumento,
+                d.ndocimpreso,
+                GROUP_CONCAT(IF(pxd.idaccion=%d,p.nombre,'') SEPARATOR '') as nombre,
+                DATE_FORMAT(d.fechacreacion,'%s') AS fecha,
+                d.observacion,
+                con.descripcion as concepto,
+                tc.tasa,
+                d.total
+                FROM documentos d
+                JOIN conceptos con ON con.idconcepto = d.idconcepto
+                JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
+                JOIN personas p ON p.idpersona = pxd.idpersona
+                JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
+                WHERE d.idtipodoc=%d
+                GROUP BY d.iddocumento
+                ) pago on pago.iddocumento = cxd.iddocumento
+                GROUP BY pago.iddocumento
+                ; """ %(constantes.IDCORDOBAS,constantes.IDDOLARES,constantes.IVA,constantes.IVA,constantes.RETENCIONFUENTE,constantes.RETENCIONPROFESIONALES,constantes.PROVEEDOR,'%d/%m/%Y',constantes.IDPAGO))
   
             self.navproxymodel = QSortFilterProxyModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )

@@ -146,7 +146,7 @@ class LineaFactura:
 
 class TestLineaFactura(unittest.TestCase):
     """
-    Esta clase es un TesCase para LineaLiquidacion reproduce un caso común y
+    Esta clase es un TesCase para LineaFactura reproduce un caso común y
     verifica los resultados del modelo con los esperados
     """
     def setUp(self):

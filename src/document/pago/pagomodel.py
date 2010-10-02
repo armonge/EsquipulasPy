@@ -3,6 +3,9 @@
 Created on 18/05/2010
 @author: Luis Carlos Mejia Garcia
 '''
+
+
+
 from decimal import  Decimal
 from utility import constantes
 from utility.movimientos import redondear
@@ -69,7 +72,7 @@ class PagoModel( object ):
             query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString("hhmmss") )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":observacion", self.observaciones )
-            total = self.totalDolar - (self.retencionCordoba * self.datosSesion.tipoCambioBanco)
+            total = self.totalDolar - (self.retencionCordoba / self.datosSesion.tipoCambioBanco)
             query.bindValue( ":total", total.to_eng_string() )
 #            query.bindValue( ":escontado", self.escontado )
             query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
