@@ -1,15 +1,18 @@
+# -*- coding: utf-8 -*-
+import logging
+
 from PyQt4.QtCore import pyqtSlot, SIGNAL, QModelIndex, Qt, QTimer, \
     SLOT, QDate
-import logging
+
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
      QLineEdit,QMessageBox,qApp
-
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
-from ui.Ui_cierre import Ui_frmCierreContable
-from utility.base import Base
 
+from utility.base import Base
 from utility import constantes
+
+from ui.Ui_cierre import Ui_frmCierreContable
 IDDOCUMENTO,NDOCUMENTO,TIPODOC,TOTAL,FECHA,OBSERVACIONES,ESTADO=range(7)
 class frmCierreContable( Ui_frmCierreContable, QMainWindow ):
     def __init__( self,  parent ):

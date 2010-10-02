@@ -11,8 +11,8 @@ from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 
 from utility.base import Base
 from ui.Ui_entradacompra import Ui_frmEntradaCompra
-from document.entradacompra.entradacompramodel import EntradaCompraModel
-from document.entradacompra.entradacompradelegate import EntradaCompraDelegate
+from document.entradacompra import EntradaCompraModel, EntradaCompraDelegate
+
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
 from utility.singleselectionmodel import SingleSelectionModel

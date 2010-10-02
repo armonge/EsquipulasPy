@@ -2,6 +2,8 @@
 """
 Module implementing frmConciliacion.
 """
+import functools
+from decimal import Decimal
 
 from PyQt4.QtCore import pyqtSlot, QModelIndex, Qt, QTimer, \
     QDate, QVariant
@@ -9,17 +11,17 @@ from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
      QLineEdit, QDateTimeEdit, QMessageBox
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
-from ui.Ui_conciliacion import Ui_frmConciliacion
+
+
+from document.conciliacion import ConciliacionDelegate, ConciliacionModel, LineaConciliacion
+
 from utility.base import Base
-from decimal import Decimal
-from document.conciliacion.conciliaciondelegate import ConciliacionDelegate
-from document.conciliacion.conciliacionmodel import ConciliacionModel
-from document.conciliacion.lineaconciliacion import LineaConciliacion
-from movimientosbancarios import dlgMovimientosBancarios
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
 from utility.constantes import IDND,IDCHEQUE, IDERROR
-import functools
+
+from ui.Ui_conciliacion import Ui_frmConciliacion
+from movimientosbancarios import dlgMovimientosBancarios
 
 
 FECHA,CONCEPTO,DEBE,HABER,SALDO,CONCILIADO,DELBANCO,IDTIPODOC = range(8)
@@ -560,9 +562,9 @@ class dlgSelectCuenta( QDialog ):
 
         self.setMinimumWidth( 400 )
 
-        self.buttonbox.accepted.connect(self.aceptar)
-        self.buttonbox.rejected.connect(self.reject)
-        self.txtSearch.textChanged[unicode].connect(self.updateDetailFilter)
+        buttonbox.accepted.connect(self.aceptar)
+        buttonbox.rejected.connect(self.reject)
+        self.txtSearch.textChanged[unicode].connect(self.updateFilter)
         self.tblCuenta.selectionModel().currentChanged[QModelIndex, QModelIndex].connect(self.on_tblCuenta_currentChanged)
 
         self.setModal(True)
@@ -595,7 +597,6 @@ class dlgSelectCuenta( QDialog ):
             return QDialog.exec_( self )
            
     def updateFilter( self, str ):
-
         self.filtermodel.setFilterWildcard( str )
         
 #    @pyqtSlot( "QModelIndex" )

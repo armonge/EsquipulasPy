@@ -12,10 +12,12 @@ from PyQt4.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSlot, QRegExp
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDialog, QLineEdit, \
 QVBoxLayout, QHBoxLayout, QDialogButtonBox, QCheckBox, QLabel, QRegExpValidator, QValidator, \
 QMessageBox, qApp
-from ui.Ui_cuentas import Ui_frmAccounts
+
 from utility.moneyfmt import moneyfmt
 from utility.treefilterproxymodel import TreeFilterProxyModel
 from utility import user
+
+from ui.Ui_cuentas import Ui_frmAccounts
 
 CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, IDCUENTA, ACUMULADO = range( 8 )
 headers = [ "Codigo", u"Descripción", "Es Debe", "hijos", "Monto", "Padre", "Id", "Acumulado"]

@@ -1,4 +1,4 @@
-    # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 '''
 Created on 03/07/2010
 
@@ -13,14 +13,17 @@ from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase,QSqlQuery
 from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, QModelIndex, QTimer,QSize,QDate
 from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, QPrinter, qApp,QDialog
 
+from ui.Ui_cheques import Ui_frmCheques
+
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
-from ui.Ui_cheques import Ui_frmCheques
-from document.cheque.chequemodel import ChequeModel
 from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorLine,AccountsSelectorModel
 from utility import constantes
 from utility.widgets.searchpanel import SearchPanel
 from utility.reports import frmReportes
+
+from document.cheque.chequemodel import ChequeModel
+
 IDDOCUMENTO,NCHEQUE,CUENTABANCARIA,NOMBRE,FECHA,CONCEPTO,TOTAL,SUBTOTAL,IVA,TOTALRET,TIPOCAMBIO,TASARETENCION,ESTADO,IDESTADO,TOTALCHEQUE=range(15)
 #accounts model
 IDDOC, IDCUENTA,CODIGO,DESCRIPCION, MONTO= range( 5 )

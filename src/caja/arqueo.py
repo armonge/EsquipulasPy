@@ -20,9 +20,8 @@ from utility.moneyfmt import moneyfmt
 from utility.singleselectionmodel import  SingleSelectionModel
 from utility.user import dlgSmallUserLogin
 
-from document.arqueo.arqueomodel import ArqueoModel, ArqueoProxyModel
-from document.arqueo.arqueodelegate import ArqueoDelegate
-import caja.mainwindow
+from document.arqueo import ArqueoModel, ArqueoProxyModel, ArqueoDelegate
+
 
 #navmodel
 IDDOCUMMENTO, FECHA, NOMBRE, EFECTIVOC, EFECTIVOD, CHEQUEC, CHEQUED, DEPOSITOC,\
@@ -243,7 +242,6 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning(u"No se pudo establecer la conexión con la base de datos")
-            print self.parent.findChild(QMdiArea).subWindowList()
             for window in self.parent.findChild(QMdiArea).subWindowList():
                 if window.widget():
                     raise UserWarning(u"Por favor cierre las otras pestañas de la aplicación antes de continuar con el arqueo")
@@ -299,7 +297,6 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             if not query.exec_(q):
                 raise Exception( u"No se pudo ejecutar la consulta para obtener el numero del arqueo")
             if not query.size() > 0:
-                print query.size()
                 raise Exception( u"La consulta para obtener el numero del arqueo no devolvio ningún valor")
             query.first()
             
@@ -464,7 +461,6 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                 if QMessageBox.question(self, qApp.organizationName(), unicode(inst) + u"\n¿Desea Continuar?", QMessageBox.Yes| QMessageBox.No) == QMessageBox.Yes:
                     dlgUser = dlgSmallUserLogin()
                     if dlgUser.exec_() == QDialog.Accepted:
-                        print "here"
                         if dlgUser.user.valid and dlgUser.user.hasRole('gerencia'):
                             self.editmodel.authorizationId  = dlgUser.user.uid
                             super(frmArqueo, self).save(False)

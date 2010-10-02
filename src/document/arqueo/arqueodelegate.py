@@ -11,7 +11,6 @@ from PyQt4.QtCore import Qt
 
 from utility.widgets.searchpanel import SingleSelectionSearchPanelDelegate
 
-from document import arqueo
 CANTIDAD, DENOMINACION,  TOTAL, MONEDA, IDDOCUMMENTOT, IDDENOMINACION = range( 6 )
 class ArqueoDelegate( SingleSelectionSearchPanelDelegate ):
     def __init__( self, denominations, parent = None ):
@@ -40,12 +39,6 @@ class ArqueoDelegate( SingleSelectionSearchPanelDelegate ):
             self.proxymodel.setSourceModel(self.denominationsmodel)
             
             current = index.model().data(index.model().index(index.row(), IDDENOMINACION) ).toInt()[0]
-            print  index.model()
-            print "**************************************"
-            for column in range(index.model().columnCount()):
-                print index.model().index(0, column).data().toString()
-            print "***************************************"
-            print "current: ", current, "filter", self.filter(index.model(), current )
             self.proxymodel.setFilterRegExp( self.filter(index.model(), current ))
             
 

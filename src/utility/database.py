@@ -6,7 +6,7 @@ from PyQt4.QtSql import QSqlDatabase
 from PyQt4.QtGui import QDialog, QFormLayout, QVBoxLayout, QLineEdit, QDialogButtonBox
 from PyQt4.QtCore import   QObject, QSettings
 
-from utility import reports
+import reports
 
 class dlgDatabaseConfig( QDialog ):
     u"""

@@ -471,43 +471,43 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
                 QSqlDatabase.database().open()
 #        El modelo principal
 #FIXME: como escapar el % ???
-            self.navmodel.setQuery( """
-                SELECT
-                pago.iddocumento,
-                pago.ndocimpreso  as 'No. Comprobante',
-                pago.nombre as Beneficiario,
-                pago.Concepto,
-                SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totalc,
-                SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totald,
-                pago.fecha,
-                pago.tasa,
-                pago.total,
-                pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) as subtotal,
-                (pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (%d,%d),ca.valorcosto/100,0)) as retencion
-                FROM costosagregados ca
-                JOIN costosxdocumento cxd ON ca.idcostoagregado = cxd.idcostoagregado
-                JOIN movimientoscaja mc ON mc.iddocumento = cxd.iddocumento
-                JOIN
-                (
-                SELECT
-                d.iddocumento,
-                d.ndocimpreso,
-                GROUP_CONCAT(IF(pxd.idaccion=%,p.nombre,'') SEPARATOR '') as nombre,
-                DATE_FORMAT(d.fechacreacion,%s) AS fecha,
-                d.observacion,
-                con.descripcion as concepto,
-                tc.tasa,
-                d.total
-                FROM documentos d
-                JOIN conceptos con ON con.idconcepto = d.idconcepto
-                JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
-                JOIN personas p ON p.idpersona = pxd.idpersona
-                JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
-                WHERE d.idtipodoc=%d
-                GROUP BY d.iddocumento
-                ) pago on pago.iddocumento = cxd.iddocumento
-                GROUP BY pago.iddocumento
-                ; """ %(constantes.IVA,constantes.,constantes.CORDOBAS,constantes.DOLARES,constantes.RETENCIONFUENTE,constantes.RETENCIONPROFESIONALES,constantes.PROVEEDOR,'%d/%m/%Y',constantes.IDPAGO))
+            #self.navmodel.setQuery( """
+                #SELECT
+                #pago.iddocumento,
+                #pago.ndocimpreso  as 'No. Comprobante',
+                #pago.nombre as Beneficiario,
+                #pago.Concepto,
+                #SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totalc,
+                #SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totald,
+                #pago.fecha,
+                #pago.tasa,
+                #pago.total,
+                #pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) as subtotal,
+                #(pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (%d,%d),ca.valorcosto/100,0)) as retencion
+                #FROM costosagregados ca
+                #JOIN costosxdocumento cxd ON ca.idcostoagregado = cxd.idcostoagregado
+                #JOIN movimientoscaja mc ON mc.iddocumento = cxd.iddocumento
+                #JOIN
+                #(
+                #SELECT
+                #d.iddocumento,
+                #d.ndocimpreso,
+                #GROUP_CONCAT(IF(pxd.idaccion=%,p.nombre,'') SEPARATOR '') as nombre,
+                #DATE_FORMAT(d.fechacreacion,%s) AS fecha,
+                #d.observacion,
+                #con.descripcion as concepto,
+                #tc.tasa,
+                #d.total
+                #FROM documentos d
+                #JOIN conceptos con ON con.idconcepto = d.idconcepto
+                #JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
+                #JOIN personas p ON p.idpersona = pxd.idpersona
+                #JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
+                #WHERE d.idtipodoc=%d
+                #GROUP BY d.iddocumento
+                #) pago on pago.iddocumento = cxd.iddocumento
+                #GROUP BY pago.iddocumento
+                #; """ %(constantes.IVA,constantes.,constantes.CORDOBAS,constantes.DOLARES,constantes.RETENCIONFUENTE,constantes.RETENCIONPROFESIONALES,constantes.PROVEEDOR,'%d/%m/%Y',constantes.IDPAGO))
   
             self.navproxymodel = QSortFilterProxyModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )

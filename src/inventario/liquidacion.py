@@ -17,8 +17,9 @@ from utility import constantes
 from utility import movimientos
 from utility.base import Base
 from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorLine
-from document.liquidacion.liquidacionmodel import LiquidacionModel, LiquidacionAccountsModel
-from document.liquidacion.liquidaciondelegate import LiquidacionDelegate
+
+from document.liquidacion import LiquidacionModel, LiquidacionAccountsModel, LiquidacionDelegate
+#from document.liquidacion.liquidaciondelegate import LiquidacionDelegate
 
 
 #navigation model

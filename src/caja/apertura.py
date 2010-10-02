@@ -10,6 +10,7 @@ import logging
 from PyQt4.QtGui import QMessageBox, QDialog, QLineEdit, QIcon, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 from PyQt4.QtCore import pyqtSlot, pyqtSignature, QDateTime,Qt
+
 from ui.Ui_apertura import Ui_dlgApertura
 
 from utility.user import User
@@ -250,7 +251,6 @@ class AperturaModel(object):
         except Exception as inst:
             logging.critical(unicode(inst))
             logging.critical(query.lastError().text())
-            print query.lastError().text()
             QSqlDatabase.database().rollback()
             self.error = u"Hubo un error al guardar la sesión de caja en la base de datos"
             

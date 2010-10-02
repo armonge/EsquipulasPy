@@ -15,9 +15,7 @@ from ui.Ui_kardex import Ui_frmKardex
 
 from  utility import constantes
 from utility.base import Base
-from document.kardex.kardexmodel import KardexModel
-from document.kardex.lineakardex import LineaKardex
-from document.kardex.kardexdelegate import KardexDelegate
+from document.kardex import KardexModel,LineaKardex ,KardexDelegate
 
 
 #DETAILS

@@ -13,8 +13,8 @@ from PyQt4.QtCore import QTimer,pyqtSlot, QDateTime
 
 from ui.Ui_kardexother import Ui_frmKardexOther
 
-from document.kardexother.kardexothermodel import KardexOtherModel
-from document.kardexother.kardexotherdelegate import KardexOtherDelegate
+from document.kardexother import KardexOtherModel, KardexOtherDelegate
+
 from utility.base import Base
 from utility import constantes, movimientos
 from utility.accountselector import AccountsSelectorDelegate, AccountsSelectorLine

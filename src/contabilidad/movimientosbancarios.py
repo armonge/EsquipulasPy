@@ -4,17 +4,21 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
-from ui.Ui_dlgmovimientosbancarios import Ui_dlgMovimientosBancarios
-from ui.Ui_frmmovimientosbancarios import Ui_frmMovimientosBancarios
-from PyQt4.QtGui import QMainWindow,QDialog,QSortFilterProxyModel,QDataWidgetMapper,QAbstractItemView
-from utility.base import Base
 from decimal import Decimal
 import functools
+
+from PyQt4.QtGui import QMainWindow,QDialog,QSortFilterProxyModel,QDataWidgetMapper,QAbstractItemView
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 from PyQt4.QtCore import pyqtSignature,pyqtSlot, QDate,Qt, QTimer
+
+from utility.base import Base
 from utility.moneyfmt import moneyfmt
-from document.movimientosbancarios.movimientosbancariosmodel import MovimientosBancariosModel
 from utility.widgets.searchpanel import SearchPanel
+
+from ui.Ui_dlgmovimientosbancarios import Ui_dlgMovimientosBancarios
+from ui.Ui_frmmovimientosbancarios import Ui_frmMovimientosBancarios
+
+from document.movimientosbancarios import MovimientosBancariosModel
 
 IDDOCUMENTO, FECHA, CUENTA,TIPODOC,CONCEPTO,OBSERVACION,NCUENTA = range(7)
 class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
