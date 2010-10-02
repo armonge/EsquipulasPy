@@ -2,7 +2,7 @@
 '''
 Created on 03/07/2010
 
-@author: Administrator
+@author: MARCOS
 '''
 from decimal import Decimal, InvalidOperation
 import functools

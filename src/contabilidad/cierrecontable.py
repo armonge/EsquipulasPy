@@ -43,10 +43,12 @@ class frmCierreContable( Ui_frmCierreContable, QMainWindow ):
                 
     def updateModels(self):
         
-        self.navmodel.setQuery(u"select iddocumento,ndocimpreso as 'No. Documento',td.descripcion as TipoDocumento,format(total ,4)as Total,date_format(fechacreacion,'%d/%m/%Y') as Fecha,observacion as Observaciones, estados.descripcion as Estado from documentos d join estadosdocumento estados on estados.idestado=d.idestado join tiposdoc td on d.idtipodoc=td.idtipodoc where MONTH(fechacreacion)="+self.fecha.toString("MM")+" and d.idtipodoc!="+ str(constantes.IDAPERTURA))
+        self.navmodel.setQuery(u"select iddocumento,ndocimpreso as 'No. Documento',td.descripcion as TipoDocumento,format(total ,4)as Total,date_format(fechacreacion,'%d/%m/%Y') as Fecha,observacion as Observaciones, estados.descripcion as Estado from documentos d join estadosdocumento estados on estados.idestado=d.idestado join tiposdoc td on d.idtipodoc=td.idtipodoc where MONTH(fechacreacion)="+self.fecha.toString("MM")+" and d.idtipodoc!="+ str(constantes.IDAPERTURA) +" and d.idtipodoc!="+ str(constantes.IDCIERREMENSUAL))
         query=QSqlQuery()
-        query.prepare( "SELECT iddocumento FROM documentos where MONTH(fechacreacion)="+self.fecha.toString("MM")+" and idtipodoc="+str(constantes.IDCIERREMENSUAL))
+        query.prepare("select d2.iddocumento from documentos d join docpadrehijos dp on d.iddocumento=dp.idpadre join documentos d2 on d2.iddocumento=dp.idhijo where d.idtipodoc="+ str(constantes.IDCIERREMENSUAL) +" and month(d2.fechacreacion)="+ self.fecha.toString("MM")+ " limit 1")
+    
         if not query.exec_():
+            print query.executedQuery()
             raise UserWarning("No se pudo ejecutar la consulta para verificar si existe un cierre contable")
         
         if self.navmodel.rowCount()==0 or query.size()>0: 
@@ -78,11 +80,30 @@ class frmCierreContable( Ui_frmCierreContable, QMainWindow ):
         else:
             try:
                 query=QSqlQuery()
-                query.prepare( "CALL `esquipulasdb`.`spCierreMensual`(:IDCIERRE,:MES,:ESTADO:ANO)" )
+                query.prepare( """CALL `esquipulasdb`.`spCierreMensual`(:IDCIERRE,
+                :MES,
+                :ESTADO,
+                :ANO,
+                :INGRESOSXVENTA,
+                :OTROSINGRESOS,
+                :COSTOSGASTOSOPERACIONES,
+                :GASTOSXVENTAS,
+                :GASTOS,
+                :GASTOSFINANCIEROS,
+                :PRODUCTOSFINANCIEROS,
+                :OTROSGASTOS)""" )
                 query.bindValue( ":IDCIERRE", constantes.IDCIERREMENSUAL)
                 query.bindValue( ":MES",self.fecha.toString("MM") )
                 query.bindValue( ":ESTADO", constantes.CONFIRMADO)
                 query.bindValue( ":ANO", self.fecha.toString("yyyy"))
+                query.bindValue( ":INGRESOSXVENTA",constantes.INGRESOSXVENTA )
+                query.bindValue( ":OTROSINGRESOS",constantes.OTROSINGRESOS )
+                query.bindValue( ":COSTOSGASTOSOPERACIONES",constantes.COSTOSGASTOSOPERACIONES )
+                query.bindValue( ":GASTOSXVENTAS",constantes.GASTOSXVENTAS)
+                query.bindValue( ":GASTOS",constantes.GASTOS )
+                query.bindValue( ":GASTOSFINANCIEROS",constantes.GASTOSFINANCIEROS )
+                query.bindValue( ":PRODUCTOSFINANCIEROS",constantes.PRODUCTOSFINANCIEROS )
+                query.bindValue( ":OTROSGASTOS",constantes.OTROSGASTOS )
                 
                 if not query.exec_():
                     raise UserWarning("No se pudo Cerrar el mes Contable")
