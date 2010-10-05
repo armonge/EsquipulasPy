@@ -6,15 +6,15 @@ import logging
 
 from PyQt4.QtGui import QStyledItemDelegate, QAbstractItemView, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, QTextDocument, qApp
 from PyQt4.QtCore import  Qt, QRegExp, QSize, QVariant
-from utility.catgeneric import frmCatGeneric
+from utility.catgeneric import FrmCatGeneric
 
 
-class frmCatMarcas( frmCatGeneric ):
+class FrmCatMarcas( FrmCatGeneric ):
     """
     Catalogo de Marcas
     """
     def __init__( self, parent = None ):
-        super( frmCatMarcas, self ).__init__( "marcas", parent )
+        super( FrmCatMarcas, self ).__init__( "marcas", parent )
         self.setWindowTitle( "Catalogo de Marcas" )
     def updateModels( self ):
         try:
@@ -45,13 +45,13 @@ class frmCatMarcas( frmCatGeneric ):
 
 
 IDCONCEPTO,DESCRIPCION,MODULO=range(3)
-class frmCatConceptos( frmCatGeneric ):
+class FrmCatConceptos( FrmCatGeneric ):
     """
     Catalogo de conceptos
     """
     def __init__( self, modulo,parent = None ):
         self.modulo=modulo
-        super( frmCatConceptos, self ).__init__( "conceptos", parent )
+        super( FrmCatConceptos, self ).__init__( "conceptos", parent )
         self.setWindowTitle( "Catalogo de Conceptos" )
         
     
@@ -81,7 +81,7 @@ class frmCatConceptos( frmCatGeneric ):
             return False
         
     def new( self ):
-        super( frmCatConceptos, self ).new()
+        super( FrmCatConceptos, self ).new()
         self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, MODULO ), self.modulo )
 
 
@@ -91,12 +91,12 @@ class frmCatConceptos( frmCatGeneric ):
 
 
 IDPERSONA, NOMBRE, FECHACREACION, TELEFONO, EMAIL, RUC, ACTIVO, TIPOPERSONA, CUENTA = range( 9 )
-class frmCatProveedores( frmCatGeneric ):
+class FrmCatProveedores( FrmCatGeneric ):
     """
     Catalogo de Proveedores
     """
     def __init__( self, parent = None ):
-        super( frmCatProveedores, self ).__init__( "personas", parent )
+        super( FrmCatProveedores, self ).__init__( "personas", parent )
         providersdelegate = PeopleDelegate()
         self.tableview.setItemDelegate( providersdelegate )
         self.setWindowTitle( "Catalogo de Proveedores" )
@@ -140,7 +140,7 @@ class frmCatProveedores( frmCatGeneric ):
         self.tableview.edit( self.tableview.selectionModel().currentIndex() )
 
     def new( self ):
-        super( frmCatProveedores, self ).new()
+        super( FrmCatProveedores, self ).new()
         self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, TIPOPERSONA ), 2)
         self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, ACTIVO ), 1)
 

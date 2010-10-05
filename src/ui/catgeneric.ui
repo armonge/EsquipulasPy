@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>frmCatGeneric</class>
- <widget class="QMainWindow" name="frmCatGeneric">
+ <class>FrmCatGeneric</class>
+ <widget class="QMainWindow" name="FrmCatGeneric">
   <property name="geometry">
    <rect>
     <x>0</x>

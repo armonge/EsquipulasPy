@@ -13,11 +13,10 @@ from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 
 
-from document.conciliacion import ConciliacionDelegate, ConciliacionModel, LineaConciliacion
+from document.conciliacion import ConciliacionModel, LineaConciliacion
 
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
-from utility.reports import frmReportes
 from utility.constantes import IDND,IDCHEQUE, IDERROR
 
 from ui.Ui_conciliacion import Ui_frmConciliacion
@@ -26,7 +25,7 @@ from movimientosbancarios import dlgMovimientosBancarios
 
 FECHA,CONCEPTO,DEBE,HABER,SALDO,CONCILIADO,DELBANCO,IDTIPODOC = range(8)
 FECHA,BANCO,CUENTABANCO,MONEDA,CUENTA,SALDOBANCO,SALDOLIBRO,IDCUENTABANCO,IDDOC = range(9)
-class frmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
+class FrmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
     """
     Formulario para crear nuevas conciliaciones bancarias
     """

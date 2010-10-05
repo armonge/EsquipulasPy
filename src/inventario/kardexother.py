@@ -5,13 +5,12 @@ Created on 23/07/2010
 @author: Andrés Reyes Monge
 '''
 import logging
-from decimal import Decimal
 
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, QAbstractItemView, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QTimer,pyqtSlot, QDateTime
 
-from ui.Ui_kardexother import Ui_frmKardexOther
+from ui.Ui_kardexother import Ui_FrmKardexOther
 
 from document.kardexother import KardexOtherModel, KardexOtherDelegate
 
@@ -24,7 +23,7 @@ IDDOCUMENTO, NDOCIMPRESO, FECHA, OBSERVACIONES,BODEGA, TOTAL, ESTADO, CONCEPT, P
 IDARTICULO, DESCRIPCION,COSTO, CANTIDAD, IDDOCUMENTOD = range(5)
 IDCUENTA, CODIGO, NOMBRECUENTA, MONTOCUENTA, IDDOCUMENTOC = range(5) 
 
-class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
+class FrmKardexOther(QMainWindow, Ui_FrmKardexOther, Base):
     '''
     classdocs
     '''
@@ -33,7 +32,7 @@ class frmKardexOther(QMainWindow, Ui_frmKardexOther, Base):
         '''
         Constructor
         '''
-        super( frmKardexOther, self ).__init__( parent )
+        super( FrmKardexOther, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )

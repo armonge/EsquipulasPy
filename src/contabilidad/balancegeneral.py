@@ -4,10 +4,10 @@ Created on 15/07/2010
 
 @author: Luis Carlos Mejia
 '''
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 
 from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel, QPrinter
-from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
+from PyQt4.QtSql import QSqlDatabase
 from PyQt4.QtCore import QDate,pyqtSlot,QAbstractItemModel, QModelIndex, Qt
 
 from ui.Ui_balancegeneral import Ui_frmBalanceGeneral
@@ -17,7 +17,7 @@ from utility.reports import frmReportes
 
 CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, IDCUENTA, ACUMULADO = range( 8 )
 headers = [ u"Código", u"Descripción", "Es Debe", "hijos", "Saldo", "Padre", "Id", "Total"]
-class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
+class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
     """
     Formulario para crear nuevas conciliaciones bancarias
     """
@@ -25,7 +25,7 @@ class frmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
         """
         Constructor
         """
-        super( frmBalanceGeneral, self ).__init__( parent )
+        super( FrmBalanceGeneral, self ).__init__( parent )
         self.setupUi( self )
 #        self.dtPicker.setCalendarPopup(True)
         self.dtPicker.setMaximumDate(QDate.currentDate())

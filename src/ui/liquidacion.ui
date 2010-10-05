@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>frmLiquidacion</class>
- <widget class="QMainWindow" name="frmLiquidacion">
+ <class>FrmLiquidacion</class>
+ <widget class="QMainWindow" name="FrmLiquidacion">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -44,7 +44,7 @@
          <normaloff>:/icons/res/document-edit.png</normaloff>:/icons/res/document-edit.png</iconset>
        </attribute>
        <attribute name="title">
-        <string notr="true"/>
+        <string notr="true">&quot;&quot;</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
@@ -581,7 +581,7 @@
          <normaloff>:/icons/res/table.png</normaloff>:/icons/res/table.png</iconset>
        </attribute>
        <attribute name="title">
-        <string notr="true"/>
+        <string notr="true">&quot;&quot;</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>

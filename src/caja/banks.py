@@ -3,16 +3,17 @@ Created on 03/06/2010
 
 @author: Administrator
 '''
-from PyQt4.QtCore import pyqtSlot, Qt
-from PyQt4.QtGui import QWidget, QSortFilterProxyModel,QAbstractItemView
-from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel
-from utility.catgeneric import frmCatGeneric
-#from utility.catgeneric import frmCatGeneric
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QSortFilterProxyModel
+from utility.catgeneric import FrmCatGeneric
 
-class frmBanks (frmCatGeneric):
+class FrmBanks (FrmCatGeneric):
+    """
+
+    """
     
     def __init__( self, parent = None ):
-        super( frmBanks, self ).__init__( "bancos", parent )
+        super( FrmBanks, self ).__init__( "bancos", parent )
         self.setWindowTitle( "Catalogo de Bancos" )
         self.updateModels()
     def updateModels( self ):

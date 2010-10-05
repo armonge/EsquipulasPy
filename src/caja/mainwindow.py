@@ -8,19 +8,19 @@
 import logging
 from decimal import Decimal
 
-from PyQt4.QtGui import QMainWindow, QDialog, QMessageBox, qApp
+from PyQt4.QtGui import QMainWindow, QDialog, QMessageBox
 from PyQt4.QtCore import pyqtSlot, Qt
 from PyQt4.QtSql import QSqlDatabase,QSqlQuery
-from factura import frmFactura
-from recibo import frmRecibo
-from pago import frmPago
+from factura import FrmFactura
+from recibo import FrmRecibo
+from pago import FrmPago
 from ui.Ui_mainwindowcaja import Ui_MainWindow
-from apertura import dlgApertura
+from apertura import DlgApertura
 from utility.mainwindowbase import MainWindowBase
-from inventario.catalogos import frmCatConceptos
-from arqueo import frmArqueo
+from inventario.catalogos import FrmCatConceptos
+from arqueo import FrmArqueo
 from utility import constantes
-from devolucion import frmDevolucion
+from devolucion import FrmDevolucion
 from utility.persona import frmPersona
 from utility import constantes
 
@@ -99,14 +99,14 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         
     @pyqtSlot(  )
     def on_btnConceptos_clicked( self ):
-        conceptos=frmCatConceptos(2,self)
+        conceptos=FrmCatConceptos(2,self)
         self.mdiArea.addSubWindow(conceptos)
         conceptos.show()
         
 
     @pyqtSlot(  )
     def on_btnArqueo_clicked( self ):
-        arqueo = frmArqueo(  self )
+        arqueo = FrmArqueo(  self )
         arqueo.show()
 
   
@@ -115,7 +115,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        recibo = frmRecibo(  self )
+        recibo = FrmRecibo(  self )
         recibo.setAttribute( Qt.WA_DeleteOnClose )
         self.mdiArea.addSubWindow( recibo )
         recibo.show()
@@ -179,7 +179,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                         QMessageBox.critical( None, u"La sesión no fue abierta", u"No fue posible abrir la sesión anterior. Por favor contacte al administrador del sistema")
                         logging.error(u"No se pudo continuar con la sesión de caja del usuario %s ")
             else:
-                apertura = dlgApertura( self )
+                apertura = DlgApertura( self )
                 if apertura.exec_() == QDialog.Accepted:
                     self.status = estado
 
@@ -195,7 +195,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
 #                logging.critical(unicode(inst))
 #                logging.error(query.lastError().text())
         else:
-            arqueo = frmArqueo(  self )
+            arqueo = FrmArqueo(  self )
             arqueo.show()
             
 
@@ -206,7 +206,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        factura = frmFactura( self )
+        factura = FrmFactura( self )
         self.mdiArea.addSubWindow( factura )
         factura.show()
 
@@ -216,7 +216,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        pago = frmPago( self )
+        pago = FrmPago( self )
         pago.show()
 
     @pyqtSlot( )
@@ -224,7 +224,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        devolucion = frmDevolucion(  self )
+        devolucion = FrmDevolucion(  self )
         devolucion.setAttribute( Qt.WA_DeleteOnClose )
         self.mdiArea.addSubWindow( devolucion )
         devolucion.show()
@@ -240,7 +240,9 @@ class DatosSesion():
         self.tipoCambioBanco  = Decimal(0)
         self.fecha = None
         self.cajaId = 0
-    
+
+
+#FIXME: Para que es mensaje????
     @property
     def valid(self):
         mensaje = u"La sesión no fue abierta porque no se cargo "

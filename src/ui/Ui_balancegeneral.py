@@ -10,10 +10,10 @@
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmBalanceGeneral(object):
-    def setupUi(self, frmBalanceGeneral):
-        frmBalanceGeneral.setObjectName("frmBalanceGeneral")
-        frmBalanceGeneral.resize(800, 634)
-        self.centralwidget = QtGui.QWidget(frmBalanceGeneral)
+    def setupUi(self, FrmBalanceGeneral):
+        FrmBalanceGeneral.setObjectName("frmBalanceGeneral")
+        FrmBalanceGeneral.resize(800, 634)
+        self.centralwidget = QtGui.QWidget(FrmBalanceGeneral)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.centralwidget)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
@@ -156,22 +156,22 @@ class Ui_frmBalanceGeneral(object):
         self.txtpasivocapital.setObjectName("txtpasivocapital")
         self.horizontalLayout_2.addWidget(self.txtpasivocapital)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
-        frmBalanceGeneral.setCentralWidget(self.centralwidget)
-        self.toolBar = QtGui.QToolBar(frmBalanceGeneral)
+        FrmBalanceGeneral.setCentralWidget(self.centralwidget)
+        self.toolBar = QtGui.QToolBar(FrmBalanceGeneral)
         self.toolBar.setObjectName("toolBar")
-        frmBalanceGeneral.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
-        self.actionPreview = QtGui.QAction(frmBalanceGeneral)
+        FrmBalanceGeneral.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        self.actionPreview = QtGui.QAction(FrmBalanceGeneral)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/res/document-preview.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionPreview.setIcon(icon)
         self.actionPreview.setObjectName("actionPreview")
         self.toolBar.addAction(self.actionPreview)
 
-        self.retranslateUi(frmBalanceGeneral)
-        QtCore.QMetaObject.connectSlotsByName(frmBalanceGeneral)
+        self.retranslateUi(FrmBalanceGeneral)
+        QtCore.QMetaObject.connectSlotsByName(FrmBalanceGeneral)
 
-    def retranslateUi(self, frmBalanceGeneral):
-        frmBalanceGeneral.setWindowTitle(QtGui.QApplication.translate("frmBalanceGeneral", "Balance General", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, FrmBalanceGeneral):
+        FrmBalanceGeneral.setWindowTitle(QtGui.QApplication.translate("frmBalanceGeneral", "Balance General", None, QtGui.QApplication.UnicodeUTF8))
         self.dtPicker.setDisplayFormat(QtGui.QApplication.translate("frmBalanceGeneral", "MMMM yyyy", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("frmBalanceGeneral", "Activos", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_3.setTitle(QtGui.QApplication.translate("frmBalanceGeneral", "Pasivos", None, QtGui.QApplication.UnicodeUTF8))
@@ -188,9 +188,9 @@ import res_rc
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    frmBalanceGeneral = QtGui.QMainWindow()
+    FrmBalanceGeneral = QtGui.QMainWindow()
     ui = Ui_frmBalanceGeneral()
-    ui.setupUi(frmBalanceGeneral)
-    frmBalanceGeneral.show()
+    ui.setupUi(FrmBalanceGeneral)
+    FrmBalanceGeneral.show()
     sys.exit(app.exec_())
 

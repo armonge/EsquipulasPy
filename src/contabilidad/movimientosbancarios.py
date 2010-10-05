@@ -21,9 +21,9 @@ from ui.Ui_frmmovimientosbancarios import Ui_frmMovimientosBancarios
 from document.movimientosbancarios import MovimientosBancariosModel
 
 IDDOCUMENTO, FECHA, CUENTA,TIPODOC,CONCEPTO,OBSERVACION,NCUENTA = range(7)
-class frmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
+class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
     def __init__( self,  parent ):
-        super( frmMovimientosBancarios, self ).__init__( parent )
+        super( FrmMovimientosBancarios, self ).__init__( parent )
 
         self.setupUi( self )
         self.parentWindow = parent

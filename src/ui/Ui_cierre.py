@@ -9,11 +9,11 @@
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmCierreContable(object):
-    def setupUi(self, frmCierreContable):
-        frmCierreContable.setObjectName("frmCierreContable")
-        frmCierreContable.resize(828, 623)
-        frmCierreContable.setStyleSheet("None")
-        self.centralwidget = QtGui.QWidget(frmCierreContable)
+    def setupUi(self, FrmCierreContable):
+        FrmCierreContable.setObjectName("frmCierreContable")
+        FrmCierreContable.resize(828, 623)
+        FrmCierreContable.setStyleSheet("None")
+        self.centralwidget = QtGui.QWidget(FrmCierreContable)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
@@ -52,26 +52,26 @@ class Ui_frmCierreContable(object):
         self.tabledetails.setObjectName("tabledetails")
         self.verticalLayout.addWidget(self.tabledetails)
         self.gridLayout.addWidget(self.splitter_2, 2, 0, 1, 1)
-        frmCierreContable.setCentralWidget(self.centralwidget)
-        self.statusbar = QtGui.QStatusBar(frmCierreContable)
+        FrmCierreContable.setCentralWidget(self.centralwidget)
+        self.statusbar = QtGui.QStatusBar(FrmCierreContable)
         self.statusbar.setObjectName("statusbar")
-        frmCierreContable.setStatusBar(self.statusbar)
-        self.toolBar = QtGui.QToolBar(frmCierreContable)
+        FrmCierreContable.setStatusBar(self.statusbar)
+        self.toolBar = QtGui.QToolBar(FrmCierreContable)
         self.toolBar.setAllowedAreas(QtCore.Qt.AllToolBarAreas)
         self.toolBar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.toolBar.setObjectName("toolBar")
-        frmCierreContable.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
-        self.actionSave = QtGui.QAction(frmCierreContable)
+        FrmCierreContable.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        self.actionSave = QtGui.QAction(FrmCierreContable)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/res/document-save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionSave.setIcon(icon)
         self.actionSave.setObjectName("actionSave")
 
-        self.retranslateUi(frmCierreContable)
-        QtCore.QMetaObject.connectSlotsByName(frmCierreContable)
+        self.retranslateUi(FrmCierreContable)
+        QtCore.QMetaObject.connectSlotsByName(FrmCierreContable)
 
-    def retranslateUi(self, frmCierreContable):
-        frmCierreContable.setWindowTitle(QtGui.QApplication.translate("frmCierreContable", "Cierre Contable", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, FrmCierreContable):
+        FrmCierreContable.setWindowTitle(QtGui.QApplication.translate("frmCierreContable", "Cierre Contable", None, QtGui.QApplication.UnicodeUTF8))
         self.lbltitulo.setText(QtGui.QApplication.translate("frmCierreContable", "<h2><b>Documentos pertenecientes a cierre contable Mensual", None, QtGui.QApplication.UnicodeUTF8))
         self.dtPicker.setDisplayFormat(QtGui.QApplication.translate("frmCierreContable", "MMMM yyyy", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_3.setTitle(QtGui.QApplication.translate("frmCierreContable", "Estado de Resultado", None, QtGui.QApplication.UnicodeUTF8))
@@ -85,9 +85,9 @@ import res_rc
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    frmCierreContable = QtGui.QMainWindow()
+    FrmCierreContable = QtGui.QMainWindow()
     ui = Ui_frmCierreContable()
-    ui.setupUi(frmCierreContable)
-    frmCierreContable.show()
+    ui.setupUi(FrmCierreContable)
+    FrmCierreContable.show()
     sys.exit(app.exec_())
 

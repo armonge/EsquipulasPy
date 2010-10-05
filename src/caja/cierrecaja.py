@@ -8,9 +8,9 @@ from ui.Ui_apertura import Ui_dlgApertura
 from PyQt4.QtGui import *
 from PyQt4.QtSql import *
 from PyQt4.QtCore import *
-class frmCierreCaja ( QDialog, Ui_dlgApertura ):
+class FrmCierreCaja ( QDialog, Ui_dlgApertura ):
     def __init__( self, user, user2,sesion, parent = None ):
-        super( frmCierreCaja, self ).__init__( parent )
+        super( FrmCierreCaja, self ).__init__( parent )
         self.setupUi( self )
         self.user = user
         self.user2 = user2

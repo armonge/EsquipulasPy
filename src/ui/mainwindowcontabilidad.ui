@@ -30,6 +30,15 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="background">
+       <brush brushstyle="NoBrush">
+        <color alpha="255">
+         <red>125</red>
+         <green>124</green>
+         <blue>123</blue>
+        </color>
+       </brush>
+      </property>
       <property name="viewMode">
        <enum>QMdiArea::TabbedView</enum>
       </property>
@@ -84,8 +93,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>214</width>
-          <height>570</height>
+          <width>151</width>
+          <height>78</height>
          </rect>
         </property>
         <attribute name="label">
@@ -148,7 +157,7 @@ Contables</string>
           <x>0</x>
           <y>0</y>
           <width>214</width>
-          <height>570</height>
+          <height>560</height>
          </rect>
         </property>
         <attribute name="label">

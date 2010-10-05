@@ -6,7 +6,7 @@ Created on 20/07/2010
 '''
 from decimal import Decimal
 
-from PyQt4.QtGui import QMainWindow,QAbstractItemView
+from PyQt4.QtGui import QMainWindow
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 from PyQt4.QtCore import QDate,pyqtSlot,Qt
 
@@ -15,7 +15,7 @@ from ui.Ui_estadoresultado import Ui_frmEstadoResultado
 from utility.moneyfmt import moneyfmt
 from utility import user
 CODIGO , DESCRIPCION, SALDO , TOTAL,ORDEN = range(5)
-class frmEstadoResultado( QMainWindow, Ui_frmEstadoResultado ):
+class FrmEstadoResultado( QMainWindow, Ui_frmEstadoResultado ):
     """
     Formulario para crear nuevas conciliaciones bancarias
     """
@@ -24,7 +24,7 @@ class frmEstadoResultado( QMainWindow, Ui_frmEstadoResultado ):
         Constructor
         """
         
-        super(frmEstadoResultado, self).__init__(  parent )
+        super(FrmEstadoResultado, self).__init__(  parent )
         self.setupUi( self )
         self.parentWindow = parent        
 #        self.editmodel = None

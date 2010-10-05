@@ -9,7 +9,7 @@ import logging
 
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QAbstractItemModel, QModelIndex, Qt, pyqtSlot, QRegExp
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDialog, QLineEdit, \
+from PyQt4.QtGui import QMainWindow, QDialog, QLineEdit, \
 QVBoxLayout, QHBoxLayout, QDialogButtonBox, QCheckBox, QLabel, QRegExpValidator, QValidator, \
 QMessageBox, qApp
 
@@ -21,9 +21,12 @@ from ui.Ui_cuentas import Ui_frmAccounts
 
 CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, IDCUENTA, ACUMULADO = range( 8 )
 headers = [ "Codigo", u"Descripción", "Es Debe", "hijos", "Monto", "Padre", "Id", "Acumulado"]
-class frmAccounts( QMainWindow, Ui_frmAccounts ):
+class FrmAccounts( QMainWindow, Ui_frmAccounts ):
+    """
+
+    """
     def __init__( self,  parent = None ):
-        super( frmAccounts, self ).__init__( parent )
+        super( FrmAccounts, self ).__init__( parent )
         
         self.setupUi( self )
         self.user = user.LoggedUser
@@ -58,7 +61,7 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
         index = self.accountsTree.model().mapToSource(self.accountsTree.model().index(row, CODIGO, proxyindex.parent())) 
         
 
-        dlg = dlgAccountMod( self )
+        dlg = DlgAccountMod( self )
         if dlg.exec_() == QDialog.Accepted:
             try:
                 self.accountsTree.model().sourceModel().insertRows( 
@@ -78,7 +81,7 @@ class frmAccounts( QMainWindow, Ui_frmAccounts ):
     @pyqtSlot(  )
     def on_btnModify_clicked( self ):
         index = self.accountsTree.currentIndex()
-        dlg = dlgAccountMod( self )
+        dlg = DlgAccountMod( self )
         row = index.row()
         codes = self.accountsTree.model().index( row, CODIGO, index.parent()).data().toString()
         codes = codes.split( ' ')
@@ -421,9 +424,9 @@ class Account( object ):
         return None
 
 
-class dlgAccountMod( QDialog ):
+class DlgAccountMod( QDialog ):
     def __init__( self, parent = None ):
-        super( dlgAccountMod, self ).__init__( parent )
+        super( DlgAccountMod, self ).__init__( parent )
 
         self.setupUi()
 
@@ -479,6 +482,6 @@ class dlgAccountMod( QDialog ):
                     QMessageBox.warning(self, qApp.organizationName(), "Verifique el codigo de la cuenta")
                     result = False
                     break
-            super(dlgAccountMod, self).accept()
+            super(DlgAccountMod, self).accept()
 
 

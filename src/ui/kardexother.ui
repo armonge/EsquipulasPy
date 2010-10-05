@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>frmKardexOther</class>
- <widget class="QMainWindow" name="frmKardexOther">
+ <class>FrmKardexOther</class>
+ <widget class="QMainWindow" name="FrmKardexOther">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -29,7 +29,7 @@
          <normaloff>:/icons/res/document-edit.png</normaloff>:/icons/res/document-edit.png</iconset>
        </attribute>
        <attribute name="title">
-        <string notr="true"/>
+        <string notr="true">&quot;&quot;</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
@@ -250,7 +250,7 @@ p, li { white-space: pre-wrap; }
          <normaloff>:/icons/res/table.png</normaloff>:/icons/res/table.png</iconset>
        </attribute>
        <attribute name="title">
-        <string notr="true"/>
+        <string notr="true">&quot;&quot;</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>

@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1151</width>
-    <height>713</height>
+    <height>708</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -57,7 +57,7 @@
    <property name="minimumSize">
     <size>
      <width>230</width>
-     <height>183</height>
+     <height>186</height>
     </size>
    </property>
    <property name="features">
@@ -93,8 +93,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>230</width>
-          <height>547</height>
+          <width>214</width>
+          <height>532</height>
          </rect>
         </property>
         <attribute name="label">
@@ -222,8 +222,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>230</width>
-          <height>547</height>
+          <width>135</width>
+          <height>226</height>
          </rect>
         </property>
         <attribute name="label">
@@ -344,8 +344,8 @@ Movimientos</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>230</width>
-          <height>547</height>
+          <width>177</width>
+          <height>300</height>
          </rect>
         </property>
         <attribute name="label">

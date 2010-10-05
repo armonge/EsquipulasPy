@@ -7,10 +7,10 @@ Created on 04/08/2010
 import logging
 from decimal import Decimal
 
-from PyQt4.QtCore import pyqtSlot, QModelIndex, Qt, QTimer, \
+from PyQt4.QtCore import QModelIndex, Qt, QTimer, \
     QDateTime
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
      QLineEdit,QMessageBox, qApp
 
@@ -21,12 +21,12 @@ from utility.base import Base
 from utility import constantes
 #from document.creditodebito import creditoDebitoModel
 
-class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
+class FrmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
     def __init__( self,  parent ):
-        super( frmCreditoDebito, self ).__init__( parent )
+        super( FrmCreditoDebito, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
@@ -64,7 +64,7 @@ class frmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
             if not QSqlDatabase.database().open():
                 raise Exception( u"No se pudo establecer una conexión con la base de datos" )
             
-            dlgbill = dlgSelectBill()
+            dlgbill = DlgSelectBill()
             if dlgbill.exec_() == QDialog.Accepted:
                 self.editmodel = creditoDebitoModel()
                 self.editmodel.invoiceId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 0 ).data().toInt()[0]
@@ -193,9 +193,9 @@ class RONavigationModel( QSqlQueryModel ):
 
         return QSqlQueryModel.headerData( self, section , orientation, role )
 
-class dlgSelectBill( QDialog ):
+class DlgSelectBill( QDialog ):
     def __init__( self, parent = None ):
-        super( dlgSelectBill, self ).__init__( parent )
+        super( DlgSelectBill, self ).__init__( parent )
         self.billsmodel = QSqlQueryModel()
         self.billsmodel.setQuery( """
         SELECT

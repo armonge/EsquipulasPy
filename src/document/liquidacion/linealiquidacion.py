@@ -87,7 +87,7 @@ class LineaLiquidacion( LineaBase ):
         Una linea es valida cuando self.quantity > 0 and self.itemCost > 0 and self.itemId != 0 
         @rtype: bool
         """
-        return self.quantity > 0 and self.itemCost > 0 and self.itemId != 0
+        return self.quantity > 0 and self.itemCost > 0 and self.itemId != 0 and self.parent.exchangeRateId > 0
 
     @property
     @ifValid
@@ -457,6 +457,7 @@ class TestLineaLiquidacion(unittest.TestCase):
         self.speTotal = Decimal('5')
         self.isoRate = Decimal('35')
         self.exchangeRate = Decimal('21.5718')
+        self.exchangeRateId = 1
 
     def test_valid(self):
         self.assertTrue(self.line.valid)

@@ -525,4 +525,5 @@ class ArqueoProxyModel(QSortFilterProxyModel):
         if line.valid and index.row() == self.rowCount() - 1 :
             self.sourceModel().insertRow( self.sourceModel().rowCount() )
             self.sourceModel().setData(  self.sourceModel().index(self.sourceModel().rowCount()-1 , MONEDA ), line.currencyId )
-        return result    
+            
+        return result

@@ -276,7 +276,7 @@ class XDockWidget( QDockWidget ):
         self.mainWidget.setWidget( widget )
         QDockWidget.setWidget( self, self.mainWidget )
 
-    @pyqtSlot( "setCollapsed(bool)" )
+    @pyqtSlot( bool )
     def setCollapsed( self, flag ):
         self.mainWidget.setCollapsed( flag )
         self.stateChanged.emit(flag)

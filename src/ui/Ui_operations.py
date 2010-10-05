@@ -10,10 +10,10 @@
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmOperations(object):
-    def setupUi(self, frmOperations):
-        frmOperations.setObjectName("frmOperations")
-        frmOperations.resize(800, 600)
-        self.centralwidget = QtGui.QWidget(frmOperations)
+    def setupUi(self, FrmOperations):
+        FrmOperations.setObjectName("frmOperations")
+        FrmOperations.resize(800, 600)
+        self.centralwidget = QtGui.QWidget(FrmOperations)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtGui.QGridLayout(self.centralwidget)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -117,21 +117,21 @@ class Ui_frmOperations(object):
         self.label_4 = QtGui.QLabel(self.centralwidget)
         self.label_4.setObjectName("label_4")
         self.gridLayout_2.addWidget(self.label_4, 1, 0, 1, 1)
-        frmOperations.setCentralWidget(self.centralwidget)
-        self.toolBar = QtGui.QToolBar(frmOperations)
+        FrmOperations.setCentralWidget(self.centralwidget)
+        self.toolBar = QtGui.QToolBar(FrmOperations)
         self.toolBar.setObjectName("toolBar")
-        frmOperations.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        FrmOperations.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.label.setBuddy(self.dtPicker)
         self.label_3.setBuddy(self.cbConcepts)
         self.label_4.setBuddy(self.txtSearch)
 
-        self.retranslateUi(frmOperations)
+        self.retranslateUi(FrmOperations)
         self.stConcepts.setCurrentIndex(0)
         self.stackedWidget.setCurrentIndex(1)
-        QtCore.QMetaObject.connectSlotsByName(frmOperations)
+        QtCore.QMetaObject.connectSlotsByName(FrmOperations)
 
-    def retranslateUi(self, frmOperations):
-        frmOperations.setWindowTitle(QtGui.QApplication.translate("frmOperations", "Ajustes Contables", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, FrmOperations):
+        FrmOperations.setWindowTitle(QtGui.QApplication.translate("frmOperations", "Ajustes Contables", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("frmOperations", "Detalles", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("frmOperations", "&Fecha", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("frmOperations", "Concepto", None, QtGui.QApplication.UnicodeUTF8))
@@ -145,9 +145,9 @@ import res_rc
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    frmOperations = QtGui.QMainWindow()
+    FrmOperations = QtGui.QMainWindow()
     ui = Ui_frmOperations()
-    ui.setupUi(frmOperations)
-    frmOperations.show()
+    ui.setupUi(FrmOperations)
+    FrmOperations.show()
     sys.exit(app.exec_())
 

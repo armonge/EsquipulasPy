@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from PyQt4.QtCore import pyqtSlot, SIGNAL, QModelIndex, Qt, QTimer, \
-    SLOT, QDate
+from PyQt4.QtCore import pyqtSlot, Qt, \
+    QDate
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
-    QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
-     QLineEdit,QMessageBox,qApp
-from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, \
+    \
+     QMessageBox,qApp
+from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
 
-from utility.base import Base
 from utility import constantes
 
 from ui.Ui_cierre import Ui_frmCierreContable
 IDDOCUMENTO,NDOCUMENTO,TIPODOC,TOTAL,FECHA,OBSERVACIONES,ESTADO=range(7)
-class frmCierreContable( Ui_frmCierreContable, QMainWindow ):
+class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
     def __init__( self,  parent ):
-        super( frmCierreContable, self ).__init__( parent )
+        super( FrmCierreContable, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
                 
@@ -42,26 +41,58 @@ class frmCierreContable( Ui_frmCierreContable, QMainWindow ):
         self.updateModels()
                 
     def updateModels(self):
-        
-        self.navmodel.setQuery(u"select iddocumento,ndocimpreso as 'No. Documento',td.descripcion as TipoDocumento,format(total ,4)as Total,date_format(fechacreacion,'%d/%m/%Y') as Fecha,observacion as Observaciones, estados.descripcion as Estado from documentos d join estadosdocumento estados on estados.idestado=d.idestado join tiposdoc td on d.idtipodoc=td.idtipodoc where MONTH(fechacreacion)="+self.fecha.toString("MM")+" and d.idtipodoc!="+ str(constantes.IDAPERTURA) +" and d.idtipodoc!="+ str(constantes.IDCIERREMENSUAL))
-        query=QSqlQuery()
-        query.prepare("select d2.iddocumento from documentos d join docpadrehijos dp on d.iddocumento=dp.idpadre join documentos d2 on d2.iddocumento=dp.idhijo where d.idtipodoc="+ str(constantes.IDCIERREMENSUAL) +" and month(d2.fechacreacion)="+ self.fecha.toString("MM")+ " limit 1")
-    
-        if not query.exec_():
-            print query.executedQuery()
-            raise UserWarning("No se pudo ejecutar la consulta para verificar si existe un cierre contable")
-        
-        if self.navmodel.rowCount()==0 or query.size()>0: 
-            self.toolBar.removeAction(self.actionSave)
-        else:
-            self.toolBar.addActions([
-            self.actionSave])
-            self.actionSave.triggered.connect(self.save)
+        try:
+            if not QSqlDatabase.database().isOpen():
+                if not QSqlDatabase.database().open():
+                    raise UserWarning("No se pudo conectar con la base de datos")
 
-        self.tabledetails.setModel(self.navproxymodel)
-        self.tabledetails.setColumnHidden( 0, True )
-        self.tabledetails.resizeColumnsToContents()
-        
+            self.navmodel.setQuery(u"""
+            SELECT
+                iddocumento,
+                ndocimpreso as 'No. Documento',
+                td.descripcion as TipoDocumento,
+                format(total ,4)as Total,
+                date_format(fechacreacion,'%s') as Fecha,
+                observacion as Observaciones,
+                estados.descripcion as Estado
+            FROM documentos d
+            JOIN estadosdocumento estados ON estados.idestado=d.idestado
+            JOIN tiposdoc td ON d.idtipodoc=td.idtipodoc
+            WHERE MONTH(fechacreacion)= %s  AND d.idtipodoc!=%d and d.idtipodoc!= %d
+            """ % ( "%d/%m/%Y", self.fecha.toString("MM"),   + constantes.IDAPERTURA , constantes.IDCIERREMENSUAL))
+
+            query=QSqlQuery()
+            query.prepare("""
+            SELECT
+                d2.iddocumento
+            FROM documentos d
+            JOIN docpadrehijos dp ON d.iddocumento=dp.idpadre
+            JOIN documentos d2 ON d2.iddocumento=dp.idhijo
+            WHERE d.idtipodoc= %d and month(d2.fechacreacion)= %s
+            LIMIT 1
+            """ % ( constantes.IDCIERREMENSUAL, self.fecha.toString("MM")  ))
+
+            if not query.exec_():
+                print query.executedQuery()
+                raise UserWarning("No se pudo ejecutar la consulta para verificar si existe un cierre contable")
+
+            if self.navmodel.rowCount()==0 or query.size()>0:
+                self.toolBar.removeAction(self.actionSave)
+            else:
+                self.toolBar.addActions([
+                self.actionSave])
+                self.actionSave.triggered.connect(self.save)
+
+            self.tabledetails.setModel(self.navproxymodel)
+            self.tabledetails.setColumnHidden( 0, True )
+            self.tabledetails.resizeColumnsToContents()
+        except UserWarning as inst:
+            logging.error(unicode(inst))
+            QMessageBox.critical(self, qApp.applicationName(), unicode(inst))
+        except Exception as inst:
+            logging.critical(unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), u"Hubo un error al actualizar la tabla")
+
 #    def setControls( self, status ):
 #        """
 #        @param status: false = editando        true = navegando

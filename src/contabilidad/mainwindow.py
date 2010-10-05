@@ -6,23 +6,27 @@ Created on 28/06/2010
 
 El formulario principal de contabilidad
 '''
-from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSlot
+from PyQt4.QtGui import QMainWindow
+
+from operations import FrmOperations
+from estadoresultado import FrmEstadoResultado
+from cuentas import FrmAccounts
+from balancegeneral import FrmBalanceGeneral
+from cheques import FrmCheques
+from cierrecontable import FrmCierreContable
+from conciliacion import FrmConciliacion
+from creditodebito import FrmCreditoDebito
+from movimientosbancarios import FrmMovimientosBancarios
+
 from ui.Ui_mainwindowcontabilidad import Ui_MainWindow
-from utility.mainwindowbase import MainWindowBase
-from conciliacion import frmConciliacion
-from inventario.catalogos import frmCatConceptos
-from contabilidad.operations import frmOperations
-from contabilidad.cuentas import frmAccounts
-from estadoresultado import frmEstadoResultado
-from movimientosbancarios import frmMovimientosBancarios
-from balancegeneral import frmBalanceGeneral
-from cheques import frmCheques
-from creditodebito import frmCreditoDebito
-from cierrecontable import frmCierreContable
 from utility import constantes
-from cierrecontable import frmCierreContable
+from utility.mainwindowbase import MainWindowBase
+
 class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
+    """
+
+    """
     ROL = constantes.ACCESOCONTABILIDAD
     def __init__( self,  parent = None ):
         """
@@ -67,7 +71,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Catalogo de conceptos de modulo de contabilidad
         """
-        conceptos=frmCatConceptos(3,self)
+        conceptos=FrmCatConceptos(3,self)
         self.mdiArea.addSubWindow(conceptos)
         conceptos.show()
     
@@ -76,13 +80,13 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Catalogo de conceptos de modulo de contabilidad
         """
-        cierre=frmCierreContable(self)
+        cierre=FrmCierreContable(self)
         self.mdiArea.addSubWindow(cierre)
         cierre.show()
         
     @pyqtSlot(  )
     def on_btnCheques_clicked( self ):
-        cheques=frmCheques(self)
+        cheques=FrmCheques(self)
         self.mdiArea.addSubWindow(cheques)
         cheques.show()
 
@@ -94,7 +98,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        conciliacion = frmConciliacion(  self )
+        conciliacion = FrmConciliacion(  self )
         self.mdiArea.addSubWindow( conciliacion )
         conciliacion.show()
  
@@ -103,7 +107,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        balance = frmBalanceGeneral( self )
+        balance = FrmBalanceGeneral( self )
         self.mdiArea.addSubWindow( balance )
         balance.show()
 
@@ -112,31 +116,31 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        estado = frmEstadoResultado(  self )
+        estado = FrmEstadoResultado(  self )
         self.mdiArea.addSubWindow( estado )
         estado.show()
 
 
     @pyqtSlot()
     def on_btnMovements_clicked( self ):
-        operations = frmOperations(  self )
+        operations = FrmOperations(  self )
         self.mdiArea.addSubWindow( operations )
         operations.show()
 
     @pyqtSlot()
     def on_btnAccounts_clicked( self ):
-        accounts = frmAccounts(  self )
+        accounts = FrmAccounts(  self )
         self.mdiArea.addSubWindow( accounts )
         accounts.show()
 
     @pyqtSlot()
     def on_btnNotasCD_clicked( self ):
-        mov = frmMovimientosBancarios(  self )
+        mov = FrmMovimientosBancarios(  self )
         self.mdiArea.addSubWindow( mov )
         mov.show()
     @pyqtSlot()
     def on_btnCreditoDebito_clicked( self ):
-        ncd = frmCreditoDebito(  self )
+        ncd = FrmCreditoDebito(  self )
         self.mdiArea.addSubWindow( ncd )
         ncd.show()
         

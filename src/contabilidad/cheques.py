@@ -5,29 +5,27 @@ Created on 03/07/2010
 @author: MARCOS
 '''
 from decimal import Decimal, InvalidOperation
-import functools
 import logging
 
 from PyQt4 import QtGui,QtCore
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase,QSqlQuery
-from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, QModelIndex, QTimer,QSize,QDate
-from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, QPrinter, qApp,QDialog
+from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, QTimer,QDate
+from PyQt4.QtGui import QMainWindow,QSortFilterProxyModel,QMessageBox,QCompleter,QDataWidgetMapper,QStyledItemDelegate, QDoubleSpinBox, qApp,QDialog
 
 from ui.Ui_cheques import Ui_frmCheques
 
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
-from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorLine,AccountsSelectorModel
+from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorLine
 from utility import constantes
 from utility.widgets.searchpanel import SearchPanel
-from utility.reports import frmReportes
 
 from document.cheque.chequemodel import ChequeModel
 
 IDDOCUMENTO,NCHEQUE,CUENTABANCARIA,NOMBRE,FECHA,CONCEPTO,TOTAL,SUBTOTAL,IVA,TOTALRET,TIPOCAMBIO,TASARETENCION,ESTADO,IDESTADO,TOTALCHEQUE=range(15)
 #accounts model
 IDDOC, IDCUENTA,CODIGO,DESCRIPCION, MONTO= range( 5 )
-class frmCheques( Ui_frmCheques, QMainWindow,Base ):
+class FrmCheques( Ui_frmCheques, QMainWindow,Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
@@ -36,7 +34,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         '''
         Constructor
         '''
-        super( frmCheques, self ).__init__( parent )
+        super( FrmCheques, self ).__init__( parent )
 
         self.setupUi( self )
         self.parentWindow = parent
@@ -523,7 +521,7 @@ class frmCheques( Ui_frmCheques, QMainWindow,Base ):
         Asignar la fecha al objeto __document
         """
         if self.editmodel is not None:
-            super(frmCheques, self).on_dtPicker_dateTimeChanged(datetime)
+            super(FrmCheques, self).on_dtPicker_dateTimeChanged(datetime)
             self.lbltipocambio.setText(str(self.editmodel.exchangeRate))
     
     @pyqtSlot(  )

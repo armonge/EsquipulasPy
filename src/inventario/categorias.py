@@ -4,15 +4,16 @@ Created on 10/07/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtGui import QMainWindow, QLineEdit, QVBoxLayout, QFormLayout, QDialogButtonBox, QDialog, QSortFilterProxyModel, QMessageBox, qApp
+from PyQt4.QtGui import QMainWindow, QLineEdit, QVBoxLayout,\
+QFormLayout, QDialogButtonBox, QDialog, QMessageBox, qApp
 from PyQt4.QtCore import  Qt, pyqtSlot
 from PyQt4.QtSql import  QSqlDatabase
 
-from ui.Ui_categorias import Ui_frmCategorias
+from ui.Ui_categorias import Ui_FrmCategorias
 from utility.treefilterproxymodel import TreeFilterProxyModel
 from categoriesmodel import CategoriesModel
 
-class frmCategorias(QMainWindow, Ui_frmCategorias):
+class FrmCategorias(QMainWindow, Ui_FrmCategorias):
     '''
     classdocs
     '''
@@ -21,7 +22,7 @@ class frmCategorias(QMainWindow, Ui_frmCategorias):
         '''
         Constructor
         '''
-        super(frmCategorias, self).__init__(parent)
+        super(FrmCategorias, self).__init__(parent)
         self.setupUi(self)
         QSqlDatabase.database().open()
 

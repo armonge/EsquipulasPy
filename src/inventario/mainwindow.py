@@ -4,16 +4,16 @@
 Module implementing MainWindow.
 """
 
-from PyQt4.QtGui import QMainWindow, QIcon
-from PyQt4.QtCore import pyqtSlot, Qt
+from PyQt4.QtGui import QMainWindow
+from PyQt4.QtCore import pyqtSlot
 from entradacompra import frmEntradaCompra
-from catalogos import frmCatProveedores, frmCatMarcas,  frmCatConceptos
-from liquidacion import frmLiquidacion
-from categorias import frmCategorias
+from catalogos import FrmCatMarcas,  FrmCatConceptos
+from liquidacion import FrmLiquidacion
+from categorias import FrmCategorias
 from kardex import frmKardex
-from kardexother import frmKardexOther
+from kardexother import FrmKardexOther
 from ui.Ui_mainwindowinventario import Ui_MainWindow
-from articulos import frmArticulos
+from articulos import FrmArticulos
 from utility.mainwindowbase import MainWindowBase
 from utility.persona import frmPersona
 from utility import constantes
@@ -89,7 +89,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        conceptos = frmCatConceptos( 4,self )
+        conceptos = FrmCatConceptos( 4,self )
         self.mdiArea.addSubWindow( conceptos )
         conceptos.show()   
     
@@ -107,7 +107,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        catproducts = frmArticulos( self )
+        catproducts = FrmArticulos( self )
         self.mdiArea.addSubWindow( catproducts )
         catproducts.show()
 
@@ -118,7 +118,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         Slot documentation goes here.
         """
 
-        catcategorias = frmCategorias( self )
+        catcategorias = FrmCategorias( self )
         self.mdiArea.addSubWindow( catcategorias )
         catcategorias.show()
 
@@ -128,7 +128,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         Slot documentation goes here.
         """
 
-        catmarcas = frmCatMarcas( self )
+        catmarcas = FrmCatMarcas( self )
         self.mdiArea.addSubWindow( catmarcas )
         catmarcas.show()
 
@@ -139,7 +139,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         dialog = frmPersona(constantes.PROVEEDOR,"Proveedor",self)
         dialog.show()
-#        catproveedores = frmCatProveedores( self )
+#        catproveedores = FrmCatProveedores( self )
 #        self.mdiArea.addSubWindow( catproveedores )
 #        catproveedores.show()
 
@@ -148,7 +148,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        liquidacion = frmLiquidacion(  self )
+        liquidacion = FrmLiquidacion(  self )
         self.mdiArea.addSubWindow( liquidacion )
         liquidacion.show()
 
@@ -166,7 +166,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here
         """
-        kardex = frmKardexOther( self)
+        kardex = FrmKardexOther( self)
         self.mdiArea.addSubWindow( kardex )
         kardex.show()
         

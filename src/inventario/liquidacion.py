@@ -10,7 +10,7 @@ from PyQt4.QtGui import QMainWindow, QAbstractItemView, \
 QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, QPrinter, qApp
 from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer, QSettings, QAbstractTableModel, QModelIndex
 from PyQt4.QtSql import  QSqlQuery, QSqlQueryModel
-from ui.Ui_liquidacion import Ui_frmLiquidacion
+from ui.Ui_liquidacion import Ui_FrmLiquidacion
 
 from utility.moneyfmt import moneyfmt
 from utility import constantes
@@ -33,7 +33,7 @@ CIF, IMPUESTOSP, COMISION, AGENCIAP, ALMACENP, PAPELERIAP, TRANSPORTEP, DTOTALD,
 
 #accounts model
 IDCUENTA, CODCUENTA, NCUENTA, MONTOCUENTA, IDDOCUMENTOC = range( 5 )
-class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
+class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
     """
     Class documentation goes here.
     """
@@ -250,11 +250,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             self.actionEditAccounts.setVisible(False)
             
 
-    @pyqtSlot( "QDateTime" )
-    def on_dtPicker_dateTimeChanged( self, datetime ):
-        if not self.editmodel is None:
-            super( frmLiquidacion, self ).on_dtPicker_dateTimeChanged( datetime )
-            self.txtExchangeRate.setText( self.editmodel.exchangeRate.to_eng_string() )
+
 
     def updateLabels(self):
         pass
@@ -396,6 +392,7 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
     @property
     def printIdentifier(self):
         return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
+    
 
     def newDocument( self ):
         """
@@ -493,9 +490,9 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             WHERE c.padre != 1 AND c.idcuenta != %s
             """ % movimientos.INVENTARIO ),True )
             
-
-            self.dtPicker.setMaximumDateTime(QDateTime.currentDateTime())
             self.dtPicker.setDateTime(QDateTime.currentDateTime() )
+            self.dtPicker.setMaximumDateTime(QDateTime.currentDateTime())
+            
 
             
             self.tabletotals.setModel( self.editmodel.totalsModel )
@@ -549,6 +546,11 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
                 Decimal( query.value( 4 ).toString() ),
                                     ] )
 
+    @pyqtSlot( "QDateTime" )
+    def on_dtPicker_dateTimeChanged( self, datetime ):
+        if not self.editmodel is None:
+            super( FrmLiquidacion, self ).on_dtPicker_dateTimeChanged( datetime )
+            self.txtExchangeRate.setText( self.editmodel.exchangeRate.to_eng_string() )
 
 
     @pyqtSlot( "int" )
@@ -705,6 +707,8 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
 
         #quitar la toolbar
         self.parentWindow.removeToolBar( self.toolBar )
+
+
     def save( self ):
         """
         Guardar el documento actual
@@ -833,11 +837,13 @@ class frmLiquidacion( QMainWindow, Ui_frmLiquidacion, Base ):
             
             self.tableaccounts.resizeColumnsToContents()
             self.status = 3
+
         except UserWarning as inst:
             QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
             self.tableaccounts.setModel( self.accountsProxyModel )
             logging.error(unicode(inst))
             self.status = 1
+
         except Exception as inst:
             QMessageBox.critical(self, qApp.organizationName(), u"El sistema no pudo iniciar la edición de las cuentas contables")
             logging.critical(unicode(inst))

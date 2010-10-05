@@ -10,10 +10,10 @@
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmAccounts(object):
-    def setupUi(self, frmAccounts):
-        frmAccounts.setObjectName("frmAccounts")
-        frmAccounts.resize(800, 600)
-        self.centralwidget = QtGui.QWidget(frmAccounts)
+    def setupUi(self, FrmAccounts):
+        FrmAccounts.setObjectName("frmAccounts")
+        FrmAccounts.resize(800, 600)
+        self.centralwidget = QtGui.QWidget(FrmAccounts)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
@@ -35,20 +35,20 @@ class Ui_frmAccounts(object):
         self.btnAdd.setIcon(icon)
         self.btnAdd.setObjectName("btnAdd")
         self.gridLayout.addWidget(self.btnAdd, 1, 2, 1, 1)
-        frmAccounts.setCentralWidget(self.centralwidget)
-        self.statusbar = QtGui.QStatusBar(frmAccounts)
+        FrmAccounts.setCentralWidget(self.centralwidget)
+        self.statusbar = QtGui.QStatusBar(FrmAccounts)
         self.statusbar.setObjectName("statusbar")
-        frmAccounts.setStatusBar(self.statusbar)
-        self.toolBar = QtGui.QToolBar(frmAccounts)
+        FrmAccounts.setStatusBar(self.statusbar)
+        self.toolBar = QtGui.QToolBar(FrmAccounts)
         self.toolBar.setObjectName("toolBar")
-        frmAccounts.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        FrmAccounts.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.label.setBuddy(self.txtSearch)
 
-        self.retranslateUi(frmAccounts)
-        QtCore.QMetaObject.connectSlotsByName(frmAccounts)
+        self.retranslateUi(FrmAccounts)
+        QtCore.QMetaObject.connectSlotsByName(FrmAccounts)
 
-    def retranslateUi(self, frmAccounts):
-        frmAccounts.setWindowTitle(QtGui.QApplication.translate("frmAccounts", "Cuentas Contables", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, FrmAccounts):
+        FrmAccounts.setWindowTitle(QtGui.QApplication.translate("frmAccounts", "Cuentas Contables", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("frmAccounts", "&Buscar:", None, QtGui.QApplication.UnicodeUTF8))
         self.btnAdd.setText(QtGui.QApplication.translate("frmAccounts", "&Añadir", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmAccounts", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
@@ -58,9 +58,9 @@ import res_rc
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    frmAccounts = QtGui.QMainWindow()
+    FrmAccounts = QtGui.QMainWindow()
     ui = Ui_frmAccounts()
-    ui.setupUi(frmAccounts)
-    frmAccounts.show()
+    ui.setupUi(FrmAccounts)
+    FrmAccounts.show()
     sys.exit(app.exec_())
 

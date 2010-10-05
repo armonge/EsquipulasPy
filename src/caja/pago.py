@@ -7,29 +7,25 @@ Created on 25/05/2010
 
 
 import logging
-from PyQt4.QtGui import QMainWindow,QDialog, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter, qApp
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, SIGNAL, QModelIndex, QTimer
+from PyQt4.QtGui import QMainWindow,QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QCompleter, qApp
+from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QTimer
 from PyQt4.QtSql import QSqlQueryModel,QSqlQuery, QSqlDatabase
 
 from decimal import Decimal
 from PyQt4.QtSql import  QSqlQuery
-from utility.movimientos import movAbonoDeCliente
 from utility.base import Base
 from ui.Ui_pago import Ui_frmPago
-from ui.Ui_dlgrecibo import Ui_dlgRecibo
-from document.recibo.recibodelegate import ReciboDelegate
 from document.pago.pagomodel import PagoModel
 
 
 from utility.moneyfmt import moneyfmt
-from utility.reports import frmReportes
 from utility import constantes
 #from PyQt4.QtGui import QMainWindow
 
 #controles
 IDDOCUMENTO,FECHA, NDOCIMPRESO,NOMBREBENEFICIARIO,TOTAL, TOTALC, TOTALD, NRETENCION, TASARETENCION, TOTALRETENCION,TOTALPAGADO, OBSERVACION, CONIVA,CONRETENCION,CONCEPTO = range( 15 )
 
-class frmPago( Ui_frmPago, QMainWindow, Base ):
+class FrmPago( Ui_frmPago, QMainWindow, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
@@ -39,7 +35,7 @@ class frmPago( Ui_frmPago, QMainWindow, Base ):
         '''
         Constructor
         '''
-        super( frmPago, self ).__init__( parent )
+        super( FrmPago, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
         self.tabledetails = None

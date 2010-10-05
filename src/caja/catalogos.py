@@ -6,19 +6,18 @@ Created on 03/06/2010
 '''
 import logging
 
-from PyQt4.QtGui import  QStyledItemDelegate, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, QTextDocument, QMessageBox, qApp
-from PyQt4.QtCore import  Qt, QRegExp, QSize, QVariant
-from PyQt4.QtSql import QSqlTableModel
-from utility.catgeneric import frmCatGeneric, PeopleDelegate
+from PyQt4.QtGui import  QSortFilterProxyModel, QMessageBox, qApp
+from PyQt4.QtCore import  Qt
+from utility.catgeneric import PeopleDelegate
 
 
 IDPERSONA, NOMBRE, FECHACREACION, TELEFONO, EMAIL, RUC, ESTADO, TIPOPERSONA, CUENTA = range( 9 )
-class frmCatClientes( frmCatGeneric ):
+class FrmCatClientes( FrmCatGeneric ):
     """
     Catalogo de Clientes
     """
     def __init__( self, parent = None ):
-        super( frmCatClientes, self ).__init__( "personas", parent )
+        super( FrmCatClientes, self ).__init__( "personas", parent )
         clientsdelegate = PeopleDelegate()
         self.tableview.setItemDelegate( clientsdelegate )
         self.setWindowTitle( "Catalogo de clientes" )
@@ -63,7 +62,7 @@ class frmCatClientes( frmCatGeneric ):
             
 
     def new( self ):
-        super( frmCatClientes, self ).new()
+        super( FrmCatClientes, self ).new()
         self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, TIPOPERSONA ), 1 )
 
 

@@ -4,7 +4,7 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtGui import QMainWindow,QDialog, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter, qApp
+from PyQt4.QtGui import QMainWindow,QDialog, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, qApp
 from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, QModelIndex, QTimer
 from PyQt4.QtSql import QSqlQueryModel,QSqlQuery, QSqlDatabase
 
@@ -19,7 +19,6 @@ from document.recibo.recibodelegate import ReciboDelegate
 from document.recibo.recibomodel import ReciboModel
 from document.recibo.abonomodel import AbonoModel,LineaAbono, AbonoDelegate
 from utility.moneyfmt import moneyfmt
-from utility.reports import frmReportes
 from utility import constantes
 #from PyQt4.QtGui import QMainWindow
 
@@ -31,7 +30,7 @@ IDDOCUMENTOT, DESCRIPCION, REFERENCIA,BANCO, MONTO,MONTODOLAR,IDMONEDA = range( 
 IDPAGO=0
 TOTALFAC=3
 IDRECIBODOC, NFAC, SALDO, TASAIVA,IDCLIENTE,SALDOFINAL = range( 6 )
-class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
+class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
@@ -41,7 +40,7 @@ class frmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         '''
         Constructor
         '''
-        super( frmRecibo, self ).__init__( parent )
+        super( FrmRecibo, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
@@ -605,7 +604,7 @@ class dlgRecibo(Ui_dlgRecibo,QDialog):
         
     def setControls( self, status,factura ):
         """
-        @param status false = editando        true = navegando
+        @param status: false = editando        true = navegando
         """
 #        self.txtcliente.setReadOnly( status )
         self.ckretener.setEnabled(not status)

@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1151</width>
-    <height>713</height>
+    <height>708</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,6 +29,15 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="background">
+       <brush brushstyle="NoBrush">
+        <color alpha="255">
+         <red>125</red>
+         <green>124</green>
+         <blue>123</blue>
+        </color>
+       </brush>
       </property>
       <property name="viewMode">
        <enum>QMdiArea::TabbedView</enum>
@@ -90,8 +99,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>230</width>
-          <height>601</height>
+          <width>214</width>
+          <height>588</height>
          </rect>
         </property>
         <attribute name="label">

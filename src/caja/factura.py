@@ -4,11 +4,10 @@ Created on 25/05/2010
 @author: Luis Carlos Mejia
 '''
 from PyQt4 import QtGui,QtCore
-from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter,QDialog, QPrinter, qApp
-from PyQt4.QtCore import pyqtSlot, Qt,  QModelIndex, QTimer, QDateTime,QDate
+from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter,QDialog, qApp
+from PyQt4.QtCore import pyqtSlot, Qt,  QModelIndex, QTimer, QDate
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 from decimal import Decimal
-import functools
 from PyQt4.QtSql import  QSqlQuery
 
 from utility.base import Base
@@ -16,10 +15,7 @@ from ui.Ui_factura import Ui_frmFactura
 from document.factura.facturadelegate import FacturaDelegate
 from document.factura.facturamodel import FacturaModel
 from utility.moneyfmt import moneyfmt
-from utility.reports import frmReportes
 from recibo import dlgRecibo
-from utility.user import dlgUserLogin,User
-from utility.movimientos import movFacturaCredito
 from utility import constantes
 
 #controles
@@ -27,7 +23,7 @@ IDDOCUMENTO, NDOCIMPRESO, CLIENTE,VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, F
 
 #table
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD, IDDOCUMENTOT = range( 6 )
-class frmFactura( Ui_frmFactura, QMainWindow, Base ):
+class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
@@ -36,7 +32,7 @@ class frmFactura( Ui_frmFactura, QMainWindow, Base ):
         '''
         Constructor
         '''
-        super( frmFactura, self ).__init__( parent )
+        super( FrmFactura, self ).__init__( parent )
         self.readOnly = True
         self.setupUi( self )
         self.parentWindow = parent

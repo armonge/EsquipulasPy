@@ -19,9 +19,9 @@ from utility import user
 IDDOCUMENTO, NDOCIMPRESO, FECHACREACION, CONCEPTO = range( 4 )
 
 IDCUENTA, CODIGO, DESCRIPCION, MONTO, IDDOCUMENTOC = range( 5 )
-class frmOperations( QMainWindow, Ui_frmOperations ):
+class FrmOperations( QMainWindow, Ui_frmOperations ):
     def __init__( self,  parent = None ):
-        super( frmOperations, self ).__init__( parent )
+        super( FrmOperations, self ).__init__( parent )
         self.setupUi( self )
         self.__status = False
         self.database = QSqlDatabase.database()

@@ -4,11 +4,11 @@ Created on 07/06/2010
 
 @author: Andrés Reyes Monge
 '''
-from decimal import  Decimal, InvalidOperation
+from decimal import  Decimal
 import logging
 
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, \
-QMessageBox, QDataWidgetMapper, QPrinter, QDoubleValidator, QMdiArea, \
+QMessageBox, QDataWidgetMapper, QMdiArea, \
 qApp, QDialog
 from PyQt4.QtCore import pyqtSlot,  QTime, QTimer, QModelIndex, Qt
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
@@ -28,7 +28,7 @@ IDDOCUMMENTO, FECHA, NOMBRE, EFECTIVOC, EFECTIVOD, CHEQUEC, CHEQUED, DEPOSITOC,\
  DEPOSITOD, TRANSFERENCIAC, TRANSFERENCIAD, TARJETAC, TARJETAD = range( 13 )
 #detailsmodel
 CANTIDAD, DENOMINACION,  TOTAL, MONEDA, IDDOCUMMENTOT, IDDENOMINACION = range( 6 )
-class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
+class FrmArqueo( QMainWindow, Ui_frmArqueo, Base ):
     '''
     Esta clase implementa el formulario arqueo
     '''
@@ -37,7 +37,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
         '''
         Constructor
         '''
-        super( frmArqueo, self ).__init__( parent )
+        super( FrmArqueo, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
@@ -451,7 +451,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             if dlgUser.exec_() == QDialog.Accepted:
                 if dlgUser.user.valid and dlgUser.user.hasRole('gerencia'):
                     self.editmodel.authorizationId  = dlgUser.user.uid
-                    super(frmArqueo, self).save(False)
+                    super(FrmArqueo, self).save(False)
                     self.parentWindow.init()
                     self.close()
                 else:
@@ -463,7 +463,7 @@ class frmArqueo( QMainWindow, Ui_frmArqueo, Base ):
                     if dlgUser.exec_() == QDialog.Accepted:
                         if dlgUser.user.valid and dlgUser.user.hasRole('gerencia'):
                             self.editmodel.authorizationId  = dlgUser.user.uid
-                            super(frmArqueo, self).save(False)
+                            super(FrmArqueo, self).save(False)
                             self.parentWindow.init()
                             self.close()
                         else:

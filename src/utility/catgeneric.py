@@ -10,8 +10,8 @@ from PyQt4.QtGui import QMainWindow, QMessageBox, QAbstractItemView, QSortFilter
  QLineEdit, QRegExpValidator, QStyledItemDelegate, QTextDocument, QIntValidator, qApp
 from PyQt4.QtCore import pyqtSlot, Qt, QTimer, QSize, QRegExp, QVariant
 from PyQt4.QtSql import QSqlTableModel, QSqlDatabase
-from ui.Ui_catgeneric import Ui_frmCatGeneric
-class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
+from ui.Ui_catgeneric import Ui_FrmCatGeneric
+class FrmCatGeneric( QMainWindow, Ui_FrmCatGeneric ):
     """
     Catalogo generico, deberia de poder mostrar cualquier tabla y buscar sobre ella
     """
@@ -19,7 +19,7 @@ class frmCatGeneric( QMainWindow, Ui_frmCatGeneric ):
         """
         @param table: Esta es la tabla que se mostrara
         """
-        super( frmCatGeneric, self ).__init__( parent )
+        super( FrmCatGeneric, self ).__init__( parent )
         self.setupUi( self )
 
         self.status = False #: El estado del formulario true=editando

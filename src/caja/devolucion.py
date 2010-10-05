@@ -9,7 +9,7 @@ from PyQt4.QtCore import pyqtSlot, Qt, QTimer, \
      QDateTime, QModelIndex
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
-     QLineEdit,QMessageBox, QPrinter, qApp
+     QLineEdit,QMessageBox, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 
 from ui.Ui_devolucion import Ui_frmDevoluciones
@@ -20,7 +20,6 @@ from document.devolucion.devolucionmodel import DevolucionModel
 from document.devolucion.lineadevolucion import LineaDevolucion
 
 from utility.moneyfmt import moneyfmt
-from utility.reports import frmReportes
 from utility import constantes
 
 
@@ -29,7 +28,7 @@ from utility import constantes
 IDDOCUMENTO, NDOCIMPRESO, FACTURA, CLIENTE, OBSERVACION, FECHA, SUBTOTAL, IMPUESTOS, COSTO, TOTAL, TASA, CONCEPTO, NOMBREBODEGA = range( 13 )
 #detailsmodel
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD, IDDOCUMENTOT = range( 6 )
-class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
+class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
     """
     Formulario para crear nuevas devoluciones
     """
@@ -38,7 +37,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         """
         Constructor
         """
-        super( frmDevolucion, self ).__init__( parent )
+        super( FrmDevolucion, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
@@ -284,7 +283,7 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 raise UserWarning( u"No existen conceptos para devolución")
                 
             
-            dlgbill = dlgSelectBill()
+            dlgbill = DlgSelectBill()
             if dlgbill.exec_() == QDialog.Accepted:
                 self.editmodel = DevolucionModel()
                 self.editmodel.invoiceId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 0 ).data().toInt()[0]
@@ -430,9 +429,9 @@ class frmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 #                    QSqlDatabase.database().close()
 
 
-class dlgSelectBill( QDialog ):
+class DlgSelectBill( QDialog ):
     def __init__( self, parent = None ):
-        super( dlgSelectBill, self ).__init__( parent )
+        super( DlgSelectBill, self ).__init__( parent )
         self.billsmodel = QSqlQueryModel()
         query = """
         SELECT * FROM (

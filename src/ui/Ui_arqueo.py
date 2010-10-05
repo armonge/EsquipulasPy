@@ -10,10 +10,10 @@
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmArqueo(object):
-    def setupUi(self, frmArqueo):
-        frmArqueo.setObjectName("frmArqueo")
-        frmArqueo.resize(800, 664)
-        self.centralwidget = QtGui.QWidget(frmArqueo)
+    def setupUi(self, FrmArqueo):
+        FrmArqueo.setObjectName("frmArqueo")
+        FrmArqueo.resize(800, 664)
+        self.centralwidget = QtGui.QWidget(FrmArqueo)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -346,21 +346,21 @@ class Ui_frmArqueo(object):
         icon1.addPixmap(QtGui.QPixmap(":/icons/res/table.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.tabnavigation, icon1, "")
         self.verticalLayout.addWidget(self.tabWidget)
-        frmArqueo.setCentralWidget(self.centralwidget)
-        self.statusbar = QtGui.QStatusBar(frmArqueo)
+        FrmArqueo.setCentralWidget(self.centralwidget)
+        self.statusbar = QtGui.QStatusBar(FrmArqueo)
         self.statusbar.setObjectName("statusbar")
-        frmArqueo.setStatusBar(self.statusbar)
-        self.toolBar = QtGui.QToolBar(frmArqueo)
+        FrmArqueo.setStatusBar(self.statusbar)
+        self.toolBar = QtGui.QToolBar(FrmArqueo)
         self.toolBar.setObjectName("toolBar")
-        frmArqueo.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        FrmArqueo.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.label.setBuddy(self.txtSearch)
 
-        self.retranslateUi(frmArqueo)
+        self.retranslateUi(FrmArqueo)
         self.tabWidget.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(frmArqueo)
+        QtCore.QMetaObject.connectSlotsByName(FrmArqueo)
 
-    def retranslateUi(self, frmArqueo):
-        frmArqueo.setWindowTitle(QtGui.QApplication.translate("frmArqueo", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, FrmArqueo):
+        FrmArqueo.setWindowTitle(QtGui.QApplication.translate("frmArqueo", "Arqueo", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("frmArqueo", "<b>Arqueado por:</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("frmArqueo", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -411,9 +411,9 @@ import res_rc
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    frmArqueo = QtGui.QMainWindow()
+    FrmArqueo = QtGui.QMainWindow()
     ui = Ui_frmArqueo()
-    ui.setupUi(frmArqueo)
-    frmArqueo.show()
+    ui.setupUi(FrmArqueo)
+    FrmArqueo.show()
     sys.exit(app.exec_())
 

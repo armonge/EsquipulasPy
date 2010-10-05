@@ -10,11 +10,11 @@
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmConciliacion(object):
-    def setupUi(self, frmConciliacion):
-        frmConciliacion.setObjectName("frmConciliacion")
-        frmConciliacion.resize(723, 545)
-        frmConciliacion.setMinimumSize(QtCore.QSize(0, 0))
-        self.centralwidget = QtGui.QWidget(frmConciliacion)
+    def setupUi(self, FrmConciliacion):
+        FrmConciliacion.setObjectName("frmConciliacion")
+        FrmConciliacion.resize(723, 545)
+        FrmConciliacion.setMinimumSize(QtCore.QSize(0, 0))
+        self.centralwidget = QtGui.QWidget(FrmConciliacion)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -410,22 +410,22 @@ class Ui_frmConciliacion(object):
         icon1.addPixmap(QtGui.QPixmap(":/icons/res/table.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.tabnavigation, icon1, "")
         self.verticalLayout.addWidget(self.tabWidget)
-        frmConciliacion.setCentralWidget(self.centralwidget)
-        self.statusbar = QtGui.QStatusBar(frmConciliacion)
+        FrmConciliacion.setCentralWidget(self.centralwidget)
+        self.statusbar = QtGui.QStatusBar(FrmConciliacion)
         self.statusbar.setObjectName("statusbar")
-        frmConciliacion.setStatusBar(self.statusbar)
-        self.toolBar = QtGui.QToolBar(frmConciliacion)
+        FrmConciliacion.setStatusBar(self.statusbar)
+        self.toolBar = QtGui.QToolBar(FrmConciliacion)
         self.toolBar.setObjectName("toolBar")
-        frmConciliacion.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        FrmConciliacion.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.label_4.setBuddy(self.txtSearch)
 
-        self.retranslateUi(frmConciliacion)
+        self.retranslateUi(FrmConciliacion)
         self.tabWidget.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(frmConciliacion)
-        frmConciliacion.setTabOrder(self.tablenavigation, self.txtSearch)
+        QtCore.QMetaObject.connectSlotsByName(FrmConciliacion)
+        FrmConciliacion.setTabOrder(self.tablenavigation, self.txtSearch)
 
-    def retranslateUi(self, frmConciliacion):
-        frmConciliacion.setWindowTitle(QtGui.QApplication.translate("frmConciliacion", "Conciliacion Bancaria", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, FrmConciliacion):
+        FrmConciliacion.setWindowTitle(QtGui.QApplication.translate("frmConciliacion", "Conciliacion Bancaria", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("frmConciliacion", "Libro Mayor", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("frmConciliacion", "Banco", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("frmConciliacion", "Cuenta Bancaria", None, QtGui.QApplication.UnicodeUTF8))
@@ -454,9 +454,9 @@ import res_rc
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    frmConciliacion = QtGui.QMainWindow()
+    FrmConciliacion = QtGui.QMainWindow()
     ui = Ui_frmConciliacion()
-    ui.setupUi(frmConciliacion)
-    frmConciliacion.show()
+    ui.setupUi(FrmConciliacion)
+    FrmConciliacion.show()
     sys.exit(app.exec_())
 

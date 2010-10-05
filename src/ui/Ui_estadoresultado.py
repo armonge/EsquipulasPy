@@ -10,10 +10,10 @@
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmEstadoResultado(object):
-    def setupUi(self, frmEstadoResultado):
-        frmEstadoResultado.setObjectName("frmEstadoResultado")
-        frmEstadoResultado.resize(800, 600)
-        self.centralwidget = QtGui.QWidget(frmEstadoResultado)
+    def setupUi(self, FrmEstadoResultado):
+        FrmEstadoResultado.setObjectName("frmEstadoResultado")
+        FrmEstadoResultado.resize(800, 600)
+        self.centralwidget = QtGui.QWidget(FrmEstadoResultado)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.centralwidget)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -46,16 +46,16 @@ class Ui_frmEstadoResultado(object):
         self.tabledetails.setObjectName("tabledetails")
         self.verticalLayout.addWidget(self.tabledetails)
         self.verticalLayout_2.addWidget(self.splitter_2)
-        frmEstadoResultado.setCentralWidget(self.centralwidget)
-        self.toolBar = QtGui.QToolBar(frmEstadoResultado)
+        FrmEstadoResultado.setCentralWidget(self.centralwidget)
+        self.toolBar = QtGui.QToolBar(FrmEstadoResultado)
         self.toolBar.setObjectName("toolBar")
-        frmEstadoResultado.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        FrmEstadoResultado.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
 
-        self.retranslateUi(frmEstadoResultado)
-        QtCore.QMetaObject.connectSlotsByName(frmEstadoResultado)
+        self.retranslateUi(FrmEstadoResultado)
+        QtCore.QMetaObject.connectSlotsByName(FrmEstadoResultado)
 
-    def retranslateUi(self, frmEstadoResultado):
-        frmEstadoResultado.setWindowTitle(QtGui.QApplication.translate("frmEstadoResultado", "Estado de Resultados", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, FrmEstadoResultado):
+        FrmEstadoResultado.setWindowTitle(QtGui.QApplication.translate("frmEstadoResultado", "Estado de Resultados", None, QtGui.QApplication.UnicodeUTF8))
         self.dtPicker.setDisplayFormat(QtGui.QApplication.translate("frmEstadoResultado", "MMMM yyyy", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_3.setTitle(QtGui.QApplication.translate("frmEstadoResultado", "Estado de Resultado", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmEstadoResultado", "toolBar", None, QtGui.QApplication.UnicodeUTF8))

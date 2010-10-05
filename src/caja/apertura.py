@@ -9,19 +9,19 @@ import logging
 
 from PyQt4.QtGui import QMessageBox, QDialog, QLineEdit, QIcon, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
-from PyQt4.QtCore import pyqtSlot, pyqtSignature, QDateTime,Qt
+from PyQt4.QtCore import pyqtSlot, QDateTime,Qt
 
 from ui.Ui_apertura import Ui_dlgApertura
 
 from utility.user import User
 from utility import constantes
 
-class dlgApertura ( QDialog, Ui_dlgApertura ):
+class DlgApertura ( QDialog, Ui_dlgApertura ):
     def __init__( self,parent,cerrar=False):
         """
         Constructor para agregar un nuevo articulo
         """
-        super( dlgApertura, self ).__init__( parent )
+        super( DlgApertura, self ).__init__( parent )
         self.parentWindow = parent
         self.setupUi( self )
         
@@ -100,7 +100,7 @@ class dlgApertura ( QDialog, Ui_dlgApertura ):
                 else:
                     QMessageBox.information(None,u"Sesión Abierta", u"La sesión fue abierta exitosamente")
                     logging.info(u"El usuario %s ha abierto una sesión de caja autorizada por el usuario %s " %(self.parentWindow.user.user, supervisor.user))
-                    super(dlgApertura,self).accept()
+                    super(DlgApertura,self).accept()
             else:
                 QMessageBox.critical(self, qApp.organizationName() +u": Autenticación",supervisor.error)
                 self.txtUser.setFocus()

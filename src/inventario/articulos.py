@@ -8,7 +8,8 @@ import logging
 from decimal import Decimal
 
 from PyQt4.QtCore import pyqtSlot, Qt , QVariant, pyqtSlot
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDialog, QDoubleValidator, QMessageBox, QInputDialog, QItemSelection, qApp
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView,\
+QDialog, QMessageBox, QInputDialog, QItemSelection, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 
 
@@ -16,18 +17,18 @@ from ui.Ui_articulos import Ui_frmArticlesNew
 
 from categoriesmodel import CategoriesModel
 
-from utility.catgeneric import Ui_frmCatGeneric
+from utility.catgeneric import Ui_FrmCatGeneric
 from utility.treefilterproxymodel import TreeFilterProxyModel
 from utility import user
 
 ID, DESCRIPCION, DAI, ISC, COMISION, GANANCIA, ACTIVO = range( 7 )
 
-class frmArticulos ( QMainWindow, Ui_frmCatGeneric ):
+class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
     def __init__( self,  parent = None ):
         """
         @param parent: El formulario padre de este frm
         """
-        super( frmArticulos, self ).__init__( parent )
+        super( FrmArticulos, self ).__init__( parent )
         self.setupUi( self )
         self.database = QSqlDatabase.database()
         

@@ -3,7 +3,7 @@ from decimal import  Decimal
 import functools
 import logging
 
-from PyQt4.QtCore import  pyqtSlot,  QSettings, QUrl
+from PyQt4.QtCore import  pyqtSlot,  QSettings, QUrl, QDateTime, QModelIndex
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, \
 QProgressBar, QPrinter, QPrintDialog, QDialog, qApp, QShortcut, QKeySequence
@@ -102,7 +102,7 @@ class Base( object ):
         """
         self.tabledetails.edit( self.tabledetails.selectionModel().currentIndex() )
 
-    @pyqtSlot( "QDateTime" )
+    @pyqtSlot( QDateTime )
     def on_dtPicker_dateTimeChanged( self, datetime ):
         """
         Cambiar el tipo de cambio del modelo de edición si cambia la fecha
@@ -142,6 +142,7 @@ class Base( object ):
                 self.dtPicker.setDateTime( self.editmodel.datetime )
                 logging.error(inst)
             except Exception as inst:
+                print "in exception"
                 QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al obtener los tipos de cambio")
                 logging.critical(inst)
                 self.dtPicker.setDateTime( self.editmodel.datetime )
@@ -211,7 +212,7 @@ class Base( object ):
 
     status = property( getStatus, setStatus )
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( unicode )
     def on_txtSearch_textChanged( self, searchstring ):
         """
         Cambiar el filtro para el navigation model
@@ -220,7 +221,7 @@ class Base( object ):
         """
         self.navproxymodel.setFilterFixedString( searchstring )
 
-    @pyqtSlot( "QModelIndex" )
+    @pyqtSlot( QModelIndex )
     def on_tablenavigation_doubleClicked( self, index ):
         """
         Al hacer doble click en la tabla de navegación el se cambia a la pestaña detalles 
@@ -231,7 +232,7 @@ class Base( object ):
         self.mapper.setCurrentIndex( index.row() )
         self.tabWidget.setCurrentIndex( 0 )
 
-    @pyqtSlot( "QModelIndex" )
+    @pyqtSlot( QModelIndex )
     def on_tablenavigation_clicked( self, index ):
         self.mapper.setCurrentIndex( index.row() )
 

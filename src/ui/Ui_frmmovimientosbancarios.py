@@ -10,11 +10,11 @@
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmMovimientosBancarios(object):
-    def setupUi(self, frmMovimientosBancarios):
-        frmMovimientosBancarios.setObjectName("frmMovimientosBancarios")
-        frmMovimientosBancarios.resize(531, 517)
-        frmMovimientosBancarios.setMinimumSize(QtCore.QSize(0, 40))
-        self.centralwidget = QtGui.QWidget(frmMovimientosBancarios)
+    def setupUi(self, FrmMovimientosBancarios):
+        FrmMovimientosBancarios.setObjectName("frmMovimientosBancarios")
+        FrmMovimientosBancarios.resize(531, 517)
+        FrmMovimientosBancarios.setMinimumSize(QtCore.QSize(0, 40))
+        self.centralwidget = QtGui.QWidget(FrmMovimientosBancarios)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.centralwidget)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
@@ -241,30 +241,30 @@ class Ui_frmMovimientosBancarios(object):
         icon1.addPixmap(QtGui.QPixmap(":/icons/res/table.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.tabnavigation, icon1, "")
         self.horizontalLayout_3.addWidget(self.tabWidget)
-        frmMovimientosBancarios.setCentralWidget(self.centralwidget)
-        self.statusbar = QtGui.QStatusBar(frmMovimientosBancarios)
+        FrmMovimientosBancarios.setCentralWidget(self.centralwidget)
+        self.statusbar = QtGui.QStatusBar(FrmMovimientosBancarios)
         self.statusbar.setObjectName("statusbar")
-        frmMovimientosBancarios.setStatusBar(self.statusbar)
-        self.toolBar = QtGui.QToolBar(frmMovimientosBancarios)
+        FrmMovimientosBancarios.setStatusBar(self.statusbar)
+        self.toolBar = QtGui.QToolBar(FrmMovimientosBancarios)
         self.toolBar.setObjectName("toolBar")
-        frmMovimientosBancarios.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        FrmMovimientosBancarios.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.label_27.setBuddy(self.txtcuenta)
         self.label_26.setBuddy(self.dtPicker)
         self.label_23.setBuddy(self.txtconcepto)
         self.label_4.setBuddy(self.txtSearch)
 
-        self.retranslateUi(frmMovimientosBancarios)
+        self.retranslateUi(FrmMovimientosBancarios)
         self.tabWidget.setCurrentIndex(1)
         self.swcuenta.setCurrentIndex(1)
         self.swtipodoc.setCurrentIndex(0)
         self.cbtipodoc.setCurrentIndex(-1)
         self.swconcepto.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(frmMovimientosBancarios)
-        frmMovimientosBancarios.setTabOrder(self.tabWidget, self.tablenavigation)
-        frmMovimientosBancarios.setTabOrder(self.tablenavigation, self.txtSearch)
+        QtCore.QMetaObject.connectSlotsByName(FrmMovimientosBancarios)
+        FrmMovimientosBancarios.setTabOrder(self.tabWidget, self.tablenavigation)
+        FrmMovimientosBancarios.setTabOrder(self.tablenavigation, self.txtSearch)
 
-    def retranslateUi(self, frmMovimientosBancarios):
-        frmMovimientosBancarios.setWindowTitle(QtGui.QApplication.translate("frmMovimientosBancarios", "Movimientos Contables", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, FrmMovimientosBancarios):
+        FrmMovimientosBancarios.setWindowTitle(QtGui.QApplication.translate("frmMovimientosBancarios", "Movimientos Contables", None, QtGui.QApplication.UnicodeUTF8))
         self.label_27.setText(QtGui.QApplication.translate("frmMovimientosBancarios", "Cuenta Bancaria", None, QtGui.QApplication.UnicodeUTF8))
         self.label_25.setText(QtGui.QApplication.translate("frmMovimientosBancarios", "Tipo de Doc.", None, QtGui.QApplication.UnicodeUTF8))
         self.label_26.setText(QtGui.QApplication.translate("frmMovimientosBancarios", "Fecha", None, QtGui.QApplication.UnicodeUTF8))
@@ -282,9 +282,9 @@ import res_rc
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    frmMovimientosBancarios = QtGui.QMainWindow()
+    FrmMovimientosBancarios = QtGui.QMainWindow()
     ui = Ui_frmMovimientosBancarios()
-    ui.setupUi(frmMovimientosBancarios)
-    frmMovimientosBancarios.show()
+    ui.setupUi(FrmMovimientosBancarios)
+    FrmMovimientosBancarios.show()
     sys.exit(app.exec_())
 

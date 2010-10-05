@@ -5,13 +5,12 @@ Created on 03/06/2010
 '''
 from PyQt4.QtCore import  Qt
 from PyQt4.QtGui import  QSortFilterProxyModel
-from utility.catgeneric import frmCatGeneric
-#from utility.catgeneric import frmCatGeneric
+from utility.catgeneric import FrmCatGeneric
 
-class frmCajas ( frmCatGeneric ):
+class FrmCajas ( FrmCatGeneric ):
 
     def __init__( self, parent = None ):
-        super( frmCajas, self ).__init__( "cajas", parent )
+        super( FrmCajas, self ).__init__( "cajas", parent )
         self.setWindowTitle( "Catalogo de Puntos de Caja" )
         self.updateModels()
     def updateModels( self ):
