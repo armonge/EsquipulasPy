@@ -4,26 +4,25 @@ Created on 18/05/2010
 
 @author: Luis Carlos Mejia Garcia
 '''
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QDateTime,QSize
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, SIGNAL, QSize
 
 from lineaabono import LineaAbono
-from PyQt4.QtGui import QStyledItemDelegate, QDoubleSpinBox,QSortFilterProxyModel
+from PyQt4.QtGui import QStyledItemDelegate, QDoubleSpinBox
 #from utility.singleselectionmodel import SingleSelectionModel 
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
-from PyQt4.QtSql import QSqlQueryModel
 
 #IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, MONTODOLAR, MONEDA = range( 6 )
-IDFAC, NFAC, TOTALFAC,SUBABONO,ABONO,SALDO = range( 6 )
+IDFAC, NFAC, TOTALFAC, SUBABONO, ABONO, SALDO = range( 6 )
 class AbonoModel( QAbstractTableModel ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
-    def __init__( self ,lineas):
+    def __init__( self , lineas ):
         super( AbonoModel, self ).__init__()
 
         self.dirty = False
-        self.lines =lineas
+        self.lines = lineas
 
 
     @property
@@ -54,10 +53,10 @@ class AbonoModel( QAbstractTableModel ):
         return foo
 
 # Se reimplemento este procedimiento que por defecto toma dos argumentos, aunque no se usen
-    def rowCount( self, index = QModelIndex ):
+    def rowCount( self, _index = QModelIndex ):
         return len( self.lines )
 
-    def columnCount( self, index = QModelIndex ):
+    def columnCount( self, _index = QModelIndex ):
         return 6
 
     def data( self, index, role = Qt.DisplayRole ):
@@ -74,25 +73,25 @@ class AbonoModel( QAbstractTableModel ):
             elif column == ABONO:
                 return moneyfmt( Decimal( line.monto ), 4, "US$" ) if line.monto != 0 else ""
             elif column == TOTALFAC:
-                return moneyfmt(line.totalFac ,  4,  "US$")
+                return moneyfmt( line.totalFac , 4, "US$" )
             elif column == SUBABONO:
-                return moneyfmt(line.subMonto ,  4,  "US$")
+                return moneyfmt( line.subMonto , 4, "US$" )
             elif column == SALDO:
-                return moneyfmt(line.saldo ,  4,  "US$")
+                return moneyfmt( line.saldo , 4, "US$" )
         elif role == Qt.EditRole:
 #            Esto es lo que recibe el delegate cuando va a mostrar la el widget 
             if column == ABONO:
                 return line.monto
             elif column == SUBABONO:
                 return line.subMonto
-            
+
 
     def flags( self, index ):
         if not index.isValid():
             return Qt.ItemIsEnabled
         return Qt.ItemFlags( QAbstractTableModel.flags( self, index ) | Qt.ItemIsEditable )
 
-    def setData( self, index, value, role = Qt.EditRole ):
+    def setData( self, index, value, _role = Qt.EditRole ):
         """
         modificar los datos del modelo, este metodo se comunica con el delegate
         """
@@ -105,7 +104,7 @@ class AbonoModel( QAbstractTableModel ):
                 line.totalFac = value[2]
             elif column == ABONO:
                 valor = Decimal( value.toString() )
-                line.monto= valor if valor <= line.totalFac else line.totalFac
+                line.monto = valor if valor <= line.totalFac else line.totalFac
 #                line.setMonto( valor if valor <= line.totalFac else line.totalFac)
                 line.saldo = line.totalFac - line.monto
             self.dirty = True
@@ -126,7 +125,7 @@ class AbonoModel( QAbstractTableModel ):
         tmpsubtotal = sum( [linea.monto for linea in self.lines if linea.valid] )
         return tmpsubtotal if tmpsubtotal > 0 else Decimal( 0 )
 
-    def insertRows( self, position, rows = 1, index = QModelIndex ):
+    def insertRows( self, position, rows = 1, _index = QModelIndex() ):
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
             self.lines.insert( position + row, LineaAbono( self ) )
@@ -134,7 +133,7 @@ class AbonoModel( QAbstractTableModel ):
         self.dirty = True
         return True
 
-    def removeRows( self, position, tabla, rows = 1, index = QModelIndex ):
+    def removeRows( self, position, tabla, rows = 1, _index = QModelIndex ):
         if len( self.lines ) > 0:
             self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
             n = position + rows - 1
@@ -171,7 +170,7 @@ class AbonoModel( QAbstractTableModel ):
                 return "Abono sin Iva"
         return int( section + 1 )
 
-class AbonoDelegate(QStyledItemDelegate):
+class AbonoDelegate( QStyledItemDelegate ):
     def sizeHint( self, option, index ):
         fm = option.fontMetrics
         if index.column() == NFAC:
@@ -180,26 +179,26 @@ class AbonoDelegate(QStyledItemDelegate):
 
 
 
-    def createEditor(self,  parent,  option,  index):
-        if index.column()==ABONO:
-            spinbox = QDoubleSpinBox(parent)
-            max= index.model().lines[index.row()].totalFac
-            
-            spinbox.setRange(0.0001,max)
-            spinbox.setDecimals(4)
-            spinbox.setSingleStep(1)
-            spinbox.setAlignment(Qt.AlignRight|Qt.AlignVCenter)
+    def createEditor( self, parent, _option, index ):
+        if index.column() == ABONO:
+            spinbox = QDoubleSpinBox( parent )
+            max = index.model().lines[index.row()].totalFac
+
+            spinbox.setRange( 0.0001, max )
+            spinbox.setDecimals( 4 )
+            spinbox.setSingleStep( 1 )
+            spinbox.setAlignment( Qt.AlignRight | Qt.AlignVCenter )
             return spinbox
         else:
             None
-    
-    def setEditorData(self, editor, index):
+
+    def setEditorData( self, editor, index ):
         """
         En esta funcion se inicializan los datos a mostrarse en el editor
         se ejecuta justo en el momento en el que se muestra el editor
         """
         if index.column() == ABONO:
-            valortemp=index.model().data(index, Qt.EditRole)
+            valortemp = index.model().data( index, Qt.EditRole )
             editor.setValue( valortemp )
         else:
-            QStyledItemDelegate.setEditorData(self, editor, index)
+            QStyledItemDelegate.setEditorData( self, editor, index )

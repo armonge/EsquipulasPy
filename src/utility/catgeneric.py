@@ -6,7 +6,7 @@ Created on 03/06/2010
 '''
 import logging
 
-from PyQt4.QtGui import QMainWindow, QMessageBox, QAbstractItemView, QSortFilterProxyModel,\
+from PyQt4.QtGui import QMainWindow, QMessageBox, QAbstractItemView, QSortFilterProxyModel, \
  QLineEdit, QRegExpValidator, QStyledItemDelegate, QTextDocument, QIntValidator, qApp
 from PyQt4.QtCore import pyqtSlot, Qt, QTimer, QSize, QRegExp, QVariant
 from PyQt4.QtSql import QSqlTableModel, QSqlDatabase
@@ -42,12 +42,12 @@ class FrmCatGeneric( QMainWindow, Ui_FrmCatGeneric ):
         self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
 
 
-        self.actionEdit.triggered.connect(self.edit)
-        self.actionNew.triggered.connect(self.new)
+        self.actionEdit.triggered.connect( self.edit )
+        self.actionNew.triggered.connect( self.new )
 
         QTimer.singleShot( 0, self.updateModels )
 
-    def contextMenuEvent( self, event ):
+    def contextMenuEvent( self, _event ):
         self.actionDelete.setEnabled( False )
 
     def updateModels( self ):
@@ -63,16 +63,16 @@ class FrmCatGeneric( QMainWindow, Ui_FrmCatGeneric ):
             self.backmodel.select()
 
         except UserWarning as inst:
-            logging.error(inst)
+            logging.error( inst )
         except Exception as inst:
-            logging.critical(inst)
+            logging.critical( inst )
             return False
         finally:
             if self.database.isOpen():
                 self.database.close()
 
         return True
-    @pyqtSlot( )
+    @pyqtSlot()
     def on_actionDelete_triggered( self ):
         self.backmodel.removeRows( self.tableview.currentIndex().row(), 1 )
 
@@ -83,7 +83,7 @@ class FrmCatGeneric( QMainWindow, Ui_FrmCatGeneric ):
         """
         self.filtermodel.setFilterRegExp( text )
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_actionSave_triggered( self ):
         """
         Guardar los cambios
@@ -102,19 +102,19 @@ class FrmCatGeneric( QMainWindow, Ui_FrmCatGeneric ):
                 self.status = False
                 self.updateModels()
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.error(inst)
-        except Exception as ins:
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( inst )
+        except Exception as inst:
             QMessageBox.critical( self,
                      qApp.organizationName() ,
                      """Hubo un error al guardar sus cambios""" )
-            logging.critical(inst)
-            logging.critical(self.backmodel.lastError().text())
+            logging.critical( inst )
+            logging.critical( self.backmodel.lastError().text() )
         finally:
             if self.database.isOpen():
                 self.database.close()
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_actionCancel_triggered( self ):
         """
         Cancelar los cambios

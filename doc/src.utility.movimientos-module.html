@@ -91,14 +91,9 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="src.utility.movimientos-module.html#movFacturaContado" class="summary-sig-name">movFacturaContado</a>(<span class="summary-sig-arg">iddoc</span>,
-        <span class="summary-sig-arg">subtotal</span>,
-        <span class="summary-sig-arg">impuesto</span>,
-        <span class="summary-sig-arg">retencion</span>,
-        <span class="summary-sig-arg">totalcosto</span>)</span><br />
-      MOVIMIENTOS CONTABLE PARA LA FACTURA AL CONTADO</td>
+          <td><span class="summary-sig"><a name="redondear"></a><span class="summary-sig-name">redondear</span>(<span class="summary-sig-arg">valor</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="src.utility.movimientos-pysrc.html#movFacturaContado">Codigo&nbsp;fuente</a></span>
+            <span class="codelink"><a href="src.utility.movimientos-pysrc.html#redondear">Codigo&nbsp;fuente</a></span>
             
           </td>
         </tr>
@@ -134,7 +129,8 @@
         <tr>
           <td><span class="summary-sig"><a href="src.utility.movimientos-module.html#movAbonoDeCliente" class="summary-sig-name">movAbonoDeCliente</a>(<span class="summary-sig-arg">iddoc</span>,
         <span class="summary-sig-arg">total</span>,
-        <span class="summary-sig-arg">retencion</span>)</span><br />
+        <span class="summary-sig-arg">retencion</span>,
+        <span class="summary-sig-arg">ganancia</span>)</span><br />
       MOVIMIENTOS CONTABLE PARA LA UN RECIBO</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="src.utility.movimientos-pysrc.html#movAbonoDeCliente">Codigo&nbsp;fuente</a></span>
@@ -205,6 +201,43 @@
       
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.utility.movimientos-module.html#movKardex" class="summary-sig-name">movKardex</a>(<span class="summary-sig-arg">iddoc</span>,
+        <span class="summary-sig-arg">total</span>)</span><br />
+      MOVIMIENTO CONTABLE PARA UNA ENTRADA DE BODEGA POR LIQUIDACION O 
+      ENTRADA LOCAL</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.utility.movimientos-pysrc.html#movKardex">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.utility.movimientos-module.html#movArqueo" class="summary-sig-name">movArqueo</a>(<span class="summary-sig-arg">iddoc</span>,
+        <span class="summary-sig-arg">difference</span>)</span><br />
+      MOVIMIENTO CONTABLE PARA UN ARQUEO</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.utility.movimientos-pysrc.html#movArqueo">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 </table>
 <!-- ==================== VARIABLES ==================== -->
 <a name="section-Variables"></a>
@@ -223,6 +256,23 @@
     </table>
   </td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="PERDIDAS"></a><span class="summary-name">PERDIDAS</span> = <code title="'334'"><code class="variable-quote">'</code><code class="variable-string">334</code><code class="variable-quote">'</code></code><br />
+      El id de la cuenta OG Robos o Perdidas, 650 001 006 000 000
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="OTROSINGRESOS"></a><span class="summary-name">OTROSINGRESOS</span> = <code title="'356'"><code class="variable-quote">'</code><code class="variable-string">356</code><code class="variable-quote">'</code></code><br />
+      El id de la cuenta Otros Ingresos no Especificados, 420 004 000 000 
+      000
+    </td>
+  </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">string</span>
@@ -278,7 +328,7 @@
       <span class="summary-type">string</span>
     </td><td class="summary">
         <a name="CAJAGENERAL"></a><span class="summary-name">CAJAGENERAL</span> = <code title="'5'"><code class="variable-quote">'</code><code class="variable-string">5</code><code class="variable-quote">'</code></code><br />
-      El id de la cuenta Caja genera, 110 001 001 000
+      El id de la cuenta Caja genera, 110 001 001 000 000
     </td>
   </tr>
 <tr>
@@ -308,6 +358,14 @@
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="PRODUCTOSFINANCIEROS"></a><span class="summary-name">PRODUCTOSFINANCIEROS</span> = <code title="'323'"><code class="variable-quote">'</code><code class="variable-string">323</code><code class="variable-quote">'</code></code><br />
+      El id de la cuenta PRODUCTOS FINANCIEROS, 640 001 000 000 000
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'src.utility'"><code class="variable-quote">'</code><code class="variable-string">src.utility</code><code class="variable-quote">'</code></code>
@@ -332,49 +390,6 @@
   </td>
 </tr>
 </table>
-<a name="movFacturaContado"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">movFacturaContado</span>(<span class="sig-arg">iddoc</span>,
-        <span class="sig-arg">subtotal</span>,
-        <span class="sig-arg">impuesto</span>,
-        <span class="sig-arg">retencion</span>,
-        <span class="sig-arg">totalcosto</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="src.utility.movimientos-pysrc.html#movFacturaContado">Codigo&nbsp;fuente</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>MOVIMIENTOS CONTABLE PARA LA FACTURA AL CONTADO</p>
-  <p>(-)subtotal             &gt; entra a Ventas netas: id=173, cod=410 003
-  000 000</p>
-  <p>(-)impuesto             &gt; entra a impuesto por pagar:id=133, 
-  cod=210 008 001 001 000</p>
-  <p>(+)retencion                               &gt; entra a retencion 
-  pagadas por anticipado: id=118, cod=210 006 000 000 000</p>
-  <p>(+)total a pagar                           &gt; entra a caja 
-  genera:id=5, cod=110 001 001 000</p>
-  <p>(-)total precio costo   &gt; Sale de Inventario:id=22, cod=110 003 001
-  000 000</p>
-  <p>(+)total precio costo                      &gt; entra a Costos de 
-  Ventas:id=182, cod=510 001 000 000 000</p>
-  <dl class="fields">
-    <dt>Parametros:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>iddoc</code></strong> (int) - El id del documento que genera estos documentos</li>
-        <li><strong class="pname"><code>subtotal</code></strong> (Decimal) - TODO</li>
-        <li><strong class="pname"><code>impuesto</code></strong> (Decimal) - TODO</li>
-        <li><strong class="pname"><code>retencion</code></strong> (Decimal) - TODO</li>
-        <li><strong class="pname"><code>totalcosto</code></strong> (Decimal) - TODO</li>
-    </ul></dd>
-  </dl>
-</td></tr></table>
-</div>
 <a name="movFacturaCredito"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -423,7 +438,8 @@
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">movAbonoDeCliente</span>(<span class="sig-arg">iddoc</span>,
         <span class="sig-arg">total</span>,
-        <span class="sig-arg">retencion</span>)</span>
+        <span class="sig-arg">retencion</span>,
+        <span class="sig-arg">ganancia</span>)</span>
   </h3>
   </td><td align="right" valign="top"
     ><span class="codelink"><a href="src.utility.movimientos-pysrc.html#movAbonoDeCliente">Codigo&nbsp;fuente</a></span>&nbsp;
@@ -513,7 +529,7 @@
     <dt>Parametros:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>iddoc</code></strong> (int) - El id del documento que genera estos movimientos</li>
-        <li><strong class="pname"><code>total</code></strong> (Decimal) - TODO</li>
+        <li><strong class="pname"><code>total</code></strong> (Decimal) - El total de la entrada compra</li>
         <li><strong class="pname"><code>impuestopagado</code></strong> (Decimal) - TODO</li>
     </ul></dd>
   </dl>
@@ -546,6 +562,57 @@
         <li><strong class="pname"><code>iddoc</code></strong> (int) - El id del documento que genera estos movimientos</li>
         <li><strong class="pname"><code>deposito</code></strong> (Decimal) - TODO</li>
         <li><strong class="pname"><code>ctabanco</code></strong> (Decimal) - TODO</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="movKardex"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">movKardex</span>(<span class="sig-arg">iddoc</span>,
+        <span class="sig-arg">total</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.utility.movimientos-pysrc.html#movKardex">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>MOVIMIENTO CONTABLE PARA UNA ENTRADA DE BODEGA POR LIQUIDACION O 
+  ENTRADA LOCAL</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>iddoc</code></strong> (int) - El id del documento que genera estos movimientos</li>
+        <li><strong class="pname"><code>total</code></strong> (Decimal) - El total del movimiento</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="movArqueo"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">movArqueo</span>(<span class="sig-arg">iddoc</span>,
+        <span class="sig-arg">difference</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.utility.movimientos-pysrc.html#movArqueo">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>MOVIMIENTO CONTABLE PARA UN ARQUEO</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>iddoc</code></strong> (int) - El id del documento arqueo que genera estos movimientos</li>
+        <li><strong class="pname"><code>difference</code></strong> (Decimal) - La diferencia que existe entre el arqueo y el total de la sesi&#243;n</li>
     </ul></dd>
   </dl>
 </td></tr></table>

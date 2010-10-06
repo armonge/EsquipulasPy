@@ -28,17 +28,17 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
 
     """
     ROL = constantes.ACCESOCONTABILIDAD
-    def __init__( self,  parent = None ):
+    def __init__( self, parent = None ):
         """
         Constructor
         """
-        super(MainWindow, self).__init__(  parent )
+        super( MainWindow, self ).__init__( parent )
         self.setupUi( self )
-        MainWindowBase.__init__( self)
+        MainWindowBase.__init__( self )
         self.init()
-        
-        
-    def init(self):
+
+
+    def init( self ):
         self.status = True
 
     def closeEvent( self, event ):
@@ -50,59 +50,51 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
             if not hijo.close():
                 event.ignore()
                 return
-                
+
     def setControls( self, status ):
         self.btnMovements.setEnabled( status )
-        self.btnAccounts.setEnabled(status)
-        self.btnBalance.setEnabled(status)
-        self.btnNotasCD.setEnabled(status)
-        self.btnCheques.setEnabled(status)
-        self.btnConciliacion.setEnabled(status)
-        self.btnEstado.setEnabled(status)
-        
-        self.mdiArea.setEnabled(status)
-        self.mdiArea.setVisible(status)
+        self.btnAccounts.setEnabled( status )
+        self.btnBalance.setEnabled( status )
+        self.btnNotasCD.setEnabled( status )
+        self.btnCheques.setEnabled( status )
+        self.btnConciliacion.setEnabled( status )
+        self.btnEstado.setEnabled( status )
+
+        self.mdiArea.setEnabled( status )
+        self.mdiArea.setVisible( status )
 
         self.actionLockSession.setVisible( status )
         self.actionUnlockSession.setVisible( not status )
 
-    @pyqtSlot(  )
-    def on_btnConceptos_clicked( self ):
-        """
-        Catalogo de conceptos de modulo de contabilidad
-        """
-        conceptos=FrmCatConceptos(3,self)
-        self.mdiArea.addSubWindow(conceptos)
-        conceptos.show()
-    
-    @pyqtSlot(  )
+
+    @pyqtSlot()
     def on_btnCierreMensual_clicked( self ):
         """
         Catalogo de conceptos de modulo de contabilidad
         """
-        cierre=FrmCierreContable(self)
-        self.mdiArea.addSubWindow(cierre)
+        cierre = FrmCierreContable( self )
+        self.mdiArea.addSubWindow( cierre )
         cierre.show()
-        
-    @pyqtSlot(  )
+
+    @pyqtSlot()
     def on_btnCheques_clicked( self ):
-        cheques=FrmCheques(self)
-        self.mdiArea.addSubWindow(cheques)
+        cheques = FrmCheques( self )
+        self.mdiArea.addSubWindow( cheques )
         cheques.show()
 
 
 
-    
-    @pyqtSlot(  )
+
+    @pyqtSlot()
     def on_btnConciliacion_clicked( self ):
         """
         Slot documentation goes here.
         """
-        conciliacion = FrmConciliacion(  self )
+        conciliacion = FrmConciliacion( self )
         self.mdiArea.addSubWindow( conciliacion )
         conciliacion.show()
- 
-    @pyqtSlot(  )
+
+    @pyqtSlot()
     def on_btnBalance_clicked( self ):
         """
         Slot documentation goes here.
@@ -111,36 +103,35 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow( balance )
         balance.show()
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_btnEstado_clicked( self ):
         """
         Slot documentation goes here.
         """
-        estado = FrmEstadoResultado(  self )
+        estado = FrmEstadoResultado( self )
         self.mdiArea.addSubWindow( estado )
         estado.show()
 
 
     @pyqtSlot()
     def on_btnMovements_clicked( self ):
-        operations = FrmOperations(  self )
+        operations = FrmOperations( self )
         self.mdiArea.addSubWindow( operations )
         operations.show()
 
     @pyqtSlot()
     def on_btnAccounts_clicked( self ):
-        accounts = FrmAccounts(  self )
+        accounts = FrmAccounts( self )
         self.mdiArea.addSubWindow( accounts )
         accounts.show()
 
     @pyqtSlot()
     def on_btnNotasCD_clicked( self ):
-        mov = FrmMovimientosBancarios(  self )
+        mov = FrmMovimientosBancarios( self )
         self.mdiArea.addSubWindow( mov )
         mov.show()
     @pyqtSlot()
     def on_btnCreditoDebito_clicked( self ):
-        ncd = FrmCreditoDebito(  self )
+        ncd = FrmCreditoDebito( self )
         self.mdiArea.addSubWindow( ncd )
         ncd.show()
-        

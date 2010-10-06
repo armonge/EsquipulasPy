@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#TODO: unittest
 '''
 Created on 19/05/2010
 
@@ -32,7 +33,7 @@ class KardexModel( QAbstractTableModel ):
         @ivar:Las observaciones del documento
         @type:string
         """
-        
+
         self.lines = []
         """
         @ivar:Las lineas en esta devolucion
@@ -43,7 +44,7 @@ class KardexModel( QAbstractTableModel ):
         @ivar:El numero de este kardex
         @type:string
         """
-        
+
         self.parentId = 0
         """
         @ivar: El  id del documento para el cual se realiza este kardex
@@ -60,13 +61,13 @@ class KardexModel( QAbstractTableModel ):
         @ivar:La hora y fecha del documento
         @type:string
         """
-        
+
         self.uid = 0
         """
         @ivar: El id del usuario que realiza este kardex
         @type: int
         """
-        
+
         self.warehouseId = 0
         """
         @ivar: El id de la bodega
@@ -76,9 +77,9 @@ class KardexModel( QAbstractTableModel ):
         """
         @ivar: El nombre de la bodega
         @type: string
-        """   
-        
-        self.exchangeRate = Decimal(0)
+        """
+
+        self.exchangeRate = Decimal( 0 )
         """
         @ivar: El tipo de cambio
         @type: Decimal
@@ -91,37 +92,37 @@ class KardexModel( QAbstractTableModel ):
 
 
     @property
-    def ajusteTotalD(self):
-        ajuste = sum([ line.ajusteMonetario for line in self.lines if line.dirty ])
-        return ajuste if ajuste != 0 else Decimal(0)
-    
+    def ajusteTotalD( self ):
+        ajuste = sum( [ line.ajusteMonetario for line in self.lines if line.dirty ] )
+        return ajuste if ajuste != 0 else Decimal( 0 )
+
     @property
-    def ajusteTotalC(self):
+    def ajusteTotalC( self ):
         return self.ajusteTotalD * self.exchangeRate
-    
+
     @property
     def valid( self ):
         """
         Un documento es valido cuando 
         @rtype: bool
         """
-        if not len(self.lines) != 0:
+        if not len( self.lines ) != 0:
             self.validError = "No existen lineas en el kardex"
             return False
-        elif not self.exchangeRateId != 0:
-            self.validError = "No esta definido un tipo de cambio"
+        elif not self.exchangeRateId > 0:
+            self.validError = "No se ha definido el tipo de cambio del documento"
             return False
         elif not self.uid != 0:
             self.validError = "No se ha especificado el usuario que realiza este kardex"
             return False
-            
+
         return True
 
     #Clases especificas del modelo
-    def rowCount( self, index = QModelIndex() ):
+    def rowCount( self, _index = QModelIndex() ):
         return len( self.lines )
 
-    def columnCount( self, index = QModelIndex() ):
+    def columnCount( self, _index = QModelIndex() ):
         return 5
 
     def data( self, index, role = Qt.DisplayRole ):
@@ -141,13 +142,13 @@ class KardexModel( QAbstractTableModel ):
             elif column == NUMDOC:
                 return line.numdoc
             elif column == NUMAJUSTE:
-                return line.numajuste if line.numajuste <=0 else "+%d"%line.numajuste
+                return line.numajuste if line.numajuste <= 0 else "+%d" % line.numajuste
             elif column == NUMTOTAL:
                 return line.numfinal
         elif role == Qt.EditRole:
             if column == NUMAJUSTE:
                 return line.numajuste
-             
+
     def flags( self, index ):
         if not index.isValid():
             return Qt.ItemIsEnabled
@@ -157,7 +158,7 @@ class KardexModel( QAbstractTableModel ):
             return Qt.ItemIsEnabled
 
 
-    def setData( self, index, value, role = Qt.EditRole ):
+    def setData( self, index, value, _role = Qt.EditRole ):
         """
         modificar los datos del modelo, este metodo se comunica con el delegate
         """
@@ -169,15 +170,15 @@ class KardexModel( QAbstractTableModel ):
             self.dirty = True
 
 
-            self.dataChanged.emit(index, index)
+            self.dataChanged.emit( index, index )
 
             return True
         return False
 
-    def insertRows( self, position, rows = 1, index = QModelIndex() ):
+    def insertRows( self, position, rows = 1, _index = QModelIndex() ):
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
-            self.lines.insert( position + row, LineaKardex( ) )
+            self.lines.insert( position + row, LineaKardex() )
         self.endInsertRows()
         return True
 
@@ -213,7 +214,7 @@ class KardexModel( QAbstractTableModel ):
         try:
             if not self.valid:
                 raise Exception( "El documento a salvar no es valido" )
-            
+
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se puedo comenzar la transacción" )
 
@@ -221,15 +222,15 @@ class KardexModel( QAbstractTableModel ):
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc, observacion,total, idtipocambio, idbodega)
             VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total, :idtipocambio, :idbodega)
             """ ):
-                raise Exception("No se pudo preparar la consulta para insertar el kardex")
+                raise Exception( "No se pudo preparar la consulta para insertar el kardex" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
-            
+
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.ajusteTotalC.to_eng_string() )
             query.bindValue( ":idtipocambio", self.exchangeRateId )
-            query.bindValue(":idbodega", self.warehouseId)
+            query.bindValue( ":idbodega", self.warehouseId )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
@@ -243,7 +244,7 @@ class KardexModel( QAbstractTableModel ):
                 raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
             query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":iddocumento", insertedId )
-            query.bindValue( ":accion", constantes.AUTOR)
+            query.bindValue( ":accion", constantes.AUTOR )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar  el usuario" )
@@ -251,27 +252,27 @@ class KardexModel( QAbstractTableModel ):
             for line in  self.lines :
                 if line.dirty:
                     line.save( insertedId )
-            if not query.prepare("""
+            if not query.prepare( """
             INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (:padre, :hijo)
-            """):
-                raise Exception("No se pudo preparar la relacion entre el documento kardex y el documento padre")
-            query.bindValue(":padre", self.parentId)
-            query.bindValue(":hijo", insertedId)
+            """ ):
+                raise Exception( "No se pudo preparar la relacion entre el documento kardex y el documento padre" )
+            query.bindValue( ":padre", self.parentId )
+            query.bindValue( ":hijo", insertedId )
             if not query.exec_():
-                raise Exception("No se pudo insertar la relacion entre el documento kardex y el documento padre")
-            
+                raise Exception( "No se pudo insertar la relacion entre el documento kardex y el documento padre" )
+
             if self.ajusteTotalC != 0:
-                movKardex(insertedId, self.ajusteTotalC)
-            
+                movKardex( insertedId, self.ajusteTotalC )
+
             if not QSqlDatabase.database().transaction():
-                raise Exception("No se pudo ejecutar la transaccion")
-            
+                raise Exception( "No se pudo ejecutar la transaccion" )
+
             return True
         except Exception as inst:
-            logging.critical(query.lastError().text())
-            logging.critical(unicode(inst))
+            logging.critical( query.lastError().text() )
+            logging.critical( unicode( inst ) )
             QSqlDatabase.database().rollback()
 
             return False
 
-        
+

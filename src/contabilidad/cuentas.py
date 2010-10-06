@@ -25,9 +25,9 @@ class FrmAccounts( QMainWindow, Ui_frmAccounts ):
     """
 
     """
-    def __init__( self,  parent = None ):
+    def __init__( self, parent = None ):
         super( FrmAccounts, self ).__init__( parent )
-        
+
         self.setupUi( self )
         self.user = user.LoggedUser
 
@@ -39,7 +39,7 @@ class FrmAccounts( QMainWindow, Ui_frmAccounts ):
         self.model = AccountsModel( 1 )
 
         self.filtermodel = TreeFilterProxyModel()
-        self.filtermodel.setShowAllChildren(True)
+        self.filtermodel.setShowAllChildren( True )
         self.filtermodel.setSourceModel( self.model )
         self.filtermodel.setFilterKeyColumn( DESCRIPCION )
         self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
@@ -54,12 +54,12 @@ class FrmAccounts( QMainWindow, Ui_frmAccounts ):
         self.accountsTree.setColumnWidth( DESCRIPCION, 240 )
         self.accountsTree.expandAll()
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_btnAdd_clicked( self ):
         proxyindex = self.accountsTree.currentIndex()
-        row  = proxyindex.row()
-        index = self.accountsTree.model().mapToSource(self.accountsTree.model().index(row, CODIGO, proxyindex.parent())) 
-        
+        row = proxyindex.row()
+        index = self.accountsTree.model().mapToSource( self.accountsTree.model().index( row, CODIGO, proxyindex.parent() ) )
+
 
         dlg = DlgAccountMod( self )
         if dlg.exec_() == QDialog.Accepted:
@@ -68,37 +68,37 @@ class FrmAccounts( QMainWindow, Ui_frmAccounts ):
                                                  index.row(),
                                                  1,
                                                  index,
-                                                 " ".join([txt.text() for txt in dlg.txtCodes ]),
+                                                 " ".join( [txt.text() for txt in dlg.txtCodes ] ),
                                                  dlg.txtDescription.text(),
                                                  1 if dlg.cbEsdebe.checkState() == Qt.CheckState else 0
                                                    )
             except UserWarning as inst:
-                logging.error(inst)
-                QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+                logging.error( inst )
+                QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
             except Exception as inst:
-                logging.critical(inst)
+                logging.critical( inst )
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_btnModify_clicked( self ):
         index = self.accountsTree.currentIndex()
         dlg = DlgAccountMod( self )
         row = index.row()
-        codes = self.accountsTree.model().index( row, CODIGO, index.parent()).data().toString()
-        codes = codes.split( ' ')
-        for id, code in enumerate(codes):
-            dlg.txtCodes[id].setText(code)
-        
+        codes = self.accountsTree.model().index( row, CODIGO, index.parent() ).data().toString()
+        codes = codes.split( ' ' )
+        for id, code in enumerate( codes ):
+            dlg.txtCodes[id].setText( code )
+
         dlg.txtDescription.setText( self.accountsTree.model().index( row, DESCRIPCION, index.parent() ).data().toString() )
         dlg.cbEsdebe.setCheckState( Qt.Checked if self.accountsTree.model().index( row, ESDEBE, index.parent() ).data().toInt()[0] else Qt.Unchecked )
         if dlg.exec_() == QDialog.Accepted:
             self.accountsTree.model().setData( self.accountsTree.model().index( row, DESCRIPCION, index.parent() ), dlg.txtDescription.text() )
-            self.accountsTree.model().setData( self.accountsTree.model().index( row, CODIGO, index.parent() ), " ".join([txt.text() for txt in dlg.txtCodes ]) )
+            self.accountsTree.model().setData( self.accountsTree.model().index( row, CODIGO, index.parent() ), " ".join( [txt.text() for txt in dlg.txtCodes ] ) )
             self.accountsTree.model().setData( self.accountsTree.model().index( row, ESDEBE, index.parent() ), 1 if dlg.cbEsdebe.checkState() == Qt.Checked else 0 )
 
 
     @pyqtSlot( "QString" )
-    def on_txtSearch_textEdited( self ,text):
-        self.filtermodel.setFilterRegExp( text)
+    def on_txtSearch_textEdited( self , text ):
+        self.filtermodel.setFilterRegExp( text )
 
 
 
@@ -131,7 +131,7 @@ class AccountsModel( QAbstractItemModel ):
                                 parentId,
                                 query.value( CODIGO ).toString(),
                                 query.value( DESCRIPCION ).toString(),
-                                Decimal(query.value( MONTO ).toString()),
+                                Decimal( query.value( MONTO ).toString() ),
                                 query.value( ESDEBE ).toInt()[0],
                                 query.value( HIJOS ).toInt()[0] )
 
@@ -142,7 +142,7 @@ class AccountsModel( QAbstractItemModel ):
             return item
 
         return self.rootItem
-    
+
     def insertRows( self, position, rows, parent, code, description, esdebe ):
         parentItem = self.getItem( parent )
         self.beginInsertRows( parent, position, position + rows - 1 )
@@ -150,8 +150,8 @@ class AccountsModel( QAbstractItemModel ):
         self.endInsertRows()
 
         return result
-    
- 
+
+
     def columnCount( self, parent ):
         if parent.isValid():
             return parent.internalPointer().columnCount()
@@ -176,7 +176,7 @@ class AccountsModel( QAbstractItemModel ):
         result = item.setData( index.column(), value )
 
         if result:
-            self.dataChanged.emit(index, index)
+            self.dataChanged.emit( index, index )
 
         return result
 
@@ -234,9 +234,9 @@ class AccountsModel( QAbstractItemModel ):
         return parentItem.childCount()
 
 class Account( object ):
-    def __init__( self, parent, id = 0 , code = "", description = "", monto = Decimal(0), esdebe = 0, childCount = 0 ):
+    def __init__( self, parent, id = 0 , code = "", description = "", monto = Decimal( 0 ), esdebe = 0, childCount = 0 ):
 
-        self.itemData = [code, description, esdebe, childCount, monto, parent, id ,0]
+        self.itemData = [code, description, esdebe, childCount, monto, parent, id , 0]
         self.childItems = []
 
         if self.itemData[HIJOS] > 0 and self.itemData[IDCUENTA] != 0:
@@ -270,7 +270,7 @@ class Account( object ):
                 query.value( IDCUENTA ).toInt()[0],
                 query.value( CODIGO ).toString(),
                  query.value( DESCRIPCION ).toString(),
-                 Decimal(query.value( MONTO ).toString()),
+                 Decimal( query.value( MONTO ).toString() ),
                  query.value( ESDEBE ).toInt()[0],
                  query.value( HIJOS ).toInt()[0] ,
                 ) )
@@ -282,11 +282,11 @@ class Account( object ):
             """ ):
                 raise Exception( "No se pudo preparar la consulta" )
             query.bindValue( ":padre", self.itemData[PADRE].itemData[IDCUENTA] )
-            query.bindValue( ":codigo", self.itemData[CODIGO])
+            query.bindValue( ":codigo", self.itemData[CODIGO] )
             query.bindValue( ":descripcion", self.itemData[DESCRIPCION] )
             query.bindValue( ":esdebe", self.itemData[ESDEBE] )
             if not query.exec_():
-                logging.critical(query.lastError().text())
+                logging.critical( query.lastError().text() )
                 raise UserWarning( "No se pudo insertar la cuenta contable" )
             self.id = query.lastInsertId().toInt()[0]
 
@@ -307,7 +307,7 @@ class Account( object ):
     def insertChildren( self, position, count, data ):
         if position < 0:
             return False
-        for row in range( count ):
+        for _row in range( count ):
             item = Account( self, code = data[0], description = data[1], esdebe = data[2] )
             self.childItems.insert( position, item )
 
@@ -332,25 +332,25 @@ class Account( object ):
 
     def updateEsdebe( self, esdebe ):
         if self.itemData[IDCUENTA] == 0:
-            raise UserWarning("No se pudo cambiar el estado \"Es debe \" de la cuenta")
-            
+            raise UserWarning( "No se pudo cambiar el estado \"Es debe \" de la cuenta" )
+
         query = QSqlQuery()
         if not query.prepare( """
         UPDATE cuentascontables 
         SET esdebe = :esdebe WHERE idcuenta = :id LIMIT 1
         """ ):
             print query.lastError().text()
-            raise UserWarning("No se pudo cambiar el estado \"Es debe \" de la cuenta")
-            
+            raise UserWarning( "No se pudo cambiar el estado \"Es debe \" de la cuenta" )
+
 
         query.bindValue( ":esdebe", esdebe )
-        query.bindValue( ":id", self.itemData[IDCUENTA])
+        query.bindValue( ":id", self.itemData[IDCUENTA] )
         if not query.exec_():
             print query.lastError().text()
-            raise UserWarning("No se pudo cambiar el estado \"Es debe \" de la cuenta")
+            raise UserWarning( "No se pudo cambiar el estado \"Es debe \" de la cuenta" )
 
         if query.numRowsAffected() < 1:
-            raise UserWarning("No se pudo cambiar el estado \"Es debe \" de la cuenta")
+            raise UserWarning( "No se pudo cambiar el estado \"Es debe \" de la cuenta" )
 
         self.itemData[ESDEBE] = esdebe
         return True
@@ -364,16 +364,16 @@ class Account( object ):
         SET codigo = :code WHERE idcuenta = :id LIMIT 1
         """ ):
             print query.lastError().text()
-            raise UserWarning("No se pudo cambiar el codigo de la cuenta")
+            raise UserWarning( "No se pudo cambiar el codigo de la cuenta" )
 
         query.bindValue( ":code", code.strip() )
         query.bindValue( ":id", self.itemData[IDCUENTA] )
         if not query.exec_():
             print query.lastError().text()
-            raise UserWarning("No se pudo cambiar el codigo de la cuenta")
+            raise UserWarning( "No se pudo cambiar el codigo de la cuenta" )
 
         if query.numRowsAffected() < 1:
-            raise UserWarning("No se pudo cambiar el codigo de la cuenta")
+            raise UserWarning( "No se pudo cambiar el codigo de la cuenta" )
 
 
         self.itemData[CODIGO] = code
@@ -403,12 +403,12 @@ class Account( object ):
 
     def data( self, column, role ):
         if role == Qt.DisplayRole :
-            if not column in (ACUMULADO, MONTO, HIJOS):
+            if not column in ( ACUMULADO, MONTO, HIJOS ):
                 return self.itemData[column]
             elif column == MONTO:
-                return moneyfmt(self.itemData[MONTO], 4, 'C$')
+                return moneyfmt( self.itemData[MONTO], 4, 'C$' )
             elif column == ACUMULADO:
-                return moneyfmt(self.acumulado,4,"C$")
+                return moneyfmt( self.acumulado, 4, "C$" )
             elif column == HIJOS:
                 return self.childCount()
 
@@ -432,33 +432,33 @@ class DlgAccountMod( QDialog ):
 
     def setupUi( self ):
         self.setWindowTitle( "Modificar Cuenta" )
-        
-        regexp = QRegExp(r"\d{3}")
-        
-        self.validators = [QRegExpValidator(self),QRegExpValidator(self), QRegExpValidator(self),QRegExpValidator(self),QRegExpValidator(self)]
+
+        regexp = QRegExp( r"\d{3}" )
+
+        self.validators = [QRegExpValidator( self ), QRegExpValidator( self ), QRegExpValidator( self ), QRegExpValidator( self ), QRegExpValidator( self )]
         for validator in self.validators:
-            validator.setRegExp(regexp)
-            
-        self.txtCodes = [QLineEdit(),QLineEdit(),QLineEdit(),QLineEdit(),QLineEdit()]
-        for index, txtCode in enumerate(self.txtCodes):
-            txtCode.setValidator(self.validators[index])
-        
-        
+            validator.setRegExp( regexp )
+
+        self.txtCodes = [QLineEdit(), QLineEdit(), QLineEdit(), QLineEdit(), QLineEdit()]
+        for index, txtCode in enumerate( self.txtCodes ):
+            txtCode.setValidator( self.validators[index] )
+
+
         self.txtDescription = QLineEdit()
         self.cbEsdebe = QCheckBox( "Es Debe" )
         self.buttonbox = QDialogButtonBox( QDialogButtonBox.Ok | QDialogButtonBox.Cancel )
-        
-        
-        labelcode = QLabel("Codigo")
+
+
+        labelcode = QLabel( "Codigo" )
         horizontal1 = QHBoxLayout()
-        horizontal1.addWidget(labelcode)
+        horizontal1.addWidget( labelcode )
         for txtCode in self.txtCodes:
-            horizontal1.addWidget(txtCode)
-        
+            horizontal1.addWidget( txtCode )
+
         horizontal2 = QHBoxLayout()
-        horizontal2.addWidget(QLabel( u"Descripción"))
-        horizontal2.addWidget(self.txtDescription)
-                              
+        horizontal2.addWidget( QLabel( u"Descripción" ) )
+        horizontal2.addWidget( self.txtDescription )
+
 
         verticallayout = QVBoxLayout()
         verticallayout.addLayout( horizontal1 )
@@ -468,20 +468,20 @@ class DlgAccountMod( QDialog ):
 
         self.setLayout( verticallayout )
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        self.buttonbox.accepted.connect( self.accept )
+        self.buttonbox.rejected.connect( self.reject )
 
-    def accept(self):
+    def accept( self ):
         result = True
         if self.txtDescription.text().strip() == '':
-            QMessageBox.warning(self, qApp.organizationName(), u"Verifique la descripción de la cuenta")
+            QMessageBox.warning( self, qApp.organizationName(), u"Verifique la descripción de la cuenta" )
             result = False
         if result:
-            for index, validator in enumerate(self.validators):
-                if validator.validate(self.txtCodes[index].text(),3)[0] != QValidator.Acceptable:
-                    QMessageBox.warning(self, qApp.organizationName(), "Verifique el codigo de la cuenta")
+            for index, validator in enumerate( self.validators ):
+                if validator.validate( self.txtCodes[index].text(), 3 )[0] != QValidator.Acceptable:
+                    QMessageBox.warning( self, qApp.organizationName(), "Verifique el codigo de la cuenta" )
                     result = False
                     break
-            super(DlgAccountMod, self).accept()
+            super( DlgAccountMod, self ).accept()
 
 

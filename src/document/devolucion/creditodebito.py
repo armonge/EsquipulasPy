@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+#@PydevCodeAnalysisIgnore
+#TODO: unittest
+#XXX: Por que esta creditodebito en este paquete??? 
 '''
 Created on 19/05/2010
 
@@ -14,11 +17,11 @@ from utility.movimientos import movFacturaCredito
 from utility import constantes
 
 DESCRIPCION, PRECIO, CANTIDADMAX, CANTIDAD, TOTALPROD = range( 5 )
-class creditoDebitoModel( QAbstractTableModel ):
+class CreditoDebitoModel( QAbstractTableModel ):
     """
     Esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
-    __documentType = constantes.IDDEVOLUCION
+    __documentType = constantes.IDNOTACREDITO
     """
     @cvar: El id del tipo de documento
     @type: int
@@ -70,12 +73,12 @@ class creditoDebitoModel( QAbstractTableModel ):
         @ivar: El nombre del cliente que realiza esta devolución
         @type: string
         """
-        
+
         self.conceptId = 0
         u"""
         @ivar: El id del concepto de la devolución
         @type: int
-        """ 
+        """
 
         self.ivaRate = Decimal( 0 )
         """
@@ -103,7 +106,7 @@ class creditoDebitoModel( QAbstractTableModel ):
         @ivar: EL tipo de cambio de esta devolución
         @type:Decimal
         """
-        
+
         self.warehouseId = 0
         u"""
         @ivar: El id de la bodega en la cual se hace la devolución
@@ -140,14 +143,14 @@ class creditoDebitoModel( QAbstractTableModel ):
         elif not int( self.exchangeRateId ) != 0 :
             self.validError = "No hay un tipo de cambio para el documento"
             return False
-        elif not int(self.conceptId) > 0:
+        elif not int( self.conceptId ) > 0:
             self.validError = u"No se ha especificado un concepto para la devolución"
             return False
-        elif not int(self.warehouseId) > 0:
+        elif not int( self.warehouseId ) > 0:
             self.validError = u"No se ha especificado la bodega para la devolución"
             return False
         return True
-        
+
 
     @property
     def totalD( self ):
@@ -157,7 +160,7 @@ class creditoDebitoModel( QAbstractTableModel ):
         """
         foo = sum( [ line.totalD for line in self.lines if line.valid ] )
         return foo if foo != 0 else Decimal( 0 )
-    
+
     @property
     def subtotalD( self ):
         """
@@ -222,10 +225,10 @@ class creditoDebitoModel( QAbstractTableModel ):
         return len( [ line for line in self.lines if line.valid ] )
 
     #Clases especificas del modelo
-    def rowCount( self, index = QModelIndex() ):
+    def rowCount( self, _index = QModelIndex() ):
         return len( self.lines )
 
-    def columnCount( self, index = QModelIndex() ):
+    def columnCount( self, _index = QModelIndex() ):
         return 5
 
     def data( self, index, role = Qt.DisplayRole ):
@@ -258,7 +261,7 @@ class creditoDebitoModel( QAbstractTableModel ):
             return Qt.ItemIsEnabled
 
 
-    def setData( self, index, value, role = Qt.EditRole ):
+    def setData( self, index, value, _role = Qt.EditRole ):
         """
         modificar los datos del modelo, este metodo se comunica con el delegate
         """
@@ -269,12 +272,12 @@ class creditoDebitoModel( QAbstractTableModel ):
 
             self.dirty = True
 
-            self.dataChanged.emit(index, index)
+            self.dataChanged.emit( index, index )
 
             return True
         return False
 
-    def insertRows( self, position, rows = 1, index = QModelIndex() ):
+    def insertRows( self, position, rows = 1, _index = QModelIndex() ):
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
             self.lines.insert( position + row, LineaDevolucion( self ) )
@@ -317,7 +320,7 @@ class creditoDebitoModel( QAbstractTableModel ):
         try:
             if not self.valid:
                 raise Exception( "El documento a salvar no es valido" )
-            
+
 
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se puedo comenzar la transaccion" )
@@ -326,7 +329,7 @@ class creditoDebitoModel( QAbstractTableModel ):
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,  observacion,total, idtipocambio, idconcepto, idbodega)
             VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:observacion,:total, :idtipocambio, :idconcepto, :idbodega)
             """ ):
-                raise Exception(u"No se pudo preparar la consulta para añadir el documento")
+                raise Exception( u"No se pudo preparar la consulta para añadir el documento" )
 
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
@@ -337,38 +340,38 @@ class creditoDebitoModel( QAbstractTableModel ):
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.totalD.to_eng_string() )
             query.bindValue( ":idtipocambio", self.exchangeRateId )
-            query.bindValue(":idconcepto", self.conceptId)
-            query.bindValue(":idbodega", self.warehouseId)
+            query.bindValue( ":idconcepto", self.conceptId )
+            query.bindValue( ":idbodega", self.warehouseId )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
 
 
             insertedId = query.lastInsertId().toInt()[0]
-            
+
             #Insertar el usuario y cliente
-            if not query.prepare("""
+            if not query.prepare( """
             INSERT INTO personasxdocumento (idpersona, iddocumento)
             VALUES (:idpersona, :iddocumento)
-            """):
-                raise Exception("No se pudo preparar la consulta para los usuarios y las personas")
+            """ ):
+                raise Exception( "No se pudo preparar la consulta para los usuarios y las personas" )
 
-            query.bindValue(":idpersona", self.clientId )
-            query.bindValue(":iddocumento", insertedId)
+            query.bindValue( ":idpersona", self.clientId )
+            query.bindValue( ":iddocumento", insertedId )
 
             if not query.exec_():
-                raise Exception(u"No se pudo aniadir el cliente")
+                raise Exception( u"No se pudo aniadir el cliente" )
 
-            if not query.prepare("""
+            if not query.prepare( """
             INSERT INTO personasxdocumento (idpersona, iddocumento)
             VALUES (:idusuario, :iddocumento)
-            """):
-                raise Exception("No se pudo preparar la consulta para el usuario")
-            query.bindValue(":idusuario", self.uid)
-            query.bindValue(":iddocumento", insertedId)
+            """ ):
+                raise Exception( "No se pudo preparar la consulta para el usuario" )
+            query.bindValue( ":idusuario", self.uid )
+            query.bindValue( ":iddocumento", insertedId )
 
             if not query.exec_():
-                raise Exception(u"No se pudo aniadir el usuario")
+                raise Exception( u"No se pudo aniadir el usuario" )
 
             for linea in self.lines:
                 if linea.valid:
@@ -386,13 +389,13 @@ class creditoDebitoModel( QAbstractTableModel ):
             if not query.prepare( """
             INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (:idpadre, :idhijo)
             """ ):
-                raise Exception(u"No se pudo preparar la consulta para insertar la relación de la deovulución con la factura")
-            
+                raise Exception( u"No se pudo preparar la consulta para insertar la relación de la deovulución con la factura" )
+
             query.bindValue( ":idpadre", self.invoiceId )
             query.bindValue( ":idhijo", insertedId )
 
             if not query.exec_():
-                raise Exception(u"No se crear la relacion de la devolución con la factura" )
+                raise Exception( u"No se crear la relacion de la devolución con la factura" )
 
 
             if not QSqlDatabase.database().commit():

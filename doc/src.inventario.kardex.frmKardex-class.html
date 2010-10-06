@@ -64,42 +64,166 @@
 <!-- ==================== CLASS Descripci&#243;n ==================== -->
 <h1 class="epydoc">Class frmKardex</h1><p class="nomargin-top"><span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex">Codigo&nbsp;fuente</a></span></p>
 <center>
-<center>  <map id="uml_class_diagram_for_src_inve_21" name="uml_class_diagram_for_src_inve_21">
-<area shape="rect" id="node290" href="src.inventario.kardex.frmKardex-class.html#__init__" title="Constructor" alt="" coords="207,428,440,447"/>
-<area shape="rect" id="node290" href="src.inventario.kardex.frmKardex-class.html#updateDetailFilter" title="Esta funci&#243;n se debe implementar en los formularios para que al navegar se &#160;actualize el filtro de la tabla detalles" alt="" coords="207,447,440,465"/>
-<area shape="rect" id="node290" href="src.inventario.kardex.frmKardex-class.html#updateModels" title="src.inventario.kardex.frmKardex.updateModels" alt="" coords="207,465,440,484"/>
-<area shape="rect" id="node290" href="src.inventario.kardex.frmKardex-class.html#on_ckTransit_stateChanged" title="src.inventario.kardex.frmKardex.on_ckTransit_stateChanged" alt="" coords="207,484,440,503"/>
-<area shape="rect" id="node290" href="src.inventario.kardex.frmKardex-class.html#setControls" title="Habilitar o deshabilitar los controles seg&#250;n status" alt="" coords="207,503,440,521"/>
-<area shape="rect" id="node1" href="src.inventario.kardex.frmKardex-class.html" title="classdocs" alt="" coords="195,395,451,527"/>
-<area shape="rect" id="node2" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow" alt="" coords="5,169,195,213"/>
-<area shape="rect" id="node292" href="src.ui.Ui_kardex.Ui_frmKardex-class.html#setupUi" title="src.ui.Ui_kardex.Ui_frmKardex.setupUi" alt="" coords="236,185,412,204"/>
-<area shape="rect" id="node292" href="src.ui.Ui_kardex.Ui_frmKardex-class.html#retranslateUi" title="src.ui.Ui_kardex.Ui_frmKardex.retranslateUi" alt="" coords="236,204,412,223"/>
-<area shape="rect" id="node3" href="src.ui.Ui_kardex.Ui_frmKardex-class.html" title="src.ui.Ui_kardex.Ui_frmKardex" alt="" coords="224,153,424,229"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#mapper" title="El mapper que se encarga de asignar los datos del modelo de navegaci&#243;n a &#160;los distintos widgets" alt="" coords="465,31,739,49"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#database" title="La base de datos a la cual se conecta el sistema" alt="" coords="465,49,739,68"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#status" title="esta propiedad cambia entre navegar y editar" alt="" coords="465,68,739,87"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#closeEvent" title="Guardar el tama&#241;o, la posici&#243;n en la pantalla y la posici&#243;n de la barra de &#160;tareas" alt="" coords="465,89,739,108"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#hideEvent" title="Ocultar la barra de tareas cuando se oculta el widget" alt="" coords="465,108,739,127"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#showEvent" title="src.utility.base.Base.showEvent" alt="" coords="465,127,739,145"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#editCell" title="Editar la celda actualmente seleccionada de self.tableedit" alt="" coords="465,145,739,164"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#on_dtPicker_dateTimeChanged" title="Cambiar el tipo de cambio del modelo de edici&#243;n si cambia la fecha" alt="" coords="465,164,739,183"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#navigate" title="Esta funcion se encarga de navegar entro los distintos documentos" alt="" coords="465,183,739,201"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#loadModels" title="Esta funci&#243;n se ejecuta en el constructor del formulario mediante un &#160;QTimer, carga los formularios por primera vez" alt="" coords="465,201,739,220"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#setStatus" title="src.utility.base.Base.setStatus" alt="" coords="465,220,739,239"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#getStatus" title="esta propiedad cambia entre navegar y editar" alt="" coords="465,239,739,257"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#on_txtSearch_textChanged" title="Cambiar el filtro para el navigation model" alt="" coords="465,257,739,276"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#on_tablenavigation_doubleClicked" title="Al hacer doble click en la tabla de navegaci&#243;n el se cambia a la pesta&#241;a &#160;detalles mostrando el documento seleccionado" alt="" coords="465,276,739,295"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#on_tablenavigation_clicked" title="src.utility.base.Base.on_tablenavigation_clicked" alt="" coords="465,295,739,313"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#on_actionSave_activated" title="Guardar el documento actual" alt="" coords="465,313,739,332"/>
-<area shape="rect" id="node293" href="src.utility.base.Base-class.html#on_txtObservations_textChanged" title="Asignar las observaciones al editmodel" alt="" coords="465,351,739,369"/>
-<area shape="rect" id="node4" href="src.utility.base.Base-class.html" title="Esta clase sirve de base para muchos formularios de inventario" alt="" coords="453,6,749,375"/>
+<center>  <map id="uml_class_diagram_for_src_inve_16" name="uml_class_diagram_for_src_inve_16">
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.staticMetaObject" alt="" coords="855,275,1023,293"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.blockSignals" alt="" coords="855,296,1023,315"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.childEvent" alt="" coords="855,315,1023,333"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.children" alt="" coords="855,333,1023,352"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.connect" alt="" coords="855,352,1023,371"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.connectNotify" alt="" coords="855,371,1023,389"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.customEvent" alt="" coords="855,389,1023,408"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.deleteLater" alt="" coords="855,408,1023,427"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="QObject.destroyed[QObject] [signal] QObject.destroyed[] [signal]" alt="" coords="855,427,1023,445"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.disconnect" alt="" coords="855,445,1023,464"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.disconnectNotify" alt="" coords="855,464,1023,483"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.dumpObjectInfo" alt="" coords="855,483,1023,501"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.dumpObjectTree" alt="" coords="855,501,1023,520"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.dynamicPropertyNames" alt="" coords="855,520,1023,539"/>
+<area shape="rect" id="node867" href="javascript:void(0);" title="PyQt4.QtCore.QObject.trUtf8" alt="" coords="855,557,1023,576"/>
+<area shape="rect" id="node1" href="javascript:void(0);" title="QObject(QObject parent=None)" alt="" coords="843,250,1035,582"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.DrawChildren" alt="" coords="969,673,1125,692"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.DrawWindowBackground" alt="" coords="969,692,1125,711"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.IgnoreMask" alt="" coords="969,711,1125,729"/>
+<area shape="rect" id="node866" href="PyQt4.QtGui.QWidget.RenderFlag-class.html" title="PyQt4.QtGui.QWidget.RenderFlag" alt="" coords="969,729,1125,748"/>
+<area shape="rect" id="node866" href="PyQt4.QtGui.QWidget.RenderFlags-class.html" title="QWidget.RenderFlags(QWidget.RenderFlags) QWidget.RenderFlags(int) &#160;QWidget.RenderFlags()" alt="" coords="969,748,1125,767"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.acceptDrops" alt="" coords="969,769,1125,788"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.accessibleDescription" alt="" coords="969,788,1125,807"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.accessibleName" alt="" coords="969,807,1125,825"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.actionEvent" alt="" coords="969,825,1125,844"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.actions" alt="" coords="969,844,1125,863"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.activateWindow" alt="" coords="969,863,1125,881"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.addAction" alt="" coords="969,881,1125,900"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.addActions" alt="" coords="969,900,1125,919"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.adjustSize" alt="" coords="969,919,1125,937"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.autoFillBackground" alt="" coords="969,937,1125,956"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.backgroundRole" alt="" coords="969,956,1125,975"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.baseSize" alt="" coords="969,975,1125,993"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.changeEvent" alt="" coords="969,993,1125,1012"/>
+<area shape="rect" id="node866" href="javascript:void(0);" title="PyQt4.QtGui.QWidget.y" alt="" coords="969,1031,1125,1049"/>
+<area shape="rect" id="node7" href="javascript:void(0);" title="QWidget(QWidget parent=None, Qt.WindowFlags flags=0)" alt="" coords="957,649,1136,1055"/>
+<area shape="rect" id="node2" href="javascript:void(0);" title="sip.wrapper" alt="" coords="955,139,1048,183"/>
+<area shape="rect" id="node871" href="javascript:void(0);" title="ui.Ui_kardex.Ui_frmKardex.retranslateUi" alt="" coords="17,1292,196,1311"/>
+<area shape="rect" id="node871" href="javascript:void(0);" title="ui.Ui_kardex.Ui_frmKardex.setupUi" alt="" coords="17,1311,196,1329"/>
+<area shape="rect" id="node3" href="javascript:void(0);" title="ui.Ui_kardex.Ui_frmKardex" alt="" coords="5,1259,208,1335"/>
+<area shape="rect" id="node864" href="src.inventario.kardex.frmKardex-class.html#__init__" title="Constructor" alt="" coords="431,1572,715,1591"/>
+<area shape="rect" id="node864" href="src.inventario.kardex.frmKardex-class.html#updateModels" title="src.inventario.kardex.frmKardex.updateModels" alt="" coords="431,1591,715,1609"/>
+<area shape="rect" id="node864" href="src.inventario.kardex.frmKardex-class.html#updateDetailFilter" title="Esta funci&#243;n se debe implementar en los formularios para que al navegar se &#160;actualize el filtro de la tabla detalles" alt="" coords="431,1609,715,1628"/>
+<area shape="rect" id="node864" href="src.inventario.kardex.frmKardex-class.html#on_ckTransit_stateChanged" title="src.inventario.kardex.frmKardex.on_ckTransit_stateChanged" alt="" coords="431,1628,715,1647"/>
+<area shape="rect" id="node864" href="src.inventario.kardex.frmKardex-class.html#cancel" title="Cancelar la edici&#243;n del nuevo documento" alt="" coords="431,1647,715,1665"/>
+<area shape="rect" id="node864" href="src.inventario.kardex.frmKardex-class.html#on_txtKardexObservation_textChanged" title="src.inventario.kardex.frmKardex.on_txtKardexObservation_textChanged" alt="" coords="431,1665,715,1684"/>
+<area shape="rect" id="node864" href="src.inventario.kardex.frmKardex-class.html#setControls" title="Habilitar o deshabilitar los controles seg&#250;n status" alt="" coords="431,1684,715,1703"/>
+<area shape="rect" id="node864" href="src.inventario.kardex.frmKardex-class.html#newDocument" title="Slot documentation goes here." alt="" coords="431,1703,715,1721"/>
+<area shape="rect" id="node864" href="src.inventario.kardex.frmKardex-class.html#updateLabels" title="src.inventario.kardex.frmKardex.updateLabels" alt="" coords="431,1721,715,1740"/>
+<area shape="rect" id="node8" href="src.inventario.kardex.frmKardex-class.html" title="classdocs" alt="" coords="419,1539,725,1746"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="utility.base.Base.orientation" alt="" coords="249,1119,896,1137"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="utility.base.Base.pageSize" alt="" coords="249,1137,896,1156"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="La identificaci&#243;n de este documento para reporte, normalmente sera el &#160;iddocumento o el ndocimpreso" alt="" coords="249,1156,896,1175"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="esta propiedad cambia entre navegar y editar" alt="" coords="249,1175,896,1193"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="utility.base.Base.web" alt="" coords="249,1193,896,1212"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="utility.base.Base.addActionsToToolBar" alt="" coords="249,1215,896,1233"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="a&#241;adir una linea a table edit, solo se llama directamente en una ocasion, &#160;al comenzar la edicion de un documento" alt="" coords="249,1233,896,1252"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="Crear un objeto acci&#243;n" alt="" coords="249,1252,896,1271"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="utility.base.Base.createActions" alt="" coords="249,1271,896,1289"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="Funcion usada para borrar lineas de la tabla" alt="" coords="249,1289,896,1308"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="Editar la celda actualmente seleccionada de self.tableedit" alt="" coords="249,1308,896,1327"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="esta propiedad cambia entre navegar y editar" alt="" coords="249,1327,896,1345"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="Esta funci&#243;n se ejecuta en el constructor del formulario mediante un &#160;QTimer, carga los formularios por primera vez" alt="" coords="249,1345,896,1364"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="Esta funcion se encarga de navegar entro los distintos documentos" alt="" coords="249,1364,896,1383"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="Cambiar el tipo de cambio del modelo de edici&#243;n si cambia la fecha" alt="" coords="249,1383,896,1401"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="utility.base.Base.on_tablenavigation_clicked" alt="" coords="249,1401,896,1420"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="Al hacer doble click en la tabla de navegaci&#243;n el se cambia a la pesta&#241;a &#160;detalles mostrando el documento seleccionado" alt="" coords="249,1420,896,1439"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="Asignar las observaciones al editmodel" alt="" coords="249,1439,896,1457"/>
+<area shape="rect" id="node872" href="javascript:void(0);" title="utility.base.Base.setStatus" alt="" coords="249,1476,896,1495"/>
+<area shape="rect" id="node4" href="javascript:void(0);" title="Esta clase sirve de base para muchos todos aquello formularios que siguen el estandar de dos pesta&#241;as, una para navegaci&#243;n y otra para edici&#243;n" alt="" coords="237,1094,907,1501"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.AllowNestedDocks" alt="" coords="948,1100,1148,1119"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.AllowTabbedDocks" alt="" coords="948,1119,1148,1137"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.AnimatedDocks" alt="" coords="948,1137,1148,1156"/>
+<area shape="rect" id="node865" href="PyQt4.QtGui.QMainWindow.DockOption-class.html" title="PyQt4.QtGui.QMainWindow.DockOption" alt="" coords="948,1156,1148,1175"/>
+<area shape="rect" id="node865" href="PyQt4.QtGui.QMainWindow.DockOptions-class.html" title="QMainWindow.DockOptions(QMainWindow.DockOptions) &#160;QMainWindow.DockOptions(int) QMainWindow.DockOptions()" alt="" coords="948,1175,1148,1193"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.ForceTabbedDocks" alt="" coords="948,1193,1148,1212"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.VerticalTabs" alt="" coords="948,1212,1148,1231"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.addDockWidget" alt="" coords="948,1233,1148,1252"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.addToolBar" alt="" coords="948,1252,1148,1271"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.addToolBarBreak" alt="" coords="948,1271,1148,1289"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.centralWidget" alt="" coords="948,1289,1148,1308"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.contextMenuEvent" alt="" coords="948,1308,1148,1327"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.corner" alt="" coords="948,1327,1148,1345"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.createPopupMenu" alt="" coords="948,1345,1148,1364"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.dockOptions" alt="" coords="948,1364,1148,1383"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.dockWidgetArea" alt="" coords="948,1383,1148,1401"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.documentMode" alt="" coords="948,1401,1148,1420"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.event" alt="" coords="948,1420,1148,1439"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.iconSize" alt="" coords="948,1439,1148,1457"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="QMainWindow.iconSizeChanged[QSize] [signal]" alt="" coords="948,1457,1148,1476"/>
+<area shape="rect" id="node865" href="javascript:void(0);" title="PyQt4.QtGui.QMainWindow.unifiedTitleAndToolBarOnMac" alt="" coords="948,1495,1148,1513"/>
+<area shape="rect" id="node5" href="javascript:void(0);" title="QMainWindow(QWidget parent=None, Qt.WindowFlags flags=0)" alt="" coords="936,1075,1160,1519"/>
+<area shape="rect" id="node870" href="javascript:void(0);" title="x.__delattr__(&#39;name&#39;) &lt;==&gt; del x.name" alt="" coords="1003,39,1123,57"/>
+<area shape="rect" id="node870" href="javascript:void(0);" title="x.__getattribute__(&#39;name&#39;) &lt;==&gt; x.name" alt="" coords="1003,57,1123,76"/>
+<area shape="rect" id="node870" href="javascript:void(0);" title="sip.simplewrapper.__new__" alt="" coords="1003,76,1123,95"/>
+<area shape="rect" id="node870" href="javascript:void(0);" title="x.__setattr__(&#39;name&#39;, value) &lt;==&gt; x.name = value" alt="" coords="1003,95,1123,113"/>
+<area shape="rect" id="node6" href="javascript:void(0);" title="sip.simplewrapper" alt="" coords="991,6,1135,119"/>
+<area shape="rect" id="node869" href="PyQt4.QtGui.QPaintDevice.PaintDeviceMetric-class.html" title="PyQt4.QtGui.QPaintDevice.PaintDeviceMetric" alt="" coords="1076,228,1239,247"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.PdmDepth" alt="" coords="1076,247,1239,265"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.PdmDpiX" alt="" coords="1076,265,1239,284"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.PdmDpiY" alt="" coords="1076,284,1239,303"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.PdmHeight" alt="" coords="1076,303,1239,321"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.PdmHeightMM" alt="" coords="1076,321,1239,340"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.PdmNumColors" alt="" coords="1076,340,1239,359"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.PdmPhysicalDpiX" alt="" coords="1076,359,1239,377"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.PdmPhysicalDpiY" alt="" coords="1076,377,1239,396"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.PdmWidth" alt="" coords="1076,396,1239,415"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.PdmWidthMM" alt="" coords="1076,415,1239,433"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.colorCount" alt="" coords="1076,436,1239,455"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.depth" alt="" coords="1076,455,1239,473"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.heightMM" alt="" coords="1076,473,1239,492"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.logicalDpiX" alt="" coords="1076,492,1239,511"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.logicalDpiY" alt="" coords="1076,511,1239,529"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.numColors" alt="" coords="1076,529,1239,548"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.paintingActive" alt="" coords="1076,548,1239,567"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.physicalDpiX" alt="" coords="1076,567,1239,585"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.physicalDpiY" alt="" coords="1076,585,1239,604"/>
+<area shape="rect" id="node869" href="javascript:void(0);" title="PyQt4.QtGui.QPaintDevice.widthMM" alt="" coords="1076,604,1239,623"/>
+<area shape="rect" id="node9" href="javascript:void(0);" title="QPaintDevice()" alt="" coords="1064,203,1251,629"/>
 </map>
-  <img src="uml_class_diagram_for_src_inve_21.gif" alt='' usemap="#uml_class_diagram_for_src_inve_21" ismap="ismap" class="graph-without-title" />
+  <img src="uml_class_diagram_for_src_inve_16.gif" alt='' usemap="#uml_class_diagram_for_src_inve_16" ismap="ismap" class="graph-without-title" />
 </center>
 </center>
 <hr />
 <p>classdocs</p>
 
+<!-- ==================== CLASES ANIDADAS ==================== -->
+<a name="section-ClasesAnidadas"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Clases Anidadas</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClasesAnidadas"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtGui.QMainWindow</code></b>:
+      <code><a href="PyQt4.QtGui.QMainWindow.DockOption-class.html">DockOption</a></code>,
+      <code><a href="PyQt4.QtGui.QMainWindow.DockOptions-class.html">DockOptions</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtGui.QWidget</code></b>:
+      <code><a href="PyQt4.QtGui.QWidget.RenderFlag-class.html">RenderFlag</a></code>,
+      <code><a href="PyQt4.QtGui.QWidget.RenderFlags-class.html">RenderFlags</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtGui.QPaintDevice</code></b>:
+      <code><a href="PyQt4.QtGui.QPaintDevice.PaintDeviceMetric-class.html">PaintDeviceMetric</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
 <!-- ==================== METODOS DE INSTANCIA ==================== -->
 <a name="section-MetodosdeInstancia"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -124,11 +248,28 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="src.inventario.kardex.frmKardex-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">user</span>,
-        <span class="summary-sig-arg">parent</span>=<span class="summary-sig-default">None</span>)</span><br />
+        <span class="summary-sig-arg">tiposdoc</span>,
+        <span class="summary-sig-arg">parent</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">edit</span>=<span class="summary-sig-default">True</span>)</span><br />
       Constructor</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="updateModels"></a><span class="summary-sig-name">updateModels</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.updateModels">Codigo&nbsp;fuente</a></span>
             
           </td>
         </tr>
@@ -161,9 +302,10 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="updateModels"></a><span class="summary-sig-name">updateModels</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="src.inventario.kardex.frmKardex-class.html#on_ckTransit_stateChanged" class="summary-sig-name">on_ckTransit_stateChanged</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">state</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.updateModels">Codigo&nbsp;fuente</a></span>
+            <span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.on_ckTransit_stateChanged">Codigo&nbsp;fuente</a></span>
             
           </td>
         </tr>
@@ -177,10 +319,26 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="src.inventario.kardex.frmKardex-class.html#on_ckTransit_stateChanged" class="summary-sig-name">on_ckTransit_stateChanged</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">state</span>)</span></td>
+          <td><span class="summary-sig"><a href="src.inventario.kardex.frmKardex-class.html#cancel" class="summary-sig-name">cancel</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Cancelar la edici&#243;n del nuevo documento</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.on_ckTransit_stateChanged">Codigo&nbsp;fuente</a></span>
+            <span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.cancel">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.inventario.kardex.frmKardex-class.html#on_txtKardexObservation_textChanged" class="summary-sig-name">on_txtKardexObservation_textChanged</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.on_txtKardexObservation_textChanged">Codigo&nbsp;fuente</a></span>
             
           </td>
         </tr>
@@ -206,44 +364,442 @@
       
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="src.inventario.kardex.frmKardex-class.html#newDocument" class="summary-sig-name">newDocument</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Slot documentation goes here.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.newDocument">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="updateLabels"></a><span class="summary-sig-name">updateLabels</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.updateLabels">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
   <tr>
     <td colspan="2" class="summary">
-    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.ui.Ui_kardex.Ui_frmKardex-class.html">ui.Ui_kardex.Ui_frmKardex</a></code></b>:
-      <code><a href="src.ui.Ui_kardex.Ui_frmKardex-class.html#retranslateUi">retranslateUi</a></code>,
-      <code><a href="src.ui.Ui_kardex.Ui_frmKardex-class.html#setupUi">setupUi</a></code>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtGui.QMainWindow</code></b>:
+      <code>addDockWidget</code>,
+      <code>addToolBar</code>,
+      <code>addToolBarBreak</code>,
+      <code>centralWidget</code>,
+      <code>contextMenuEvent</code>,
+      <code>corner</code>,
+      <code>createPopupMenu</code>,
+      <code>dockOptions</code>,
+      <code>dockWidgetArea</code>,
+      <code>documentMode</code>,
+      <code>event</code>,
+      <code>iconSize</code>,
+      <code>iconSizeChanged</code>,
+      <code>insertToolBar</code>,
+      <code>insertToolBarBreak</code>,
+      <code>isAnimated</code>,
+      <code>isDockNestingEnabled</code>,
+      <code>isSeparator</code>,
+      <code>menuBar</code>,
+      <code>menuWidget</code>,
+      <code>removeDockWidget</code>,
+      <code>removeToolBar</code>,
+      <code>removeToolBarBreak</code>,
+      <code>restoreDockWidget</code>,
+      <code>restoreState</code>,
+      <code>saveState</code>,
+      <code>setAnimated</code>,
+      <code>setCentralWidget</code>,
+      <code>setCorner</code>,
+      <code>setDockNestingEnabled</code>,
+      <code>setDockOptions</code>,
+      <code>setDocumentMode</code>,
+      <code>setIconSize</code>,
+      <code>setMenuBar</code>,
+      <code>setMenuWidget</code>,
+      <code>setStatusBar</code>,
+      <code>setTabPosition</code>,
+      <code>setTabShape</code>,
+      <code>setToolButtonStyle</code>,
+      <code>setUnifiedTitleAndToolBarOnMac</code>,
+      <code>splitDockWidget</code>,
+      <code>statusBar</code>,
+      <code>tabPosition</code>,
+      <code>tabShape</code>,
+      <code>tabifiedDockWidgets</code>,
+      <code>tabifyDockWidget</code>,
+      <code>toolBarArea</code>,
+      <code>toolBarBreak</code>,
+      <code>toolButtonStyle</code>,
+      <code>toolButtonStyleChanged</code>,
+      <code>unifiedTitleAndToolBarOnMac</code>
       </p>
-    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.utility.base.Base-class.html">utility.base.Base</a></code></b>:
-      <code><a href="src.utility.base.Base-class.html#addLine">addLine</a></code>,
-      <code><a href="src.utility.base.Base-class.html#closeEvent">closeEvent</a></code>,
-      <code><a href="src.utility.base.Base-class.html#editCell">editCell</a></code>,
-      <code><a href="src.utility.base.Base-class.html#getStatus">getStatus</a></code>,
-      <code><a href="src.utility.base.Base-class.html#hideEvent">hideEvent</a></code>,
-      <code><a href="src.utility.base.Base-class.html#loadModels">loadModels</a></code>,
-      <code><a href="src.utility.base.Base-class.html#navigate">navigate</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_actionCancel_activated">on_actionCancel_activated</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_actionDeleteRow_activated">on_actionDeleteRow_activated</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_actionNew_activated">on_actionNew_activated</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_actionPreview_activated">on_actionPreview_activated</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_actionRefresh_activated">on_actionRefresh_activated</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_actionSave_activated">on_actionSave_activated</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_dtPicker_dateTimeChanged">on_dtPicker_dateTimeChanged</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_tablenavigation_clicked">on_tablenavigation_clicked</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_tablenavigation_doubleClicked">on_tablenavigation_doubleClicked</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_txtObservations_textChanged">on_txtObservations_textChanged</a></code>,
-      <code><a href="src.utility.base.Base-class.html#on_txtSearch_textChanged">on_txtSearch_textChanged</a></code>,
-      <code><a href="src.utility.base.Base-class.html#setStatus">setStatus</a></code>,
-      <code><a href="src.utility.base.Base-class.html#showEvent">showEvent</a></code>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtGui.QWidget</code></b>:
+      <code>acceptDrops</code>,
+      <code>accessibleDescription</code>,
+      <code>accessibleName</code>,
+      <code>actionEvent</code>,
+      <code>actions</code>,
+      <code>activateWindow</code>,
+      <code>addAction</code>,
+      <code>addActions</code>,
+      <code>adjustSize</code>,
+      <code>autoFillBackground</code>,
+      <code>backgroundRole</code>,
+      <code>baseSize</code>,
+      <code>changeEvent</code>,
+      <code>childAt</code>,
+      <code>childrenRect</code>,
+      <code>childrenRegion</code>,
+      <code>clearFocus</code>,
+      <code>clearMask</code>,
+      <code>close</code>,
+      <code>closeEvent</code>,
+      <code>contentsMargins</code>,
+      <code>contentsRect</code>,
+      <code>contextMenuPolicy</code>,
+      <code>create</code>,
+      <code>cursor</code>,
+      <code>customContextMenuRequested</code>,
+      <code>destroy</code>,
+      <code>devType</code>,
+      <code>dragEnterEvent</code>,
+      <code>dragLeaveEvent</code>,
+      <code>dragMoveEvent</code>,
+      <code>dropEvent</code>,
+      <code>effectiveWinId</code>,
+      <code>enabledChange</code>,
+      <code>ensurePolished</code>,
+      <code>enterEvent</code>,
+      <code>find</code>,
+      <code>focusInEvent</code>,
+      <code>focusNextChild</code>,
+      <code>focusNextPrevChild</code>,
+      <code>focusOutEvent</code>,
+      <code>focusPolicy</code>,
+      <code>focusPreviousChild</code>,
+      <code>focusProxy</code>,
+      <code>focusWidget</code>,
+      <code>font</code>,
+      <code>fontChange</code>,
+      <code>fontInfo</code>,
+      <code>fontMetrics</code>,
+      <code>foregroundRole</code>,
+      <code>frameGeometry</code>,
+      <code>frameSize</code>,
+      <code>geometry</code>,
+      <code>getContentsMargins</code>,
+      <code>grabGesture</code>,
+      <code>grabKeyboard</code>,
+      <code>grabMouse</code>,
+      <code>grabShortcut</code>,
+      <code>graphicsEffect</code>,
+      <code>graphicsProxyWidget</code>,
+      <code>handle</code>,
+      <code>hasFocus</code>,
+      <code>hasMouseTracking</code>,
+      <code>height</code>,
+      <code>heightForWidth</code>,
+      <code>hide</code>,
+      <code>hideEvent</code>,
+      <code>inputContext</code>,
+      <code>inputMethodEvent</code>,
+      <code>inputMethodHints</code>,
+      <code>inputMethodQuery</code>,
+      <code>insertAction</code>,
+      <code>insertActions</code>,
+      <code>isActiveWindow</code>,
+      <code>isAncestorOf</code>,
+      <code>isEnabled</code>,
+      <code>isEnabledTo</code>,
+      <code>isEnabledToTLW</code>,
+      <code>isFullScreen</code>,
+      <code>isHidden</code>,
+      <code>isLeftToRight</code>,
+      <code>isMaximized</code>,
+      <code>isMinimized</code>,
+      <code>isModal</code>,
+      <code>isRightToLeft</code>,
+      <code>isTopLevel</code>,
+      <code>isVisible</code>,
+      <code>isVisibleTo</code>,
+      <code>isWindow</code>,
+      <code>isWindowModified</code>,
+      <code>keyPressEvent</code>,
+      <code>keyReleaseEvent</code>,
+      <code>keyboardGrabber</code>,
+      <code>languageChange</code>,
+      <code>layout</code>,
+      <code>layoutDirection</code>,
+      <code>leaveEvent</code>,
+      <code>locale</code>,
+      <code>lower</code>,
+      <code>mapFrom</code>,
+      <code>mapFromGlobal</code>,
+      <code>mapFromParent</code>,
+      <code>mapTo</code>,
+      <code>mapToGlobal</code>,
+      <code>mapToParent</code>,
+      <code>mask</code>,
+      <code>maximumHeight</code>,
+      <code>maximumSize</code>,
+      <code>maximumWidth</code>,
+      <code>metric</code>,
+      <code>minimumHeight</code>,
+      <code>minimumSize</code>,
+      <code>minimumSizeHint</code>,
+      <code>minimumWidth</code>,
+      <code>mouseDoubleClickEvent</code>,
+      <code>mouseGrabber</code>,
+      <code>mouseMoveEvent</code>,
+      <code>mousePressEvent</code>,
+      <code>mouseReleaseEvent</code>,
+      <code>move</code>,
+      <code>moveEvent</code>,
+      <code>nativeParentWidget</code>,
+      <code>nextInFocusChain</code>,
+      <code>normalGeometry</code>,
+      <code>overrideWindowFlags</code>,
+      <code>overrideWindowState</code>,
+      <code>paintEngine</code>,
+      <code>paintEvent</code>,
+      <code>palette</code>,
+      <code>paletteChange</code>,
+      <code>parentWidget</code>,
+      <code>pos</code>,
+      <code>previousInFocusChain</code>,
+      <code>raise_</code>,
+      <code>rect</code>,
+      <code>releaseKeyboard</code>,
+      <code>releaseMouse</code>,
+      <code>releaseShortcut</code>,
+      <code>removeAction</code>,
+      <code>render</code>,
+      <code>repaint</code>,
+      <code>resetInputContext</code>,
+      <code>resize</code>,
+      <code>resizeEvent</code>,
+      <code>restoreGeometry</code>,
+      <code>saveGeometry</code>,
+      <code>scroll</code>,
+      <code>setAcceptDrops</code>,
+      <code>setAccessibleDescription</code>,
+      <code>setAccessibleName</code>,
+      <code>setAttribute</code>,
+      <code>setAutoFillBackground</code>,
+      <code>setBackgroundRole</code>,
+      <code>setBaseSize</code>,
+      <code>setContentsMargins</code>,
+      <code>setContextMenuPolicy</code>,
+      <code>setCursor</code>,
+      <code>setDisabled</code>,
+      <code>setEnabled</code>,
+      <code>setFixedHeight</code>,
+      <code>setFixedSize</code>,
+      <code>setFixedWidth</code>,
+      <code>setFocus</code>,
+      <code>setFocusPolicy</code>,
+      <code>setFocusProxy</code>,
+      <code>setFont</code>,
+      <code>setForegroundRole</code>,
+      <code>setGeometry</code>,
+      <code>setGraphicsEffect</code>,
+      <code>setHidden</code>,
+      <code>setInputContext</code>,
+      <code>setInputMethodHints</code>,
+      <code>setLayout</code>,
+      <code>setLayoutDirection</code>,
+      <code>setLocale</code>,
+      <code>setMask</code>,
+      <code>setMaximumHeight</code>,
+      <code>setMaximumSize</code>,
+      <code>setMaximumWidth</code>,
+      <code>setMinimumHeight</code>,
+      <code>setMinimumSize</code>,
+      <code>setMinimumWidth</code>,
+      <code>setMouseTracking</code>,
+      <code>setPalette</code>,
+      <code>setParent</code>,
+      <code>setShortcutAutoRepeat</code>,
+      <code>setShortcutEnabled</code>,
+      <code>setShown</code>,
+      <code>setSizeIncrement</code>,
+      <code>setSizePolicy</code>,
+      <code>setStatusTip</code>,
+      <code>setStyle</code>,
+      <code>setStyleSheet</code>,
+      <code>setTabOrder</code>,
+      <code>setToolTip</code>,
+      <code>setUpdatesEnabled</code>,
+      <code>setVisible</code>,
+      <code>setWhatsThis</code>,
+      <code>setWindowFilePath</code>,
+      <code>setWindowFlags</code>,
+      <code>setWindowIcon</code>,
+      <code>setWindowIconText</code>,
+      <code>setWindowModality</code>,
+      <code>setWindowModified</code>,
+      <code>setWindowOpacity</code>,
+      <code>setWindowRole</code>,
+      <code>setWindowState</code>,
+      <code>setWindowTitle</code>,
+      <code>show</code>,
+      <code>showEvent</code>,
+      <code>showFullScreen</code>,
+      <code>showMaximized</code>,
+      <code>showMinimized</code>,
+      <code>showNormal</code>,
+      <code>size</code>,
+      <code>sizeHint</code>,
+      <code>sizeIncrement</code>,
+      <code>sizePolicy</code>,
+      <code>stackUnder</code>,
+      <code>statusTip</code>,
+      <code>style</code>,
+      <code>styleSheet</code>,
+      <code>tabletEvent</code>,
+      <code>testAttribute</code>,
+      <code>toolTip</code>,
+      <code>topLevelWidget</code>,
+      <code>underMouse</code>,
+      <code>ungrabGesture</code>,
+      <code>unsetCursor</code>,
+      <code>unsetLayoutDirection</code>,
+      <code>unsetLocale</code>,
+      <code>update</code>,
+      <code>updateGeometry</code>,
+      <code>updateMicroFocus</code>,
+      <code>updatesEnabled</code>,
+      <code>visibleRegion</code>,
+      <code>whatsThis</code>,
+      <code>wheelEvent</code>,
+      <code>width</code>,
+      <code>winId</code>,
+      <code>window</code>,
+      <code>windowActivationChange</code>,
+      <code>windowFilePath</code>,
+      <code>windowFlags</code>,
+      <code>windowIcon</code>,
+      <code>windowIconText</code>,
+      <code>windowModality</code>,
+      <code>windowOpacity</code>,
+      <code>windowRole</code>,
+      <code>windowState</code>,
+      <code>windowTitle</code>,
+      <code>windowType</code>,
+      <code>x</code>,
+      <code>x11Info</code>,
+      <code>x11PictureHandle</code>,
+      <code>y</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtCore.QObject</code></b>:
+      <code>blockSignals</code>,
+      <code>childEvent</code>,
+      <code>children</code>,
+      <code>connect</code>,
+      <code>connectNotify</code>,
+      <code>customEvent</code>,
+      <code>deleteLater</code>,
+      <code>destroyed</code>,
+      <code>disconnect</code>,
+      <code>disconnectNotify</code>,
+      <code>dumpObjectInfo</code>,
+      <code>dumpObjectTree</code>,
+      <code>dynamicPropertyNames</code>,
+      <code>emit</code>,
+      <code>eventFilter</code>,
+      <code>findChild</code>,
+      <code>findChildren</code>,
+      <code>inherits</code>,
+      <code>installEventFilter</code>,
+      <code>isWidgetType</code>,
+      <code>killTimer</code>,
+      <code>metaObject</code>,
+      <code>moveToThread</code>,
+      <code>objectName</code>,
+      <code>parent</code>,
+      <code>property</code>,
+      <code>pyqtConfigure</code>,
+      <code>receivers</code>,
+      <code>removeEventFilter</code>,
+      <code>sender</code>,
+      <code>setObjectName</code>,
+      <code>setProperty</code>,
+      <code>signalsBlocked</code>,
+      <code>startTimer</code>,
+      <code>thread</code>,
+      <code>timerEvent</code>,
+      <code>tr</code>,
+      <code>trUtf8</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtGui.QPaintDevice</code></b>:
+      <code>colorCount</code>,
+      <code>depth</code>,
+      <code>heightMM</code>,
+      <code>logicalDpiX</code>,
+      <code>logicalDpiY</code>,
+      <code>numColors</code>,
+      <code>paintingActive</code>,
+      <code>physicalDpiX</code>,
+      <code>physicalDpiY</code>,
+      <code>widthMM</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>sip.simplewrapper</code></b>:
+      <code>__delattr__</code>,
+      <code>__getattribute__</code>,
+      <code>__new__</code>,
+      <code>__setattr__</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>ui.Ui_kardex.Ui_frmKardex</code></b>:
+      <code>retranslateUi</code>,
+      <code>setupUi</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>utility.base.Base</code></b>:
+      <code>addActionsToToolBar</code>,
+      <code>addLine</code>,
+      <code>createAction</code>,
+      <code>createActions</code>,
+      <code>deleteRow</code>,
+      <code>editCell</code>,
+      <code>getStatus</code>,
+      <code>loadModels</code>,
+      <code>navigate</code>,
+      <code>on_dtPicker_dateTimeChanged</code>,
+      <code>on_tablenavigation_clicked</code>,
+      <code>on_tablenavigation_doubleClicked</code>,
+      <code>on_txtObservations_textChanged</code>,
+      <code>on_txtSearch_textChanged</code>,
+      <code>on_webview_loadFinished</code>,
+      <code>on_webview_loadProgress</code>,
+      <code>preview</code>,
+      <code>printDocument</code>,
+      <code>save</code>,
+      <code>setStatus</code>
       </p>
     <p class="indent-wrapped-lines"><b>Heredados de <code>object</code></b>:
-      <code>__delattr__</code>,
       <code>__format__</code>,
-      <code>__getattribute__</code>,
       <code>__hash__</code>,
-      <code>__new__</code>,
       <code>__reduce__</code>,
       <code>__reduce_ex__</code>,
       <code>__repr__</code>,
-      <code>__setattr__</code>,
       <code>__sizeof__</code>,
       <code>__str__</code>,
       <code>__subclasshook__</code>
@@ -251,17 +807,17 @@
     </td>
   </tr>
 </table>
-<!-- ==================== VARIABLES DE INSTANCIA ==================== -->
-<a name="section-VariablesdeInstancia"></a>
+<!-- ==================== VARIABLES DE CLASE ==================== -->
+<a name="section-VariablesdeClase"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
   <td colspan="2" class="table-header">
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr valign="top">
-        <td align="left"><span class="table-header">Variables de Instancia</span></td>
+        <td align="left"><span class="table-header">Variables de Clase</span></td>
         <td align="right" valign="top"
-         ><span class="options">[<a href="#section-VariablesdeInstancia"
+         ><span class="options">[<a href="#section-VariablesdeClase"
          class="privatelink" onclick="toggle_private();"
          >Ocultar privados</a>]</span></td>
       </tr>
@@ -270,9 +826,37 @@
 </tr>
   <tr>
     <td colspan="2" class="summary">
-    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.utility.base.Base-class.html">utility.base.Base</a></code></b>:
-      <code><a href="src.utility.base.Base-class.html#database">database</a></code>,
-      <code><a href="src.utility.base.Base-class.html#mapper">mapper</a></code>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtGui.QMainWindow</code></b>:
+      <code>AllowNestedDocks</code>,
+      <code>AllowTabbedDocks</code>,
+      <code>AnimatedDocks</code>,
+      <code>ForceTabbedDocks</code>,
+      <code>VerticalTabs</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtGui.QWidget</code></b>:
+      <code>DrawChildren</code>,
+      <code>DrawWindowBackground</code>,
+      <code>IgnoreMask</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtCore.QObject</code></b>:
+      <code>staticMetaObject</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>PyQt4.QtGui.QPaintDevice</code></b>:
+      <code>PdmDepth</code>,
+      <code>PdmDpiX</code>,
+      <code>PdmDpiY</code>,
+      <code>PdmHeight</code>,
+      <code>PdmHeightMM</code>,
+      <code>PdmNumColors</code>,
+      <code>PdmPhysicalDpiX</code>,
+      <code>PdmPhysicalDpiY</code>,
+      <code>PdmWidth</code>,
+      <code>PdmWidthMM</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>utility.base.Base</code></b>:
+      <code>orientation</code>,
+      <code>pageSize</code>,
+      <code>web</code>
       </p>
     </td>
   </tr>
@@ -296,8 +880,9 @@
 </tr>
   <tr>
     <td colspan="2" class="summary">
-    <p class="indent-wrapped-lines"><b>Heredados de <code><a href="src.utility.base.Base-class.html">utility.base.Base</a></code></b>:
-      <code><a href="src.utility.base.Base-class.html#status">status</a></code>
+    <p class="indent-wrapped-lines"><b>Heredados de <code>utility.base.Base</code></b>:
+      <code>printIdentifier</code>,
+      <code>status</code>
       </p>
     <p class="indent-wrapped-lines"><b>Heredados de <code>object</code></b>:
       <code>__class__</code>
@@ -331,8 +916,9 @@
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">user</span>,
-        <span class="sig-arg">parent</span>=<span class="sig-default">None</span>)</span>
+        <span class="sig-arg">tiposdoc</span>,
+        <span class="sig-arg">parent</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">edit</span>=<span class="sig-default">True</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
@@ -372,7 +958,7 @@
           navegando</li>
     </ul></dd>
     <dt>Reemplaza:
-        <a href="src.utility.base.Base-class.html#updateDetailFilter">utility.base.Base.updateDetailFilter</a>
+        utility.base.Base.updateDetailFilter
         <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
   </dl>
@@ -402,6 +988,52 @@
   </dl>
 </td></tr></table>
 </div>
+<a name="cancel"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">cancel</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.cancel">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Cancelar la edici&#243;n del nuevo documento</p>
+  <dl class="fields">
+    <dt>Reemplaza:
+        utility.base.Base.cancel
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="on_txtKardexObservation_textChanged"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">on_txtKardexObservation_textChanged</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.on_txtKardexObservation_textChanged">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@pyqtSlot()</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="setControls"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -419,9 +1051,35 @@
   
   <p>Habilitar o deshabilitar los controles seg&#250;n status</p>
   <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>status</code></strong></li>
+    </ul></dd>
     <dt>Reemplaza:
-        <a href="src.utility.base.Base-class.html#setControls">utility.base.Base.setControls</a>
+        utility.base.Base.setControls
         <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="newDocument"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">newDocument</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="src.inventario.kardex-pysrc.html#frmKardex.newDocument">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Slot documentation goes here.</p>
+  <dl class="fields">
+    <dt>Reemplaza:
+        utility.base.Base.newDocument
     </dt>
   </dl>
 </td></tr></table>

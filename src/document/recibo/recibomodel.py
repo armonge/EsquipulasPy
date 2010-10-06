@@ -5,65 +5,65 @@ Created on 18/05/2010
 @author: Luis Carlos Mejia Garcia
 '''
 
-from utility.accountselector import AccountsSelectorModel,QModelIndex
+from utility.accountselector import AccountsSelectorModel, QModelIndex
 from utility.moneyfmt import moneyfmt
 from linearecibo import LineaRecibo
 from decimal import  Decimal
-from PyQt4.QtCore import QAbstractTableModel, Qt
+from PyQt4.QtCore import  Qt
 
-IDPAGO, DESCRIPCION, REFERENCIA,BANCO, MONTO, MONTODOLAR, IDMONEDA = range( 7 )
+IDPAGO, DESCRIPCION, REFERENCIA, BANCO, MONTO, MONTODOLAR, IDMONEDA = range( 7 )
 class ReciboModel( AccountsSelectorModel ):
-    def __init__( self ,lineas, tipocambio):
+    def __init__( self , lineas, tipocambio ):
         AccountsSelectorModel.__init__( self )
-        self.total =Decimal(0) 
-        self.tipoCambio = Decimal(tipocambio)
+        self.total = Decimal( 0 )
+        self.tipoCambio = Decimal( tipocambio )
         if self.tipoCambio == 0:
-            raise Exception("el tipo de cambio del banco es 0")
+            raise Exception( "el tipo de cambio del banco es 0" )
         self.lines = lineas
-        
-    def asignarTotal(self,valor):     
+
+    def asignarTotal( self, valor ):
         self.total = valor
         nfilas = self.rowCount()
-        if valor <=0:
-            self.removeRows(0,nfilas)
-            self.insertRow(0)
-        elif nfilas>0: 
-                valor = self.lines[nfilas-1].monto            
-                self.setData(self.index(nfilas-1,MONTO),valor)
-        
-    def columnCount( self, index = QModelIndex() ):
+        if valor <= 0:
+            self.removeRows( 0, nfilas )
+            self.insertRow( 0 )
+        elif nfilas > 0:
+                valor = self.lines[nfilas - 1].monto
+                self.setData( self.index( nfilas - 1, MONTO ), valor )
+
+    def columnCount( self, _index = QModelIndex() ):
         return 6
 
     def flags( self, index ):
         if not index.isValid():
             return Qt.ItemIsEnabled
-        
-        if self.bloqueada(index):
+
+        if self.bloqueada( index ):
             return Qt.ItemIsEnabled
         else:
             return Qt.ItemIsEnabled | Qt.ItemIsEditable
-    
-    def bloqueada(self,index):
-        if self.lines[index.row()].monto<0:
-            return True 
+
+    def bloqueada( self, index ):
+        if self.lines[index.row()].monto < 0:
+            return True
 
         if index.column() == REFERENCIA:
             line = self.lines[index.row()]
-            return line.pagoId in (0,1)
+            return line.pagoId in ( 0, 1 )
         elif index.column() == BANCO:
             return self.lines[index.row()].sinBanco
         else:
             return False
-    
+
     @property
     def currentSum( self ):
         currentsum = sum( [line.montoDolar for line in  self.lines] )
-        return currentsum if currentsum != 0 else Decimal( 0 )     
+        return currentsum if currentsum != 0 else Decimal( 0 )
 #        else:
 #            
 #            
 #            return index.column() in (1,2) and index.row() == 0      
-          
+
     def data( self, index, role = Qt.DisplayRole ):
         """
         darle formato a los campos de la tabla
@@ -78,7 +78,7 @@ class ReciboModel( AccountsSelectorModel ):
             elif column == REFERENCIA:
                 return line.referencia
             elif column == MONTO:
-                value = moneyfmt( line.monto,4, line.simboloMoneda) if line.monto != 0 else ""
+                value = moneyfmt( line.monto, 4, line.simboloMoneda ) if line.monto != 0 else ""
                 return value
             elif column == MONTODOLAR:
                 return moneyfmt( line.montoDolar , 4, "US$" ) if line.montoDolar != 0 else ""
@@ -98,20 +98,20 @@ class ReciboModel( AccountsSelectorModel ):
                 return line.referencia
         elif role == Qt.TextAlignmentRole:
             if column != DESCRIPCION:
-                return Qt.AlignHCenter | Qt.AlignVCenter 
+                return Qt.AlignHCenter | Qt.AlignVCenter
 
-    def setData( self, index, value, role = Qt.EditRole ):
+    def setData( self, index, value, _role = Qt.EditRole ):
         if  not index.isValid():
-            return None        
+            return None
         line = self.lines[index.row()]
         column = index.column()
-        if column== DESCRIPCION:    
+        if column == DESCRIPCION:
             line.pagoId = value[0]
             line.pagoDescripcion = value[1]
             line.monedaId = value[2]
             line.simboloMoneda = value[3]
-            index = self.index(index.row(),MONTO)
-            line.monto =Decimal(str(line.montoDolar * self.tipoCambio)) if line.monedaId == 1 else line.montoDolar
+            index = self.index( index.row(), MONTO )
+            line.monto = Decimal( str( line.montoDolar * self.tipoCambio ) ) if line.monedaId == 1 else line.montoDolar
             if line.sinBanco:
                 line.referencia = ""
                 line.bancoId = 0
@@ -121,52 +121,52 @@ class ReciboModel( AccountsSelectorModel ):
             print line.bancoId
             line.banco = value[1]
         elif column == MONTO:
-            return self.asignarMonto(index,value)
+            return self.asignarMonto( index, value )
         elif column == REFERENCIA:
-            line.referencia= value
+            line.referencia = value
             return True
         return False
 
-    def asignarMonto(self,index,value,monedaId=None):
+    def asignarMonto( self, index, value, monedaId = None ):
         line = self.lines[index.row()]
-        if monedaId==None:
+        if monedaId == None:
             monedaId = line.monedaId
-            
-        if type(value) != Decimal:
-            value =Decimal( value.toString())
-        
-        value = Decimal( str(round(value,4)))
-        line.monto = value
-        line.montoDolar = round(value  / self.tipoCambio,4) if  monedaId==1 else value
-        line.montoDolar = Decimal( str(line.montoDolar))
 
-        
+        if type( value ) != Decimal:
+            value = Decimal( value.toString() )
+
+        value = Decimal( str( round( value, 4 ) ) )
+        line.monto = value
+        line.montoDolar = round( value / self.tipoCambio, 4 ) if  monedaId == 1 else value
+        line.montoDolar = Decimal( str( line.montoDolar ) )
+
+
         suma = self.currentSum
 
-        suma =  self.total - suma
-        suma = Decimal(str(round(suma,4)))
-        ultimaFila = len(self.lines)-1
-        line = self.lines[ultimaFila] 
-        if  suma !=0:
+        suma = self.total - suma
+        suma = Decimal( str( round( suma, 4 ) ) )
+        ultimaFila = len( self.lines ) - 1
+        line = self.lines[ultimaFila]
+        if  suma != 0:
             if line.valid:
-                ultimaFila+=1
-                self.insertRow(ultimaFila)
-                line =self.lines[ultimaFila] 
+                ultimaFila += 1
+                self.insertRow( ultimaFila )
+                line = self.lines[ultimaFila]
 
-            line.montoDolar+=suma
-            monedaId= line.monedaId    
-            line.monto =  round(line.montoDolar * self.tipoCambio,4) if  monedaId==1 else line.montoDolar
-            line.monto = Decimal(str(line.monto))
+            line.montoDolar += suma
+            monedaId = line.monedaId
+            line.monto = round( line.montoDolar * self.tipoCambio, 4 ) if  monedaId == 1 else line.montoDolar
+            line.monto = Decimal( str( line.monto ) )
 
-         
-            self.dataChanged.emit(index, index)
-            index = self.index(index.row(),MONTODOLAR)
-            self.dataChanged.emit(index, index)
+
+            self.dataChanged.emit( index, index )
+            index = self.index( index.row(), MONTODOLAR )
+            self.dataChanged.emit( index, index )
 #            print line.montoDolar
-            if ultimaFila >0:
-                if 0== line.montoDolar:
-                    self.removeRows(ultimaFila,1)
-        
+            if ultimaFila > 0:
+                if 0 == line.montoDolar:
+                    self.removeRows( ultimaFila, 1 )
+
         return True
 
     def headerData( self, section, orientation, role = Qt.DisplayRole ):
@@ -189,7 +189,7 @@ class ReciboModel( AccountsSelectorModel ):
                 return "Referencia"
         return int( section + 1 )
 
-    def insertRows( self, position, rows = 1, index = QModelIndex ):
+    def insertRows( self, position, rows = 1, _index = QModelIndex ):
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
             self.lines.insert( position + row, LineaRecibo( self ) )
@@ -197,7 +197,7 @@ class ReciboModel( AccountsSelectorModel ):
         self.dirty = True
         return True
 
-    def removeRows( self, position, rows = 1, index = QModelIndex ):
+    def removeRows( self, position, rows = 1, _index = QModelIndex ):
         if len( self.lines ) > 0:
             self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
             n = position + rows - 1

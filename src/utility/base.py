@@ -3,7 +3,7 @@ from decimal import  Decimal
 import functools
 import logging
 
-from PyQt4.QtCore import  pyqtSlot,  QSettings, QUrl, QDateTime, QModelIndex
+from PyQt4.QtCore import  pyqtSlot, QSettings, QUrl, QDateTime, QModelIndex
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, \
 QProgressBar, QPrinter, QPrintDialog, QDialog, qApp, QShortcut, QKeySequence
@@ -20,7 +20,7 @@ class Base( object ):
     orientation = QPrinter.Portrait
     pageSize = QPrinter.Letter
     web = ""
-    
+
     def __init__( self ):
         self.user = user.LoggedUser
         self.mapper = QDataWidgetMapper( self )
@@ -45,34 +45,34 @@ class Base( object ):
         """
         self.createActions()
 
-        self.printProgressBar= QProgressBar(self)
-        self.printProgressBar.setVisible(False)
+        self.printProgressBar = QProgressBar( self )
+        self.printProgressBar.setVisible( False )
 
-        tab1shortcut = QShortcut(QKeySequence("Ctrl+1"),self,functools.partial(self.tabWidget.setCurrentIndex,0) )
-        tab2shortcut = QShortcut(QKeySequence("Ctrl+2"),self,functools.partial(self.tabWidget.setCurrentIndex,1) )
+        _tab1shortcut = QShortcut( QKeySequence( "Ctrl+1" ), self, functools.partial( self.tabWidget.setCurrentIndex, 0 ) )
+        _tab2shortcut = QShortcut( QKeySequence( "Ctrl+2" ), self, functools.partial( self.tabWidget.setCurrentIndex, 1 ) )
 
-        
-        self.mapper.currentIndexChanged[int].connect(self.updateDetailFilter)
-        self.actionGoFirst.triggered.connect(functools.partial(self.navigate, 'first'))
-        self.actionGoPrevious.triggered.connect(functools.partial(self.navigate, 'previous'))
-        self.actionGoNext.triggered.connect(functools.partial(self.navigate, 'next'))
-        self.actionGoLast.triggered.connect(functools.partial(self.navigate, 'last'))
 
-        self.actionCut.setVisible(False)
-        self.actionPaste.setVisible(False)
-        self.actionCopy.setVisible(False)
+        self.mapper.currentIndexChanged[int].connect( self.updateDetailFilter )
+        self.actionGoFirst.triggered.connect( functools.partial( self.navigate, 'first' ) )
+        self.actionGoPrevious.triggered.connect( functools.partial( self.navigate, 'previous' ) )
+        self.actionGoNext.triggered.connect( functools.partial( self.navigate, 'next' ) )
+        self.actionGoLast.triggered.connect( functools.partial( self.navigate, 'last' ) )
 
-        
+        self.actionCut.setVisible( False )
+        self.actionPaste.setVisible( False )
+        self.actionCopy.setVisible( False )
+
+
     def closeEvent( self, event ):
         u"""
         Guardar el tamaño, la posición en la pantalla y la posición de la barra de tareas
         Preguntar si realmente se desea cerrar la pestaña cuando se esta en modo edición
         """
         if not self.status:
-            if not QMessageBox.question(self,
+            if not QMessageBox.question( self,
             qApp.organizationName(),
             u"¿Está seguro que desea salir?",
-            QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+            QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
                 event.ignore()
 
         #Guardar el tamaño y la posición
@@ -120,31 +120,31 @@ class Base( object ):
                     FROM tiposcambio
                     WHERE fecha = %s
                     LIMIT 1
-                """ %  datetime.toString( "yyyyMMdd" )
+                """ % datetime.toString( "yyyyMMdd" )
                 query = QSqlQuery()
 
-                if not query.exec_(q):
-                    logging.critical(query.lastError().text())
+                if not query.exec_( q ):
+                    logging.critical( query.lastError().text() )
                     raise UserWarning( "No se pudieron recuperar los tipos de cambio" )
                 if not query.size() == 1:
-                    logging.critical(u"La consulta para obtener tipos de cambio no devolvio exactamente un valor")
+                    logging.critical( u"La consulta para obtener tipos de cambio no devolvio exactamente un valor" )
                     raise UserWarning( u"Hubo un error al obtener los tipos de cambio" )
-                
+
                 query.first()
                 self.editmodel.exchangeRateId = query.value( 0 ).toInt()[0]
                 self.editmodel.exchangeRate = Decimal( query.value( 1 ).toString() )
-                
+
                 #self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.index( 0, 0 ).data() )
-                
+
                 self.editmodel.datetime = datetime
             except UserWarning  as inst :
                 QMessageBox.critical( self, qApp.organizationName(), str( inst ), QMessageBox.Ok )
                 self.dtPicker.setDateTime( self.editmodel.datetime )
-                logging.error(inst)
+                logging.error( inst )
             except Exception as inst:
                 print "in exception"
-                QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al obtener los tipos de cambio")
-                logging.critical(inst)
+                QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al obtener los tipos de cambio" )
+                logging.critical( inst )
                 self.dtPicker.setDateTime( self.editmodel.datetime )
 
 
@@ -171,21 +171,21 @@ class Base( object ):
                 self.mapper.toLast()
         else:
             self.mapper.toLast()()
-        
+
         if self.tabledetails != None:
             self.tabledetails.resizeColumnsToContents()
-            self.tabledetails.horizontalHeader().setStretchLastSection(True)
+            self.tabledetails.horizontalHeader().setStretchLastSection( True )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
 
-    def updateDetailFilter( self, index ):
+    def updateDetailFilter( self, unused_index ):
         """
         Esta función se debe implementar en los formularios para que al navegar se actualize
         el filtro de la tabla detalles
         @param index: Este es el indice del mapper en el que actualmente se encuentra navegando
         @type index: int 
         """
-        QMessageBox.information(self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada")
+        QMessageBox.information( self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada" )
         raise NotImplementedError()
 
     def loadModels( self ):
@@ -237,13 +237,13 @@ class Base( object ):
         self.mapper.setCurrentIndex( index.row() )
 
 
-    def save( self , ask = True):
+    def save( self , ask = True ):
         """
         Guardar el documento actual
         @param ask: Si se deberia o no preguntar al usuario si esta seguro antes de proceder
         @type ask: bool
         """
-        if ask == False or QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+        if ask == False or QMessageBox.question( self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
             if self.editmodel.valid:
                 if self.editmodel.save():
                     QMessageBox.information( self,
@@ -257,21 +257,21 @@ class Base( object ):
                     QMessageBox.critical( self,
                         qApp.organizationName() ,
                          "Ha ocurrido un error al guardar el documento" )
-    
-    
+
+
             else:
                 try:
-                    QMessageBox.warning( self,qApp.organizationName() ,self.editmodel.validError)
+                    QMessageBox.warning( self, qApp.organizationName() , self.editmodel.validError )
                 except AttributeError:
-                    QMessageBox.warning( self,qApp.organizationName() ,u"El documento no puede guardarse ya que la información no esta completa")
+                    QMessageBox.warning( self, qApp.organizationName() , u"El documento no puede guardarse ya que la información no esta completa" )
 
-    def setControls( self, status):
+    def setControls( self, unused_status ):
         """
         Habilitar o deshabilitar los controles según status
         @param status: 
         @type status: bool
         """
-        QMessageBox.information(self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada")
+        QMessageBox.information( self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada" )
         raise NotImplementedError()
 
     def addLine( self ):
@@ -282,8 +282,8 @@ class Base( object ):
         row = self.editmodel.rowCount()
         self.editmodel.insertRows( row )
 
-    def createAction(self, text, slot=None, shortcut=None, icon=None,
-        tip=None, checkable=False, signal="triggered"):
+    def createAction( self, text, slot = None, shortcut = None, icon = None,
+        tip = None, checkable = False, signal = "triggered" ):
         """
         Crear un objeto acción
         @param text: El texto de la acción
@@ -309,115 +309,115 @@ class Base( object ):
 
         @rtype: QAction
         """
-        action = QAction(text, self)
+        action = QAction( text, self )
         if icon is not None:
-            action.setIcon(QIcon(icon))
+            action.setIcon( QIcon( icon ) )
         if shortcut is not None:
-            action.setShortcut(shortcut)
+            action.setShortcut( shortcut )
         if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
+            action.setToolTip( tip )
+            action.setStatusTip( tip )
         if slot is not None:
-            getattr(action, signal).connect(slot)
+            getattr( action, signal ).connect( slot )
         if checkable:
-            action.setCheckable(True)
+            action.setCheckable( True )
         return action
-        
-    def newDocument(self):
+
+    def newDocument( self ):
         """
         Empezar la edición de un nuevo documento
         """
-        QMessageBox.information(self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada")
+        QMessageBox.information( self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada" )
         raise NotImplementedError()
 
 
-    def cancel(self):
+    def cancel( self ):
         """
         Cancelar la edición del nuevo documento
         """
-        QMessageBox.information(self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada")
+        QMessageBox.information( self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada" )
         raise NotImplementedError()
 
     @property
-    def printIdentifier(self):
+    def printIdentifier( self ):
         """
         La identificación de este documento para reporte, normalmente sera el iddocumento o el ndocimpreso
         @rtype:string
         """
-        raise NotImplementedError(u"printIdentifier debe implementarse para poder imprimir")
-    
+        raise NotImplementedError( u"printIdentifier debe implementarse para poder imprimir" )
+
     def preview( self ):
         try:
             printer = QPrinter()
-            printer.setOrientation(self.orientation)
-            printer.setPageSize(self.pageSize)
+            printer.setOrientation( self.orientation )
+            printer.setPageSize( self.pageSize )
             web = self.web + self.printIdentifier
-            report = reports.frmReportes( web, printer,self )
+            report = reports.frmReportes( web, printer, self )
             report.exec_()
         except NotImplementedError as inst:
-            QMessageBox.information(self, qApp.organizationName(), u"No se ha implementado la función de impresión para este modulo")
-            logging.error(unicode(inst))
+            QMessageBox.information( self, qApp.organizationName(), u"No se ha implementado la función de impresión para este modulo" )
+            logging.error( unicode( inst ) )
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.error(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( unicode( inst ) )
         except Exception as inst:
-            QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al intentar mostrar su reporte")
-            logging.critical(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), "Hubo un error al intentar mostrar su reporte" )
+            logging.critical( unicode( inst ) )
 
-    def printDocument(self):
+    def printDocument( self ):
         try:
-            settings = QSettings()
+
             base = reports.Reports.url
 
             if base == "":
-                raise UserWarning(u"No existe una configuración para el servidor de reportes")
-            
+                raise UserWarning( u"No existe una configuración para el servidor de reportes" )
+
             self.printer = QPrinter()
-            self.printer.setOrientation(self.orientation)
-            self.printer.setPageSize(self.pageSize)
+            self.printer.setOrientation( self.orientation )
+            self.printer.setPageSize( self.pageSize )
 
             self.webview = QWebView()
-            web = base+ self.web + self.printIdentifier + "&uname=" + self.user.user + "&hash=" + self.user.hash
+            web = base + self.web + self.printIdentifier + "&uname=" + self.user.user + "&hash=" + self.user.hash
             self.loaded = False
 
 
             self.webview.load( QUrl( web ) )
 
 
-            self.webview.loadFinished[bool].connect(self.on_webview_loadFinished)
-            self.webview.loadProgress[int].connect(self.on_webview_loadProgress)
+            self.webview.loadFinished[bool].connect( self.on_webview_loadFinished )
+            self.webview.loadProgress[int].connect( self.on_webview_loadProgress )
         except NotImplementedError as inst:
-            logging.error(unicode(inst))
-            QMessageBox.information(self, qApp.organizationName(), u"La función de impresión no se ha implementado para este modulo")
+            logging.error( unicode( inst ) )
+            QMessageBox.information( self, qApp.organizationName(), u"La función de impresión no se ha implementado para este modulo" )
         except UserWarning as inst:
-            logging.error(unicode(inst))
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            logging.error( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
         except Exception as inst:
-            logging.critical(unicode(inst))
-            QMessageBox.critical(self, qApp.organizationName(), "Hubo un problema al intentar imprimir su reporte")
-        
-    def on_webview_loadProgress(self, progress):
-        self.printProgressBar.setValue(progress)
+            logging.critical( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(), "Hubo un problema al intentar imprimir su reporte" )
+
+    def on_webview_loadProgress( self, progress ):
+        self.printProgressBar.setValue( progress )
 
 
-    def on_webview_loadFinished(self, status):
+    def on_webview_loadFinished( self, status ):
         if self.printProgressBar.isVisible():
             self.printProgressBar.hide()
         if not status:
-            QMessageBox.critical(self, qApp.organizationName(), "El reporte no se pudo cargar")
-            logging.error("No se pudo cargar el reporte")
+            QMessageBox.critical( self, qApp.organizationName(), "El reporte no se pudo cargar" )
+            logging.error( "No se pudo cargar el reporte" )
 
         self.loaded = True
 
-        printdialog = QPrintDialog(self.printer, self)
+        printdialog = QPrintDialog( self.printer, self )
         if printdialog.exec_() == QDialog.Accepted:
-            self.webview.print_(self.printer)
-            
+            self.webview.print_( self.printer )
+
         del self.webview
         del self.printer
 
-        
-    def deleteRow(self):
+
+    def deleteRow( self ):
         """
         Funcion usada para borrar lineas de la tabla
         """
@@ -430,37 +430,37 @@ class Base( object ):
         self.editmodel.removeRows( row, 1 )
         self.updateLabels()
 
-        
-    def createActions(self):
-        self.actionNew = self.createAction(text="Nuevo", tip="Crear un nuevo documento", icon=":/icons/res/document-new.png", shortcut="Ctrl+n", slot=self.newDocument)
-        self.actionPreview = self.createAction(text="Previsualizar", tip=u"Vista de impresión del documento", icon=":/icons/res/document-preview.png",shortcut="Ctrl+p", slot=self.preview)
-        self.actionPrint = self.createAction(text="Imprimir", tip="Imprimir el documento", icon=":/icons/res/document-print.png", slot = self.printDocument)
-        self.actionSave = self.createAction(text="Guardar", tip = "Guardar el documento", icon=":/icons/res/document-save.png",shortcut="Ctrl+g", slot = self.save)
-        self.actionCancel = self.createAction(text="Cancelar", tip = "Cancelar la creación del nuevo documento", icon=":/icons/res/dialog-cancel.png",shortcut="Esc", slot = self.cancel)
+
+    def createActions( self ):
+        self.actionNew = self.createAction( text = "Nuevo", tip = "Crear un nuevo documento", icon = ":/icons/res/document-new.png", shortcut = "Ctrl+n", slot = self.newDocument )
+        self.actionPreview = self.createAction( text = "Previsualizar", tip = u"Vista de impresión del documento", icon = ":/icons/res/document-preview.png", shortcut = "Ctrl+p", slot = self.preview )
+        self.actionPrint = self.createAction( text = "Imprimir", tip = "Imprimir el documento", icon = ":/icons/res/document-print.png", slot = self.printDocument )
+        self.actionSave = self.createAction( text = "Guardar", tip = "Guardar el documento", icon = ":/icons/res/document-save.png", shortcut = "Ctrl+g", slot = self.save )
+        self.actionCancel = self.createAction( text = "Cancelar", tip = "Cancelar la creación del nuevo documento", icon = ":/icons/res/dialog-cancel.png", shortcut = "Esc", slot = self.cancel )
 
         #edicion, TODO: QUE FUNCIONEN ESTAS ACCIONES
-        self.actionCopy = self.createAction(text="Copiar", icon=":/icons/res/edit-copy.png", shortcut="Ctrl+c")
-        self.actionCut = self.createAction(text="Cortar", icon=":/icons/res/edit-cut.png", shortcut="Ctrl+x")
-        self.actionPaste = self.createAction(text="Pegar", icon=":/icons/res/edit-paste.png", shortcut="Ctrl+v")
+        self.actionCopy = self.createAction( text = "Copiar", icon = ":/icons/res/edit-copy.png", shortcut = "Ctrl+c" )
+        self.actionCut = self.createAction( text = "Cortar", icon = ":/icons/res/edit-cut.png", shortcut = "Ctrl+x" )
+        self.actionPaste = self.createAction( text = "Pegar", icon = ":/icons/res/edit-paste.png", shortcut = "Ctrl+v" )
 
         #navegación
-        self.actionGoFirst = self.createAction(text="Primer documento", tip ="Ir al primer documento",  icon=":/icons/res/go-first.png")
-        self.actionGoPrevious = self.createAction(text="Documento anterior", tip="Ir al documento anterior", icon=":/icons/res/go-previous.png")
-        self.actionGoLast = self.createAction(text="Ultimo documento", tip = "Ir al ultimo documento", icon=":/icons/res/go-last.png")
-        self.actionGoNext = self.createAction(text="Documento siguiente", tip = "Ir al siguiente documento" ,icon=":/icons/res/go-next.png")
+        self.actionGoFirst = self.createAction( text = "Primer documento", tip = "Ir al primer documento", icon = ":/icons/res/go-first.png" )
+        self.actionGoPrevious = self.createAction( text = "Documento anterior", tip = "Ir al documento anterior", icon = ":/icons/res/go-previous.png" )
+        self.actionGoLast = self.createAction( text = "Ultimo documento", tip = "Ir al ultimo documento", icon = ":/icons/res/go-last.png" )
+        self.actionGoNext = self.createAction( text = "Documento siguiente", tip = "Ir al siguiente documento" , icon = ":/icons/res/go-next.png" )
 
-        self.actionDeleteRow = self.createAction(text="Borrar la fila", icon=":/icons/res/edit-delete.png", slot=self.deleteRow)
+        self.actionDeleteRow = self.createAction( text = "Borrar la fila", icon = ":/icons/res/edit-delete.png", slot = self.deleteRow )
 
         self.addActionsToToolBar()
-        
-    def addActionsToToolBar(self):
-        self.toolBar.addActions([
+
+    def addActionsToToolBar( self ):
+        self.toolBar.addActions( [
             self.actionNew,
             self.actionPreview,
             self.actionPrint,
             self.actionSave,
             self.actionCancel
-        ])
+        ] )
         self.toolBar.addSeparator()
         #self.toolBar.addActions([
             #self.actionCopy,
@@ -468,18 +468,18 @@ class Base( object ):
             #self.actionPaste
         #])
         #self.toolBar.addSeparator()
-        self.toolBar.addActions([
+        self.toolBar.addActions( [
             self.actionGoFirst,
             self.actionGoPrevious,
             self.actionGoLast,
             self.actionGoNext,
             self.actionGoLast
-        ])
+        ] )
 
 
 
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_txtObservations_textChanged( self ):
         """
         Asignar las observaciones al editmodel

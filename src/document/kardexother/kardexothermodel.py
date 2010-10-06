@@ -15,19 +15,19 @@ from utility import constantes
 from utility.accountselector import AccountsSelectorModel
 from document.kardexother.lineakardexother import LineaKardexOther
 
-IDARTICULO, DESCRIPCION,COSTO,  CANTIDAD, COSTOT = range(5)
+IDARTICULO, DESCRIPCION, COSTO, CANTIDAD, COSTOT = range( 5 )
 IDCUENTA, CODCUENTA, NCUENTA, MONTO = range( 4 )
-class KardexOtherModel(QAbstractTableModel):
+class KardexOtherModel( QAbstractTableModel ):
     '''
     Esta clase es el modelo utilizado en la tabla en la que se editan documentos
     de tipo kardex generados por entradas o salidas extraordinarias, son del tipo AJUSTEBODEGA
     '''
     __documentType = constantes.IDAJUSTEBODEGA
-    def __init__(self):
+    def __init__( self ):
         '''
         Constructor
         '''
-        super(KardexOtherModel, self).__init__()
+        super( KardexOtherModel, self ).__init__()
 
         self.accountsmodel = KardexOtherAccountsModel()
         """
@@ -40,7 +40,7 @@ class KardexOtherModel(QAbstractTableModel):
         @ivar: El numero de kardex impreso
         @type: string
         """
-        
+
         self.datetime = QDateTime.currentDateTime()
         """
         @ivar:La hora y fecha del documento
@@ -76,7 +76,7 @@ class KardexOtherModel(QAbstractTableModel):
         @ivar: El id del tipo  de cambio
         @type: int
         """
-        self.exchangeRate = Decimal(0)
+        self.exchangeRate = Decimal( 0 )
         """
         @ivar: El tipo de cambio
         @type: Decimal
@@ -94,34 +94,34 @@ class KardexOtherModel(QAbstractTableModel):
         @type: string
         """
 
-        self.dataChanged[QModelIndex, QModelIndex].connect(self.updateAccounts)
+        self.dataChanged[QModelIndex, QModelIndex].connect( self.updateAccounts )
 
-    def updateAccounts(self, index1, index2):
+    def updateAccounts( self, _index1, _index2 ):
         """
         Actualizar el modelo de cuentas contables
         """
-        self.accountsmodel.setData(self.accountsmodel.index(0,MONTO), self.totalCostC)
+        self.accountsmodel.setData( self.accountsmodel.index( 0, MONTO ), self.totalCostC )
 
     @property
-    def totalCostC(self):
+    def totalCostC( self ):
         print "totalCostC: ", self.totalCost * self.exchangeRate, "totalCost: ", self.totalCost, "exchangeRate: ", self.exchangeRate
-        
+
         return self.totalCost * self.exchangeRate
-        
+
     @property
-    def totalCost(self):
+    def totalCost( self ):
         """
         El costo total en dolares
         """
-        tmp = sum([line.totalCost for line in self.lines if line.valid])
-        return tmp if tmp != 0 else Decimal(0)
+        tmp = sum( [line.totalCost for line in self.lines if line.valid] )
+        return tmp if tmp != 0 else Decimal( 0 )
 
     @property
-    def validLines(self):
+    def validLines( self ):
         return len( [line for line in self.lines if line.valid] )
-        
+
     @property
-    def valid(self):
+    def valid( self ):
         if not  self.validLines > 0:
             self.validError = "No hay lineas validas en la tabla"
             return False
@@ -140,7 +140,7 @@ class KardexOtherModel(QAbstractTableModel):
         elif not self.uid > 0:
             self.validError = "No se ha especificado el usuario de este documento"
         return True
-        
+
     def data( self, index, role = Qt.DisplayRole ):
         if not index.isValid() or not ( 0 <= index.row() < len( self.lines ) ):
             return None
@@ -155,9 +155,9 @@ class KardexOtherModel(QAbstractTableModel):
             elif column == CANTIDAD:
                 return line.quantity
             elif column == COSTO:
-                return moneyfmt( line.itemCost, 4, "US$")
+                return moneyfmt( line.itemCost, 4, "US$" )
             elif column == COSTOT:
-                return moneyfmt( line.totalCost, 4, "US$")
+                return moneyfmt( line.totalCost, 4, "US$" )
         elif role == Qt.EditRole:
             if column == COSTO:
                 return line.itemCost
@@ -168,38 +168,38 @@ class KardexOtherModel(QAbstractTableModel):
         if not index.isValid():
             return Qt.ItemIsEnabled
         if index.column() != IDARTICULO:
-            return Qt.ItemIsEnabled | Qt.ItemIsEditable 
+            return Qt.ItemIsEnabled | Qt.ItemIsEditable
         else:
             return Qt.ItemIsEnabled
-            
-    def insertRows( self, position, rows = 1, index = QModelIndex() ):
+
+    def insertRows( self, position, rows = 1, _index = QModelIndex() ):
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
-            self.lines.insert( position + row, LineaKardexOther( ) )
+            self.lines.insert( position + row, LineaKardexOther() )
         self.endInsertRows()
         return True
 
-    def setData( self, index, value, role = Qt.EditRole ):
+    def setData( self, index, value, _role = Qt.EditRole ):
         """
         modificar los datos del modelo, este metodo se comunica con el delegate
         """
         if index.isValid() and 0 <= index.row() < len( self.lines ):
             line = self.lines[index.row()]
-            if index.column() in (DESCRIPCION, IDARTICULO, COSTO):
+            if index.column() in ( DESCRIPCION, IDARTICULO, COSTO ):
                 line.itemId = value[0]
                 line.description = value[1]
                 line.itemCost = value[2]
-                print "itemCost: ",line.itemCost
+                print "itemCost: ", line.itemCost
             elif index.column() == CANTIDAD:
                 line.quantity = value.toInt()[0]
             self.dirty = True
 
             if index.row() == len( self.lines ) - 1 and line.valid:
                 self.insertRow( len( self.lines ) )
-                
-            self.dataChanged.emit(index, index)
 
-            
+            self.dataChanged.emit( index, index )
+
+
             return True
         return False
 
@@ -217,16 +217,16 @@ class KardexOtherModel(QAbstractTableModel):
                 pass
         self.endRemoveRows()
         self.dirty = True
-        self.dataChanged.emit(index, index)
+        self.dataChanged.emit( index, index )
 
-        if len(self.lines) == 0:
-            self.insertRow(0)
+        if len( self.lines ) == 0:
+            self.insertRow( 0 )
         return True
 
-    def rowCount( self, index = QModelIndex() ):
+    def rowCount( self, _index = QModelIndex() ):
         return len( self.lines )
 
-    def columnCount( self, index = QModelIndex() ):
+    def columnCount( self, _index = QModelIndex() ):
         return 5
 
     def headerData( self, section, orientation, role = Qt.DisplayRole ):
@@ -253,7 +253,7 @@ class KardexOtherModel(QAbstractTableModel):
             elif section == COSTOT:
                 return "Costo Total"
 
-    def save(self):
+    def save( self ):
         """
         Este metodo guarda el documento actual en la base de datos
         @rtype: bool
@@ -273,15 +273,15 @@ class KardexOtherModel(QAbstractTableModel):
             """ ):
                 raise Exception( "No se pudo preparar la consulta para ingresar el documento" )
 
-            query.bindValue(":ndocimpreso", self.printedDocumentNumber)
-            query.bindValue(":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
-            query.bindValue(":idtipodoc", self.__documentType)
-            query.bindValue(":estado", constantes.CONFIRMADO)
-            query.bindValue(":observacion", self.observations)
-            query.bindValue(":tipocambio", self.exchangeRateId)
-            query.bindValue(":total", self.totalCostC.to_eng_string())
-            query.bindValue(":idbodega", self.warehouseId)
-            query.bindValue(":idconcepto", self.conceptId)
+            query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
+            query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
+            query.bindValue( ":idtipodoc", self.__documentType )
+            query.bindValue( ":estado", constantes.CONFIRMADO )
+            query.bindValue( ":observacion", self.observations )
+            query.bindValue( ":tipocambio", self.exchangeRateId )
+            query.bindValue( ":total", self.totalCostC.to_eng_string() )
+            query.bindValue( ":idbodega", self.warehouseId )
+            query.bindValue( ":idconcepto", self.conceptId )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
@@ -297,36 +297,36 @@ class KardexOtherModel(QAbstractTableModel):
                 raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
             query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":iddocumento", insertedId )
-            query.bindValue(":accion", constantes.AUTOR)
+            query.bindValue( ":accion", constantes.AUTOR )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar  el usuario" )
 
-            
+
 
             #Guardar las cuentas contables
-            for i, line in enumerate([line for line in self.accountsmodel.lines if line.valid]):
-                    line.save( insertedId,i )
+            for i, line in enumerate( [line for line in self.accountsmodel.lines if line.valid] ):
+                    line.save( insertedId, i )
 
             #Guardar las lineas
-            for i, line in enumerate([line for line in self.lines if line.valid]):
-                    line.save( insertedId,i )
+            for i, line in enumerate( [line for line in self.lines if line.valid] ):
+                    line.save( insertedId, i )
 
-            
+
             if not QSqlDatabase.database().commit():
                 raise Exception( "No se pudo hacer commit" )
 
             return True
         except Exception as inst:
-            logging.critical(unicode(inst))
-            logging.critical(query.lastError().text())
+            logging.critical( unicode( inst ) )
+            logging.critical( query.lastError().text() )
             QSqlDatabase.database().rollback()
             return False
 
-            
+
 class KardexOtherAccountsModel( AccountsSelectorModel ):
-    def __init__(self):
-        super(KardexOtherAccountsModel, self).__init__()
+    def __init__( self ):
+        super( KardexOtherAccountsModel, self ).__init__()
 
     def flags( self, index ):
         if not index.isValid():

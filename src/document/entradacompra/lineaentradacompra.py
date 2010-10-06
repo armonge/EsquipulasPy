@@ -17,13 +17,13 @@ from PyQt4.QtSql import QSqlQuery
 from utility.docbase import LineaBase, ifValid
 
 
-class LineaEntradaCompra(LineaBase):
+class LineaEntradaCompra( LineaBase ):
     def __init__( self, parent ):
-        super(LineaEntradaCompra, self).__init__()
+        super( LineaEntradaCompra, self ).__init__()
         self.quantity = 0
         self.itemDescription = ""
         self.__itemPriceD = Decimal( 0 )
-        self.__itemPriceC = Decimal(0)
+        self.__itemPriceC = Decimal( 0 )
         self.itemId = 0
         self.parent = parent
 
@@ -42,13 +42,13 @@ class LineaEntradaCompra(LineaBase):
             self.itemPriceD = Decimal( 0 )
     itemPriceC = property( getItemPriceC, setItemPriceC )
 
-    def getItemPriceD(self):
+    def getItemPriceD( self ):
         return self.__itemPriceD
-    def setItemPriceD(self, price):
+    def setItemPriceD( self, price ):
         self.__itemPriceC = price * self.parent.exchangeRate
         self.__itemPriceD = price
-    itemPriceD = property(getItemPriceD, setItemPriceD)
-    
+    itemPriceD = property( getItemPriceD, setItemPriceD )
+
 
     @property
     @ifValid
@@ -107,31 +107,31 @@ class LineaEntradaCompra(LineaBase):
             print query.lastError().text()
             raise Exception( "Hubo un error al guardar una linea" )
 
-    
 
 
-class TestLineaLineaEntradCompra(unittest.TestCase):
+
+class TestLineaLineaEntradCompra( unittest.TestCase ):
     """
     Esta clase es un TesCase para LineaEntradaCompra reproduce un caso común y
     verifica los resultados del modelo con los esperados
     """
-    def setUp(self):
-        app = QCoreApplication([])
+    def setUp( self ):
+        _app = QCoreApplication( [] )
 
-        self.exchangeRate = Decimal('21.21')
+        self.exchangeRate = Decimal( '21.21' )
         self.exchangeRateId = 1
-        
-        self.line = LineaEntradaCompra(self)
+
+        self.line = LineaEntradaCompra( self )
         self.line.quantity = 1
         self.line.itemId = 1
-        self.line.itemPriceC = Decimal('1')
+        self.line.itemPriceC = Decimal( '1' )
 
-    def test_valid(self):
-        self.assertTrue(self.line.valid, "La linea deberia de ser valida")
+    def test_valid( self ):
+        self.assertTrue( self.line.valid, "La linea deberia de ser valida" )
 
-    def test_total(self):
-        self.assertEqual(self.line.totalC, Decimal('1'), "El total en cordobas deberia de ser 1 y es %s"% self.line.totalC.to_eng_string())
-        self.assertEqual(self.line.totalD, Decimal('0.04714757190004714757190004715'), "El total en dolares deberia de ser y es %s" %self.line.totalD.to_eng_string())
+    def test_total( self ):
+        self.assertEqual( self.line.totalC, Decimal( '1' ), "El total en cordobas deberia de ser 1 y es %s" % self.line.totalC.to_eng_string() )
+        self.assertEqual( self.line.totalD, Decimal( '0.04714757190004714757190004715' ), "El total en dolares deberia de ser y es %s" % self.line.totalD.to_eng_string() )
 
 
 if __name__ == "__main__":

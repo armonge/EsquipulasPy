@@ -4,7 +4,9 @@ Module implementing frmCatProveedores.
 """
 import logging
 
-from PyQt4.QtGui import QStyledItemDelegate, QAbstractItemView, QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, QTextDocument, qApp
+from PyQt4.QtGui import QStyledItemDelegate, QAbstractItemView, \
+ QSortFilterProxyModel, QLineEdit, QRegExpValidator, QIntValidator, \
+ QTextDocument, qApp, QMessageBox
 from PyQt4.QtCore import  Qt, QRegExp, QSize, QVariant
 from utility.catgeneric import FrmCatGeneric
 
@@ -20,7 +22,7 @@ class FrmCatMarcas( FrmCatGeneric ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning(u"No se pudo conectar con la base de datos")
+                    raise UserWarning( u"No se pudo conectar con la base de datos" )
             self.backmodel.setTable( self.table )
             self.backmodel.select()
             self.filtermodel = QSortFilterProxyModel()
@@ -33,10 +35,10 @@ class FrmCatMarcas( FrmCatGeneric ):
             self.tableview.setColumnHidden( 0, True )
             return True
         except UserWarning as inst:
-            logging.error(inst)
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            logging.error( inst )
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
         except Exception as inst:
-            logging.critical(inst)
+            logging.critical( inst )
         finally:
             if self.database.isOpen():
                 self.database.close()
@@ -44,22 +46,22 @@ class FrmCatMarcas( FrmCatGeneric ):
             return False
 
 
-IDCONCEPTO,DESCRIPCION,MODULO=range(3)
+IDCONCEPTO, DESCRIPCION, MODULO = range( 3 )
 class FrmCatConceptos( FrmCatGeneric ):
     """
     Catalogo de conceptos
     """
-    def __init__( self, modulo,parent = None ):
-        self.modulo=modulo
+    def __init__( self, modulo, parent = None ):
+        self.modulo = modulo
         super( FrmCatConceptos, self ).__init__( "conceptos", parent )
         self.setWindowTitle( "Catalogo de Conceptos" )
-        
-    
+
+
     def updateModels( self ):
         try:
             self.database.open()
             self.backmodel.setTable( self.table )
-            self.backmodel.setFilter("modulo="+str(self.modulo))
+            self.backmodel.setFilter( "modulo=" + str( self.modulo ) )
             self.backmodel.select()
             self.filtermodel = QSortFilterProxyModel()
             self.filtermodel.setSourceModel( self.backmodel )
@@ -79,14 +81,14 @@ class FrmCatConceptos( FrmCatGeneric ):
                 self.database.close()
 
             return False
-        
+
     def new( self ):
         super( FrmCatConceptos, self ).new()
         self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, MODULO ), self.modulo )
 
 
-    
-            
+
+
 
 
 
@@ -141,8 +143,8 @@ class FrmCatProveedores( FrmCatGeneric ):
 
     def new( self ):
         super( FrmCatProveedores, self ).new()
-        self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, TIPOPERSONA ), 2)
-        self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, ACTIVO ), 1)
+        self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, TIPOPERSONA ), 2 )
+        self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, ACTIVO ), 1 )
 
 
 class ProvidersModel( QSortFilterProxyModel ):

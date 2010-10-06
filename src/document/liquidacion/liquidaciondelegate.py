@@ -4,11 +4,8 @@ Created on 21/05/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtCore import Qt, QSize, QAbstractTableModel, QModelIndex
+from PyQt4.QtCore import Qt, QSize
 from PyQt4.QtGui import QStyledItemDelegate, QSpinBox, QDoubleSpinBox
-from PyQt4.QtSql import QSqlQuery
-from decimal import Decimal
-from utility.moneyfmt import moneyfmt
 from utility.widgets.searchpanel import SingleSelectionSearchPanelDelegate
 
 
@@ -17,7 +14,7 @@ class LiquidacionDelegate( SingleSelectionSearchPanelDelegate ):
     '''
     classdocs
     '''
-    def __init__( self, showTable=True , parent = None  ):
+    def __init__( self, showTable = True , parent = None ):
         '''
         Constructor
         '''
@@ -25,7 +22,7 @@ class LiquidacionDelegate( SingleSelectionSearchPanelDelegate ):
 
         self.prods = None
 
-        self.proxymodel.setFilterKeyColumn(IDARTICULO)
+        self.proxymodel.setFilterKeyColumn( IDARTICULO )
 
 
 
@@ -43,14 +40,14 @@ class LiquidacionDelegate( SingleSelectionSearchPanelDelegate ):
             spinbox.setSingleStep( 1 )
             spinbox.setAlignment( Qt.AlignRight | Qt.AlignVCenter )
             return spinbox
-        elif index.column() in (IDARTICULO, ARTICULO):
+        elif index.column() in ( IDARTICULO, ARTICULO ):
 
-            self.proxymodel.setSourceModel(self.prods)
-            current = index.model().data(index.model().index(index.row(), IDARTICULO) )
-            self.proxymodel.setFilterRegExp( self.filter(index.model(),current ))
-            sp =  super(LiquidacionDelegate, self).createEditor(parent, option, index)
-            sp.setColumnHidden(IDARTICULO)
-            sp.setMinimumWidth(600)
+            self.proxymodel.setSourceModel( self.prods )
+            current = index.model().data( index.model().index( index.row(), IDARTICULO ) )
+            self.proxymodel.setFilterRegExp( self.filter( index.model(), current ) )
+            sp = super( LiquidacionDelegate, self ).createEditor( parent, option, index )
+            sp.setColumnHidden( IDARTICULO )
+            sp.setMinimumWidth( 600 )
             return sp
 
         else:
@@ -62,8 +59,8 @@ class LiquidacionDelegate( SingleSelectionSearchPanelDelegate ):
         if index.column() == CANTIDAD:
             editor.setValue( index.model().data( index, Qt.DisplayRole ) if index.model().data( index, Qt.DisplayRole ) != "" else 0 )
         elif index.column() == ARTICULO:
-            current = index.model().data(index.model().index(index.row(), IDARTICULO))
-            self.proxymodel.setFilterRegExp( self.filter(index.model(),current ))
+            current = index.model().data( index.model().index( index.row(), IDARTICULO ) )
+            self.proxymodel.setFilterRegExp( self.filter( index.model(), current ) )
 
             i = editor.findText( text )
             if i == -1:
@@ -78,10 +75,10 @@ class LiquidacionDelegate( SingleSelectionSearchPanelDelegate ):
             QStyledItemDelegate.setEditorData( self, editor, index )
 
     def setModelData( self, editor, model, index ):
-        if index.column() in (IDARTICULO,  ARTICULO):
+        if index.column() in ( IDARTICULO, ARTICULO ):
             if editor.currentIndex() != -1:
-                proxyindex = self.proxymodel.index(editor.currentIndex() , 0 )
-                sourceindex = self.proxymodel.mapToSource(proxyindex)
+                proxyindex = self.proxymodel.index( editor.currentIndex() , 0 )
+                sourceindex = self.proxymodel.mapToSource( proxyindex )
                 model.setData( index, self.prods.items[sourceindex.row() ] )
         else:
             QStyledItemDelegate.setModelData( self, editor, model, index )

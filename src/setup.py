@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#@PydevCodeAnalysisIgnore
 u"""
 Modulo que se encarga de compilar el codigo en un solo ejecutable
 @author: Andrés Reyes Monge
@@ -10,12 +11,12 @@ import platform
 import os
 import py2exe
 #Override the function in py2exe to determine if a dll should be included
-dllList = ('mfc90.dll','msvcp90.dll','qtnetwork.pyd','qtxmlpatterns4.dll','qtsvg4.dll')
+dllList = ( 'mfc90.dll', 'msvcp90.dll', 'qtnetwork.pyd', 'qtxmlpatterns4.dll', 'qtsvg4.dll' )
 origIsSystemDLL = py2exe.build_exe.isSystemDLL
-def isSystemDLL(pathname):
-    if os.path.basename(pathname).lower() in dllList:
+def isSystemDLL( pathname ):
+    if os.path.basename( pathname ).lower() in dllList:
         return 0
-    return origIsSystemDLL(pathname)
+    return origIsSystemDLL( pathname )
 py2exe.build_exe.isSystemDLL = isSystemDLL
 
 if platform.system() == 'Windows':
@@ -30,14 +31,14 @@ if platform.system() == 'Windows':
             ( 'translations', [
                 os.getcwd() + r'\translations\qt_es.qm'
             ] ),
-            
+
     ]
 else:
     Mydata_files = [
                 ( 'translations', [
                     os.getcwd() + r'/translations/qt_es.qm'
                 ] ),
-                
+
     ]
 
 setup( 
@@ -52,7 +53,7 @@ setup(
 		}],
 	options = {
 		"py2exe": {
-			"includes": ["sip","PyQt4.QtGui", "PyQt4.QtCore", "PyQt4.QtSql", "PyQt4.QtWebKit", "PyQt4.QtNetwork"],
+			"includes": ["sip", "PyQt4.QtGui", "PyQt4.QtCore", "PyQt4.QtSql", "PyQt4.QtWebKit", "PyQt4.QtNetwork"],
             "dist_dir":r"..\dist"
 			}
 		},

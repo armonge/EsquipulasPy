@@ -4,8 +4,11 @@ Created on 07/06/2010
 
 @author: Andrés Reyes Monge
 '''
+import logging
+from decimal import Decimal
+
 from PyQt4.QtSql import QSqlQuery
-from decimal import Decimal, DivisionByZero, InvalidOperation
+
 
 class LineaArqueo( object ):
     def __init__( self , parent ):
@@ -69,5 +72,5 @@ class LineaArqueo( object ):
         query.bindValue( ":denominacion", self.denominationId )
 
         if not query.exec_():
-            logging.critical(query.lastError().text())
+            logging.critical( query.lastError().text() )
             raise Exception( "No se pudo insertar una linea" )

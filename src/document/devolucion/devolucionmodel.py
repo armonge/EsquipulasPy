@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#TODO: unittest
 '''
 Created on 19/05/2010
 
@@ -10,7 +11,7 @@ if __name__ == "__main__":
     sip.setapi( 'QString', 2 )
 from decimal import Decimal
 import logging
-    
+
 from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, QCoreApplication
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 
@@ -18,7 +19,6 @@ from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from document.devolucion.lineadevolucion import LineaDevolucion
 
 from utility.moneyfmt import moneyfmt
-from utility.movimientos import movFacturaCredito
 from utility import constantes
 
 DESCRIPCION, PRECIO, CANTIDADMAX, CANTIDAD, TOTALPROD = range( 5 )
@@ -53,7 +53,7 @@ class DevolucionModel( QAbstractTableModel ):
         @ivar:El numero de el documento Nota de Credito
         @type:string
         """
-        
+
         self.clientId = 0
         """
         @ivar:El id del cliente de esta devolución
@@ -84,12 +84,12 @@ class DevolucionModel( QAbstractTableModel ):
         @ivar: El nombre del cliente que realiza esta devolución
         @type: string
         """
-        
+
         self.conceptId = 0
         u"""
         @ivar: El id del concepto de la devolución
         @type: int
-        """ 
+        """
 
         self.ivaRate = Decimal( 0 )
         """
@@ -117,7 +117,7 @@ class DevolucionModel( QAbstractTableModel ):
         @ivar: EL tipo de cambio de esta devolución
         @type:Decimal
         """
-        
+
         self.warehouseId = 0
         u"""
         @ivar: El id de la bodega en la cual se hace la devolución
@@ -154,14 +154,14 @@ class DevolucionModel( QAbstractTableModel ):
         elif not int( self.exchangeRateId ) != 0 :
             self.validError = "No hay un tipo de cambio para el documento"
             return False
-        elif not int(self.conceptId) > 0:
+        elif not int( self.conceptId ) > 0:
             self.validError = u"No se ha especificado un concepto para la devolución"
             return False
-        elif not int(self.warehouseId) > 0:
+        elif not int( self.warehouseId ) > 0:
             self.validError = u"No se ha especificado la bodega para la devolución"
             return False
         return True
-        
+
 
     @property
     def subtotalD( self ):
@@ -171,14 +171,14 @@ class DevolucionModel( QAbstractTableModel ):
         """
         foo = sum( [ line.totalD for line in self.lines if line.valid ] )
         return foo if foo != 0 else Decimal( 0 )
-    
+
     @property
     def totalD( self ):
         """
         El subtotal en dolares del documento
         @rtype: Decimal
         """
-        return self.subtotalD * (1+ ( self.ivaRate / 100 ) )
+        return self.subtotalD * ( 1 + ( self.ivaRate / 100 ) )
 
     @property
     def totalC( self ):
@@ -236,10 +236,10 @@ class DevolucionModel( QAbstractTableModel ):
         return len( [ line for line in self.lines if line.valid ] )
 
     #Clases especificas del modelo
-    def rowCount( self, index = QModelIndex() ):
+    def rowCount( self, _index = QModelIndex() ):
         return len( self.lines )
 
-    def columnCount( self, index = QModelIndex() ):
+    def columnCount( self, _index = QModelIndex() ):
         return 5
 
     def data( self, index, role = Qt.DisplayRole ):
@@ -272,7 +272,7 @@ class DevolucionModel( QAbstractTableModel ):
             return Qt.ItemIsEnabled
 
 
-    def setData( self, index, value, role = Qt.EditRole ):
+    def setData( self, index, value, _role = Qt.EditRole ):
         """
         modificar los datos del modelo, este metodo se comunica con el delegate
         """
@@ -283,12 +283,12 @@ class DevolucionModel( QAbstractTableModel ):
 
             self.dirty = True
 
-            self.dataChanged.emit(index, index)
+            self.dataChanged.emit( index, index )
 
             return True
         return False
 
-    def insertRows( self, position, rows = 1, index = QModelIndex() ):
+    def insertRows( self, position, rows = 1, _index = QModelIndex() ):
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
             self.lines.insert( position + row, LineaDevolucion( self ) )
@@ -331,7 +331,7 @@ class DevolucionModel( QAbstractTableModel ):
         try:
             if not self.valid:
                 raise Exception( "El documento a salvar no es valido" )
-            
+
 
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se puedo comenzar la transaccion" )
@@ -340,68 +340,68 @@ class DevolucionModel( QAbstractTableModel ):
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,idestado,  observacion,total, idtipocambio, idconcepto, idbodega)
             VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:pendiente,:observacion,:total, :idtipocambio, :idconcepto, :idbodega)
             """ ):
-                raise Exception(u"No se pudo preparar la consulta para añadir el documento")
+                raise Exception( u"No se pudo preparar la consulta para añadir el documento" )
 
-            query.bindValue( ":ndocimpreso", 'S/N')
+            query.bindValue( ":ndocimpreso", 'S/N' )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
-            query.bindValue( ":pendiente", constantes.PENDIENTE)
+            query.bindValue( ":pendiente", constantes.PENDIENTE )
             query.bindValue( ":observacion", self.observations )
             query.bindValue( ":total", self.totalD.to_eng_string() )
             query.bindValue( ":idtipocambio", self.exchangeRateId )
-            query.bindValue(":idconcepto", self.conceptId)
-            query.bindValue(":idbodega", self.warehouseId)
+            query.bindValue( ":idconcepto", self.conceptId )
+            query.bindValue( ":idbodega", self.warehouseId )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
 
 
             insertedId = query.lastInsertId().toInt()[0]
-            
+
             #Insertar el usuario y cliente
-            if not query.prepare("""
+            if not query.prepare( """
             INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion)
             VALUES (:idpersona, :iddocumento,:accion)
-            """):
-                raise Exception("No se pudo preparar la consulta para los usuarios y las personas")
+            """ ):
+                raise Exception( "No se pudo preparar la consulta para los usuarios y las personas" )
 
-            query.bindValue(":idpersona", self.clientId )
-            query.bindValue(":iddocumento", insertedId)
-            query.bindValue(":accion", constantes.CLIENTE)
+            query.bindValue( ":idpersona", self.clientId )
+            query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":accion", constantes.CLIENTE )
 
             if not query.exec_():
-                raise Exception(u"No se pudo aniadir el cliente")
+                raise Exception( u"No se pudo aniadir el cliente" )
 
-            if not query.prepare("""
+            if not query.prepare( """
             INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion)
             VALUES (:idusuario, :iddocumento,:accion)
-            """):
-                raise Exception("No se pudo preparar la consulta para el usuario")
-            query.bindValue(":idusuario", self.uid)
-            query.bindValue(":iddocumento", insertedId)
-            query.bindValue(":accion", constantes.AUTOR)
+            """ ):
+                raise Exception( "No se pudo preparar la consulta para el usuario" )
+            query.bindValue( ":idusuario", self.uid )
+            query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":accion", constantes.AUTOR )
 
             if not query.exec_():
-                raise Exception(u"No se pudo añadir el usuario")
-            
-            
+                raise Exception( u"No se pudo añadir el usuario" )
+
+
 
 #Insertar la revercion de los articulos
             for linea in self.lines:
                 if linea.valid:
                     linea.save( insertedId )
-            
+
             #            Crear la relacion con su padre
             if not query.prepare( """
             INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (:idpadre, :idhijo)
             """ ):
-                raise Exception(u"No se pudo preparar la consulta para insertar la relación de la devolución con la factura")
-            
+                raise Exception( u"No se pudo preparar la consulta para insertar la relación de la devolución con la factura" )
+
             query.bindValue( ":idpadre", self.invoiceId )
             query.bindValue( ":idhijo", insertedId )
 
             if not query.exec_():
-                raise Exception(u"No se pudo crear la relacion de la devolución con la factura" )
+                raise Exception( u"No se pudo crear la relacion de la devolución con la factura" )
 
 #            
 #            
@@ -489,40 +489,40 @@ class DevolucionModel( QAbstractTableModel ):
 
         except Exception as inst:
             logging.critical( query.lastError().text() )
-            logging.critical(unicode( inst ))
+            logging.critical( unicode( inst ) )
             QSqlDatabase.database().rollback()
 
             return False
 
         return True
 
-class TestDevolucionModel(unittest.TestCase):
-    def setUp(self):
-        app = QCoreApplication([])
+class TestDevolucionModel( unittest.TestCase ):
+    def setUp( self ):
+        _app = QCoreApplication( [] )
 
         self.devolucion = DevolucionModel()
-        self.devolucion.insertRow(0)
+        self.devolucion.insertRow( 0 )
 
-    def test_total(self):
-        self.assertEqual(self.devolucion.totalC, Decimal('0') )
-        self.assertEqual(self.devolucion.totalD, Decimal('0') )
+    def test_total( self ):
+        self.assertEqual( self.devolucion.totalC, Decimal( '0' ) )
+        self.assertEqual( self.devolucion.totalD, Decimal( '0' ) )
 
-    def test_cost(self):
-        self.assertEqual(self.devolucion.totalCostC, Decimal('0'))
-        self.assertEqual(self.devolucion.totalCostD, Decimal('0'))
-        
-    def test_numrows(self):
-        self.assertEqual(self.devolucion.rowCount(), 1)
+    def test_cost( self ):
+        self.assertEqual( self.devolucion.totalCostC, Decimal( '0' ) )
+        self.assertEqual( self.devolucion.totalCostD, Decimal( '0' ) )
 
-    def test_validLines(self):
-        self.assertEqual(self.devolucion.validLines, 0)
+    def test_numrows( self ):
+        self.assertEqual( self.devolucion.rowCount(), 1 )
 
-    def test_valid(self):
-        self.assertFalse(self.devolucion.valid)
+    def test_validLines( self ):
+        self.assertEqual( self.devolucion.validLines, 0 )
 
-    def test_subtotal(self):
-        self.assertEqual(self.devolucion.subtotalD, Decimal('0') )
-        self.assertEqual(self.devolucion.subtotalC, Decimal('0') )
+    def test_valid( self ):
+        self.assertFalse( self.devolucion.valid )
+
+    def test_subtotal( self ):
+        self.assertEqual( self.devolucion.subtotalD, Decimal( '0' ) )
+        self.assertEqual( self.devolucion.subtotalC, Decimal( '0' ) )
 
 if __name__ == "__main__":
     unittest.main()

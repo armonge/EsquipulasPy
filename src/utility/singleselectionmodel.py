@@ -45,10 +45,10 @@ class SingleSelectionModel( QAbstractTableModel ):
             except IndexError:
                 return ""
 
-    def rowCount( self, index = QModelIndex() ):
+    def rowCount( self, _index = QModelIndex() ):
         return len( self.items )
 
-    def columnCount( self, index = QModelIndex() ):
+    def columnCount( self, _index = QModelIndex() ):
         """
         El numero de columnas es el largo del primer indice del arreglo
         """

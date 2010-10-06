@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#TODO: unittest
 '''
 Created on 19/05/2010
 
@@ -97,7 +98,7 @@ class LineaDevolucion:
         INSERT INTO articulosxdocumento (iddocumento, idarticulo, unidades, costounit, precioventa ) 
         VALUES( :iddocumento, :idarticulo, :unidades, :costounit, :preciounit )
         """ ):
-            raise Exception(u"No se pudo preparar la consulta para añadir una linea")
+            raise Exception( u"No se pudo preparar la consulta para añadir una linea" )
         query.bindValue( ":iddocumento", iddocumento )
         query.bindValue( ":idarticulo", self.itemId )
         query.bindValue( ":unidades", self.quantity )

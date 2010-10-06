@@ -9,7 +9,7 @@ from PyQt4.QtCore import pyqtSlot, Qt, QTimer, \
      QDateTime, QModelIndex
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
-     QLineEdit,QMessageBox, qApp
+     QLineEdit, QMessageBox, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 
 from ui.Ui_devolucion import Ui_frmDevoluciones
@@ -32,8 +32,8 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
     """
     Formulario para crear nuevas devoluciones
     """
-    web = "devoluciones.php?doc="  
-    def __init__( self,  parent = None ):
+    web = "devoluciones.php?doc="
+    def __init__( self, parent = None ):
         """
         Constructor
         """
@@ -49,7 +49,7 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         self.status = True
 
 #        las acciones deberian de estar ocultas
-        
+
 
 #        El modelo principal
         self.navmodel = RONavigationModel( self )
@@ -95,7 +95,7 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
-                    raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
+                    raise UserWarning( u"No se pudo abrir la conexión con la base de datos" )
             query = u"""
              SELECT
                 d.iddocumento,
@@ -123,9 +123,9 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             LEFT JOIN costosxdocumento cxd ON cxd.iddocumento = padre.iddocumento
             LEFT JOIN costosagregados ca ON ca .idcostoagregado = cxd.idcostoagregado
             WHERE d.idtipodoc = %d AND p.tipopersona=%d
-            GROUP BY d.iddocumento""" %(constantes.IDNC,constantes.CLIENTE) 
-            
-            self.navmodel.setQuery(query )
+            GROUP BY d.iddocumento""" % ( constantes.IDNC, constantes.CLIENTE )
+
+            self.navmodel.setQuery( query )
 
             self.detailsmodel.setQuery( u"""
             SELECT 
@@ -139,7 +139,7 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             JOIN vw_articulosdescritos ad ON axd.idarticulo = ad.idarticulo
             JOIN documentos d ON d.iddocumento = axd.iddocumento 
             WHERE d.idtipodoc = %d
-            """ % constantes.IDNC)
+            """ % constantes.IDNC )
 
 
 
@@ -170,17 +170,17 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             self.tablenavigation.setColumnHidden( IMPUESTOS, True )
             self.tablenavigation.setColumnHidden( TASA, True )
             self.tablenavigation.setColumnHidden( COSTO, True )
-            
+
 
             self.tablenavigation.resizeColumnsToContents()
-            self.tablenavigation.horizontalHeader().setStretchLastSection(True)
+            self.tablenavigation.horizontalHeader().setStretchLastSection( True )
 
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.error(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( unicode( inst ) )
         except Exception as inst:
-            logging.critical(unicode(inst))
-            QMessageBox.critical(self, qApp.organizationName(), u"Hubo un error al cargar la lista de devoluciones")
+            logging.critical( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al cargar la lista de devoluciones" )
             print inst
         finally:
             if QSqlDatabase.database().isOpen():
@@ -202,7 +202,7 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param status: false = editando        true = navegando
         """
-        self.actionPrint.setVisible(status)
+        self.actionPrint.setVisible( status )
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
         self.tabnavigation.setEnabled( status )
@@ -215,13 +215,13 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         #self.txtDocumentNumber.setReadOnly( status )
         self.txtObservations.setReadOnly( status )
         self.dtPicker.setReadOnly( status )
-        
+
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
-        
-        self.swConcept.setCurrentIndex(1 if status else 0)
+
+        self.swConcept.setCurrentIndex( 1 if status else 0 )
         if status:
-            
+
             self.navigate( 'last' )
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
@@ -233,7 +233,7 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             self.lblSubtotal.setText( "US$0.0000 / C$0.0000" )
             self.tabledetails.setEditTriggers( QAbstractItemView.AllEditTriggers )
             self.tabWidget.setCurrentIndex( 0 )
-            
+
 #            mostrar las columnas para el modeo edicion u ocultar para navegación
         self.tabledetails.setColumnHidden( IDARTICULO, status )
         self.tabledetails.setColumnHidden( IDDOCUMENTOT, status )
@@ -255,7 +255,7 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             self.editmodel.numnotacredito = string
 
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_txtObservations_textChanged( self ):
         """
         Slot documentation goes here.
@@ -267,44 +267,44 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         """
         Slot documentation goes here.
         """
-        query = QSqlQuery( )
+        query = QSqlQuery()
         try:
             if not QSqlDatabase.database().open():
                 raise Exception( u"No se pudo establecer una conexión con la base de datos" )
-            
+
             self.conceptsmodel = QSqlQueryModel()
-            self.conceptsmodel.setQuery("""
+            self.conceptsmodel.setQuery( """
             SELECT idconcepto, descripcion 
             FROM conceptos 
             WHERE idtipodoc = %d
-            """ % constantes.IDNC)
-            
-            if self.conceptsmodel.rowCount()==0:
-                raise UserWarning( u"No existen conceptos para devolución")
-                
-            
+            """ % constantes.IDNC )
+
+            if self.conceptsmodel.rowCount() == 0:
+                raise UserWarning( u"No existen conceptos para devolución" )
+
+
             dlgbill = DlgSelectBill()
             if dlgbill.exec_() == QDialog.Accepted:
                 self.editmodel = DevolucionModel()
                 self.editmodel.invoiceId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 0 ).data().toInt()[0]
                 self.editmodel.billPrinted = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 1 ).data().toString()
                 self.editmodel.clientName = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 3 ).data().toString()
-                
+
                 self.editmodel.clientId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 5 ).data().toInt()[0]
-                
+
                 self.editmodel.ivaRate = Decimal( dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 6 ).data().toString() )
                 self.editmodel.ivaRateId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 7 ).data().toInt()[0]
-    
+
                 self.editmodel.exchangeRate = Decimal( dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 8 ).data().toString() )
                 self.editmodel.exchangeRateId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 9 ).data().toInt()[0]
-                
+
                 self.editmodel.warehouseName = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 10 ).data().toString()
                 self.editmodel.warehouseId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 11 ).data().toInt()[0]
-                
-    
+
+
                 self.editmodel.uid = self.user.uid
-                
-                
+
+
                 query = QSqlQuery( """
                 CALL spConsecutivo(%d,NULL);
                 """ % constantes.IDNC )
@@ -313,8 +313,8 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 query.first()
                 self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
 
-                
-                
+
+
                 query.prepare( """
                 SELECT 
                     v.idarticulo, 
@@ -330,7 +330,7 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 """ % ( self.editmodel.invoiceId, self.editmodel.invoiceId ) )
                 if not query.exec_():
                     raise Exception( "Ocurrio un error en la consulta" )
-    
+
                 while query.next():
                     linea = LineaDevolucion( self.editmodel )
                     linea.itemId = query.value( 0 ).toInt()[0]
@@ -338,19 +338,19 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                     linea.itemCost = Decimal( query.value( 2 ).toString() )
                     linea.itemPrice = Decimal( query.value( 3 ).toString() )
                     linea.maxquantity = query.value( 4 ).toInt()[0]
-    
-    
+
+
                     row = self.editmodel.rowCount()
                     self.editmodel.insertRows( row )
-    
+
                     self.editmodel.lines[row] = linea
-                
-                
-                self.cbConcept.setModel(self.conceptsmodel)
-                self.cbConcept.setModelColumn(1)
-                self.cbConcept.setCurrentIndex(-1)
-    
-                
+
+
+                self.cbConcept.setModel( self.conceptsmodel )
+                self.cbConcept.setModelColumn( 1 )
+                self.cbConcept.setCurrentIndex( -1 )
+
+
                 self.tabnavigation.setEnabled( False )
                 self.tabWidget.setCurrentIndex( 0 )
                 self.tabledetails.setModel( self.editmodel )
@@ -360,16 +360,16 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 
                 self.tabledetails.resizeColumnsToContents()
                 self.dtPicker.setDateTime( QDateTime.currentDateTime() )
-                self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
-                
-                
-                self.txtDocumentNumber.setText( self.editmodel.printedDocumentNumber)
+                self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
+
+
+                self.txtDocumentNumber.setText( self.editmodel.printedDocumentNumber )
                 self.txtBill.setText( self.editmodel.billPrinted )
-                self.txtWarehouse.setText(self.editmodel.warehouseName)
-                
-                self.status =  False 
+                self.txtWarehouse.setText( self.editmodel.warehouseName )
+
+                self.status = False
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
             self.status = True
         except Exception as inst:
             print inst
@@ -387,7 +387,7 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             self.editmodel.conceptId = self.conceptsmodel.record( index ).value( "idconcepto" ).toInt()[0]
 
     @property
-    def printIdentifier(self):
+    def printIdentifier( self ):
         return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
     def cancel( self ):
@@ -476,9 +476,9 @@ class DlgSelectBill( QDialog ):
             GROUP BY factura.iddocumento
             ) as tbl
             WHERE unittotal > 0
-        """ % (constantes.IDNC, constantes.IDFACTURA, constantes.CLIENTE, constantes.IDKARDEX)
-        
-        self.billsmodel.setQuery( query)
+        """ % ( constantes.IDNC, constantes.IDFACTURA, constantes.CLIENTE, constantes.IDKARDEX )
+
+        self.billsmodel.setQuery( query )
 
 
 
@@ -488,7 +488,7 @@ class DlgSelectBill( QDialog ):
         self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
         self.filtermodel.setFilterKeyColumn( -1 )
 
-        iddoc, ndocimpreso, fechacreacion, nombre, total, idpersona, valorcosto, idcosto, tasacambio, idcambio, nombrebodega, idbodega = range( 12 )
+        iddoc, _ndocimpreso, _fechacreacion, _nombre, total, idpersona, valorcosto, idcosto, tasacambio, idcambio, _nombrebodega, idbodega = range( 12 )
         self.tblBills = QTableView()
         self.tblBills.setSelectionMode( QAbstractItemView.SingleSelection )
         self.tblBills.setSelectionBehavior( QAbstractItemView.SelectRows )
@@ -522,9 +522,9 @@ class DlgSelectBill( QDialog ):
         self.setLayout( layout )
 
         self.setMinimumWidth( 400 )
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
-        self.txtSearch.textChanged[unicode].connect(self.updateDetailFilter)
+        self.buttonbox.accepted.connect( self.accept )
+        self.buttonbox.rejected.connect( self.reject )
+        self.txtSearch.textChanged[unicode].connect( self.updateDetailFilter )
 #FIXME: Que pasa cuando no hay facturas?
 #    def exec_( self ):
 #        if self.billsmodel.rowCount() == 0:

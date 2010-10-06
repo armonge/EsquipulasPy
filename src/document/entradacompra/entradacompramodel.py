@@ -123,7 +123,7 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
         """
 
 
-        
+
 
     @property
     def valid( self ):
@@ -138,24 +138,26 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
         Es valido el documento
         @rtype: bool
         """
-        if  self.printedDocumentNumber != "" and int( self.providerId ) != 0 and int( self.validLines ) > 0 and int( self.idIVA ) != 0 and \
-        int( self.uid ) != 0 and int( self.exchangeRateId ) != 0:
-            self.validError = ""
-            return True
+        if not int( self.exchangeRateId ) > 0:
+            self.validError = "No se ha definido un tipo de cambio para el documento"
+            return False
         elif not self.printedDocumentNumber != "":
             self.validError = "No ha escrito el numero de documento"
+            return False
         elif not int( self.providerId ) != 0:
             self.validError = "No ha definido al proveedor"
+            return False
         elif not int( self.validLines ) > 0:
             self.validError = "No hay ninguna linea valida en la entrada de compra"
+            return False
         elif not int( self.idIVA ) != 0:
             print self.idIVA
             self.validError = u"No hay un IVA asociado a la entrada de compra"
+            return False
         elif not int( self.uid ) != 0:
             self.validError = "No se ha definido el usuario para la entrada compra"
-        elif not int( self.exchangeRateId ) != 0:
-            self.validError = "No se ha definido un tipo de cambio para el documento"
-        return False
+            return False
+        return True
 
     @property
     def subtotalC( self ):
@@ -174,10 +176,10 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
         El total neto del documento, despues de haber aplicado IVA
         @rtype: Decimal
         """
-        return self.subtotalC  + self.IVAC
+        return self.subtotalC + self.IVAC
 
     @property
-    def subtotalD(self):
+    def subtotalD( self ):
         """
         El subtotal del documento, esto es el total antes de aplicarse el IVA
         @rtype: Decimal
@@ -191,7 +193,7 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
         El total en dolares del documento
         @rtype: Decimal
         """
-        return  self.subtotalD  + self.IVAD
+        return  self.subtotalD + self.IVAD
 
     @property
     def IVAD( self ):
@@ -214,13 +216,13 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
 
 
     #Clases especificas del modelo
-    def rowCount( self, index = QModelIndex() ):
+    def rowCount( self, _index = QModelIndex() ):
         """
         El numero de filas del documento, es igual a la cantidad de lineas en self.lines
         """
         return len( self.lines )
 
-    def columnCount( self, index = QModelIndex() ):
+    def columnCount( self, _index = QModelIndex() ):
         """
         El numero de columnas del modelo
         """
@@ -265,7 +267,7 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
             return Qt.ItemIsSelectable | Qt.ItemIsEnabled
         return Qt.ItemFlags( QAbstractTableModel.flags( self, index ) | Qt.ItemIsEditable )
 
-    def setData( self, index, value, role = Qt.EditRole ):
+    def setData( self, index, value, _role = Qt.EditRole ):
         """
         modificar los datos del modelo, este metodo se comunica con el delegate
         """
@@ -286,7 +288,7 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
 
 
 
-            self.dataChanged.emit(index, index)
+            self.dataChanged.emit( index, index )
             #si la linea es valida y es la ultima entonces aniadir una nueva
             if  index.row() == len( self.lines ) - 1 and line.valid:
                 self.insertRows( len( self.lines ) )
@@ -295,7 +297,7 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
             return True
         return False
 
-    def insertRows( self, position, rows = 1, index = QModelIndex ):
+    def insertRows( self, position, rows = 1, _index = QModelIndex ):
         """
         Insertar filas en el modelo
         """
@@ -306,7 +308,7 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
         self.dirty = True
         return True
 
-    def removeRows( self, position, rows = 1, index = QModelIndex() ):
+    def removeRows( self, position, rows = 1, _index = QModelIndex() ):
         """
         Borrar filas del modelo
         """
@@ -395,7 +397,7 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
             query.bindValue( ":idaccion", constantes.AUTOR )
 
             if not query.exec_():
-                
+
                 raise Exception( "No se pudo insertar  el usuario" )
 
             #insertar el proveedor
@@ -437,56 +439,56 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
             if not QSqlDatabase.database().commit():
                 raise Exception( "No se pudo hacer commit" )
         except Exception as inst:
-            logging.critical(query.lastError().text())
-            logging.critical(unicode(inst))
+            logging.critical( query.lastError().text() )
+            logging.critical( unicode( inst ) )
             QSqlDatabase.database().rollback()
             return False
 
         return True
 
-        
-class TestEntradaCompraSimple(unittest.TestCase):
+
+class TestEntradaCompraSimple( unittest.TestCase ):
     """
     Esta clase es un TesCase para EntradaCompraModel reproduce un caso común y
     verifica los resultados del modelo con los esperados
     """
-    def setUp(self):
-        app = QCoreApplication([])
+    def setUp( self ):
+        _app = QCoreApplication( [] )
 
         self.entrada = EntradaCompraModel()
 
-        
-        self.entrada.insertRow(0)
-        self.entrada.exchangeRate = Decimal("21.21")
-        self.entrada.rateIVA = Decimal('15')
+
+        self.entrada.insertRow( 0 )
+        self.entrada.exchangeRate = Decimal( "21.21" )
+        self.entrada.rateIVA = Decimal( '15' )
         self.entrada.exchangeRateId = 1
-        self.entrada.exchangeRate = Decimal('21')
-        
-        self.entrada.setData(self.entrada.index(0,CANTIDAD), QVariant("1"))
-        self.entrada.setData(self.entrada.index(0,PRECIO), QVariant("1"))
-        self.entrada.setData(self.entrada.index(0,DESCRIPCION),[
+        self.entrada.exchangeRate = Decimal( '21' )
+
+        self.entrada.setData( self.entrada.index( 0, CANTIDAD ), QVariant( "1" ) )
+        self.entrada.setData( self.entrada.index( 0, PRECIO ), QVariant( "1" ) )
+        self.entrada.setData( self.entrada.index( 0, DESCRIPCION ), [
             1,
             "FRICCIONES* BATERIA  N-150 DURUN"
-        ])
-        
-
-    def valid(self):
-        self.assertTrue(self.entrada.valid, "El documento deberia tener un estado de valido")
-    
-    def test_validLines(self):
-        self.assertEqual(self.entrada.validLines, 1, "El documento deberia tener exactamente una linea valida")
-        
-    def test_iva(self):
-        self.assertEqual(self.entrada.IVAC, Decimal('0.15'), "El iva en cordobas deberia ser exactamente 0.15 y es %s" % self.entrada.IVAC.to_eng_string())
-        self.assertEqual(self.entrada.IVAD, Decimal('0.007142857142857142857142857143'))
-
-    def test_total(self):
-        self.assertEqual(self.entrada.totalC,Decimal('1.15'))
-        self.assertEqual(self.entrada.totalD,Decimal('0.05476190476190476190476190476'))
+        ] )
 
 
-    def test_numrows(self):
-        self.assertEqual(self.entrada.rowCount(),2, "El documento deberia tener 2 lineas")
+    def valid( self ):
+        self.assertTrue( self.entrada.valid, "El documento deberia tener un estado de valido" )
+
+    def test_validLines( self ):
+        self.assertEqual( self.entrada.validLines, 1, "El documento deberia tener exactamente una linea valida" )
+
+    def test_iva( self ):
+        self.assertEqual( self.entrada.IVAC, Decimal( '0.15' ), "El iva en cordobas deberia ser exactamente 0.15 y es %s" % self.entrada.IVAC.to_eng_string() )
+        self.assertEqual( self.entrada.IVAD, Decimal( '0.007142857142857142857142857143' ) )
+
+    def test_total( self ):
+        self.assertEqual( self.entrada.totalC, Decimal( '1.15' ) )
+        self.assertEqual( self.entrada.totalD, Decimal( '0.05476190476190476190476190476' ) )
+
+
+    def test_numrows( self ):
+        self.assertEqual( self.entrada.rowCount(), 2, "El documento deberia tener 2 lineas" )
 
 
 if __name__ == "__main__":

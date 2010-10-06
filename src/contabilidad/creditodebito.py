@@ -1,31 +1,32 @@
 # -*- coding: utf-8 -*-
+#FIXME: Esto no sirve
+#@PydevCodeAnalysisIgnore
 '''
 Created on 04/08/2010
 
 @author: marcos
 '''
-import logging
-from decimal import Decimal
-
-from PyQt4.QtCore import QModelIndex, Qt, QTimer, \
-    QDateTime
-
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, \
-    QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
-     QLineEdit,QMessageBox, qApp
-
+from PyQt4.QtCore import QModelIndex, Qt, QTimer, QDateTime
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDialog, QTableView, \
+    QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, QLineEdit, \
+    QMessageBox, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
+from decimal import Decimal
+from document.devolucion import LineaDevolucion, CreditoDebitoModel
 from ui.Ui_creditodebito import Ui_frmCreditoDebito
-from utility.base import Base
-
 from utility import constantes
-#from document.creditodebito import creditoDebitoModel
+from utility.base import Base
+import logging
 
-class FrmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
+
+
+
+
+class FrmCreditoDebito( Ui_frmCreditoDebito, QMainWindow, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
-    def __init__( self,  parent ):
+    def __init__( self, parent ):
         super( FrmCreditoDebito, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
@@ -59,35 +60,35 @@ class FrmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
         """
         Slot documentation goes here.
         """
-        query = QSqlQuery( )
+        query = QSqlQuery()
         try:
             if not QSqlDatabase.database().open():
                 raise Exception( u"No se pudo establecer una conexión con la base de datos" )
-            
+
             dlgbill = DlgSelectBill()
             if dlgbill.exec_() == QDialog.Accepted:
-                self.editmodel = creditoDebitoModel()
+                self.editmodel = CreditoDebitoModel()
                 self.editmodel.invoiceId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 0 ).data().toInt()[0]
                 self.editmodel.clientId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 5 ).data().toInt()[0]
                 self.editmodel.uid = self.user.uid
                 self.editmodel.clientName = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 3 ).data().toString()
                 self.editmodel.billPrinted = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 1 ).data().toString()
-    
+
                 self.editmodel.exchangeRate = Decimal( dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 8 ).data().toString() )
                 self.editmodel.exchangeRateId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 9 ).data().toInt()[0]
-    
-    
+
+
                 self.txtBill.setText( self.editmodel.billPrinted )
                 query = QSqlQuery( """
                 CALL spConsecutivo(%d,NULL);
-                """ % constantes.IDDEVOLUCION )
+                """ % constantes.IDNOTACREDITO )
                 if not query.exec_():
                     raise UserWarning( u"No se pudo calcular el numero de la devolución" )
                 query.first()
                 self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
 
-                self.txtDocumentNumber.setText( self.editmodel.printedDocumentNumber)
-                
+                self.txtDocumentNumber.setText( self.editmodel.printedDocumentNumber )
+
                 query.prepare( """
                 SELECT 
                     v.idarticulo, 
@@ -103,7 +104,7 @@ class FrmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
                 """ % ( self.editmodel.invoiceId, self.editmodel.invoiceId ) )
                 if not query.exec_():
                     raise Exception( "Ocurrio un error en la consulta" )
-    
+
                 while query.next():
                     linea = LineaDevolucion( self.editmodel )
                     linea.itemId = query.value( 0 ).toInt()[0]
@@ -111,15 +112,15 @@ class FrmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
                     linea.itemCost = Decimal( query.value( 2 ).toString() )
                     linea.itemPrice = Decimal( query.value( 3 ).toString() )
                     linea.maxquantity = query.value( 4 ).toInt()[0]
-    
-    
+
+
                     row = self.editmodel.rowCount()
                     self.editmodel.insertRows( row )
-    
+
                     self.editmodel.lines[row] = linea
-    
-    
-                
+
+
+
                 self.tabnavigation.setEnabled( False )
                 self.tabWidget.setCurrentIndex( 0 )
                 self.tabledetails.setModel( self.editmodel )
@@ -129,15 +130,15 @@ class FrmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
 
                 self.tabledetails.resizeColumnsToContents()
                 self.dtPicker.setDateTime( QDateTime.currentDateTime() )
-                self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
-                self.status =  False 
+                self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
+                self.status = False
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.errror(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( unicode( inst ) )
             self.status = True
         except Exception as inst:
-            QMessageBox.critical(self, qApp.organizationName(),u"Hubo un error al cargar la lista de documentos")
-            logging.errror(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al cargar la lista de documentos" )
+            logging.error( unicode( inst ) )
             self.status = True
         finally:
             if QSqlDatabase.database().isOpen():
@@ -147,12 +148,12 @@ class FrmCreditoDebito( Ui_frmCreditoDebito, QMainWindow,Base ):
         """
         @param status: false = editando        true = navegando
         """
-        self.actionPrint.setVisible(status)
-        self.dtPicker.setReadOnly(  status )            
-        self.actionSave.setVisible(  not status )
+        self.actionPrint.setVisible( status )
+        self.dtPicker.setReadOnly( status )
+        self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
-        self.actionNew.setVisible( status)
-        self.actionPreview.setVisible( status)
+        self.actionNew.setVisible( status )
+        self.actionPreview.setVisible( status )
 
 class RONavigationModel( QSqlQueryModel ):
     """
@@ -168,6 +169,7 @@ class RONavigationModel( QSqlQueryModel ):
             if index.column() in ( TOTAL, SUBTOTAL, COSTO, IMPUESTOS ):
                 return moneyfmt( Decimal( value.toString() ), 2, "US$" ) + " / " + moneyfmt( Decimal( value.toString() ) * exchangeRate, 2 , "C$" )
         return value
+
     def headerData( self, section, orientation, role = Qt.DisplayRole ):
         if role == Qt.TextAlignmentRole:
             if orientation == Qt.Horizontal:
@@ -214,7 +216,7 @@ class DlgSelectBill( QDialog ):
             LEFT JOIN costosagregados ca ON ca .idcostoagregado = cxd.idcostoagregado
             WHERE d.idtipoDoc = %d and p.tipopersona=%d
             GROUP BY d.iddocumento    
-        """ % (constantes.IDDEVOLUCION,constantes.CLIENTE) )
+        """ % ( constantes.IDNOTACREDITO, constantes.CLIENTE ) )
 
 
 
@@ -223,7 +225,7 @@ class DlgSelectBill( QDialog ):
         self.filtermodel.setSourceModel( self.billsmodel )
         self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
         self.filtermodel.setFilterKeyColumn( -1 )
-        
+
         self.tblBills = QTableView()
         self.tblBills.setSelectionMode( QAbstractItemView.SingleSelection )
         self.tblBills.setSelectionBehavior( QAbstractItemView.SelectRows )
@@ -248,9 +250,9 @@ class DlgSelectBill( QDialog ):
         self.setLayout( layout )
 
         self.setMinimumWidth( 400 )
-        self.accepted.connect(self.accept)
-        self.rejected.connect(self.reject)
-        self.txtSearch.textChanged[unicode].connect(self.updateFilter)
+        self.accepted.connect( self.accept )
+        self.rejected.connect( self.reject )
+        self.txtSearch.textChanged[unicode].connect( self.updateFilter )
 
 #FIXME: Que pasa cuando no hay facturas?
 #    def exec_( self ):

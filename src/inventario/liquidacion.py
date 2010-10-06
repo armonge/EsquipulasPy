@@ -23,8 +23,8 @@ from document.liquidacion import LiquidacionModel, LiquidacionAccountsModel, Liq
 
 
 #navigation model
-IDDOCUMENTO, NDOCIMPRESO, FECHA, PROCEDENCIA, AGENCIA, ALMACEN, FLETE, SEGURO,\
-OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO, ESTADO,FOBTOTAL, CIFTOTAL, IMPUESTOTOTAL, TOTALD, TOTALC, EXONERADO = range( 23 )
+IDDOCUMENTO, NDOCIMPRESO, FECHA, PROCEDENCIA, AGENCIA, ALMACEN, FLETE, SEGURO, \
+OTROS, TRANSPORTE, PAPELERIA, PESO, PROVEEDOR, BODEGA, ISO, TCAMBIO, ESTADO, FOBTOTAL, CIFTOTAL, IMPUESTOTOTAL, TOTALD, TOTALC, EXONERADO = range( 23 )
 
 
 #details model
@@ -40,7 +40,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
     web = "liquidaciones.php?doc="
     orientation = QPrinter.Landscape
     pageSize = QPrinter.Legal
-    def __init__( self,  parent = None ):
+    def __init__( self, parent = None ):
         """
         @param parent: El formulario padre de este documento
         """
@@ -71,7 +71,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
 
         self.navproxyproxymodel = QSortFilterProxyModel( self )
         self.navproxyproxymodel.setSourceModel( self.navproxymodel )
-        
+
 #        Este es el modelo con los datos de la con los detalles
         self.detailsmodel = QSqlQueryModel( self )
 ##        Este es el filtro del modelo anterior
@@ -88,55 +88,55 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         #inicializando el documento
         self.editmodel = None
 
-        
-        
+
+
         QTimer.singleShot( 0, self.loadModels )
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.detailsproxymodel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
+        self.detailsproxymodel.setFilterRegExp( "^%d$" % self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
 
         self.accountsProxyModel.setFilterKeyColumn( IDDOCUMENTOC )
-        self.accountsProxyModel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
+        self.accountsProxyModel.setFilterRegExp( "^%d$" % self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
 
-        self.navproxyproxymodel.setFilterKeyColumn(IDDOCUMENTO)
-        self.navproxyproxymodel.setFilterRegExp( "^%d$"%self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
-        
+        self.navproxyproxymodel.setFilterKeyColumn( IDDOCUMENTO )
+        self.navproxyproxymodel.setFilterRegExp( "^%d$" % self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
+
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
-        
+
         self.ckISO.setChecked( True if self.navmodel.record( index ).value( ISO ).toDouble()[0] != 0 else False )
 
-        self.ckTaxes.setChecked( True if self.navmodel.record(index).value(EXONERADO).toDouble()[0] != 0 else False)
+        self.ckTaxes.setChecked( True if self.navmodel.record( index ).value( EXONERADO ).toDouble()[0] != 0 else False )
 
         estado = self.navmodel.record( index ).value( "estado" ).toInt()[0]
         if estado == constantes.INCOMPLETO:
-            if self.user.hasRole('contabilidad'):
-                self.actionEditAccounts.setVisible(True)
+            if self.user.hasRole( 'contabilidad' ):
+                self.actionEditAccounts.setVisible( True )
         else:
-            self.actionEditAccounts.setVisible(False)
-        
+            self.actionEditAccounts.setVisible( False )
+
 
     def setControls( self, status ):
         """
         En esta funcion cambio el estado enabled de todos los items en el formulario
         @param status: 1 = navegando 2 = añadiendo productos 3 = añadiendo cuentas contables
         """
-        
+
         self.txtPolicy.setReadOnly( status == 1 or status == 3 )
-        self.txtSource.setReadOnly( status == 1 or status == 3)
-        
-        self.sbAgency.setReadOnly( status == 1 or status == 3)
-        self.sbFreight.setReadOnly( status == 1 or status == 3)
-        self.sbInsurance.setReadOnly( status == 1 or status == 3)
-        self.sbOther.setReadOnly( status == 1 or status == 3)
-        
-        self.sbWeight.setReadOnly( status == 1 or status == 3)
-        self.sbPaperWork.setReadOnly( status == 1 or status == 3)
-        self.sbStore.setReadOnly( status == 1 or status == 3)
-        self.sbTransportation.setReadOnly( status == 1 or status == 3)
-        self.ckISO.setEnabled( not (status == 1 or status == 3 ))
-        self.ckTaxes.setEnabled( not (status == 1 or status == 3 ))
-        self.tablenavigation.setEnabled(status == 1)
+        self.txtSource.setReadOnly( status == 1 or status == 3 )
+
+        self.sbAgency.setReadOnly( status == 1 or status == 3 )
+        self.sbFreight.setReadOnly( status == 1 or status == 3 )
+        self.sbInsurance.setReadOnly( status == 1 or status == 3 )
+        self.sbOther.setReadOnly( status == 1 or status == 3 )
+
+        self.sbWeight.setReadOnly( status == 1 or status == 3 )
+        self.sbPaperWork.setReadOnly( status == 1 or status == 3 )
+        self.sbStore.setReadOnly( status == 1 or status == 3 )
+        self.sbTransportation.setReadOnly( status == 1 or status == 3 )
+        self.ckISO.setEnabled( not ( status == 1 or status == 3 ) )
+        self.ckTaxes.setEnabled( not ( status == 1 or status == 3 ) )
+        self.tablenavigation.setEnabled( status == 1 )
 
 
         self.swProvider.setCurrentIndex( 0 if status == 1 or status == 3 else 1 )
@@ -146,19 +146,19 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         self.dtPicker.setReadOnly( status != 2 )
         self.cbWarehouse.setEnabled( status == 2 )
 
-        self.actionUpdateArticles.setVisible( status == 2)
-        self.actionCancel.setVisible( not status == 1)
-        self.actionSave.setVisible( not status == 1)
+        self.actionUpdateArticles.setVisible( status == 2 )
+        self.actionCancel.setVisible( not status == 1 )
+        self.actionSave.setVisible( not status == 1 )
         self.actionPreview.setVisible( status == 1 )
         self.actionPrint.setVisible( status == 1 )
         self.actionNew.setVisible( status == 1 )
 
 
         self.actionGoFirst.setVisible( status == 1 )
-        self.actionGoPrevious.setVisible( status == 1)
-        self.actionGoNext.setVisible( status == 1)
-        self.actionGoLast.setVisible( status == 1)
-        
+        self.actionGoPrevious.setVisible( status == 1 )
+        self.actionGoNext.setVisible( status == 1 )
+        self.actionGoLast.setVisible( status == 1 )
+
         self.tabledetails.setColumnHidden( IDDOCUMENTOT, True )
         self.tabledetails.setColumnHidden( IDARTICULO, True )
 
@@ -180,14 +180,14 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         self.tablenavigation.setColumnHidden( ESTADO, True )
         self.tablenavigation.setColumnHidden( EXONERADO, True )
 
-        
 
 
-        
+
+
         self.tableaccounts.setColumnHidden( IDCUENTA, True )
         self.tableaccounts.setColumnHidden( IDDOCUMENTOC, True )
 
-        
+
         self.tabnavigation.setEnabled( status )
         if status == 1:
 
@@ -206,60 +206,60 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             self.tabletotals.setColumnHidden( BODEGA, True )
             self.tabletotals.setColumnHidden( ISO, True )
             self.tabletotals.setColumnHidden( TCAMBIO, True )
-            self.tabletotals.setColumnHidden(NDOCIMPRESO, True)
-            self.tabletotals.setColumnHidden(ESTADO, True)
-            self.tabletotals.setColumnHidden(FECHA, True)
-            self.tabletotals.setColumnHidden(PROCEDENCIA, True)
-            self.tabletotals.setColumnHidden(PESO, True)
-            self.tabletotals.setColumnHidden(PROVEEDOR, True)
-            self.tabletotals.setColumnHidden(TCAMBIO, True)
-            self.tabletotals.setColumnHidden(EXONERADO, True)
+            self.tabletotals.setColumnHidden( NDOCIMPRESO, True )
+            self.tabletotals.setColumnHidden( ESTADO, True )
+            self.tabletotals.setColumnHidden( FECHA, True )
+            self.tabletotals.setColumnHidden( PROCEDENCIA, True )
+            self.tabletotals.setColumnHidden( PESO, True )
+            self.tabletotals.setColumnHidden( PROVEEDOR, True )
+            self.tabletotals.setColumnHidden( TCAMBIO, True )
+            self.tabletotals.setColumnHidden( EXONERADO, True )
 
             self.tabledetails.removeAction( self.actionDeleteRow )
-            
+
             self.tableaccounts.setEditTriggers( QTableView.NoEditTriggers )
 
         elif status == 2: #editando
-            self.sbAgency.setPrefix("C$ ")
-            self.sbStore.setPrefix("C$ ")
+            self.sbAgency.setPrefix( "C$ " )
+            self.sbStore.setPrefix( "C$ " )
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
             self.tabledetails.addAction( self.actionDeleteRow )
 
-            self.txtPolicy.setText("")
-            self.txtSource.setText("")
+            self.txtPolicy.setText( "" )
+            self.txtSource.setText( "" )
 
-            self.sbAgency.setValue(0)
-            self.sbFreight.setValue(0)
-            self.sbInsurance.setValue(0)
-            self.sbOther.setValue(0)
+            self.sbAgency.setValue( 0 )
+            self.sbFreight.setValue( 0 )
+            self.sbInsurance.setValue( 0 )
+            self.sbOther.setValue( 0 )
 
-            self.sbWeight.setValue(0)
-            self.sbPaperWork.setValue(0)
-            self.sbStore.setValue(0)
-            self.sbTransportation.setValue(0)
+            self.sbWeight.setValue( 0 )
+            self.sbPaperWork.setValue( 0 )
+            self.sbStore.setValue( 0 )
+            self.sbTransportation.setValue( 0 )
 
-            for column in range(self.tabletotals.model().columnCount()):
-                self.tabletotals.setColumnWidth(column, 170)
+            for column in range( self.tabletotals.model().columnCount() ):
+                self.tabletotals.setColumnWidth( column, 170 )
 
-            for x in range(self.tabletotals.model().columnCount()):
-                self.tabletotals.setColumnHidden(x, False)
-            self.actionEditAccounts.setVisible(False)
+            for x in range( self.tabletotals.model().columnCount() ):
+                self.tabletotals.setColumnHidden( x, False )
+            self.actionEditAccounts.setVisible( False )
         elif status == 3:
-            self.tabTotalsAccounts.setCurrentIndex(0)
+            self.tabTotalsAccounts.setCurrentIndex( 0 )
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
-            self.actionEditAccounts.setVisible(False)
-            
+            self.actionEditAccounts.setVisible( False )
 
 
 
-    def updateLabels(self):
+
+    def updateLabels( self ):
         pass
-    
+
     def updateModels( self ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( "No se pudo conectar con la base de datos ")
+                    raise UserWarning( "No se pudo conectar con la base de datos " )
             query = u"""
                 SELECT
                     d.iddocumento,
@@ -292,7 +292,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
                 JOIN articulosxdocumento axd ON d.iddocumento = axd.iddocumento
                 JOIN costosxarticuloliquidacion caxl ON caxl.idarticuloxdocumento = axd.idarticuloxdocumento
                 GROUP BY d.iddocumento;
-            """ % ( constantes.ISO, constantes.ISO, constantes.IVA)
+            """ % ( constantes.ISO, constantes.ISO, constantes.IVA )
             self.navmodel.setQuery( query )
             query = u"""
             SELECT
@@ -323,7 +323,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             ORDER BY v.nlinea
             """
             self.detailsmodel.setQuery( query )
-    
+
             self.accountsModel.setQuery( """
             SELECT
                 c.idcuenta, 
@@ -338,42 +338,42 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             WHERE l.iddocumento IS NOT NULL
             ORDER BY nlinea
             """ )
-    
+
             self.tableaccounts.setModel( self.accountsProxyModel )
 
-    
+
             #Este objeto mapea una fila del modelo self.navproxymodel a los controles
-    
+
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
             self.mapper.setModel( self.navproxymodel )
             self.mapper.addMapping( self.txtPolicy, NDOCIMPRESO )
             self.mapper.addMapping( self.txtSource, PROCEDENCIA )
-            self.mapper.addMapping( self.txtProvider, PROVEEDOR)
+            self.mapper.addMapping( self.txtProvider, PROVEEDOR )
             self.mapper.addMapping( self.txtWarehouse, BODEGA )
             self.mapper.addMapping( self.txtExchangeRate, TCAMBIO )
-            
+
             self.mapper.addMapping( self.dtPicker, FECHA )
-            
+
             self.mapper.addMapping( self.sbAgency, AGENCIA )
             self.mapper.addMapping( self.sbFreight, FLETE )
             self.mapper.addMapping( self.sbInsurance, SEGURO )
             self.mapper.addMapping( self.sbOther, OTROS )
-            
+
             self.mapper.addMapping( self.sbTransportation, TRANSPORTE )
             self.mapper.addMapping( self.sbStore, ALMACEN )
             self.mapper.addMapping( self.sbWeight, PESO )
             self.mapper.addMapping( self.sbPaperWork, PAPELERIA )
-            
-    
+
+
             self.tablenavigation.setModel( self.navproxymodel )
             self.tablenavigation.resizeColumnsToContents()
             self.tabledetails.setModel( self.detailsproxymodel )
-            self.tabletotals.setModel(self.navproxyproxymodel)
+            self.tabletotals.setModel( self.navproxyproxymodel )
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.error(inst)
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( inst )
         except Exception as inst:
-            logging.critical(inst)
+            logging.critical( inst )
 
 
 
@@ -382,17 +382,17 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
 
         self.tablenavigation.setModel( self.navproxymodel )
         self.tabledetails.setModel( self.detailsproxymodel )
-        self.tabletotals.setModel(self.navproxyproxymodel)
+        self.tabletotals.setModel( self.navproxyproxymodel )
 
         self.tableaccounts.setModel( self.accountsProxyModel )
-        
+
         self.status = 1
         self.navigate( 'last' )
 
     @property
-    def printIdentifier(self):
+    def printIdentifier( self ):
         return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
-    
+
 
     def newDocument( self ):
         """
@@ -403,7 +403,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
-            
+
             query.prepare( "SELECT idtc FROM tiposcambio LIMIT 1" )
             query.exec_()
             if not query.first():
@@ -422,10 +422,10 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             LEFT JOIN tsim t on c.idcostoagregado=t.idtsim 
             WHERE activo=1 AND idtipocosto IN (%d,%d,%d,%d)
             LIMIT 4
-            """ % (constantes.IVA, constantes.SPE, constantes.TSIM, constantes.ISO))
+            """ % ( constantes.IVA, constantes.SPE, constantes.TSIM, constantes.ISO ) )
             if not query.exec_():
                 raise UserWarning( "No se pudo ejecutar la consulta para obtener los valores de los impuestos" )
-            elif not query.size()==4:
+            elif not query.size() == 4:
                 raise UserWarning( "No se pudieron obtener los valores de los impuestos" )
 #TODO: Deberian acaso los valores de iva, spe, tsim, iso cambiar cuando cambie la fecha???            
             while query.next():
@@ -442,7 +442,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
                 elif query.value( 3 ).toInt()[0] == 6: #ISO
                     self.editmodel.isoId = query.value( 0 ).toInt()[0]
                     self.editmodel.isoRate = Decimal( query.value( 1 ).toString() )
-        
+
             providersModel = QSqlQueryModel()
             providersModel.setQuery( """
             SELECT idpersona, nombre
@@ -450,7 +450,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             WHERE tipopersona = %d AND activo = 1
             """ % constantes.PROVEEDOR )
             if not providersModel.rowCount() > 0:
-                raise UserWarning("No existen proveedores en el sistema")
+                raise UserWarning( "No existen proveedores en el sistema" )
             self.cbProvider.setModel( providersModel )
             self.cbProvider.setModelColumn( 1 )
 
@@ -461,22 +461,22 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             ORDER BY idbodega  
             """ )
             if not warehouseModel.rowCount() > 0:
-                raise UserWarning("No existen bodegas en el sistema")
+                raise UserWarning( "No existen bodegas en el sistema" )
             self.cbWarehouse.setModel( warehouseModel )
             self.cbWarehouse.setModelColumn( 1 )
 
             self.editdelegate = LiquidacionDelegate()
-            self.updateArticleList(query)
-            if self.editdelegate.prods.rowCount()==0:
-                raise UserWarning(u"El sistema no tiene registrado ningún tipo de articulo, por favor añada articulos antes de hacer una liquidación")
-                
+            self.updateArticleList( query )
+            if self.editdelegate.prods.rowCount() == 0:
+                raise UserWarning( u"El sistema no tiene registrado ningún tipo de articulo, por favor añada articulos antes de hacer una liquidación" )
+
 
 
 
             self.tabnavigation.setEnabled( False )
             self.tabWidget.setCurrentIndex( 0 )
             self.tabledetails.setModel( self.editmodel )
-            
+
             self.tabledetails.setItemDelegate( self.editdelegate )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
 
@@ -488,36 +488,36 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             FROM cuentascontables c 
             JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
             WHERE c.padre != 1 AND c.idcuenta != %s
-            """ % movimientos.INVENTARIO ),True )
-            
-            self.dtPicker.setDateTime(QDateTime.currentDateTime() )
-            self.dtPicker.setMaximumDateTime(QDateTime.currentDateTime())
-            
+            """ % movimientos.INVENTARIO ), True )
 
-            
+            self.dtPicker.setDateTime( QDateTime.currentDateTime() )
+            self.dtPicker.setMaximumDateTime( QDateTime.currentDateTime() )
+
+
+
             self.tabletotals.setModel( self.editmodel.totalsModel )
             self.tabledetails.setColumnHidden( IDDOCUMENTOT, False )
 
-            self.tableaccounts.setModel(None)
-            self.tabledetails.setColumnWidth(DESCRIPCION, 250)
+            self.tableaccounts.setModel( None )
+            self.tabledetails.setColumnWidth( DESCRIPCION, 250 )
 
-            
-            
+
+
             self.status = 2
 
         except UserWarning as inst:
             self.status = 1
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.error(inst)
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( inst )
         except Exception as inst:
-            QMessageBox.critical(self, qApp.organizationName(), u"Hubo un error al intentar iniciar una nueva liquidación")
+            QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al intentar iniciar una nueva liquidación" )
             self.status = 1
-            logging.critical(inst)
+            logging.critical( inst )
         finally:
             if self.database.isOpen():
                 self.database.close()
 
-    def updateArticleList(self, query):
+    def updateArticleList( self, query ):
         """
         Actualizar los valores de los articulos para el delegado
         @param query: El objeto consulta en el que se van a tratar de obtener los nuevos valores de los articulos
@@ -533,7 +533,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             Comision as comision
         FROM vw_articulosconcostosactuales
         WHERE activo=1
-        """)
+        """ )
 
         query.exec_()
         self.editdelegate.prods = ArticlesModel()
@@ -570,7 +570,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
     @pyqtSlot( "QString" )
     def on_txtSource_textChanged( self, p0 ):
         if not self.editmodel is None:
-            self.editmodel.origin = p0            
+            self.editmodel.origin = p0
 
     @pyqtSlot( "double" )
     def on_sbStore_valueChanged( self, p0 ):
@@ -578,7 +578,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.storeTotalC = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
+            self.editmodel.storeTotalC = Decimal( str( p0 ) ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "double" )
@@ -587,7 +587,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.agencyTotalC = Decimal( str(p0) ) if not p0 == "" else Decimal( 0 )
+            self.editmodel.agencyTotalC = Decimal( str( p0 ) ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
 
@@ -597,7 +597,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.paperworkRate = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
+            self.editmodel.paperworkRate = Decimal( str( p0 ) ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
 
@@ -607,7 +607,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.transportRate = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
+            self.editmodel.transportRate = Decimal( str( p0 ) ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "double" )
@@ -616,7 +616,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.weight = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
+            self.editmodel.weight = Decimal( str( p0 ) ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "double" )
@@ -625,7 +625,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.freightTotal = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
+            self.editmodel.freightTotal = Decimal( str( p0 ) ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "double" )
@@ -634,7 +634,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.insuranceTotal = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
+            self.editmodel.insuranceTotal = Decimal( str( p0 ) ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "double" )
@@ -643,7 +643,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         Slot documentation goes here.
         """
         if not self.editmodel is None:
-            self.editmodel.otherTotal = Decimal(str(p0)) if not p0 == "" else Decimal( 0 )
+            self.editmodel.otherTotal = Decimal( str( p0 ) ) if not p0 == "" else Decimal( 0 )
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
     @pyqtSlot( "int" )
@@ -667,7 +667,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
             if status == Qt.Checked:
-                self.ckTaxes.setChecked(False)
+                self.ckTaxes.setChecked( False )
 
     @pyqtSlot( "int" )
     def on_ckTaxes_stateChanged( self, status ):
@@ -676,7 +676,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.lines[0].itemId )
 
             if status == Qt.Checked:
-                self.ckISO.setChecked(False)
+                self.ckISO.setChecked( False )
 
 
     def loadModels( self ):
@@ -688,16 +688,16 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         self.navigate( 'last' )
         self.status = 1
 
-        
+
     def closeEvent( self, event ):
         u"""
         reimplementando por que sel.status no sigue el formato True,. False
         """
         if self.status != 1:
-            if not QMessageBox.question(self,
+            if not QMessageBox.question( self,
             qApp.organizationName(),
             u"¿Está seguro que desea salir?",
-            QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+            QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
                 event.ignore()
 
         #Guardar el tamaño y la posición
@@ -713,43 +713,43 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         """
         Guardar el documento actual
         """
-        if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            if self.status ==2:
+        if QMessageBox.question( self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+            if self.status == 2:
                 if self.editmodel.valid:
                     if self.editmodel.save():
                         QMessageBox.information( self,
                              qApp.organizationName(),
-                             u"El documento se ha guardado con éxito")
+                             u"El documento se ha guardado con éxito" )
                         self.editmodel = None
                         self.updateModels()
                         self.status = 1
                         self.navigate( 'last' )
-                        
+
                     else:
                         QMessageBox.critical( self,
                             qApp.organizationName(),
-                             "Ha ocurrido un error al guardar el documento")
+                             "Ha ocurrido un error al guardar el documento" )
 
 
                 else:
                     try:
-                        QMessageBox.warning( self,qApp.organizationName(),self.editmodel.validError)
+                        QMessageBox.warning( self, qApp.organizationName(), self.editmodel.validError )
                     except AttributeError:
-                        QMessageBox.warning( self,qApp.organizationName(),u"El documento no puede guardarse ya que la información no esta completa")
+                        QMessageBox.warning( self, qApp.organizationName(), u"El documento no puede guardarse ya que la información no esta completa" )
             elif self.status == 3:
                 if self.accountsEditModel.valid:
                     if self.accountsEditModel.save():
-                        QMessageBox.information(self, qApp.organizationName(), "Las cuentas contables se han guardado correctamente")
+                        QMessageBox.information( self, qApp.organizationName(), "Las cuentas contables se han guardado correctamente" )
                         self.updateModels()
                         self.status = 1
-                        self.navigate('last')
+                        self.navigate( 'last' )
                     else:
-                        QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al guardar las cuentas contables")
+                        QMessageBox.critical( self, qApp.organizationName(), "Hubo un error al guardar las cuentas contables" )
                 else:
-                    QMessageBox.critical(self, qApp.organizationName(),"Existe un error con sus cuentas contables, reviselo antes de guardar")
-                
-                    
-    def updateArticles(self):
+                    QMessageBox.critical( self, qApp.organizationName(), "Existe un error con sus cuentas contables, reviselo antes de guardar" )
+
+
+    def updateArticles( self ):
         """
         Actualizar la lista de articulos
         """
@@ -757,13 +757,13 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning(u"No se pudo conectar con la base de datos")
+                    raise UserWarning( u"No se pudo conectar con la base de datos" )
 
 
 
-            self.updateArticleList(query)
+            self.updateArticleList( query )
             for line in [line for line in self.editmodel.lines if line.itemId != 0]:
-                line.update(query)
+                line.update( query )
 
 
             providersModel = QSqlQueryModel()
@@ -771,7 +771,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             SELECT idpersona, nombre FROM personas p WHERE tipopersona = 2 AND activo = 1
             """ )
             if not providersModel.rowCount() > 0:
-                raise UserWarning("No existen proveedores en el sistema")
+                raise UserWarning( "No existen proveedores en el sistema" )
             self.cbProvider.setModel( providersModel )
             self.cbProvider.setModelColumn( 1 )
 
@@ -782,79 +782,79 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             ORDER BY idbodega
             """ )
             if not warehouseModel.rowCount() > 0:
-                raise UserWarning("No existen bodegas en el sistema")
+                raise UserWarning( "No existen bodegas en el sistema" )
             self.cbWarehouse.setModel( warehouseModel )
             self.cbWarehouse.setModelColumn( 1 )
 
-            self.cbWarehouse.setCurrentIndex(-1)
-            self.cbProvider.setCurrentIndex(-1)
+            self.cbWarehouse.setCurrentIndex( -1 )
+            self.cbProvider.setCurrentIndex( -1 )
 
 
-                
+
         except UserWarning as inst:
-            QMessageBox.warning(self, qApp.organizationName(), unicode(inst))
-            logging.error(query.lastError().text())
-            logging.error(unicode(inst))
+            QMessageBox.warning( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( query.lastError().text() )
+            logging.error( unicode( inst ) )
             self.cancel()
         except Exception as inst:
-            QMessageBox.critical(self, qApp.organizationName(), "Hubo un error fatal al tratar de actualizar la lista de articulos, el sistema no puede recuperarse" + \
-                                                             " y sus cambios se han perdido")
-            logging.error(query.lastError().text())
-            logging.critical(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), "Hubo un error fatal al tratar de actualizar la lista de articulos, el sistema no puede recuperarse" + \
+                                                             " y sus cambios se han perdido" )
+            logging.error( query.lastError().text() )
+            logging.critical( unicode( inst ) )
             self.cancel()
 
-    def editAccounts(self):
+    def editAccounts( self ):
         """
         Editar las cuentas contables
         """
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning(u"No se pudo abrir la conexión con la base de datos")
+                    raise UserWarning( u"No se pudo abrir la conexión con la base de datos" )
             docid = self.navmodel.record( self.mapper.currentIndex() ).value( IDDOCUMENTO ).toInt()[0]
-            self.xdockWidget.setCollapsed(False)
-            self.accountsEditModel = LiquidacionAccountsModel(docid, self.user)
-            accountsdelegate = AccountsSelectorDelegate(QSqlQuery( """
+            self.xdockWidget.setCollapsed( False )
+            self.accountsEditModel = LiquidacionAccountsModel( docid, self.user )
+            accountsdelegate = AccountsSelectorDelegate( QSqlQuery( """
              SELECT c.idcuenta, c.codigo, c.descripcion
              FROM cuentascontables c
              JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
              WHERE c.padre != 1 AND c.idcuenta != 22
-             """ ),True )
+             """ ), True )
             self.tableaccounts.setItemDelegate( accountsdelegate )
-            
-            self.tableaccounts.setModel(self.accountsEditModel)
 
-            self.accountsEditModel.insertRows( 0,2 )
-            
+            self.tableaccounts.setModel( self.accountsEditModel )
+
+            self.accountsEditModel.insertRows( 0, 2 )
+
             line = AccountsSelectorLine()
-            line.itemId = int(movimientos.INVENTARIO)
+            line.itemId = int( movimientos.INVENTARIO )
             line.code = "110 003 001 000 000"
             line.name = "INV Inventario de Bodega"
 
-            line.amount = Decimal(self.navmodel.record( self.mapper.currentIndex() ).value( TOTALC ).toString()).quantize(Decimal('0.0001'))
+            line.amount = Decimal( self.navmodel.record( self.mapper.currentIndex() ).value( TOTALC ).toString() ).quantize( Decimal( '0.0001' ) )
             self.accountsEditModel.lines[0] = line
             self.tabWidget.setCurrentIndex( 0 )
-            
+
             self.tableaccounts.resizeColumnsToContents()
             self.status = 3
 
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
             self.tableaccounts.setModel( self.accountsProxyModel )
-            logging.error(unicode(inst))
+            logging.error( unicode( inst ) )
             self.status = 1
 
         except Exception as inst:
-            QMessageBox.critical(self, qApp.organizationName(), u"El sistema no pudo iniciar la edición de las cuentas contables")
-            logging.critical(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), u"El sistema no pudo iniciar la edición de las cuentas contables" )
+            logging.critical( unicode( inst ) )
             self.tableaccounts.setModel( self.accountsProxyModel )
             self.status = 1
 
-    def addActionsToToolBar(self):
-        self.actionEditAccounts = self.createAction(text="Editar cuentas contables", icon=":/icons/res/view-bank-account.png", slot=self.editAccounts)
-        self.actionUpdateArticles = self.createAction(text="Actualizar lista de articulos", icon=":/icons/res/view-refresh.png", slot=self.updateArticles)
+    def addActionsToToolBar( self ):
+        self.actionEditAccounts = self.createAction( text = "Editar cuentas contables", icon = ":/icons/res/view-bank-account.png", slot = self.editAccounts )
+        self.actionUpdateArticles = self.createAction( text = "Actualizar lista de articulos", icon = ":/icons/res/view-refresh.png", slot = self.updateArticles )
 
-        self.toolBar.addActions([
+        self.toolBar.addActions( [
             self.actionNew,
             self.actionEditAccounts,
             self.actionPreview,
@@ -862,27 +862,27 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
             self.actionSave,
             self.actionCancel,
             self.actionUpdateArticles
-        ])
+        ] )
         self.toolBar.addSeparator()
-        self.toolBar.addActions([
+        self.toolBar.addActions( [
             self.actionGoFirst,
             self.actionGoPrevious,
             self.actionGoLast,
             self.actionGoNext,
             self.actionGoLast
-        ])
+        ] )
 
 
-class LiquidacionNavModel(QSqlQueryModel):
-    def data(self, index, role = Qt.DisplayRole):
+class LiquidacionNavModel( QSqlQueryModel ):
+    def data( self, index, role = Qt.DisplayRole ):
         if role == Qt.DisplayRole:
-            if index.column() in  (TOTALD, IMPUESTOTOTAL, CIFTOTAL, FOBTOTAL):
-                return moneyfmt(Decimal(super(LiquidacionNavModel, self).data(index, role).toString()),4,"US$")
+            if index.column() in  ( TOTALD, IMPUESTOTOTAL, CIFTOTAL, FOBTOTAL ):
+                return moneyfmt( Decimal( super( LiquidacionNavModel, self ).data( index, role ).toString() ), 4, "US$" )
             elif index.column() == TOTALC:
-                return moneyfmt(Decimal(super(LiquidacionNavModel, self).data(index, role).toString()),4,"C$")
-        return super(LiquidacionNavModel, self).data(index, role)
+                return moneyfmt( Decimal( super( LiquidacionNavModel, self ).data( index, role ).toString() ), 4, "C$" )
+        return super( LiquidacionNavModel, self ).data( index, role )
 
-        
+
 class ArticlesModel( QAbstractTableModel ):
     def __init__( self ):
         super( ArticlesModel, self ).__init__()
@@ -929,9 +929,9 @@ class ArticlesModel( QAbstractTableModel ):
                 return u"Comisión"
         return int( section + 1 )
 
-    def rowCount( self, index = QModelIndex() ):
+    def rowCount( self, _index = QModelIndex() ):
         return len( self.items )
 
-    def columnCount( self, index = QModelIndex ):
+    def columnCount( self, _index = QModelIndex() ):
         return 5
 

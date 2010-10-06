@@ -7,6 +7,7 @@ Created on 18/05/2010
 from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery
 from utility import constantes
+#FIXME: para que sirve parent???? creo que esto se da por copiar y pegar....
 class LineaRecibo:
     def __init__( self, parent ):
         self.pagoId = 0
@@ -16,35 +17,35 @@ class LineaRecibo:
         self.pagoDescripcion = ""
         self.referencia = ""
         self.montoDolar = Decimal( 0 )
-        self.monto = Decimal(0)
-        self.simboloMoneda ="US$"
+        self.monto = Decimal( 0 )
+        self.simboloMoneda = "US$"
         self.error = ""
     @property
     def sinBanco( self ):
-        return self.pagoId in (0,constantes.IDPAGOEFECTIVO,constantes.IDPAGOTARJETA)
-    
+        return self.pagoId in ( 0, constantes.IDPAGOEFECTIVO, constantes.IDPAGOTARJETA )
+
     @property
     def conReferencia( self ):
-        return self.pagoId not in (0,constantes.IDPAGOEFECTIVO)    
-    
+        return self.pagoId not in ( 0, constantes.IDPAGOEFECTIVO )
+
     @property
     def valid( self ):
         """
         es esta linea valida
         """
-        pedirRef =not (self.sinBanco)
+        pedirRef = not ( self.sinBanco )
         if  int( self.pagoId ) == 0:
-            self.error = "Por favor elija un tipo de pago"    
+            self.error = "Por favor elija un tipo de pago"
         elif Decimal( self.montoDolar ) == 0:
             self.error = u"El monto en dólares no puede ser 0"
         elif self.conReferencia and self.referencia == "" :
             self.error = "Por favor escriba la referencia del pago"
-        elif pedirRef and self.bancoId <= 0: 
-            if self.bancoId == 0: 
+        elif pedirRef and self.bancoId <= 0:
+            if self.bancoId == 0:
                 self.error = "Por Favor especifique el banco relacionado al pago"
             elif self.bancoId == -1:
                 self.error = "No existen bancos en la base de datos"
-            
+
         else:
             self.error = ""
             return True
@@ -58,11 +59,11 @@ class LineaRecibo:
         if not self.valid:
             raise Exception( "Se intento guardar una linea no valida" )
 
-        idbanco = 'null' if self.pagoId in (constantes.IDPAGOEFECTIVO,constantes.IDPAGOTARJETA) else str(self.bancoId)
+        idbanco = 'null' if self.pagoId in ( constantes.IDPAGOEFECTIVO, constantes.IDPAGOTARJETA ) else str( self.bancoId )
         query = QSqlQuery()
-        if not query.prepare("INSERT INTO movimientoscaja(iddocumento, idtipomovimiento, idtipomoneda, monto,refexterna,idbanco,nlinea )" +  
-        "VALUES( :iddocumento, :idpago, :idmoneda, :monto,:ref," + idbanco +",:linea )"):
-            raise Exception( "la linea #%d de los pagos no esta preparada"%linea )
+        if not query.prepare( "INSERT INTO movimientoscaja(iddocumento, idtipomovimiento, idtipomoneda, monto,refexterna,idbanco,nlinea )" +
+        "VALUES( :iddocumento, :idpago, :idmoneda, :monto,:ref," + idbanco + ",:linea )" ):
+            raise Exception( "la linea #%d de los pagos no esta preparada" % linea )
 
         query.bindValue( ":iddocumento", iddocumento )
         query.bindValue( ":idpago", self.pagoId )

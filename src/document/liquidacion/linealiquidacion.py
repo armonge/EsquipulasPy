@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
 
 import logging
-from decimal import Decimal,InvalidOperation
+from decimal import Decimal, InvalidOperation
 
 from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtSql import QSqlQuery
@@ -65,22 +65,22 @@ class LineaLiquidacion( LineaBase ):
         @ivar: El porcentaje DAI del articulo
         """
 
-    def setRateDAI(self, dai):
+    def setRateDAI( self, dai ):
         self.__rateDAI = dai
 
-    def getRateDAI(self):
-        return self.__rateDAI if self.parent.applyTaxes else Decimal(0)
+    def getRateDAI( self ):
+        return self.__rateDAI if self.parent.applyTaxes else Decimal( 0 )
 
-    rateDAI = property(getRateDAI, setRateDAI)
+    rateDAI = property( getRateDAI, setRateDAI )
 
-    def setRateISC(self, isc):
+    def setRateISC( self, isc ):
         self.__rateISC = isc
 
-    def getRateISC(self):
-        return self.__rateISC if self.parent.applyTaxes else Decimal(0)
+    def getRateISC( self ):
+        return self.__rateISC if self.parent.applyTaxes else Decimal( 0 )
 
-    rateISC = property(getRateISC, setRateISC)
-    
+    rateISC = property( getRateISC, setRateISC )
+
     @property
     def valid( self ):
         """
@@ -98,7 +98,7 @@ class LineaLiquidacion( LineaBase ):
         M{FOBPARCIAL = CANTIDAD * COSTOCOMPRA }
         @rtype: Decimal
         """
-        return self.quantity * self.itemCost 
+        return self.quantity * self.itemCost
 
     @property
     def cifParcial( self ):
@@ -349,13 +349,13 @@ class LineaLiquidacion( LineaBase ):
         except InvalidOperation:
             return Decimal( 0 )
 
-    def update(self, query):
+    def update( self, query ):
         """
         Actualizar los porcentajes de DAI, ISC y COMISION
         @param query: La query en la que se ejecuta todo el proceso de actualización
         @type query: QSqlQuery
         """
-        qDESCRIPTION, qDAI, qISC, qCOMISION = range(4)
+        qDESCRIPTION, qDAI, qISC, qCOMISION = range( 4 )
         q = """
         SELECT
             Descripcion AS 'Articulo',
@@ -365,22 +365,22 @@ class LineaLiquidacion( LineaBase ):
         FROM vw_articulosconcostosactuales
         WHERE idarticulo = %d
         LIMIT 1
-        """ % self.itemId 
-        if not query.exec_(q):
-            raise Exception(u"No se ejecutar la consulta para actualizar los valores del articulo %s " % self.itemDescription)
+        """ % self.itemId
+        if not query.exec_( q ):
+            raise Exception( u"No se ejecutar la consulta para actualizar los valores del articulo %s " % self.itemDescription )
         if not query.size() == 1:
-            raise Exception(u"No se pudieron obtener los valores para el articulo %s " % self.itemDescription )
+            raise Exception( u"No se pudieron obtener los valores para el articulo %s " % self.itemDescription )
 
         query.first()
-        self.itemDescription == query.value(qDESCRIPTION).toString()
-        self.__rateDAI = Decimal(query.value(qDAI).toString())
-        self.__rateISC = Decimal(query.value(qISC).toString())
-        self.comisionValue = Decimal(query.value(qCOMISION).toString())
+        self.itemDescription = query.value( qDESCRIPTION ).toString()
+        self.__rateDAI = Decimal( query.value( qDAI ).toString() )
+        self.__rateISC = Decimal( query.value( qISC ).toString() )
+        self.comisionValue = Decimal( query.value( qCOMISION ).toString() )
 
 
-        
-        
-    def save( self, iddocumento,nlinea ):
+
+
+    def save( self, iddocumento, nlinea ):
         """
         Este metodo guarda la linea en la base de datos
         
@@ -405,15 +405,15 @@ class LineaLiquidacion( LineaBase ):
         query.bindValue( ":unidades", self.quantity )
         query.bindValue( ":costounit", self.costoDolar.to_eng_string() )
         query.bindValue( ":costocompra", self.itemCost.to_eng_string() )
-        query.bindValue( ":linea",nlinea )
+        query.bindValue( ":linea", nlinea )
 
 
         if not query.exec_():
-            logging.critical(query.lastError().text())
+            logging.critical( query.lastError().text() )
             raise Exception( "Error al insertar una de las lineas del documento" )
 
         idarticuloxdocumento = query.lastInsertId()
-        
+
         if not query.prepare( """
         INSERT INTO costosxarticuloliquidacion ( idarticuloxdocumento, dai, isc, comision ) 
         VALUES (:idarticuloxdocumento, :dai, :isc, :comision)
@@ -426,54 +426,54 @@ class LineaLiquidacion( LineaBase ):
         query.bindValue( ":comision", self.comisionParcial.to_eng_string() )
 
         if not query.exec_():
-            logging.error(query.lastError().text())
+            logging.error( query.lastError().text() )
             raise Exception( "Error al insertar los costos de una de las lineas de la factura " )
 
-class TestLineaLiquidacion(unittest.TestCase):
+class TestLineaLiquidacion( unittest.TestCase ):
     """
     Esta clase es un TesCase para LineaLiquidacion reproduce un caso común y
     verifica los resultados del modelo con los esperados
     """
-    def setUp(self):
-        app = QCoreApplication([])
+    def setUp( self ):
+        unused_app = QCoreApplication( [] )
 
-        self.line = LineaLiquidacion(self)
+        self.line = LineaLiquidacion( self )
         self.line.quantity = 1
-        self.line.itemCost = Decimal('1')
-        self.line.rateDAI = Decimal('5')
-        self.line.rateISC = Decimal('76')
-        self.line.comisionValue = Decimal('0')
+        self.line.itemCost = Decimal( '1' )
+        self.line.rateDAI = Decimal( '5' )
+        self.line.rateISC = Decimal( '76' )
+        self.line.comisionValue = Decimal( '0' )
         self.line.itemId = 1
-        
-        self.cifTotal = Decimal('1')
-        self.fobTotal = Decimal('1')
-        self.agencyTotal = Decimal('0')
-        self.storeTotal = Decimal('0')
-        self.paperworkRate = Decimal('0')
-        self.transportRate = Decimal('0')
+
+        self.cifTotal = Decimal( '1' )
+        self.fobTotal = Decimal( '1' )
+        self.agencyTotal = Decimal( '0' )
+        self.storeTotal = Decimal( '0' )
+        self.paperworkRate = Decimal( '0' )
+        self.transportRate = Decimal( '0' )
         self.applyTaxes = True
-        self.tsimTotal = Decimal('0')
-        self.ivaRate = Decimal('15')
-        self.speTotal = Decimal('5')
-        self.isoRate = Decimal('35')
-        self.exchangeRate = Decimal('21.5718')
+        self.tsimTotal = Decimal( '0' )
+        self.ivaRate = Decimal( '15' )
+        self.speTotal = Decimal( '5' )
+        self.isoRate = Decimal( '35' )
+        self.exchangeRate = Decimal( '21.5718' )
         self.exchangeRateId = 1
 
-    def test_valid(self):
-        self.assertTrue(self.line.valid)
-        
-    def test_comision(self):
-        self.assertEqual(self.line.comisionParcial, Decimal('0'))
+    def test_valid( self ):
+        self.assertTrue( self.line.valid )
 
-    def test_isc(self):
-        self.assertEqual(self.line.iscParcial, Decimal('0.7980'))
-        
-    def test_dai(self):
-        self.assertEqual(self.line.daiParcial, Decimal('0.05'))
-        
-    def test_costo(self):
-        self.assertEqual(self.line.costoDolarT, Decimal('7.4752'))
-        self.assertNotAlmostEqual(self.line.costoCordobaT, Decimal('161.2535'))
+    def test_comision( self ):
+        self.assertEqual( self.line.comisionParcial, Decimal( '0' ) )
+
+    def test_isc( self ):
+        self.assertEqual( self.line.iscParcial, Decimal( '0.7980' ) )
+
+    def test_dai( self ):
+        self.assertEqual( self.line.daiParcial, Decimal( '0.05' ) )
+
+    def test_costo( self ):
+        self.assertEqual( self.line.costoDolarT, Decimal( '7.4752' ) )
+        self.assertNotAlmostEqual( self.line.costoCordobaT, Decimal( '161.2535' ) )
 
 if __name__ == "__main__":
     unittest.main()

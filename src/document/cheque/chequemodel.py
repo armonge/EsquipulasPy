@@ -4,27 +4,28 @@ Created on 18/05/2010
 
 @author: armonge
 '''
-from PyQt4.QtGui import QMessageBox
-from PyQt4 import QtGui
+import logging
+from decimal import Decimal, DivisionByZero
+
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
-from decimal import Decimal,InvalidOperation
-from utility.moneyfmt import moneyfmt
+from PyQt4.QtCore import Qt, QDateTime
+
 from utility.accountselector import AccountsSelectorModel
 from utility import constantes
-from math import ceil
+
 IDARTICULO, DESCRIPCION, REFERENCIA, MONTO, TOTALPROD, MONEDA = range( 6 )
+IDCUENTA, CODCUENTA, NCUENTA, MONTO = range( 4 )
 class ChequeModel( AccountsSelectorModel ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
-    
+
     __documentType = constantes.IDCHEQUE
     """
     @ivar:El tipo de documento
     @type: int
-    """ 
-    def __init__( self  ):
+    """
+    def __init__( self ):
         super( ChequeModel, self ).__init__()
 
         self.proveedorId = 0
@@ -36,7 +37,7 @@ class ChequeModel( AccountsSelectorModel ):
         """
         @ivar: Las observaciones que podria tener el documento
         @type: string
-        """ 
+        """
         self.printedDocumentNumber = ""
         """
         @ivar: El numero de documento impreso
@@ -46,7 +47,7 @@ class ChequeModel( AccountsSelectorModel ):
         """
         @ivar: La fecha en la que se hizo el documento
         @type: QDateTime
-        """ 
+        """
         self.uid = 0
         """
         @ivar: El id del usuario que esta haciendo este documento
@@ -56,8 +57,8 @@ class ChequeModel( AccountsSelectorModel ):
         """
         @ivar: El id del concepto de este documento
         @type: int
-        """ 
-        
+        """
+
         self.simbolo = ""
         """
         @ivar: El simbolo de la moneda del documento
@@ -75,55 +76,83 @@ class ChequeModel( AccountsSelectorModel ):
         @ivar: El porcentaje de retención de este documento
         @type: int
         """
-        
-        self.ivaRate=Decimal(0)
+
+        self.ivaRate = Decimal( 0 )
         """
         @ivar: El porcentaje del iva a aplicar en este documento
         @type: Decimal
-        """ 
-        
-        self.moneda=""
+        """
+
+        self.moneda = ""
         """
         @ivar: El simbolo de la moneda a aplicar en este documento
         @type: String
-        """ 
-        
-        self.exchangeRateId=0
+        """
+
+        self.exchangeRateId = 0
         """
         @ivar: El id del tipo de cambio de este documento
         @type: int
         """
-        self.exchangeRate= Decimal(0)
+        self.exchangeRate = Decimal( 0 )
         """
         @ivar: El tipo de cambio usado en este documento
         @type: Decimal
         """
-        
+
         self.validError = ""
         """
         @ivar: Si existe o no un error de validación en este documento entonces se muestra aca
         @type: string
         """
-        self.hasretencion=False
+        self.hasretencion = False
         """
         @ivar: Para verificar si tiene retencion o no
         @type: Boolean
         """
-        self.subtotal=Decimal(0)
+        self.subtotal = Decimal( 0 )
         """
         @ivar: El subtotal del documento
         @type: Decimal
         """
-        self.hasiva=False
+        self.hasiva = False
         """
         @ivar: Para determinar si el cheque lleva IVA o no
         @type: Boolean
         """
-        self.ivaId=0
+        self.ivaId = 0
         """
         @ivar: El ID del costo agregado IVA
         @type: Int
         """
+
+    def setData( self, index, value, _role = Qt.EditRole ):
+        if index.isValid() and 0 <= index.row() < len( self.lines ):
+            line = self.lines[index.row()]
+            column = index.column()
+            if column in ( NCUENTA, CODCUENTA ):
+                line.itemId = value[0]
+                line.code = value[1]
+                line.name = value[2]
+            if column == MONTO:
+                line.amount = Decimal( value.toString() ).quantize( Decimal( '0.0001' ) ) if type( value ) != Decimal else value.quantize( Decimal( '0.0001' ) )
+
+
+            if not super( ChequeModel, self ).valid and self.lines[-1].valid and self.currentSum != 0:
+                self.insertRow( len( self.lines ) )
+            elif not self.valid and not self.lines[-1].valid:
+                self.lines[-1].amount = self.currentSum * -1
+
+            if super( ChequeModel, self ).valid and not self.lines[-1].valid:
+                if len( self.lines ) > 1:
+                    self.removeRows( len( self.lines ) - 1, 1 )
+            self.dataChanged.emit( index, index )
+
+            self.dataChanged.emit( self.index( MONTO, len( self.lines ) ) , self.index( MONTO, len( self.lines ) ) )
+
+            return True
+        return False
+
     @property
     def valid( self ):
         """
@@ -136,28 +165,28 @@ class ChequeModel( AccountsSelectorModel ):
         self.total>0 
         """
         if  self.printedDocumentNumber == "":
-            self.validError = "No existe numero de doc impreso" 
+            self.validError = "No existe numero de doc impreso"
             return False
         elif int( self.proveedorId ) < 1:
-            self.validError = "No ha seleccionado ningun cliente" 
+            self.validError = "No ha seleccionado ningun cliente"
             return False
-        elif Decimal( self.subtotal ) <=0:
-            self.validError = "Escriba una cantidad para el documento" 
+        elif Decimal( self.subtotal ) <= 0:
+            self.validError = "Escriba una cantidad para el documento"
             return False
         elif int( self.uid ) == 0:
-            self.validError = "Existe un error con el Usario que esta creando el documento" 
+            self.validError = "Existe un error con el Usario que esta creando el documento"
             return False
         elif int( self.conceptoId ) == 0:
-            self.validError = "No hay un concepto seleccionado" 
+            self.validError = "No hay un concepto seleccionado"
             return False
         elif self.exchangeRateId == 0:
-            self.validError = "No hay un tipo de cambio para la fecha" + self.datetime 
+            self.validError = "No hay un tipo de cambio para la fecha " + self.datetime.toString()
             return False
-        elif self.hasretencion==True and self.retencionPorcentaje==0:
-            self.validError = "No existe un porcentaje de Retencion seleccionado" 
+        elif self.hasretencion == True and self.retencionPorcentaje == 0:
+            self.validError = "No existe un porcentaje de Retencion seleccionado"
             return False
-        elif not super(ChequeModel, self).valid :
-            self.validError ="Hay un error en sus cuentas contables"
+        elif not super( ChequeModel, self ).valid :
+            self.validError = "Hay un error en sus cuentas contables"
             return False
         else:
             return True
@@ -184,47 +213,46 @@ class ChequeModel( AccountsSelectorModel ):
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,idestado, observacion,total,idtipocambio,idconcepto) 
             VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:estado,:observacion,:total,:idtc,:concepto)
             """ )
-            
+
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
-            query.bindValue( ":idtipodoc",self.__documentType )
+            query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":estado", constantes.PENDIENTE )
             query.bindValue( ":observacion", self.observations )
-            query.bindValue( ":total", self.totalDolares.to_eng_string())
+            query.bindValue( ":total", self.totalDolares.to_eng_string() )
             query.bindValue( ":idtc", self.exchangeRateId )
             query.bindValue( ":concepto", self.conceptoId )
-            
+
             if not query.exec_():
                 raise UserWarning( "No se pudo crear el Cheque" )
             insertedId = query.lastInsertId().toString()
             #INSERTAR LA RELACION CON El USUARIO , EL CLIENTE Y EL PROVEEDOR            
             if not query.prepare( 
-                "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +  
+                "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +
                 "(" + insertedId + ",:iduser,:autor),"
-                "(" + insertedId + ",:idproveedor,:proveedor)" 
+                "(" + insertedId + ",:idproveedor,:proveedor)"
                 ):
-                print query.lastQuery()
                 raise Exception( "No se puedo preparar la consulta para insertar las personas" )
-            
+
             query.bindValue( ":iduser", self.uid )
             query.bindValue( ":idproveedor", self.proveedorId )
-            query.bindValue( ":autor", constantes.AUTOR)
-            query.bindValue( ":proveedor",constantes.PROVEEDOR )
+            query.bindValue( ":autor", constantes.AUTOR )
+            query.bindValue( ":proveedor", constantes.PROVEEDOR )
 
             if not query.exec_():
                 raise Exception( "No se Inserto la relacion entre el documento y las personas" )
-            
-            if self.hasiva==True:
+
+            if self.hasiva == True:
                 # INSERTAR EL ID DEL COSTO IVA                
                 query.prepare( """
                 INSERT INTO costosxdocumento (iddocumento, idcostoagregado) VALUES( :iddocumento, :idcostoagregado )
                 """ )
                 query.bindValue( ":iddocumento", insertedId )
-                query.bindValue( ":idcostoagregado", self.ivaId)
+                query.bindValue( ":idcostoagregado", self.ivaId )
                 if not query.exec_():
                     raise UserWarning( "el costo IVA no se inserto" )
-            
-            if self.retencion>=0 and self.retencionId>=0 and self.hasretencion==True:
+
+            if self.retencion >= 0 and self.retencionId >= 0 and self.hasretencion == True:
                 #INSERTAR EL DOCUMENTO RETENCION            
                 query.prepare( """
                 INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,idestado, observacion,total,escontado,idtipocambio,idconcepto) 
@@ -235,89 +263,87 @@ class ChequeModel( AccountsSelectorModel ):
                 query.bindValue( ":idtipodoc", constantes.IDRETENCION )
                 query.bindValue( ":idestado", constantes.PENDIENTE )
                 query.bindValue( ":observacion", self.observations )
-                query.bindValue( ":total", self.retencion.to_eng_string())
+                query.bindValue( ":total", self.retencion.to_eng_string() )
                 query.bindValue( ":escontado", 1 )
                 query.bindValue( ":idtc", self.exchangeRateId )
                 query.bindValue( ":concepto", self.conceptoId )
                 if not query.exec_():
                     raise UserWarning( "No se Inserto la retencion" )
-        
+
                 idret = query.lastInsertId().toInt()[0]
-    
+
                 #INSERTAR EL BENEFICIARIO Y USUARIO DE LA RETENCION
-                query.prepare("INSERT INTO personasxdocumento(iddocumento,idpersona,idaccion) VALUES(:iddocumento,:idusuario,:autor)")
+                query.prepare( "INSERT INTO personasxdocumento(iddocumento,idpersona,idaccion) VALUES(:iddocumento,:idusuario,:autor)" )
                 query.bindValue( ":iddocumento", idret )
-                query.bindValue( ":idusuario", self.uid)
-                query.bindValue( ":autor", constantes.AUTOR)
+                query.bindValue( ":idusuario", self.uid )
+                query.bindValue( ":autor", constantes.AUTOR )
                 if not query.exec_():
                     raise UserWarning( "No se pudo regitrar el usuario que creo la retencion" )
-                
-                
-                query.prepare("INSERT INTO personasxdocumento(iddocumento,idpersona,idaccion) VALUES(:iddocumento,:idproveedor,:proveedor)")
+
+
+                query.prepare( "INSERT INTO personasxdocumento(iddocumento,idpersona,idaccion) VALUES(:iddocumento,:idproveedor,:proveedor)" )
                 query.bindValue( ":iddocumento", idret )
-                query.bindValue( ":idproveedor", self.proveedorId)
-                query.bindValue( ":proveedor", constantes.PROVEEDOR)
+                query.bindValue( ":idproveedor", self.proveedorId )
+                query.bindValue( ":proveedor", constantes.PROVEEDOR )
                 if not query.exec_():
                     raise UserWarning( "No se pudo insertar el beneficiario de la retencion" )
-                
+
                 #DOCUMENTO PADRE CHEQUE, DOCUMENTO HIJO RETENCION
                 query.prepare( """
                 INSERT INTO docpadrehijos (idpadre,idhijo)
                 VALUES (:idcheque,:idretencion)
                 """ )
-        
+
                 query.bindValue( ":idcheque", insertedId )
                 query.bindValue( ":idretencion", idret )
-        
+
                 if not query.exec_():
-                    print( insertedId )
-                    print( idret )
                     raise UserWarning( "No se Inserto la relacion entre la retencion y el Cheque" )
-        
-        
+
+
                 # INSERTAR EL ID DEL COSTO RETENCION                
                 query.prepare( """
                 INSERT INTO costosxdocumento (iddocumento, idcostoagregado) VALUES( :iddocumento, :idcostoagregado )
                 """ )
                 query.bindValue( ":iddocumento", idret )
-                query.bindValue( ":idcostoagregado", self.retencionId)
+                query.bindValue( ":idcostoagregado", self.retencionId )
                 if not query.exec_():
                     raise UserWarning( "el costo Retencion  NO SE INSERTO" )
-                            
+
             #INSERTAR LAS CUENTAS CONTABLES
             for lineid, line in enumerate( self.lines ):
                 if line.valid:
                     line.save( insertedId, lineid + 1 )
-                    
+
             if not QSqlDatabase.database().commit():
                 raise UserWarning( "No se pudo realizar la Transaccion" )
-            
+
             return True
-        
+
         except UserWarning as inst:
-            print inst
-            print query.lastError().text()
+            logging.error( unicode( inst ) )
+            logging.error( query.lastError().text() )
             QSqlDatabase.database().rollback()
             return False
         except Exception as inst:
-            print inst
-            print query.lastError().text()
+            logging.critical( unicode( inst ) )
+            logging.critical( query.lastError().text() )
             QSqlDatabase.database().rollback()
-            return False 
+            return False
     @property
     def totalCordobas( self ):
         """
         El total neto del documento, despues de haber aplicado IVA y Retencion en Cordobas
         @rtype: Decimal
         """
-        subtotalcordobas=self.subtotal if self.moneda==constantes.IDCORDOBAS else self.subtotal*self.exchangeRate
-        retencion=self.retencion
-        if self.hasiva==True:
-            return subtotalcordobas+(subtotalcordobas*self.ivaRate/100) - (retencion if self.moneda==constantes.IDCORDOBAS else retencion*self.exchangeRate)
+        subtotalcordobas = self.subtotal if self.moneda == constantes.IDCORDOBAS else self.subtotal * self.exchangeRate
+        retencion = self.retencion
+        if self.hasiva == True:
+            return subtotalcordobas + ( subtotalcordobas * self.ivaRate / 100 ) - ( retencion if self.moneda == constantes.IDCORDOBAS else retencion * self.exchangeRate )
         else:
-            return subtotalcordobas - (retencion if self.moneda==constantes.IDCORDOBAS else retencion*self.exchangeRate)
-            
-            
+            return subtotalcordobas - ( retencion if self.moneda == constantes.IDCORDOBAS else retencion * self.exchangeRate )
+
+
     @property
     def totalDolares( self ):
         """
@@ -325,34 +351,34 @@ class ChequeModel( AccountsSelectorModel ):
         @rtype: Decimal
         """
         try:
-            return self.totalCordobas/self.exchangeRate
-        except InvalidOperation as ins:
-            return Decimal(0)
-         
-            
+            return self.totalCordobas / self.exchangeRate
+        except DivisionByZero as _inst:
+            return Decimal( 0 )
+
+
     @property
     def iva( self ):
         """
         El valor del IVA en Cordobas
         @rtype: Decimal
         """
-        if self.hasiva==True:
-            return self.subtotal*(self.ivaRate/100)
-        else: 
-            return Decimal(0)
-       
+        if self.hasiva == True:
+            return self.subtotal * ( self.ivaRate / 100 )
+        else:
+            return Decimal( 0 )
+
     @property
     def retencion( self ):
         """
         El valor de la retencion en cordobas
         @rtype: Decimal
         """
-        subtotalcordobas=self.subtotal if self.moneda==constantes.IDCORDOBAS else self.subtotal*self.exchangeRate
-        if subtotalcordobas>1000:
-            return self.subtotal*(self.retencionPorcentaje/100)
+        subtotalcordobas = self.subtotal if self.moneda == constantes.IDCORDOBAS else self.subtotal * self.exchangeRate
+        if subtotalcordobas > 1000:
+            return self.subtotal * ( self.retencionPorcentaje / 100 )
         else:
-            return Decimal(0)
-        
+            return Decimal( 0 )
+
     def flags( self, index ):
         if not index.isValid():
             return Qt.ItemIsEnabled

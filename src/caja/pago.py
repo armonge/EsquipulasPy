@@ -7,12 +7,12 @@ Created on 25/05/2010
 
 
 import logging
-from PyQt4.QtGui import QMainWindow,QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QCompleter, qApp
+from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, \
+QSortFilterProxyModel, QMessageBox, QCompleter, qApp
 from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QTimer
-from PyQt4.QtSql import QSqlQueryModel,QSqlQuery, QSqlDatabase
+from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
 
 from decimal import Decimal
-from PyQt4.QtSql import  QSqlQuery
 from utility.base import Base
 from ui.Ui_pago import Ui_frmPago
 from document.pago.pagomodel import PagoModel
@@ -23,15 +23,15 @@ from utility import constantes
 #from PyQt4.QtGui import QMainWindow
 
 #controles
-IDDOCUMENTO,FECHA, NDOCIMPRESO,NOMBREBENEFICIARIO,TOTAL, TOTALC, TOTALD, NRETENCION, TASARETENCION, TOTALRETENCION,TOTALPAGADO, OBSERVACION, CONIVA,CONRETENCION,CONCEPTO = range( 15 )
+IDDOCUMENTO, FECHA, NDOCIMPRESO, NOMBREBENEFICIARIO, TOTAL, TOTALC, TOTALD, NRETENCION, TASARETENCION, TOTALRETENCION, TOTALPAGADO, OBSERVACION, CONIVA, CONRETENCION, CONCEPTO = range( 15 )
 
 class FrmPago( Ui_frmPago, QMainWindow, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
-    web =  "recibos.php?doc="
+    web = "recibos.php?doc="
 
-    def __init__( self,  parent ):
+    def __init__( self, parent ):
         '''
         Constructor
         '''
@@ -40,14 +40,14 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
         self.parentWindow = parent
         self.tabledetails = None
         Base.__init__( self )
-        self.setWindowModality(Qt.WindowModal)
-        self.setWindowFlags(Qt.Dialog)
-        self.parentWindow.removeToolBar(self.toolBar)
-        self.addToolBar(self.toolBar)
+        self.setWindowModality( Qt.WindowModal )
+        self.setWindowFlags( Qt.Dialog )
+        self.parentWindow.removeToolBar( self.toolBar )
+        self.addToolBar( self.toolBar )
         self.editmodel = None
         self.parent = parent
-        
-        self.groupcuentas.setVisible(False)
+
+        self.groupcuentas.setVisible( False )
 
         self.actionSave.setVisible( False )
         self.actionCancel.setVisible( False )
@@ -65,8 +65,8 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
 #        Este es el filtro del modelo anterior
         self.detailsproxymodel = QSortFilterProxyModel( self )
 
-        self.sbtotalc.setValue(0)
-        self.sbtotald.setValue(0)
+        self.sbtotalc.setValue( 0 )
+        self.sbtotald.setValue( 0 )
         self.__status = True
         QTimer.singleShot( 0, self.loadModels )
 
@@ -93,7 +93,7 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
         Aca se cancela la edicion del documento
         """
         self.status = True
-        
+
 
     def newDocument( self ):
         """
@@ -108,11 +108,11 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             self.conceptosModel = QSqlQueryModel()
             self.conceptosModel.setQuery( """
                SELECT idconcepto, descripcion FROM conceptos c WHERE idtipodoc = %d;
-            """%constantes.IDPAGO )
-            
+            """ % constantes.IDPAGO )
+
             if self.conceptosModel.rowCount() == 0:
-                raise UserWarning(u"No existen conceptos en la base de datos para los pagos")            
-            
+                raise UserWarning( u"No existen conceptos en la base de datos para los pagos" )
+
             self.beneficiariosModel = QSqlQueryModel()
             self.beneficiariosModel.setQuery( """
             SELECT
@@ -121,11 +121,11 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             FROM personas s
             WHERE s.tipopersona <> %d
             ORDER BY s.nombre
-            """ %constantes.AUTOR  )
-            
+            """ % constantes.AUTOR )
+
             if self.beneficiariosModel.rowCount() == 0:
-                raise UserWarning(u"No existen personas en la base de datos")
-            
+                raise UserWarning( u"No existen personas en la base de datos" )
+
             #            Rellenar el combobox de las retenciones
             self.retencionModel = QSqlQueryModel()
             self.retencionModel.setQuery( """
@@ -137,11 +137,11 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
                     idtipocosto IN (%d,%d) AND 
                     activo=1 
                     ORDER BY valorcosto desc; 
-                    """ %(constantes.RETENCIONPROFESIONALES,constantes.RETENCIONFUENTE) )
+                    """ % ( constantes.RETENCIONPROFESIONALES, constantes.RETENCIONFUENTE ) )
             if self.retencionModel.rowCount() == 0:
-                raise UserWarning(u"No existe ninguna tasa de retención en la base de datos")
+                raise UserWarning( u"No existe ninguna tasa de retención en la base de datos" )
 
-            query = QSqlQuery(
+            query = QSqlQuery( 
             """
             SELECT
                 SUM(IF(m.idtipomoneda = %d,m.monto,0)) as totalC,
@@ -151,32 +151,32 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             JOIN documentos d ON d.iddocumento = m.iddocumento
             WHERE d.idcaja = %d AND m.idtipomovimiento=%d
             ;
-            """%(constantes.IDCORDOBAS,constantes.IDDOLARES,self.parentWindow.datosSesion.cajaId,constantes.IDPAGOEFECTIVO))
+            """ % ( constantes.IDCORDOBAS, constantes.IDDOLARES, self.parentWindow.datosSesion.cajaId, constantes.IDPAGOEFECTIVO ) )
             if not query.exec_():
-                raise UserWarning(u"No pudo obtenerse el número del comprobante") 
+                raise UserWarning( u"No pudo obtenerse el número del comprobante" )
             query.first()
-            maxCordoba = Decimal(query.value(0).toString())
-            maxDolar = Decimal(query.value(1).toString())
-              
-            if maxCordoba <=0 and maxDolar <=0:
-                raise UserWarning(u"No hay Efectivo en Caja")
+            maxCordoba = Decimal( query.value( 0 ).toString() )
+            maxDolar = Decimal( query.value( 1 ).toString() )
+
+            if maxCordoba <= 0 and maxDolar <= 0:
+                raise UserWarning( u"No hay Efectivo en Caja" )
 
 
-            query = QSqlQuery("SELECT fnCONSECUTIVO(%d,null);" %constantes.IDPAGO)
+            query = QSqlQuery( "SELECT fnCONSECUTIVO(%d,null);" % constantes.IDPAGO )
             if not query.exec_():
-                raise UserWarning(u"No pudo obtenerse el número del comprobante") 
+                raise UserWarning( u"No pudo obtenerse el número del comprobante" )
             query.first()
-            ndoc = query.value(0).toString()
-            self.lblnpago.setText(ndoc)
-            
-            self.txttipocambio.setText(moneyfmt(self.parentWindow.datosSesion.tipoCambioBanco,4))
+            ndoc = query.value( 0 ).toString()
+            self.lblnpago.setText( ndoc )
+
+            self.txttipocambio.setText( moneyfmt( self.parentWindow.datosSesion.tipoCambioBanco, 4 ) )
 
             self.cbtasaret.setModel( self.retencionModel )
             self.cbtasaret.setModelColumn( 1 )
-            self.cbtasaret.setCurrentIndex(-1)
-            self.retencionId =0
-            
-                
+            self.cbtasaret.setCurrentIndex( -1 )
+            self.retencionId = 0
+
+
 
             self.cbbeneficiario.setModel( self.beneficiariosModel )
             self.cbbeneficiario.setCurrentIndex( -1 )
@@ -186,54 +186,54 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             completer.setModel( self.beneficiariosModel )
             completer.setCompletionColumn( 1 )
 
-            
+
             self.cbconcepto.setModel( self.conceptosModel )
-            self.cbconcepto.setCurrentIndex(-1)
+            self.cbconcepto.setCurrentIndex( -1 )
             self.cbconcepto.setModelColumn( 1 )
             completerconcepto = QCompleter()
             completerconcepto.setCaseSensitivity( Qt.CaseInsensitive )
             completerconcepto.setModel( self.conceptosModel )
             completerconcepto.setCompletionColumn( 1 )
 
-            self.editmodel = PagoModel(self.parentWindow.datosSesion)
+            self.editmodel = PagoModel( self.parentWindow.datosSesion )
             self.editmodel.docImpreso = ndoc
-            
+
             self.editmodel.maxCordoba = maxCordoba
             self.editmodel.maxDolar = maxDolar
-            self.sbtotalc.setToolTip("Max= " + moneyfmt(maxCordoba,4,'C$'))
-            self.sbtotald.setToolTip("Max= " + moneyfmt(maxDolar,4,'US$'))
-            self.sbtotalc.setMaximum(maxCordoba)
-            self.sbtotald.setMaximum(maxDolar)
-            
-            query = QSqlQuery("SELECT idcostoagregado, valorcosto FROM costosagregados c  WHERE idtipocosto = %d AND activo = 1;" %constantes.IVA)
+            self.sbtotalc.setToolTip( "Max= " + moneyfmt( maxCordoba, 4, 'C$' ) )
+            self.sbtotald.setToolTip( "Max= " + moneyfmt( maxDolar, 4, 'US$' ) )
+            self.sbtotalc.setMaximum( maxCordoba )
+            self.sbtotald.setMaximum( maxDolar )
+
+            query = QSqlQuery( "SELECT idcostoagregado, valorcosto FROM costosagregados c  WHERE idtipocosto = %d AND activo = 1;" % constantes.IVA )
             if not query.exec_():
-                raise UserWarning(u"No pudo obtenerse la tasa de IVA") 
+                raise UserWarning( u"No pudo obtenerse la tasa de IVA" )
             query.first()
-            self.editmodel.ivaId = query.value(0).toInt()[0]
-            self.editmodel.ivaTasa = Decimal(query.value(1).toString())
-            
-            
-            
-            self.ckiva.setToolTip(query.value(1).toString() + '%')            
-            
-            
+            self.editmodel.ivaId = query.value( 0 ).toInt()[0]
+            self.editmodel.ivaTasa = Decimal( query.value( 1 ).toString() )
+
+
+
+            self.ckiva.setToolTip( query.value( 1 ).toString() + '%' )
+
+
             self.status = False
 
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.error(unicode(inst))
-            logging.error(query.lastError().text())
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( unicode( inst ) )
+            logging.error( query.lastError().text() )
         except Exception as inst:
             print inst
-            QMessageBox.critical(self, qApp.organizationName(), "Hubo un problema al tratar de crear el nuevo pago")
-            logging.critical(unicode(inst))
-            logging.error(query.lastError().text())
+            QMessageBox.critical( self, qApp.organizationName(), "Hubo un problema al tratar de crear el nuevo pago" )
+            logging.critical( unicode( inst ) )
+            logging.error( query.lastError().text() )
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
 
     @property
-    def printIdentifier(self):
+    def printIdentifier( self ):
         return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
     def save( self ):
@@ -241,10 +241,10 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
         Slot documentation goes here.
         """
         if self.valid:
-            if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar el pago?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
+            if QMessageBox.question( self, qApp.organizationName(), u"¿Esta seguro que desea guardar el pago?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
                 if not QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().open()
-                
+
                 self.editmodel.observaciones = self.txtobservaciones.toPlainText()
                 if self.editmodel.save():
                     QMessageBox.information( None,
@@ -258,29 +258,29 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
                     QMessageBox.critical( None,
                         self.trUtf8( qApp.organizationName() ),
                         self.trUtf8( """Ha ocurrido un error al guardar el pago""" ) )
-    
+
                 if QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().close()
 
     @property
-    def valid(self):
+    def valid( self ):
         mensaje = "Ocurrio un Error al guardar"
-        if self.editmodel.beneficiarioId ==0:
+        if self.editmodel.beneficiarioId == 0:
             mensaje = "Por favor elija el beneficiario"
             self.cbbeneficiario.setFocus()
-        elif self.editmodel.conceptoId ==0:
+        elif self.editmodel.conceptoId == 0:
             mensaje = "Por favor elija el concepto del pago"
             self.cbconcepto.setFocus()
-        elif self.editmodel.totalD == 0 and self.editmodel.totalC==0:
+        elif self.editmodel.totalD == 0 and self.editmodel.totalC == 0:
             mensaje = "Por favor escriba el monto del pago"
-            if self.editmodel.maxCordoba >0 :
+            if self.editmodel.maxCordoba > 0 :
                 self.sbtotalc.setFocus()
             else:
                 self.sbtotald.setFocus()
         else:
             return True
-        
-        QMessageBox.information( None,"Guardar Pago",mensaje)
+
+        QMessageBox.information( None, "Guardar Pago", mensaje )
         return False
 
     @pyqtSlot( "int" )
@@ -311,10 +311,10 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
         asignar la retencion al objeto self.editmodel
         """
         if self.editmodel != None:
-            
-            self.editmodel.retencionId = self.retencionModel.record(index).value( "idcostoagregado" ).toInt()[0]
-            value =self.retencionModel.record( index ).value( "tasa" ).toString()
-            self.editmodel.retencionTasa = Decimal( value if value!="" else 0 )
+
+            self.editmodel.retencionId = self.retencionModel.record( index ).value( "idcostoagregado" ).toInt()[0]
+            value = self.retencionModel.record( index ).value( "tasa" ).toString()
+            self.editmodel.retencionTasa = Decimal( value if value != "" else 0 )
             self.updateLabels()
 
 # MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
@@ -323,40 +323,40 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
         """
         """
         if self.editmodel != None:
-            self.editmodel.aplicarRet = on   
-            self.cbtasaret.setEnabled(on)
-            self.cbtasaret.setCurrentIndex(-1)
+            self.editmodel.aplicarRet = on
+            self.cbtasaret.setEnabled( on )
+            self.cbtasaret.setCurrentIndex( -1 )
 
     @pyqtSignature( "bool" )
     def on_ckiva_toggled( self, on ):
         """
         """
         if self.editmodel != None:
-            self.editmodel.aplicarIva = on 
-            self.updateLabels()  
+            self.editmodel.aplicarIva = on
+            self.updateLabels()
 
-            
+
     @pyqtSlot( "QDateTime" )
     def on_dtPicker_dateTimeChanged( self, datetime ):
         pass
 
     @pyqtSlot( "double" )
-    def on_sbtotalc_valueChanged (self,value  ): 
+    def on_sbtotalc_valueChanged ( self, value ):
         if self.editmodel != None:
-            self.editmodel.totalC = Decimal(str(value))
+            self.editmodel.totalC = Decimal( str( value ) )
             self.updateLabels()
 
     @pyqtSlot( "double" )
-    def on_sbtotald_valueChanged (self,value  ): 
+    def on_sbtotald_valueChanged ( self, value ):
         if self.editmodel != None:
-            self.editmodel.totalD = Decimal(str(value))
+            self.editmodel.totalD = Decimal( str( value ) )
             self.updateLabels()
-            
+
     def setControls( self, status ):
         """
         @param status: false = editando        true = navegando
         """
-        self.actionPrint.setVisible(status)
+        self.actionPrint.setVisible( status )
         self.dtPicker.setReadOnly( True )
 #        self.ckretener.setEnabled( ( not status ) )
         self.txtobservaciones.setReadOnly( status )
@@ -370,15 +370,15 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
         self.actionGoLast.setVisible( status )
         self.actionPreview.setVisible( status )
 
-        
-        self.ckretener.setEnabled(False)
-        self.ckiva.setEnabled(not status)
-        
-        self.sbtotalc.setReadOnly(status)
-        self.sbtotald.setReadOnly(status)
-                
+
+        self.ckretener.setEnabled( False )
+        self.ckiva.setEnabled( not status )
+
+        self.sbtotalc.setReadOnly( status )
+        self.sbtotald.setReadOnly( status )
+
 #        self.txtretencion.setReadOnly(status)
-        
+
         if status:
             self.editmodel = None
 #            self.frbotones.setVisible( False )
@@ -398,7 +398,7 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
         else:
             self.tabWidget.setCurrentIndex( 0 )
             self.dtPicker.setDate( self.parentWindow.datosSesion.fecha )
-            self.cbbeneficiario.setCurrentIndex(-1)
+            self.cbbeneficiario.setCurrentIndex( -1 )
             self.swbeneficiario.setCurrentIndex( 0 )
             self.swconcepto.setCurrentIndex( 0 )
             self.swtasaret.setCurrentIndex( 0 )
@@ -408,11 +408,11 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             self.lbltotalpago.setText( "US$ 0.0000" )
 
             self.cbbeneficiario.setFocus()
-            self.ckretener.setChecked(False)
+            self.ckretener.setChecked( False )
 #            self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
 #            self.tableabonos.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
 
-            
+
 #        self.tableabonos.setColumnHidden(IDDOCUMENTO,True)
 #        
 #        self.tabledetails.setColumnWidth(DESCRIPCION,250)
@@ -420,8 +420,9 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
 #        self.tabledetails.setColumnWidth(MONTODOLAR,150)
 #        self.tabledetails.setColumnWidth(REFERENCIA,150)
 #    
-    
+
     def updateDetailFilter( self, index ):
+        #FIXME: de donde sale IDDOCUMENTOT ??
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
         iddoc = self.navmodel.record( index ).value( "iddocumento" ).toString()
         self.detailsproxymodel.setFilterRegExp( iddoc )
@@ -439,19 +440,19 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
     def updateLabels( self ):
         """
         """
-        self.ckretener.setEnabled(self.editmodel.tieneRetencion)
+        self.ckretener.setEnabled( self.editmodel.tieneRetencion )
         retencion = self.editmodel.retencionCordoba
         print retencion
-        self.lblretencion.setText( moneyfmt(retencion / self.editmodel.datosSesion.tipoCambioBanco, 4, "US$ "  ) )
-        self.lblretencion.setToolTip( moneyfmt(retencion, 4, "C$ ") )
+        self.lblretencion.setText( moneyfmt( retencion / self.editmodel.datosSesion.tipoCambioBanco, 4, "US$ " ) )
+        self.lblretencion.setToolTip( moneyfmt( retencion, 4, "C$ " ) )
 
-        
-        self.lbltotal.setText( moneyfmt(self.editmodel.totalDolar, 4, "US$ "  ) )
-        self.lbltotal.setToolTip( moneyfmt(self.editmodel.totalCordoba, 4, "C$ ") )
-        
-        total = self.editmodel.totalCordoba - retencion 
-        self.lbltotalpago.setText( moneyfmt(total/ self.editmodel.datosSesion.tipoCambioBanco , 4, "US$ "  ) )
-        self.lbltotalpago.setToolTip( moneyfmt(total, 4, "C$ ") )
+
+        self.lbltotal.setText( moneyfmt( self.editmodel.totalDolar, 4, "US$ " ) )
+        self.lbltotal.setToolTip( moneyfmt( self.editmodel.totalCordoba, 4, "C$ " ) )
+
+        total = self.editmodel.totalCordoba - retencion
+        self.lbltotalpago.setText( moneyfmt( total / self.editmodel.datosSesion.tipoCambioBanco , 4, "US$ " ) )
+        self.lbltotalpago.setToolTip( moneyfmt( total, 4, "C$ " ) )
 
 
     def updateModels( self ):
@@ -463,7 +464,7 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
 
-        
+
             self.navmodel.setQuery( """
                 SELECT
                 pago.iddocumento,
@@ -500,8 +501,8 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
                 GROUP BY d.iddocumento
                 ) pago on pago.iddocumento = cxd.iddocumento
                 GROUP BY pago.iddocumento
-                ; """ %(constantes.IDCORDOBAS,constantes.IDDOLARES,constantes.IVA,constantes.IVA,constantes.RETENCIONFUENTE,constantes.RETENCIONPROFESIONALES,constantes.PROVEEDOR,'%d/%m/%Y',constantes.IDPAGO))
-  
+                ; """ % ( constantes.IDCORDOBAS, constantes.IDDOLARES, constantes.IVA, constantes.IVA, constantes.RETENCIONFUENTE, constantes.RETENCIONPROFESIONALES, constantes.PROVEEDOR, '%d/%m/%Y', constantes.IDPAGO ) )
+
             self.navproxymodel = QSortFilterProxyModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )
             self.navproxymodel.setFilterKeyColumn( -1 )
@@ -544,12 +545,12 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             WHERE padre.idtipodoc=%d and d.monto is not null
             ORDER BY d.nlinea
 ;
-            """ % constantes.IDFACTURA)
+            """ % constantes.IDFACTURA )
 
     #        Este es el filtro del modelo anterior
 #            self.abonosproxymodel.setSourceModel( self.abonosmodel )
-           
-           
+
+
     #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
             self.mapper.setModel( self.navproxymodel )
@@ -561,7 +562,7 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             self.mapper.addMapping( self.txtbeneficiario, NOMBREBENEFICIARIO, "text" )
             self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
             self.mapper.addMapping( self.txttasaret, TASARETENCION, "text" )
-            self.mapper.addMapping(self.lbltotalpago, TOTALPAGADO, "text" )
+            self.mapper.addMapping( self.lbltotalpago, TOTALPAGADO, "text" )
             self.mapper.addMapping( self.ckretener, CONRETENCION, "checked" )
             self.mapper.addMapping( self.ckiva, CONIVA, "checked" )
 

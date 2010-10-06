@@ -9,7 +9,7 @@ import logging
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QItemSelectionModel, \
 QItemSelection, QDataWidgetMapper, QMessageBox, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
-from PyQt4.QtCore import pyqtSlot, QDateTime, QTimer, QModelIndex, Qt
+from PyQt4.QtCore import pyqtSlot, QDateTime, QTimer, Qt
 
 from ui.Ui_operations import Ui_frmOperations
 from utility.accountselector import AccountsSelectorModel, AccountsSelectorDelegate
@@ -20,7 +20,7 @@ IDDOCUMENTO, NDOCIMPRESO, FECHACREACION, CONCEPTO = range( 4 )
 
 IDCUENTA, CODIGO, DESCRIPCION, MONTO, IDDOCUMENTOC = range( 5 )
 class FrmOperations( QMainWindow, Ui_frmOperations ):
-    def __init__( self,  parent = None ):
+    def __init__( self, parent = None ):
         super( FrmOperations, self ).__init__( parent )
         self.setupUi( self )
         self.__status = False
@@ -29,7 +29,7 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
         self.navmodel = QSqlQueryModel()
         self.navproxymodel = QSortFilterProxyModel()
         self.navproxymodel.setFilterKeyColumn( -1 )
-        self.navproxymodel.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        self.navproxymodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
         self.navproxymodel.setSourceModel( self.navmodel )
 
         self.detailsmodel = QSqlQueryModel()
@@ -55,7 +55,7 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
 
 
         self.buttonBox.accepted.connect( self.save )
-        self.tableNavigation.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect(self.updateDetails)
+        self.tableNavigation.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect( self.updateDetails )
 
         QTimer.singleShot( 0, self.updateModels )
 
@@ -104,12 +104,12 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
             self.tableNavigation.setColumnWidth( FECHACREACION, 200 )
             self.tableNavigation.setColumnWidth( CONCEPTO, 250 )
         except UserWarning as inst:
-            logging.error(inst)
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            logging.error( inst )
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
         except Exception as inst:
-            logging.critical(inst)
+            logging.critical( inst )
 
-    def updateDetails( self, selected, deselected ):
+    def updateDetails( self, selected, _deselected ):
         if len( selected.indexes() ) > 0:
             self.mapper.setCurrentModelIndex( selected.indexes()[0] )
             self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOC )
@@ -155,10 +155,10 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( "No se pudo abrir la base de datos" )
-                
+
             self.editModel = AccountsSelectorModel()
             self.editModel.insertRow( 1 )
-            
+
             delegate = AccountsSelectorDelegate( QSqlQuery( """
             SELECT 
                 c.idcuenta, 
@@ -167,10 +167,10 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
             FROM cuentascontables c 
             JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
             """ ) )
-    
+
             self.dtPicker.setDateTime( QDateTime.currentDateTime() )
-            self.dtPicker.setMaximumDateTime(QDateTime.currentDateTime())
-            
+            self.dtPicker.setMaximumDateTime( QDateTime.currentDateTime() )
+
             self.conceptsmodel = QSqlQueryModel()
             self.conceptsmodel.setQuery( """
             SELECT 
@@ -179,44 +179,44 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
             FROM conceptos 
             WHERE idtipodoc = %d
              """ % constantes.IDAJUSTECONTABLE )
-            
+
             if self.conceptsmodel.rowCount() < 1:
-                raise UserWarning("No existen conceptos")
-            
-            
+                raise UserWarning( "No existen conceptos" )
+
+
             self.cbConcepts.setModel( self.conceptsmodel )
             self.cbConcepts.setModelColumn( 1 )
             self.tableDetails.setModel( self.editModel )
             self.tableDetails.setColumnHidden( IDCUENTA, True )
             self.tableDetails.setColumnHidden( IDDOCUMENTOC, True )
             self.tableDetails.setItemDelegate( delegate )
-            
+
             self.status = True
-    
+
             self.tableDetails.resizeColumnsToContents()
         except UserWarning as inst:
             self.status = False
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.error(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( unicode( inst ) )
         except Exception as inst:
-            QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al tratar de iniciar un nuevo ajuste")
-            logging.critical(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), "Hubo un error al tratar de iniciar un nuevo ajuste" )
+            logging.critical( unicode( inst ) )
             self.status = False
 
 
     @pyqtSlot( "QString" )
     def on_txtSearch_textChanged( self, text ):
-        
+
         self.navproxymodel.setFilterRegExp( text )
 
 
 
     def save( self ):
         query = QSqlQuery()
-    
+
         try:
             if not self.editModel.valid:
-                raise UserWarning( "El documento no es valido, no se puede guardar")
+                raise UserWarning( "El documento no es valido, no se puede guardar" )
 
             if not self.database.isOpen():
                 if not self.database.open():
@@ -261,7 +261,7 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
                 raise Exception( "No se pudo preparar la consulta para insertar el usuario" )
             query.bindValue( ":usuario", self.user.uid )
             query.bindValue( ":documento", insertedId )
-            query.bindValue( ":idaccion", constantes.ACCCREA)
+            query.bindValue( ":idaccion", constantes.ACCCREA )
 
             if not query.exec_():
                 raise Exception( u"No se pudo guardar la relación con el usuario" )
@@ -271,19 +271,19 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
                     line.save( insertedId, lineid + 1 )
 
             if not self.database.commit():
-                raise Exception("No se pudo ejecutar la transaccion")
+                raise Exception( "No se pudo ejecutar la transaccion" )
             self.tableDetails.setModel( self.detailsproxymodel )
             self.updateModels()
 
             self.status = False
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.error(inst)
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( inst )
         except Exception as inst:
-            QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al tratar de guardar su ajuste")
+            QMessageBox.critical( self, qApp.organizationName(), "Hubo un error al tratar de guardar su ajuste" )
             self.database.rollback()
-            logging.critical(inst)
-            logging.critical(query.lastError().text())
+            logging.critical( inst )
+            logging.critical( query.lastError().text() )
         finally:
             if self.database.isOpen():
                 self.database.close()

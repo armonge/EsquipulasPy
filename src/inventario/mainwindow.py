@@ -7,7 +7,7 @@ Module implementing MainWindow.
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSlot
 from entradacompra import frmEntradaCompra
-from catalogos import FrmCatMarcas,  FrmCatConceptos
+from catalogos import FrmCatMarcas, FrmCatConceptos
 from liquidacion import FrmLiquidacion
 from categorias import FrmCategorias
 from kardex import frmKardex
@@ -23,36 +23,37 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
     Class documentation goes here.
     """
     ROL = constantes.ACCESOINVENTARIO
-    def __init__( self,  parent = None ):
+    def __init__( self, parent = None ):
         """
         Constructor
         """
-        super(MainWindow, self).__init__(  parent )
+        super( MainWindow, self ).__init__( parent )
         self.setupUi( self )
-        MainWindowBase.__init__( self)
+        MainWindowBase.__init__( self )
         self.init()
-        
-    def init(self):
-        if self.user.hasRole('root'):
-            return
-        
-        if not (self.user.hasRole('inventario') or self.user.hasRole('contabilidad') ) :
-            self.page.setVisible(False)
-            self.toolBox.removeItem(2)
-            self.page_2.setVisible(False)
-            self.toolBox.removeItem(0)
-        
-        if self.user.hasRole('contabilidad') and not self.user.hasRole('kardex'):
-            self.btnKExits.setVisible(False)
-            
-        if not (self.user.hasRole('kardex') or self.user.hasRole('contabilidad')):
-            #Quitar la pestaña de kardex
-            self.widget.setVisible(False)
-            self.toolBox.removeItem(1)
 
-            
-          
-        
+    def init( self ):
+        if self.user.hasRole( 'root' ):
+            return
+
+        if not ( self.user.hasAnyRole( [ 'inventario', 'contabilidad'] ) ) :
+            self.page.setVisible( False )
+            self.toolBox.removeItem( 2 )
+            self.page_2.setVisible( False )
+            self.toolBox.removeItem( 0 )
+
+        if self.user.hasRole( 'contabilidad' ) and not self.user.hasRole( 'kardex' ):
+            self.btnKExits.setVisible( False )
+            self.btnKEntries.setVisible( False )
+
+        if not ( self.user.hasAnyRole( [ 'kardex', 'contabilidad' ] ) ):
+            #Quitar la pestaña de kardex
+            self.widget.setVisible( False )
+            self.toolBox.removeItem( 1 )
+
+
+
+
     def closeEvent( self, event ):
         u"""
         Guardar el tamaño, la posición en la pantalla y la posición de la barra de tareas
@@ -76,24 +77,24 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
 
         self.mdiArea.setEnabled( state )
         self.mdiArea.setVisible( state )
-        
-        self.btnKEntries.setEnabled(state)
-        self.btnKExits.setEnabled(state)
-        self.btnKOther.setEnabled(state)
+
+        self.btnKEntries.setEnabled( state )
+        self.btnKExits.setEnabled( state )
+        self.btnKOther.setEnabled( state )
 
         self.actionLockSession.setVisible( state )
         self.actionUnlockSession.setVisible( not state )
 
-    @pyqtSlot( )
+    @pyqtSlot()
     def on_btnConceptos_clicked( self ):
         """
         Slot documentation goes here.
         """
-        conceptos = FrmCatConceptos( 4,self )
+        conceptos = FrmCatConceptos( 4, self )
         self.mdiArea.addSubWindow( conceptos )
-        conceptos.show()   
-    
-    @pyqtSlot(  )
+        conceptos.show()
+
+    @pyqtSlot()
     def on_btnEntries_clicked( self ):
         """
         Slot documentation goes here.
@@ -102,7 +103,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow( entradacompra )
         entradacompra.show()
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_btnArticles_clicked( self ):
         """
         Slot documentation goes here.
@@ -112,7 +113,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         catproducts.show()
 
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_btnCategories_clicked( self ):
         """
         Slot documentation goes here.
@@ -122,7 +123,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow( catcategorias )
         catcategorias.show()
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_btnBrands_clicked( self ):
         """
         Slot documentation goes here.
@@ -132,45 +133,45 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.mdiArea.addSubWindow( catmarcas )
         catmarcas.show()
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_btnProviders_clicked( self ):
         """
         Slot documentation goes here.
         """
-        dialog = frmPersona(constantes.PROVEEDOR,"Proveedor",self)
+        dialog = frmPersona( constantes.PROVEEDOR, "Proveedor", self )
         dialog.show()
 #        catproveedores = FrmCatProveedores( self )
 #        self.mdiArea.addSubWindow( catproveedores )
 #        catproveedores.show()
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_btnLiquidations_clicked( self ):
         """
         Slot documentation goes here.
         """
-        liquidacion = FrmLiquidacion(  self )
+        liquidacion = FrmLiquidacion( self )
         self.mdiArea.addSubWindow( liquidacion )
         liquidacion.show()
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_btnKEntries_clicked( self ):
         """
         Slot documentation goes here.
         """
-        kardex = frmKardex( [7,10,21], self )
+        kardex = frmKardex( [7, 10, 21], self )
         self.mdiArea.addSubWindow( kardex )
         kardex.show()
-        
+
     @pyqtSlot()
-    def on_btnKOther_clicked(self):
+    def on_btnKOther_clicked( self ):
         """
         Slot documentation goes here
         """
-        kardex = FrmKardexOther( self)
+        kardex = FrmKardexOther( self )
         self.mdiArea.addSubWindow( kardex )
         kardex.show()
-        
-    @pyqtSlot(  )
+
+    @pyqtSlot()
     def on_btnKExits_clicked( self ):
         """
         Slot documentation goes here.

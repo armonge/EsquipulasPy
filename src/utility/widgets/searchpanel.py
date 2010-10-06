@@ -5,43 +5,41 @@ Created on 29/05/2010
 @author: Andrés Reyes Monge
 '''
 
-from PyQt4.QtGui import QTableView, QSortFilterProxyModel, QCompleter, QComboBox,QStyledItemDelegate
+from PyQt4.QtGui import QTableView, QSortFilterProxyModel, QCompleter, QComboBox, QStyledItemDelegate
 from PyQt4.QtCore import Qt
-from utility.singleselectionmodel import SingleSelectionModel
 
-class SingleSelectionSearchPanelDelegate(QStyledItemDelegate):
-    def __init__( self, showTable=False , parent = None  ):
-        super(SingleSelectionSearchPanelDelegate, self).__init__( )
+class SingleSelectionSearchPanelDelegate( QStyledItemDelegate ):
+    def __init__( self, showTable = False , parent = None ):
+        super( SingleSelectionSearchPanelDelegate, self ).__init__( parent )
 
         self.showTable = showTable
         """
         @ivar: Si se debera o no mostrar la tabla
         @type: bool
         """
-        
+
         self.proxymodel = QSortFilterProxyModel()
         """
         @ivar:Este es el modelo proxy que utiliza el SearchPanel
         @type: QSortFilterProxyModel
         """
-        
-        
 
-    def createEditor( self, parent, option, index ):
+
+
+    def createEditor( self, parent, _option, index ):
         """
         Esta función debera reimplementarse en los hijos de esta clase, idealmente mandara a llamar a este metodo base despues de
         haber actualizadao el proxymodel y solamente cuando la columna sea la indicada
         """
-        value = index.model().index(index.row(),0).data().toString()
         sp = SearchPanel( self.proxymodel, parent, self.showTable )
         sp.setColumn( index.column() )
-        
+
         return sp
 
 
-    def filter(self, model, current):
-        filtro =  "|^".join( [str(line.itemId) for line in model.lines if line.itemId != 0 and line.itemId != current ] )
-        if filtro !="":
+    def filter( self, model, current ):
+        filtro = "|^".join( [str( line.itemId ) for line in model.lines if line.itemId != 0 and line.itemId != current ] )
+        if filtro != "":
             filtro = "[^" + filtro + "]"
         return filtro
 
@@ -49,10 +47,10 @@ class SingleSelectionSearchPanelDelegate(QStyledItemDelegate):
 
 
 class SearchPanel( QComboBox ):
-    def __init__( self, model, parent = None,showTable=False  ):
+    def __init__( self, model, parent = None, showTable = False ):
         QComboBox.__init__( self, parent )
 
-        self.tabla =None        
+        self.tabla = None
         self.setFocusPolicy( Qt.StrongFocus )
         self.setEditable( True )
 #        self.setModel( model )
@@ -62,30 +60,30 @@ class SearchPanel( QComboBox ):
         self.pFilterModel = QSortFilterProxyModel( self )
         self.pFilterModel.setFilterCaseSensitivity( Qt.CaseInsensitive )
         self.showTable = showTable
-        
-        if model !=None:
-            self.setModel(model )
+
+        if model != None:
+            self.setModel( model )
 #        self.pFilterModel.setSourceModel( model );
-        
-        
+
+
         self.completer.setModel( self.pFilterModel )
         self.completerTable = SearchPanelView()
         self.completer.setPopup( self.completerTable )
 #Mostrar el Popup en forma de Tabla        
         if self.showTable:
             self.tabla = SearchPanelView()
-            self.setView(self.tabla)
-            
+            self.setView( self.tabla )
+
         self.setCompleter( self.completer )
 
         self.setColumn( 1 )
 
-        self.lineEdit().textEdited[unicode].connect(self.pFilterModel.setFilterFixedString if not showTable else self.pFilterModel.setFilterWildcard )
+        self.lineEdit().textEdited[unicode].connect( self.pFilterModel.setFilterFixedString if not showTable else self.pFilterModel.setFilterWildcard )
 
-    def setModel(self,model):
-        QComboBox.setModel(self,model)
+    def setModel( self, model ):
+        QComboBox.setModel( self, model )
         self.pFilterModel.setSourceModel( model );
-    
+
     def setColumn( self, column ):
         self.setModelColumn( 1 )
         self.completer.setCompletionColumn( column )
@@ -100,18 +98,18 @@ class SearchPanel( QComboBox ):
 
     def index( self ):
         return self.currentIndex()
-    
-    def setColumnHidden(self,col):
-        self.completerTable.hiddenColumns.append(col)
+
+    def setColumnHidden( self, col ):
+        self.completerTable.hiddenColumns.append( col )
         if self.showTable:
-            self.tabla.hiddenColumns.append(col)
+            self.tabla.hiddenColumns.append( col )
 
 
-    def setMinimumWidth(self, width):
-        self.completerTable.setMinimumWidth(width)
+    def setMinimumWidth( self, width ):
+        self.completerTable.setMinimumWidth( width )
         if self.showTable:
-            self.tabla.setMinimumWidth(width)
-        
+            self.tabla.setMinimumWidth( width )
+
 
 class SearchPanelView( QTableView ):
     '''
@@ -121,7 +119,7 @@ class SearchPanelView( QTableView ):
         '''
         Constructor
         '''
-        super(SearchPanelView, self).__init__(  parent )
+        super( SearchPanelView, self ).__init__( parent )
 
         self.setSelectionBehavior( QTableView.SelectRows )
         self.setSelectionMode( QTableView.SingleSelection )
@@ -136,14 +134,14 @@ class SearchPanelView( QTableView ):
     def paintEvent( self, event ):
         for column in self.hiddenColumns:
             self.setColumnHidden( column, True )
-            
+
         if not self.set:
             self.resizeColumnsToContents()
             self.set = True
             self.horizontalHeader().setStretchLastSection( True )
-        
-        
-        super(SearchPanelView, self).paintEvent(  event )
+
+
+        super( SearchPanelView, self ).paintEvent( event )
 
 
 

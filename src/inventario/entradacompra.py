@@ -5,16 +5,16 @@ Module implementing frmEntradaCompra.
 from decimal import Decimal
 import logging
 
-from PyQt4.QtGui import QMainWindow,  QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, QPrinter, qApp
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, \
+QAbstractItemView, QCompleter, qApp
 from PyQt4.QtCore import pyqtSlot, Qt, QTimer, QDateTime, QModelIndex
-from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
+from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 
 from utility.base import Base
 from ui.Ui_entradacompra import Ui_frmEntradaCompra
 from document.entradacompra import EntradaCompraModel, EntradaCompraDelegate
 
 from utility.moneyfmt import moneyfmt
-from utility.reports import frmReportes
 from utility.singleselectionmodel import SingleSelectionModel
 from utility import constantes
 
@@ -62,15 +62,15 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
 
         #general events
-        self.rbCash.clicked[bool].connect(self.updatePay)
-        self.rbCheck.clicked[bool].connect(self.updatePay)
-        self.rbCredit.clicked[bool].connect(self.updatePay)
+        self.rbCash.clicked[bool].connect( self.updatePay )
+        self.rbCheck.clicked[bool].connect( self.updatePay )
+        self.rbCredit.clicked[bool].connect( self.updatePay )
 
         QTimer.singleShot( 0, self.loadModels )
 
 
 
-    def updatePay( self, checked ):
+    def updatePay( self, _checked ):
         if not self.editmodel is None:
             if self.sender() in ( self.rbCash, self.rbCheck ):
                 self.editmodel.paytipe = 1
@@ -86,7 +86,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning("No se pudo conectar con la base de datos para obtener los documentos")
+                    raise UserWarning( "No se pudo conectar con la base de datos para obtener los documentos" )
 
 
 #        El modelo principal
@@ -112,7 +112,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
             WHERE d.idtipodoc = %d
             GROUP BY d.iddocumento
-            """ % (constantes.PROVEEDOR, constantes.IDENTRADALOCAL) )
+            """ % ( constantes.PROVEEDOR, constantes.IDENTRADALOCAL ) )
     #        El modelo que filtra a self.navmodel
             self.navproxymodel = RONavigationModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )
@@ -138,7 +138,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
                 JOIN categorias c ON subc.padre = c. idcategoria  
                 JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
                 WHERE d.idtipodoc = %d
-            """  % constantes.IDENTRADALOCAL)
+            """ % constantes.IDENTRADALOCAL )
     #        Este es el filtro del modelo anterior
             self.detailsproxymodel = QSortFilterProxyModel( self )
             self.detailsproxymodel.setSourceModel( self.detailsmodel )
@@ -163,11 +163,11 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
 
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.error(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( unicode( inst ) )
         except Exception as inst:
-            QMessageBox.critical(self, qApp.organizationName(), "No se pudo cargar la lista de entradas locales")
-            logging.critical(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), "No se pudo cargar la lista de entradas locales" )
+            logging.critical( unicode( inst ) )
         finally:
             if self.database.isOpen():
                 self.database.close()
@@ -180,8 +180,8 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
                 FROM personas
                 WHERE tipopersona = 2
             """ )
-            if not self.providersModel.rowCount(QModelIndex()) > 0:
-                raise UserWarning("No existen proveedores en la base de datos")
+            if not self.providersModel.rowCount( QModelIndex() ) > 0:
+                raise UserWarning( "No existen proveedores en la base de datos" )
             self.cbProvider.setModel( self.providersModel )
             self.cbProvider.setModelColumn( 1 )
 
@@ -195,7 +195,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             SELECT idarticulo, Descripcion as descripcion FROM vw_articulosdescritos
             """ )
             if not query.size() > 0:
-                raise UserWarning("No existen productos en la base de datos")
+                raise UserWarning( "No existen productos en la base de datos" )
             prods = SingleSelectionModel()
             query.exec_()
             while query.next():
@@ -203,7 +203,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
                     query.value( 0 ).toInt()[0],
                     query.value( 1 ).toString()
                            ] )
-            
+
             prods.headers = ["idarticulo", "Articulo"]
             self.delegate.prods = prods
 
@@ -215,7 +215,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.lblTotal.setText( moneyfmt( self.editmodel.totalC, 4, "C$" ) )
             self.lblTotalD.setText( moneyfmt( self.editmodel.totalD, 4, "US$" ) )
     @property
-    def printIdentifier(self):
+    def printIdentifier( self ):
         return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
 
@@ -234,17 +234,17 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.tabledetails.setModel( self.editmodel )
             self.delegate = EntradaCompraDelegate()
             self.tabledetails.setItemDelegate( self.delegate )
-            
+
             query = QSqlQuery( """
             SELECT idcostoagregado, valorcosto 
             FROM costosagregados c 
             WHERE idtipocosto = %d AND activo = 1 
             LIMIT 1
-            """ % constantes.IVA)
+            """ % constantes.IVA )
             if not query.exec_():
-                raise UserWarning("No se pudo obtener el valor del IVA para iniciar la entrada compra")
+                raise UserWarning( "No se pudo obtener el valor del IVA para iniciar la entrada compra" )
             if not query.size() == 1:
-                raise UserWarning("No se pudo obtener el valor del IVA para iniciar la entrada compra")
+                raise UserWarning( "No se pudo obtener el valor del IVA para iniciar la entrada compra" )
             query.first()
             self.editmodel.idIVA = query.value( 0 ).toInt()[0]
             self.editmodel.rateIVA = Decimal( query.value( 1 ).toString() )
@@ -252,24 +252,24 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
             self.updateEditModels()
 
-            
+
             self.rbCash.click()
 
             self.addLine()
             self.dtPicker.setDateTime( QDateTime.currentDateTime() )
             self.editmodel.providerId = self.providersModel.record( self.cbProvider.currentIndex() ).value( "idpersona" ).toInt()[0]
 
-            self.editmodel.dataChanged[QModelIndex, QModelIndex].connect(self.updateLabels)
-            self.tabledetails.setColumnWidth(DESCRIPCION, 250)
+            self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
+            self.tabledetails.setColumnWidth( DESCRIPCION, 250 )
             self.status = False
         except UserWarning as inst:
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-            logging.error(unicode(inst))
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( unicode( inst ) )
 #            self.status = True
         except Exception as inst:
-            QMessageBox.critical(self, qApp.organizationName(), "No se pudo iniciar una nueva entrada compra")
+            QMessageBox.critical( self, qApp.organizationName(), "No se pudo iniciar una nueva entrada compra" )
             print inst
-            logging.error(unicode(inst))
+            logging.error( unicode( inst ) )
 #            self.status = True
 
         if self.database.isOpen():
@@ -280,7 +280,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         """
         Aca se cancela la edicion del documento
         """
-        if QMessageBox.question(self, qApp.organizationName(), u"¿Desea realmente cancelar?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+        if QMessageBox.question( self, qApp.organizationName(), u"¿Desea realmente cancelar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
             self.editmodel = None
 
             self.tablenavigation.setModel( self.navproxymodel )
@@ -292,7 +292,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.detailsproxymodel.setFilterRegExp( "^"+ self.navmodel.record( index ).value( "iddocumento" ).toString()+ "$" )
+        self.detailsproxymodel.setFilterRegExp( "^" + self.navmodel.record( index ).value( "iddocumento" ).toString() + "$" )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
         paytype = self.navmodel.record( index ).value( "tipopago" ).toInt()[0]
@@ -303,13 +303,13 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
 
 
-        
+
     def setControls( self, status ):
         """
         @param status: false = editando        true = navegando
         """
         self.txtDocumentNumber.setReadOnly( status )
-        self.actionPrint.setVisible(status)
+        self.actionPrint.setVisible( status )
         self.dtPicker.setReadOnly( status )
         self.txtObservations.setReadOnly( status )
 
@@ -334,10 +334,10 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.tabledetails.removeAction( self.actionDeleteRow )
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
 
-	#		ocultar columnas en tabledetails
+            #ocultar columnas en tabledetails
             self.tabledetails.setColumnHidden( IDARTICULO, True )
             self.tabledetails.setColumnHidden( IDDOCUMENTOT, True )
-	#		ocultar columnas en tablenavigation
+            #ocultar columnas en tablenavigation
             self.tablenavigation.setColumnHidden( TIPOPAGO, True )
             self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
             self.tablenavigation.setColumnHidden( OBSERVACION, True )
@@ -354,7 +354,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
             self.lblIVA.setText( "C$0.00" )
             self.lblTotal.setText( "C$0.00" )
             self.tabledetails.setEditTriggers( QAbstractItemView.AllEditTriggers )
-            self.tabledetails.setColumnHidden(IDARTICULO,True)
+            self.tabledetails.setColumnHidden( IDARTICULO, True )
 
 
     @pyqtSlot( "QString" )

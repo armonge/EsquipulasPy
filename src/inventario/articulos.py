@@ -7,8 +7,8 @@ Created on 28/05/2010
 import logging
 from decimal import Decimal
 
-from PyQt4.QtCore import pyqtSlot, Qt , QVariant, pyqtSlot
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView,\
+from PyQt4.QtCore import  Qt , QVariant, pyqtSlot
+from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, \
 QDialog, QMessageBox, QInputDialog, QItemSelection, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 
@@ -24,14 +24,14 @@ from utility import user
 ID, DESCRIPCION, DAI, ISC, COMISION, GANANCIA, ACTIVO = range( 7 )
 
 class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
-    def __init__( self,  parent = None ):
+    def __init__( self, parent = None ):
         """
         @param parent: El formulario padre de este frm
         """
         super( FrmArticulos, self ).__init__( parent )
         self.setupUi( self )
         self.database = QSqlDatabase.database()
-        
+
 #        self.__status = True
         self.backmodel = ArticlesModel()
         self.updateModels()
@@ -42,8 +42,8 @@ class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
         self.tableview.setEditTriggers( QAbstractItemView.AllEditTriggers )
         self.actionEdit.setVisible( True )
         self.actionSave.setVisible( False )
-        self.actionCancel.setVisible(False)
-        
+        self.actionCancel.setVisible( False )
+
 
     def updateModels( self ):
         """
@@ -52,31 +52,31 @@ class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning("No se pudo abrir la base de datos")
+                    raise UserWarning( "No se pudo abrir la base de datos" )
             self.backmodel.setQuery( """
                 SELECT idarticulo, descripcion, dai, isc, comision, ganancia, activo
                 FROM vw_articulosconcostosactuales v
             """ )
-            if self.backmodel.rowCount()==0:
-                self.actionEdit.setEnabled(False)
+            if self.backmodel.rowCount() == 0:
+                self.actionEdit.setEnabled( False )
             self.filtermodel = QSortFilterProxyModel()
             self.filtermodel.setSourceModel( self.backmodel )
             self.filtermodel.setFilterKeyColumn( -1 )
             self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
             self.tableview.setModel( self.filtermodel )
         except UserWarning as inst:
-            logging.error(unicode(inst))
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            logging.error( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
         except Exception as inst:
-            loggin.critical(unicode(inst))
-            QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al cargar la lista de articulos")
+            logging.critical( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(), "Hubo un error al cargar la lista de articulos" )
         finally:
             if self.database.isOpen():
                 self.database.close()
 
 
 
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_actionEdit_triggered( self ):
         """
         Permite la edicion en el TableView
@@ -97,18 +97,18 @@ class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
         
         """
         self.filtermodel.setFilterRegExp( text )
-    @pyqtSlot(  )
+    @pyqtSlot()
     def on_actionNew_triggered( self ):
         """
         Llama al Dialog para insertar un nuevo articulo
         """
-        self.nuevoarticulo = frmArticlesNew( )
+        self.nuevoarticulo = frmArticlesNew()
         if self.nuevoarticulo.exec_() == QDialog.Accepted:
             self.updateModels()
-            
-    
 
-        
+
+
+
 class ArticlesModel( QSqlQueryModel ):
     def __init__( self, parent = None ):
         """
@@ -120,7 +120,7 @@ class ArticlesModel( QSqlQueryModel ):
         if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.open()
 
-    def setData( self, index, value, role = Qt.EditRole ):
+    def setData( self, index, value, _role = Qt.EditRole ):
         """
         Guarda los datos editados en el modelo del tableview
         @param index: El Index del record del tableView
@@ -134,7 +134,7 @@ class ArticlesModel( QSqlQueryModel ):
             try:
                 if not QSqlDatabase.database().isOpen():
                     if not QSqlDatabase.open():
-                        raise UserWarning("No se pudo abrir la base de datos")
+                        raise UserWarning( "No se pudo abrir la base de datos" )
                 if index.column() == DAI:
                     self.queries.append( self.setDAI( value.toString(), primarykey ) )
                 elif index.column() == ISC:
@@ -147,16 +147,16 @@ class ArticlesModel( QSqlQueryModel ):
                     self.queries.append( self.setACTIVO( value.toBool(), primarykey ) )
                 self.refresh()
                 self.dirty = True
-                self.dataChanged.emit(index, index)
+                self.dataChanged.emit( index, index )
                 return True
             except UserWarning as inst:
-                QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-                logging.error(unicode(inst))
+                QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+                logging.error( unicode( inst ) )
             except Exception as inst:
-                logging.critical(unicode(inst))
-                QMessageBox.critical(self, qApp.organizationName(), "Hubo un error al guardar su cambio")
+                logging.critical( unicode( inst ) )
+                QMessageBox.critical( self, qApp.organizationName(), "Hubo un error al guardar su cambio" )
         return False
-            
+
     def setACTIVO( self, value, id ):
         """
         Actualiza el estado de un articulo
@@ -230,7 +230,7 @@ class ArticlesModel( QSqlQueryModel ):
         query.bindValue( ":valor", value )
         if not query.exec_():
             raise Exception( "No se pudo insertar" )
-            
+
 
     def setGANANCIA( self, value, id ):
         """
@@ -274,201 +274,201 @@ class ArticlesModel( QSqlQueryModel ):
         return QSqlQueryModel.data( self, index, role )
 
 
-class frmArticlesNew(QDialog, Ui_frmArticlesNew):
+class frmArticlesNew( QDialog, Ui_frmArticlesNew ):
     '''
     classdocs
     '''
 
 
-    def __init__(self, parent=None):
+    def __init__( self, parent = None ):
         '''
         Constructor
         '''
-        super(frmArticlesNew, self).__init__(parent)
+        super( frmArticlesNew, self ).__init__( parent )
         self.user = user.LoggedUser
-        self.setupUi(self)
+        self.setupUi( self )
         self.catmodel = CategoriesModel()
-        
+
         self.catproxymodel = TreeFilterProxyModel()
-        self.catproxymodel.setSourceModel(self.catmodel)
-        self.catproxymodel.setFilterKeyColumn(0)
-        self.catproxymodel.setFilterCaseSensitivity(Qt.CaseInsensitive)
-        
-        
-        
+        self.catproxymodel.setSourceModel( self.catmodel )
+        self.catproxymodel.setFilterKeyColumn( 0 )
+        self.catproxymodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
+
+
+
         self.catvalid = False
         self.catId = 0
         self.brandId = 0
-        self.ISC = Decimal(0)
-        self.DAI = Decimal(0)
-        self.comission = Decimal(0)
-        self.profit = Decimal(0)
-        
-        
-        self.categoriesview.setModel(self.catproxymodel)
-        self.categoriesview.setColumnHidden(1,True)
-        self.categoriesview.resizeColumnToContents(0)
-        
+        self.ISC = Decimal( 0 )
+        self.DAI = Decimal( 0 )
+        self.comission = Decimal( 0 )
+        self.profit = Decimal( 0 )
+
+
+        self.categoriesview.setModel( self.catproxymodel )
+        self.categoriesview.setColumnHidden( 1, True )
+        self.categoriesview.resizeColumnToContents( 0 )
+
         self.brandsmodel = QSqlQueryModel()
-        
+
         self.cargarMarcas()
-        
+
         self.brandsproxymodel = QSortFilterProxyModel()
-        self.brandsproxymodel.setSourceModel(self.brandsmodel)
-        self.brandsproxymodel.setFilterKeyColumn(1)
-        self.brandsproxymodel.setFilterCaseSensitivity(Qt.CaseInsensitive)
-        self.brandsview.setModel(self.brandsproxymodel)
-        self.brandsview.setModelColumn(1)
-        
+        self.brandsproxymodel.setSourceModel( self.brandsmodel )
+        self.brandsproxymodel.setFilterKeyColumn( 1 )
+        self.brandsproxymodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
+        self.brandsview.setModel( self.brandsproxymodel )
+        self.brandsview.setModelColumn( 1 )
 
 
-        self.buttonBox.rejected.connect(self.reject)
-        self.categoriesview.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect(self.updateCategory)
-        self.brandsview.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect(self.updateBrand)
 
-    def cargarMarcas(self):
+        self.buttonBox.rejected.connect( self.reject )
+        self.categoriesview.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect( self.updateCategory )
+        self.brandsview.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect( self.updateBrand )
+
+    def cargarMarcas( self ):
         if not QSqlDatabase.database().isOpen():
             if not QSqlDatabase.database().open():
-                raise Exception("No se pudo abrir la base de datos")
-        
-        self.brandsmodel.setQuery("""
+                raise Exception( "No se pudo abrir la base de datos" )
+
+        self.brandsmodel.setQuery( """
         SELECT idmarca, nombre 
         FROM marcas
-        """)
+        """ )
         if  QSqlDatabase.database().isOpen():
             QSqlDatabase.database().close()
-        
+
 
     @pyqtSlot()
-    def on_buttonBox_accepted(self):
+    def on_buttonBox_accepted( self ):
         if self.valid:
-            if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea añadir el producto?", QMessageBox.Ok|QMessageBox.Cancel) == QMessageBox.Ok:
+            if QMessageBox.question( self, qApp.organizationName(), u"¿Esta seguro que desea añadir el producto?", QMessageBox.Ok | QMessageBox.Cancel ) == QMessageBox.Ok:
                 if not self.save():
-                    QMessageBox.critical(self, qApp.organizationName(), "Lo sentimos pero no se ha podido guardar el articulo")
+                    QMessageBox.critical( self, qApp.organizationName(), "Lo sentimos pero no se ha podido guardar el articulo" )
                 else:
-                    super(frmArticlesNew, self).accept()
+                    super( frmArticlesNew, self ).accept()
         else:
-            QMessageBox.warning(self, qApp.organizationName(), "Lo sentimos pero los datos no son validos, recuerde elegir una subcategoria y una marca")
-    
-    
-    def save(self):
+            QMessageBox.warning( self, qApp.organizationName(), "Lo sentimos pero los datos no son validos, recuerde elegir una subcategoria y una marca" )
+
+
+    def save( self ):
         query = QSqlQuery()
         result = False
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.open():
-                    raise UserWarning("No se pudo conectar con la base de datos")
-                
-            
-            query.prepare("CALL spAgregarArticulos(:activo,:marca, :subcategoria, :dai, :isc, :comision, :ganancia )")
-            query.bindValue(":activo", 1)
-            query.bindValue(":marca", self.brandId)
-            query.bindValue(":subcategoria", self.catId)
-            query.bindValue(":dai", self.DAI.to_eng_string())
-            query.bindValue(":isc", self.ISC.to_eng_string())
-            query.bindValue(":comision", self.comission.to_eng_string())
-            query.bindValue(":ganancia", self.profit.to_eng_string())
-            
+                    raise UserWarning( "No se pudo conectar con la base de datos" )
+
+
+            query.prepare( "CALL spAgregarArticulos(:activo,:marca, :subcategoria, :dai, :isc, :comision, :ganancia )" )
+            query.bindValue( ":activo", 1 )
+            query.bindValue( ":marca", self.brandId )
+            query.bindValue( ":subcategoria", self.catId )
+            query.bindValue( ":dai", self.DAI.to_eng_string() )
+            query.bindValue( ":isc", self.ISC.to_eng_string() )
+            query.bindValue( ":comision", self.comission.to_eng_string() )
+            query.bindValue( ":ganancia", self.profit.to_eng_string() )
+
             if not query.exec_():
-                raise Exception("No se pudo ejecutar la consulta")
-            
+                raise Exception( "No se pudo ejecutar la consulta" )
+
             result = True
-            
+
         except UserWarning as inst:
-            logging.error(query.lastError().text())
-            logging.error(unicode(inst))
+            logging.error( query.lastError().text() )
+            logging.error( unicode( inst ) )
         except Exception as inst:
-            logging.critical(query.lastError().text())
-            logging.critical(unicode(inst))
+            logging.critical( query.lastError().text() )
+            logging.critical( unicode( inst ) )
 
         return result
-        
-    @pyqtSlot("QString")
-    def on_txtCategorySearch_textChanged(self, text):
-        self.catproxymodel.setFilterFixedString(text)
-        
-    @pyqtSlot("QString")
-    def on_txtBrandSearch_textChanged(self,text):
-        self.brandsproxymodel.setFilterFixedString(text)
-            
+
+    @pyqtSlot( "QString" )
+    def on_txtCategorySearch_textChanged( self, text ):
+        self.catproxymodel.setFilterFixedString( text )
+
+    @pyqtSlot( "QString" )
+    def on_txtBrandSearch_textChanged( self, text ):
+        self.brandsproxymodel.setFilterFixedString( text )
+
     @property
-    def valid(self):
+    def valid( self ):
         return self.catvalid and self.brandId != 0
 
-    @pyqtSlot( )
-    def on_btnAgregarMarca_pressed(self):
-        marca =["",True]
-        marcaDescripcion =""
-        while marcaDescripcion == "" and marca[1]==True:
-            marca = QInputDialog.getText(self,"Agregar Marca","Ingrese la Marca")
+    @pyqtSlot()
+    def on_btnAgregarMarca_pressed( self ):
+        marca = ["", True]
+        marcaDescripcion = ""
+        while marcaDescripcion == "" and marca[1] == True:
+            marca = QInputDialog.getText( self, "Agregar Marca", "Ingrese la Marca" )
             marcaDescripcion = marca[0].strip()
-            if marcaDescripcion!="":
+            if marcaDescripcion != "":
                 proxy = self.brandsproxymodel
-                proxy.setFilterRegExp("^" + marcaDescripcion + "$")
-    
-                if proxy.rowCount()>0:
-                    QMessageBox.information(None,"Crear Marca","La marca " + marcaDescripcion + " ya existe")
-                    marca = ["",True]
+                proxy.setFilterRegExp( "^" + marcaDescripcion + "$" )
+
+                if proxy.rowCount() > 0:
+                    QMessageBox.information( None, "Crear Marca", "La marca " + marcaDescripcion + " ya existe" )
+                    marca = ["", True]
                     marcaDescripcion = ""
-        
-        self.brandsproxymodel.setFilterRegExp("")
-        
+
+        self.brandsproxymodel.setFilterRegExp( "" )
+
         if marca[1]:
-            if QMessageBox.question(None,"Crear Marca",u"¿Está seguro que desea crear la marca " + marcaDescripcion + "?", QMessageBox.Yes | QMessageBox.No)==QMessageBox.Yes:
+            if QMessageBox.question( None, "Crear Marca", u"¿Está seguro que desea crear la marca " + marcaDescripcion + "?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
                 if not QSqlDatabase.database().isOpen():
                     if not QSqlDatabase.database().open():
-                
-                        raise Exception("No se pudo abrir la base de datos")
+
+                        raise Exception( "No se pudo abrir la base de datos" )
                 query = QSqlQuery()
-                query.prepare("INSERT INTO marcas(nombre) VALUES (:marca)")
-                query.bindValue(":marca",marcaDescripcion)
+                query.prepare( "INSERT INTO marcas(nombre) VALUES (:marca)" )
+                query.bindValue( ":marca", marcaDescripcion )
                 if not query.exec_():
-                    logging.error(query.lastError().text())
-                    QMessageBox.warning(None,"Error al crear la marca","No se pudo insertar la marca")
+                    logging.error( query.lastError().text() )
+                    QMessageBox.warning( None, "Error al crear la marca", "No se pudo insertar la marca" )
                 else:
                     self.cargarMarcas()
-        
-    
-    @pyqtSlot("double")
-    def on_sbDAI_valueChanged(self, value):
+
+
+    @pyqtSlot( "double" )
+    def on_sbDAI_valueChanged( self, value ):
         try:
-            self.DAI = Decimal(str(value))
+            self.DAI = Decimal( str( value ) )
         except ValueError:
             self.DAI = 0
-    
-    @pyqtSlot("double")
-    def on_sbISC_valueChanged(self, value):
+
+    @pyqtSlot( "double" )
+    def on_sbISC_valueChanged( self, value ):
         try:
-            self.ISC = Decimal(str(value))
+            self.ISC = Decimal( str( value ) )
         except ValueError:
             self.ISC = 0
-            
 
-    @pyqtSlot("double")
-    def on_sbComission_valueChanged(self, value):
+
+    @pyqtSlot( "double" )
+    def on_sbComission_valueChanged( self, value ):
         try:
-            self.comission = Decimal(str(value))
-            
+            self.comission = Decimal( str( value ) )
+
         except ValueError:
             self.comission = 0
-        
-    @pyqtSlot("double")
-    def on_sbProfit_valueChanged(self, value):
+
+    @pyqtSlot( "double" )
+    def on_sbProfit_valueChanged( self, value ):
         try:
-            self.profit = Decimal(str(value))
+            self.profit = Decimal( str( value ) )
         except ValueError:
             self.profit = 0
-    
-    def updateBrand(self, selected, deselected):            
-        if self.brandsproxymodel.rowCount()>=0:
-            self.brandId =  self.brandsproxymodel.index(selected.indexes()[0].row(),0).data().toInt()[0]
-        
-        
-    def updateCategory(self, selected, deselected):
+
+    def updateBrand( self, selected, _deselected ):
+        if self.brandsproxymodel.rowCount() >= 0:
+            self.brandId = self.brandsproxymodel.index( selected.indexes()[0].row(), 0 ).data().toInt()[0]
+
+
+    def updateCategory( self, selected, _deselected ):
         try:
             row = selected.indexes()[0].row()
             parent = selected.indexes()[0].parent()
             self.catvalid = parent.data().toString() != ""
-            self.catId =  self.catproxymodel.data(self.catproxymodel.index(row, 1, parent), Qt.DisplayRole)
+            self.catId = self.catproxymodel.data( self.catproxymodel.index( row, 1, parent ), Qt.DisplayRole )
         except IndexError:
             pass

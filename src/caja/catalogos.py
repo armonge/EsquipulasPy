@@ -8,7 +8,7 @@ import logging
 
 from PyQt4.QtGui import  QSortFilterProxyModel, QMessageBox, qApp
 from PyQt4.QtCore import  Qt
-from utility.catgeneric import PeopleDelegate
+from utility.catgeneric import PeopleDelegate, FrmCatGeneric
 
 
 IDPERSONA, NOMBRE, FECHACREACION, TELEFONO, EMAIL, RUC, ESTADO, TIPOPERSONA, CUENTA = range( 9 )
@@ -27,7 +27,7 @@ class FrmCatClientes( FrmCatGeneric ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning(u"No se pudo conectar con la base de datos")
+                    raise UserWarning( u"No se pudo conectar con la base de datos" )
             self.backmodel.setTable( self.table )
             self.backmodel.setFilter( "tipopersona=1" )
             self.backmodel.select()
@@ -49,17 +49,17 @@ class FrmCatClientes( FrmCatGeneric ):
             self.backmodel.setHeaderData( TELEFONO, Qt.Horizontal, u"Telefóno", Qt.DisplayRole );
             self.backmodel.setHeaderData( EMAIL, Qt.Horizontal, "e-mail", Qt.DisplayRole );
         except UserWarning as inst:
-            logging.error(inst)
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            logging.error( inst )
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
             return False
         except Exception as inst:
-            logging.critical(inst)
+            logging.critical( inst )
             return False
         finally:
             if self.database.isOpen():
                 self.database.close()
         return True
-            
+
 
     def new( self ):
         super( FrmCatClientes, self ).new()

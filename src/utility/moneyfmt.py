@@ -35,13 +35,13 @@ def moneyfmt( value, places = 4, curr = '', sep = ',', dp = '.', pos = '', neg =
 
     """
     q = Decimal( 10 ) ** -places      # 2 places --> '0.01'
-    sign, digits, exp = value.quantize( q ).as_tuple()
+    sign, digits, _exp = value.quantize( q ).as_tuple()
     result = []
     digits = map( str, digits )
     build, next = result.append, digits.pop
     if sign:
         build( trailneg )
-    for i in range( places ):
+    for _i in range( places ):
         build( next() if digits else '0' )
     build( dp )
     if not digits:

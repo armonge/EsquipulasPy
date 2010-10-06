@@ -14,16 +14,14 @@ sip.setapi( 'QString', 2 )
 
 import logging
 LOG_FILENAME = "esquipulas.log"
-logging.basicConfig(level=logging.DEBUG,
-                format='%(levelname)s -- %(asctime)s --En %(module)s funcion:%(funcName)s linea:%(lineno)d -- %(message)s',
-                filename=LOG_FILENAME,
+logging.basicConfig( level = logging.DEBUG,
+                format = '%(levelname)s -- %(asctime)s --En %(module)s funcion:%(funcName)s linea:%(lineno)d -- %(message)s',
+                filename = LOG_FILENAME,
                 )
 
 from PyQt4 import QtGui, QtCore
-from utility import database
 from utility import constantes
 from utility import user
-from ui import res_rc
 
 app = QtGui.QApplication( sys.argv )
 app.setOrganizationName( "Llantera Esquipulas" )
@@ -31,13 +29,13 @@ app.setOrganizationDomain( "grupoeltriunfo.com.ni" )
 
 translator = QtCore.QTranslator()
 locale = QtCore.QLocale()
-LOCALENAME = str(locale.system().name())
-translator.load("qt_%s" % LOCALENAME, os.path.dirname(os.path.abspath( sys.argv[0] )) + r"/translations/")
+LOCALENAME = str( locale.system().name() )
+translator.load( "qt_%s" % LOCALENAME, os.path.dirname( os.path.abspath( sys.argv[0] ) ) + r"/translations/" )
 
-app.installTranslator(translator)
+app.installTranslator( translator )
 
 
-app.setStyleSheet("""
+app.setStyleSheet( """
 QLabel{
     background:transparent;
 }
@@ -78,7 +76,7 @@ QMainWindow{
 QMdiArea QMainWindow{
     background-image: url()
 }
-""")
+""" )
 if "--inventario" in sys.argv:
     app.setApplicationName( "Compras e Inventario" )
     from inventario.mainwindow import MainWindow
@@ -111,16 +109,16 @@ if "--reportconfig" in sys.argv:
 dlguser = user.dlgUserLogin()
 #cont = 0
 #valido = False
-dlguser.txtPassword.setText("")
+dlguser.txtPassword.setText( "" )
 if dlguser.exec_() == QtGui.QDialog.Accepted:
     user.LoggedUser = dlguser.user
     if user.LoggedUser.valid:
-        if  user.LoggedUser.hasAnyRole(module):
+        if  user.LoggedUser.hasAnyRole( module ):
 
 
-            mainwindow = MainWindow( )
+            mainwindow = MainWindow()
             mainwindow.showMaximized()
-            sys.exit(app.exec_())
+            sys.exit( app.exec_() )
 
         else:
             QtGui.QMessageBox.critical( None,

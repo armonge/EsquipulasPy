@@ -29,7 +29,9 @@ class AccountsSelectorModel( QAbstractTableModel ):
 
     @property
     def valid( self ):
-        return True if self.currentSum == 0 and self.validLines > 0 else False
+        print "current sum is 0 ", self.currentSum == 0
+        return  self.currentSum == 0 and self.validLines > 0
+
     @property
     def validLines( self ):
         return len( [line for line in self.lines if line.valid] )
@@ -37,12 +39,12 @@ class AccountsSelectorModel( QAbstractTableModel ):
     @property
     def currentSum( self ):
         currentsum = sum( [line.amount for line in  self.lines if line.valid ] )
-        return currentsum.quantize( Decimal('0.0001') ) if currentsum != 0 else Decimal( 0 )
+        return currentsum.quantize( Decimal( '0.0001' ) ) if currentsum != 0 else Decimal( 0 )
 
-    def columnCount( self, index = QModelIndex() ):
+    def columnCount( self, _index = QModelIndex() ):
         return 4
 
-    def rowCount( self, index = QModelIndex() ):
+    def rowCount( self, _index = QModelIndex() ):
         return len( self.lines )
 
     def flags( self, index ):
@@ -51,7 +53,7 @@ class AccountsSelectorModel( QAbstractTableModel ):
         return Qt.ItemIsEnabled | Qt.ItemIsEditable
 
 
-    def insertRows( self, position, rows = 1, index = QModelIndex ):
+    def insertRows( self, position, rows = 1, _index = QModelIndex() ):
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
             self.lines.insert( position + row, AccountsSelectorLine() )
@@ -60,7 +62,7 @@ class AccountsSelectorModel( QAbstractTableModel ):
         self.dirty = True
         return True
 
-    def removeRows( self, position, rows = 1, parent = QModelIndex ):
+    def removeRows( self, position, rows = 1, _parent = QModelIndex ):
         self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
         self.lines = self.lines[:position] + self.lines[position + rows:]
         self.endRemoveRows()
@@ -89,7 +91,7 @@ class AccountsSelectorModel( QAbstractTableModel ):
             if column == MONTO:
                 return line.amount
 
-    def setData( self, index, value, role = Qt.EditRole ):
+    def setData( self, index, value, _role = Qt.EditRole ):
         if index.isValid() and 0 <= index.row() < len( self.lines ):
             line = self.lines[index.row()]
             column = index.column()
@@ -98,20 +100,21 @@ class AccountsSelectorModel( QAbstractTableModel ):
                 line.code = value[1]
                 line.name = value[2]
             if column == MONTO:
-                line.amount = Decimal( value.toString() ).quantize(Decimal('0.0001')) if type( value ) != Decimal else value.quantize(Decimal('0.0001'))
+                line.amount = Decimal( value.toString() ).quantize( Decimal( '0.0001' ) ) if type( value ) != Decimal else value.quantize( Decimal( '0.0001' ) )
 
 
-            if not self.valid and self.lines[-1].valid:
+            if not self.valid and self.lines[-1].valid and self.currentSum != 0:
                 self.insertRow( len( self.lines ) )
             elif not self.valid and not self.lines[-1].valid:
-                self.lines[-1].amount =  self.currentSum * -1 
-            elif self.valid and not self.lines[-1].valid:
+                self.lines[-1].amount = self.currentSum * -1
+
+            if self.valid and not self.lines[-1].valid:
                 if len( self.lines ) > 1:
                     self.removeRows( len( self.lines ) - 1, 1 )
-            self.dataChanged.emit(index, index)
+            self.dataChanged.emit( index, index )
 
-            self.dataChanged.emit(self.index(MONTO, len(self.lines) ) , self.index(MONTO, len(self.lines) ) )
-            
+            self.dataChanged.emit( self.index( MONTO, len( self.lines ) ) , self.index( MONTO, len( self.lines ) ) )
+
             return True
         return False
 
@@ -138,12 +141,12 @@ class AccountsSelectorModel( QAbstractTableModel ):
 
 
 class AccountsSelectorDelegate( QStyledItemDelegate ):
-    def __init__( self, query,showTable=False ):
-        super(AccountsSelectorDelegate, self).__init__( )
-        self.showTable=showTable
+    def __init__( self, query, showTable = False ):
+        super( AccountsSelectorDelegate, self ).__init__()
+        self.showTable = showTable
         query.exec_()
         if not query.size() > 0:
-            raise UserWarning("No hay cuentas contables en el modelo")
+            raise UserWarning( "No hay cuentas contables en el modelo" )
         self.accounts = SingleSelectionModel()
         self.accounts.headers = ["idcuenta", "codigo", "descripcion"]
         while query.next():
@@ -155,8 +158,8 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
 
 
 
-    def createEditor( self, parent, option, index ):
-        
+    def createEditor( self, parent, _option, index ):
+
         if index.column() in ( CODCUENTA, NCUENTA ):
             if index.data() != "":
                 self.accounts.items.append( [
@@ -164,7 +167,7 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
                                          index.model().lines[index.row()].code,
                                          index.model().lines[index.row()].name
                                          ] )
-            sp = SearchPanel( self.accounts, parent,self.showTable )
+            sp = SearchPanel( self.accounts, parent, self.showTable )
             sp.setColumn( index.column() )
             return sp
         elif index.column() == MONTO:
@@ -209,13 +212,13 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
             return QSize( 130, fm.height() )
         if index.column() == NCUENTA:
             return QSize( 250, fm.height() )
-        
+
         if index.column() == MONTO:
             return QSize( 80, fm.height() )
-        
+
         return QStyledItemDelegate.sizeHint( self, option, index )
 
-class AccountsSelectorLine(object):
+class AccountsSelectorLine( object ):
     def __init__( self ):
         self.itemId = 0
         self.amount = Decimal( 0 )
@@ -247,8 +250,8 @@ class AccountsSelectorLine(object):
         query.bindValue( ":nlinea", linea )
 
         if not query.exec_():
-            logging.critical(query.lastError().text())
-            
+            logging.critical( query.lastError().text() )
+
             raise Exception( "Error al insertar uno de los movimientos" )
-                
+
 

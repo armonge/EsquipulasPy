@@ -4,7 +4,6 @@ Created on 18/05/2010
 
 @author: Luis Carlos Mejia Garcia
 '''
-from PyQt4 import QtGui
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
 from lineafactura import LineaFactura
@@ -21,12 +20,12 @@ class FacturaModel( QAbstractTableModel ):
     def __init__( self, datosSesion ):
         super( FacturaModel, self ).__init__()
 
-        
+
         self.dirty = False
         self.__documentType = 5
-        
+
         self.clienteId = 0
-        self.vendedorId =0
+        self.vendedorId = 0
         self.bodegaId = 0
         self.observaciones = ""
         self.ivaTasa = Decimal( 0 )
@@ -46,11 +45,11 @@ class FacturaModel( QAbstractTableModel ):
 
         self.warehouseId = 0
         self.warehouseName = ""
-        
 
 
 
-    def removeRows( self, position, rows = 1, index = QModelIndex ):
+
+    def removeRows( self, position, rows = 1, _index = QModelIndex() ):
         nrows = len( self.lines )
         if nrows > 0 and nrows > position:
             self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
@@ -105,10 +104,10 @@ class FacturaModel( QAbstractTableModel ):
         return foo
 
     #Clases especificas del modelo
-    def rowCount( self, index = QModelIndex ):
+    def rowCount( self, _index = QModelIndex ):
         return len( self.lines )
 
-    def columnCount( self, index = QModelIndex ):
+    def columnCount( self, _index = QModelIndex ):
         return 5
 
     def data( self, index, role = Qt.DisplayRole ):
@@ -130,25 +129,25 @@ class FacturaModel( QAbstractTableModel ):
             elif column == PRECIO:
                 return moneyfmt( Decimal( line.itemPrice ), 4, "US$" ) if line.itemPrice != 0 else ""
             elif column == TOTALPROD:
-                return moneyfmt( line.total , 4, "US$" ) if line.itemId!=0 else ""
+                return moneyfmt( line.total , 4, "US$" ) if line.itemId != 0 else ""
         elif role == Qt.EditRole:
             if column == PRECIO:
                 return line.itemPrice
         elif role == Qt.TextAlignmentRole:
 #            if column==:
 #                return Qt.AlignHCenter | Qt.AlignVCenter
-            if column in (CANTIDAD,PRECIO,TOTALPROD):
+            if column in ( CANTIDAD, PRECIO, TOTALPROD ):
                 return Qt.AlignRight | Qt.AlignVCenter
         elif role == Qt.ToolTipRole:
             if column == CANTIDAD:
-                return u"Máximo " + str(line.existencia) 
+                return u"Máximo " + str( line.existencia )
 
     def flags( self, index ):
         if not index.isValid():
             return Qt.ItemIsEnabled
         return Qt.ItemFlags( QAbstractTableModel.flags( self, index ) | Qt.ItemIsEditable )
 
-    def setData( self, index, value, role = Qt.EditRole ):
+    def setData( self, index, value, _role = Qt.EditRole ):
         """
         modificar los datos del modelo, este metodo se comunica con el delegate
         """
@@ -174,7 +173,7 @@ class FacturaModel( QAbstractTableModel ):
             self.dirty = True
 
 
-            self.dataChanged.emit(index, index)
+            self.dataChanged.emit( index, index )
             #si la linea es valida y es la ultima entonces aniadir una nueva
             if  index.row() == len( self.lines ) - 1 and line.valid:
                 self.insertRows( len( self.lines ) )
@@ -182,7 +181,7 @@ class FacturaModel( QAbstractTableModel ):
             return True
         return False
 
-    def insertRows( self, position, rows = 1, index = QModelIndex ):
+    def insertRows( self, position, rows = 1, _index = QModelIndex ):
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
             self.lines.insert( position + row, LineaFactura( self ) )
@@ -210,7 +209,7 @@ class FacturaModel( QAbstractTableModel ):
         return int( section + 1 )
 
 #TODO: INSERCION
-    def save( self , otrosDatosModel):
+    def save( self , otrosDatosModel ):
         """
         Este metodo guarda la factura en la base de datos
         """
@@ -227,20 +226,20 @@ class FacturaModel( QAbstractTableModel ):
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-            query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString("hhmmss") )
+            query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString( "hhmmss" ) )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":observacion", self.observaciones )
             query.bindValue( ":total", self.total.to_eng_string() )
             query.bindValue( ":bodega", self.bodegaId )
             query.bindValue( ":escontado", self.escontado )
             query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
-            query.bindValue( ":caja", self.datosSesion.cajaId)
-            query.bindValue( ":estado", constantes.CONFIRMADO if self.escontado else constantes.PENDIENTE)
+            query.bindValue( ":caja", self.datosSesion.cajaId )
+            query.bindValue( ":estado", constantes.CONFIRMADO if self.escontado else constantes.PENDIENTE )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
 
-            
+
             insertedId = query.lastInsertId().toString()
             self.facturaId = query.lastInsertId().toString()
 #INSERTAR LA RELACION CON LA SESION DE CAJA            
@@ -257,18 +256,18 @@ class FacturaModel( QAbstractTableModel ):
 
 #INSERTAR LA RELACION CON El USUARIO , EL CLIENTE Y EL PROVEEDOR            
             query.prepare( 
-                "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +  
+                "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +
                 "(" + insertedId + ",:iduser,:autor),"
                 "(" + insertedId + ",:idcliente,:cliente),"
-                "(" + insertedId + ",:idvendedor,:vendedor)" 
+                "(" + insertedId + ",:idvendedor,:vendedor)"
                 )
 
             query.bindValue( ":iduser", self.datosSesion.usuarioId )
             query.bindValue( ":idcliente", self.clienteId )
             query.bindValue( ":idvendedor", self.vendedorId )
-            query.bindValue( ":autor", constantes.AUTOR)
-            query.bindValue( ":cliente", constantes.CLIENTE)
-            query.bindValue( ":vendedor",constantes.VENDEDOR )
+            query.bindValue( ":autor", constantes.AUTOR )
+            query.bindValue( ":cliente", constantes.CLIENTE )
+            query.bindValue( ":vendedor", constantes.VENDEDOR )
 
             if not query.exec_():
                 raise Exception( "No se Inserto la relacion entre el documento y las personas" )
@@ -280,14 +279,14 @@ class FacturaModel( QAbstractTableModel ):
                     i = i + 1
 
 #VERIFICO SI el id del iva es cero. NO SERA CERO CUANDO LA BODEGA=1 PORQUE ESTA NO ES exonerada                     
-            
+
             if self.bodegaId == 1 :
                 query.prepare( """
                 INSERT INTO costosxdocumento (iddocumento, idcostoagregado) VALUES( :iddocumento, :idcostoagregado )
                 """ )
                 query.bindValue( ":iddocumento", insertedId )
                 query.bindValue( ":idcostoagregado", self.ivaId )
-                
+
                 if not query.exec_():
                     print insertedId
                     print self.ivaId
@@ -295,13 +294,13 @@ class FacturaModel( QAbstractTableModel ):
 
             #manejar las cuentas contables en Cordobas
             # el costo no se multiplica porque ya esta en cordobas                
-            
+
             guardar = True
             if self.escontado:
                 movFacturaCredito( insertedId, self.subtotal * self.datosSesion.tipoCambioOficial , self.IVA * self.datosSesion.tipoCambioOficial, self.costototal )
                 # Como es al contado el modelo otrosDatosModel guarda datos del recibo
-                otrosDatosModel.lineasAbonos[0].idFac= insertedId
-                guardar = otrosDatosModel.save(False)
+                otrosDatosModel.lineasAbonos[0].idFac = insertedId
+                guardar = otrosDatosModel.save( False )
             else:
                 # Como es al credito el modelo otrosDatosModel guarda datos del credito
                 query.prepare( """
@@ -310,8 +309,8 @@ class FacturaModel( QAbstractTableModel ):
                 query.bindValue( ":iddocumento", insertedId )
                 query.bindValue( ":fechatope", self.ivaId )
                 query.bindValue( ":multa", self.ivaId )
-                
-                guardar = query.exec_() 
+
+                guardar = query.exec_()
                 if not guardar:
                     print insertedId
                     print self.ivaId
