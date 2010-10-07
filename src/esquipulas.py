@@ -20,8 +20,7 @@ logging.basicConfig( level = logging.DEBUG,
                 )
 
 from PyQt4 import QtGui, QtCore
-from utility import constantes
-from utility import user
+from utility import constantes, user
 
 app = QtGui.QApplication( sys.argv )
 app.setOrganizationName( "Llantera Esquipulas" )
