@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 u'''
 El modulo de entrada a la aplicación
@@ -28,7 +29,11 @@ app.setOrganizationDomain( "grupoeltriunfo.com.ni" )
 
 translator = QtCore.QTranslator()
 locale = QtCore.QLocale()
-translator.load( os.path.join( os.path.dirname( os.path.abspath( sys.argv[0] ) ) , r"translations" , "qt_es.qm" ) )
+if os.name == 'posix':
+    translator.load( os.path.join( "/usr/share/qt4/translations" ,"qt_es.qm" ) )
+else:
+    translator.load( os.path.join( os.path.dirname( os.path.abspath( sys.argv[0] ) ) , r"translations" , "qt_es.qm" ) )
+    
 app.installTranslator( translator )
 
 

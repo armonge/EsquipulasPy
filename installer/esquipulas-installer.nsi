@@ -96,6 +96,7 @@ Section -Main SEC0000
     File ..\dist\sip.pyd
     File ..\dist\unicodedata.pyd
     File ..\dist\w9xpopen.exe
+    File ..\dist\logo.ico
     File /r ..\dist\sqldrivers
     File /r ..\dist\translations
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
@@ -131,7 +132,7 @@ Section Ayuda SEC0004
     File ..\dist\QtXml4.dll
     File ..\dist\QtXmlPatterns4.dll
     SetOutPath $SMPROGRAMS\$StartMenuGroup
-    createShortCut "$SMPROGRAMS\$StartMenuGroup\ayuda.lnk" "$INSTDIR\assistant.exe" "-collectionFile '$INSTDIR\esquipulashelpcollection.qhc'"
+    createShortCut "$SMPROGRAMS\$StartMenuGroup\Ayuda.lnk" "$INSTDIR\assistant.exe" "-collectionFile '$INSTDIR\esquipulashelpcollection.qhc'" $INSTDIR\logo.ico
     WriteRegStr HKLM "${REGKEY}\Components" Ayuda 1
 SectionEnd
 
