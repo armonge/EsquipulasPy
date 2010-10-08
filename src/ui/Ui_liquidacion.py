@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/ui/liquidacion.ui'
 #
-# Created: Mon Oct  4 22:58:21 2010
+# Created: Thu Oct  7 22:00:43 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -270,7 +270,7 @@ class Ui_FrmLiquidacion(object):
         self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.sbOther)
         self.horizontalLayout_3.addWidget(self.groupBox_2)
         self.verticalLayout_5.addLayout(self.horizontalLayout_3)
-        self.tabledetails = QtGui.QTableView(self.tabdetails)
+        self.tabledetails = LiquidacionTableDetails(self.tabdetails)
         self.tabledetails.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.tabledetails.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.tabledetails.setAlternatingRowColors(True)
@@ -434,6 +434,7 @@ class Ui_FrmLiquidacion(object):
         self.tabTotalsAccounts.setTabText(self.tabTotalsAccounts.indexOf(self.tabaccounts), QtGui.QApplication.translate("FrmLiquidacion", "Movimientos Contables", None, QtGui.QApplication.UnicodeUTF8))
         self.tabTotalsAccounts.setTabText(self.tabTotalsAccounts.indexOf(self.tabtotals), QtGui.QApplication.translate("FrmLiquidacion", "Totales", None, QtGui.QApplication.UnicodeUTF8))
 
+from inventario.liquidaciontable import LiquidacionTableDetails
 from utility.widgets.xdockwidget import XDockWidget
 import res_rc
 

@@ -13,7 +13,7 @@ import os
 sip.setapi( 'QString', 2 )
 
 import logging
-LOG_FILENAME = "esquipulas.log"
+LOG_FILENAME = os.path.join( os.path.expanduser( '~' ), "esquipulas.log" )
 logging.basicConfig( level = logging.DEBUG,
                 format = '%(levelname)s -- %(asctime)s --En %(module)s funcion:%(funcName)s linea:%(lineno)d -- %(message)s',
                 filename = LOG_FILENAME,
@@ -28,9 +28,7 @@ app.setOrganizationDomain( "grupoeltriunfo.com.ni" )
 
 translator = QtCore.QTranslator()
 locale = QtCore.QLocale()
-LOCALENAME = str( locale.system().name() )
-translator.load( "qt_%s" % LOCALENAME, os.path.dirname( os.path.abspath( sys.argv[0] ) ) + r"/translations/" )
-
+translator.load( os.path.join( os.path.dirname( os.path.abspath( sys.argv[0] ) ) , r"translations" , "qt_es.qm" ) )
 app.installTranslator( translator )
 
 
