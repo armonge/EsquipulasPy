@@ -1,3 +1,0 @@
-from kardexothermodel import KardexOtherModel
-from kardexotherdelegate import KardexOtherDelegate
-from lineakardexother import LineaKardexOther

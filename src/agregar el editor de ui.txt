@@ -1,2 +1,0 @@
-windows > preferences> file associations > Agregar *.ui > Agregar el programa con que se abrira que esta en
-C:\Python26\Lib\site-packages\PyQt4\bin\designer.exe
