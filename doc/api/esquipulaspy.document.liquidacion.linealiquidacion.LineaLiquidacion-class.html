@@ -1,0 +1,1172 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="esquipulaspy.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="esquipulaspy-module.html">Paquete&nbsp;esquipulaspy</a> ::
+        <a href="esquipulaspy.document-module.html">Paquete&nbsp;document</a> ::
+        <a href="esquipulaspy.document.liquidacion-module.html">Paquete&nbsp;liquidacion</a> ::
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion-module.html">Modulo&nbsp;linealiquidacion</a> ::
+        Clase&nbsp;LineaLiquidacion
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS Descripci&#243;n ==================== -->
+<h1 class="epydoc">Class LineaLiquidacion</h1><p class="nomargin-top"><span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion">Codigo&nbsp;fuente</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_esquipul_77" name="uml_class_diagram_for_esquipul_77">
+<area shape="rect" id="node1" href="esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html" title="Este modelo es el que se utiliza para realizar todos los calculos relacionados a una liquidacion, de costos" alt="" coords="5,561,243,599"/>
+<area shape="rect" id="node2" href="javascript:void(0);" title="Esta se convertira en un futuro en la clase base para las nuevas lineas, con suerte se podran pasar aca muchos metodos genericos" alt="" coords="36,6,209,50"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#itemId" title="El id del articulo en esta linea" alt="" coords="29,100,217,119"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#itemDescription" title="La descripci&#243;n del articulo" alt="" coords="29,119,217,137"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#quantity" title="La cantidad de unidades del articulo en esta linea" alt="" coords="29,137,217,156"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#itemCost" title="El costo de compra del articulo" alt="" coords="29,156,217,175"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#comisionValue" title="El valor de comisi&#243;n para el articulo" alt="" coords="29,175,217,193"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#rateDAI" title="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.rateDAI" alt="" coords="29,193,217,212"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#rateISC" title="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.rateISC" alt="" coords="29,212,217,231"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#valid" title="Una linea es valida cuando self.quantity &gt; 0 and self.itemCost &gt; 0 and &#160;self.itemId != 0" alt="" coords="29,231,217,249"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#fobParcial" title="El FOB de este articulo" alt="" coords="29,249,217,268"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#cifParcial" title="El CIF de un articulo" alt="" coords="29,268,217,287"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#daiParcial" title="El DAI parcial de un articulo" alt="" coords="29,287,217,305"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#iscParcial" title="El ISC Parcial" alt="" coords="29,305,217,324"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#tsimParcial" title="EL TSIM parcial de un articulo" alt="" coords="29,324,217,343"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#otrosParcial" title="El total prorrateado de otros gastos" alt="" coords="29,361,217,380"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#__init__" title="x.__init__(...) initializes x; see x.__class__.__doc__ for signature" alt="" coords="29,383,217,401"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#setRateDAI" title="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.setRateDAI" alt="" coords="29,401,217,420"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#getRateDAI" title="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.getRateDAI" alt="" coords="29,420,217,439"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#setRateISC" title="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.setRateISC" alt="" coords="29,439,217,457"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#getRateISC" title="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.getRateISC" alt="" coords="29,457,217,476"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#update" title="Actualizar los porcentajes de DAI, ISC y COMISION" alt="" coords="29,476,217,495"/>
+<area shape="rect" id="node671" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#save" title="Este metodo guarda la linea en la base de datos" alt="" coords="29,495,217,513"/>
+<area shape="rect" id="node3" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html" title="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion" alt="" coords="17,75,228,519"/>
+<area shape="poly" id="edge2" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#parent" title="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.parent" alt="" coords="127,515 127,552 121,552 121,515"/>
+<area shape="rect" id="edge2" href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#parent" title="parent" alt="" coords="124,531,161,549"/>
+</map>
+  <img src="uml_class_diagram_for_esquipul_77.gif" alt='' usemap="#uml_class_diagram_for_esquipul_77" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== METODOS DE INSTANCIA ==================== -->
+<a name="section-MetodosdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Metodos de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MetodosdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parent</span>)</span><br />
+      x.__init__(...) initializes x; see x.__class__.__doc__ for signature</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion.__init__">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setRateDAI"></a><span class="summary-sig-name">setRateDAI</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dai</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion.setRateDAI">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getRateDAI"></a><span class="summary-sig-name">getRateDAI</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion.getRateDAI">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="setRateISC"></a><span class="summary-sig-name">setRateISC</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">isc</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion.setRateISC">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="getRateISC"></a><span class="summary-sig-name">getRateISC</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion.getRateISC">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#update" class="summary-sig-name">update</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">query</span>)</span><br />
+      Actualizar los porcentajes de DAI, ISC y COMISION</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion.update">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#save" class="summary-sig-name">save</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">iddocumento</span>,
+        <span class="summary-sig-arg">nlinea</span>)</span><br />
+      Este metodo guarda la linea en la base de datos</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion.save">Codigo&nbsp;fuente</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DE INSTANCIA ==================== -->
+<a name="section-VariablesdeInstancia"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables de Instancia</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesdeInstancia"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">LiquidacionModel</span>
+    </td><td class="summary">
+        <a name="parent"></a><span class="summary-name">parent</span><br />
+      El documento al que pertenece esta linea
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="itemId"></a><span class="summary-name">itemId</span><br />
+      El id del articulo en esta linea
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+        <a name="itemDescription"></a><span class="summary-name">itemDescription</span><br />
+      La descripci&#243;n del articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="quantity"></a><span class="summary-name">quantity</span><br />
+      La cantidad de unidades del articulo en esta linea
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="itemCost"></a><span class="summary-name">itemCost</span><br />
+      El costo de compra del articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="comisionValue"></a><span class="summary-name">comisionValue</span><br />
+      El valor de comisi&#243;n para el articulo
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="__rateISC"></a><span class="summary-name">__rateISC</span><br />
+      El porcentaje ISC del articulo
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a name="__rateDAI"></a><span class="summary-name">__rateDAI</span><br />
+      El porcentaje DAI del articulo
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPIEDADES ==================== -->
+<a name="section-Propiedades"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Propiedades</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Propiedades"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#rateDAI" class="summary-name">rateDAI</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#rateISC" class="summary-name">rateISC</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#valid" class="summary-name">valid</a><br />
+      Una linea es valida cuando self.quantity &gt; 0 and self.itemCost 
+      &gt; 0 and self.itemId != 0
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#fobParcial" class="summary-name">fobParcial</a><br />
+      El FOB de este articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#cifParcial" class="summary-name">cifParcial</a><br />
+      El CIF de un articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#daiParcial" class="summary-name">daiParcial</a><br />
+      El DAI parcial de un articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#iscParcial" class="summary-name">iscParcial</a><br />
+      El ISC Parcial
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#tsimParcial" class="summary-name">tsimParcial</a><br />
+      EL TSIM parcial de un articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#isoParcial" class="summary-name">isoParcial</a><br />
+      El ISO parcial de un articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#speParcial" class="summary-name">speParcial</a><br />
+      El SPE Parcial de un articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#ivaParcial" class="summary-name">ivaParcial</a><br />
+      El IVA Parcial de un articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#fleteParcial" class="summary-name">fleteParcial</a><br />
+      El FLETE Parcial de un articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#seguroParcial" class="summary-name">seguroParcial</a><br />
+      El seguro parcial de un articulo
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#impuestosParcial" class="summary-name">impuestosParcial</a><br />
+      Impuestos parcial
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#comisionParcial" class="summary-name">comisionParcial</a><br />
+      La comisi&#243;n parcial
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#agenciaParcial" class="summary-name">agenciaParcial</a><br />
+      El total de agencia prorrateado
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#almacenParcial" class="summary-name">almacenParcial</a><br />
+      El total de almacen prorrateado
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#papeleriaParcial" class="summary-name">papeleriaParcial</a><br />
+      El total de papeleria prorrateado
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#transporteParcial" class="summary-name">transporteParcial</a><br />
+      El transporte prorrateado
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#costoCordobaT" class="summary-name">costoCordobaT</a><br />
+      El costo total en cordobas de esta linea
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#costoCordoba" class="summary-name">costoCordoba</a><br />
+      El costo unitario en cordobas
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#costoDolarT" class="summary-name">costoDolarT</a><br />
+      El Costo total en dolares
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#costoDolar" class="summary-name">costoDolar</a><br />
+      El costo unitario en dolares
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Decimal</span>
+    </td><td class="summary">
+        <a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#otrosParcial" class="summary-name">otrosParcial</a><br />
+      El total prorrateado de otros gastos
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Heredados de <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== DETALLE DE LOS METODOS ==================== -->
+<a name="section-Detalledelosmetodos"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de los metodos</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelosmetodos"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">parent</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion.__init__">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>x.__init__(...) initializes x; see x.__class__.__doc__ for 
+  signature</p>
+  <dl class="fields">
+    <dt>Reemplaza:
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="update"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">update</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">query</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion.update">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Actualizar los porcentajes de DAI, ISC y COMISION</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>query</code></strong> (QSqlQuery) - La query en la que se ejecuta todo el proceso de actualizaci&#243;n</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="save"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">save</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">iddocumento</span>,
+        <span class="sig-arg">nlinea</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="esquipulaspy.document.liquidacion.linealiquidacion-pysrc.html#LineaLiquidacion.save">Codigo&nbsp;fuente</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Este metodo guarda la linea en la base de datos</p>
+  <dl class="fields">
+    <dt>Parametros:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>iddocumento</code></strong> (int) - El id del documento al que esta enlazada la LineAddrTable</li>
+        <li><strong class="pname"><code>nlinea</code></strong> (int) - El numero de la linea en el documento</li>
+    </ul></dd>
+    <dt>Retorna: bool</dt>
+        <dd>Si se pudo o no guardar el documento</dd>
+    <dt>Reemplaza:
+        utility.docbase.LineaBase.save
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== DETALLE DE LAS PROPIEDADES ==================== -->
+<a name="section-Detalledelaspropiedades"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Detalle de las propiedades</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Detalledelaspropiedades"
+         class="privatelink" onclick="toggle_private();"
+         >Ocultar privados</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="rateDAI"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">rateDAI</h3>
+  
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#getRateDAI" class="summary-sig-name">getRateDAI</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd>
+    <dt>Metodo Set :</dt>
+    <dd class="value"><span class="summary-sig"><a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#setRateDAI" class="summary-sig-name">setRateDAI</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dai</span>)</span>
+    </dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="rateISC"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">rateISC</h3>
+  
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#getRateISC" class="summary-sig-name">getRateISC</a>(<span class="summary-sig-arg">self</span>)</span>
+    </dd>
+    <dt>Metodo Set :</dt>
+    <dd class="value"><span class="summary-sig"><a href="esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#setRateISC" class="summary-sig-name">setRateISC</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">isc</span>)</span>
+    </dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="valid"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">valid</h3>
+  <p>Una linea es valida cuando self.quantity &gt; 0 and self.itemCost &gt;
+  0 and self.itemId != 0</p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.valid(<span class="summary-sig-arg">self</span>)</span>
+        - Una linea es valida cuando self.quantity &gt; 0 and self.itemCost &gt; 0 
+and self.itemId != 0
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>bool</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="fobParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">fobParcial</h3>
+  <p>El FOB de este articulo</p>
+  <p><i class="math">FOBPARCIAL = CANTIDAD * COSTOCOMPRA </i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.fobParcial(<span class="summary-sig-arg">self</span>=<span class="summary-sig-default">None</span>)</span>
+        - El FOB de este articulo
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="cifParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">cifParcial</h3>
+  <p>El CIF de un articulo</p>
+  <p><i class="math">CIFPARCIAL = ( CIFTOTAL / FOBTOTAL ) * 
+  FOBPARCIAL</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.cifParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El CIF de un articulo
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="daiParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">daiParcial</h3>
+  <p>El DAI parcial de un articulo</p>
+  <p><i class="math">DAIPARCIAL = CIFPARCIAL * PORCENTAJEDAI</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.daiParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El DAI parcial de un articulo
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="iscParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">iscParcial</h3>
+  <p>El ISC Parcial</p>
+  <p><i class="math">ISCPARCIAL = DAIPARCIAL + CIFPARCIAL * 
+  PORCENTAJEISC</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.iscParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El ISC Parcial
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="tsimParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">tsimParcial</h3>
+  <p>EL TSIM parcial de un articulo</p>
+  <p><i class="math">TSIMPARCIAL = ( TSIMTOTAL / CIFTOTAL ) * 
+  CIFPARCIAL</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.tsimParcial(<span class="summary-sig-arg">self</span>)</span>
+        - EL TSIM parcial de un articulo
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="isoParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">isoParcial</h3>
+  <p>El ISO parcial de un articulo</p>
+  <p><i class="math">ISOPARCIAL = CIFPARCIAL / PORCENTAJEISO</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.isoParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El ISO parcial de un articulo
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="speParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">speParcial</h3>
+  <p>El SPE Parcial de un articulo</p>
+  <p><i class="math">SPEPARCIAL = ( SPETOTAL / CIFTOTAL ) * 
+  CIFPARCIAL</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.speParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El SPE Parcial de un articulo
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="ivaParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">ivaParcial</h3>
+  <p>El IVA Parcial de un articulo</p>
+  <p><i class="math">IVAPARCIAL = ( CIFPARCIAL + DAIPARCIAL + ISCPARCIAL + 
+  TSIMPARCIAL ) *  PORCENTAJEIVA</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.ivaParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El IVA Parcial de un articulo
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="fleteParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">fleteParcial</h3>
+  <p>El FLETE Parcial de un articulo</p>
+  <p><i class="math">FLETEPARCIAL = ( FLETETOTAL / FOBTOTAL ) * FOBPARCIAL 
+  </i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.fleteParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El FLETE Parcial de un articulo
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="seguroParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">seguroParcial</h3>
+  <p>El seguro parcial de un articulo</p>
+  <p><i class="math">SEGUROPARCIAL = ( SEGUROTOTAL / FOBTOTAL ) * 
+  FOBPARCIAL</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.seguroParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El seguro parcial de un articulo
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="impuestosParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">impuestosParcial</h3>
+  <p>Impuestos parcial</p>
+  <p><i class="math">IMPUESTOSPARCIAL= DAIPARCIAL + ISCPARCIAL + IVAPARCIAL
+  + TSIMPARCIAL + SPEPARCIAL + ISOPARCIAL</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.impuestosParcial(<span class="summary-sig-arg">self</span>)</span>
+        - Impuestos parcial
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="comisionParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">comisionParcial</h3>
+  <p>La comisi&#243;n parcial</p>
+  <p><i class="math">COMISIONPARCIAL =  VALORCOMISION * CANTIDAD </i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.comisionParcial(<span class="summary-sig-arg">self</span>)</span>
+        - La comisi&#243;n parcial
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="agenciaParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">agenciaParcial</h3>
+  <p>El total de agencia prorrateado</p>
+  <p><i class="math">AGENCIAPARCIAL =  ( AGENCIATOTAL / CIFTOTAL ) / 
+  CIFPARCIAL </i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.agenciaParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El total de agencia prorrateado
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="almacenParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">almacenParcial</h3>
+  <p>El total de almacen prorrateado</p>
+  <p><i class="math"> ALMACENPARCIAL = ( ALMACENTOTAL / CIFTOTAL ) * 
+  CIFPARCIAL</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.almacenParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El total de almacen prorrateado
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="papeleriaParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">papeleriaParcial</h3>
+  <p>El total de papeleria prorrateado</p>
+  <p><i class="math">PAPELERIAPARCIAL =   PORCENTAJEPAPELERIA * CANTIDAD 
+  </i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.papeleriaParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El total de papeleria prorrateado
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="transporteParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">transporteParcial</h3>
+  <p>El transporte prorrateado</p>
+  <p><i class="math">TRANSPORTEPARCIAL =  PORCENTAJETRANSPORTE * 
+  CANTIDAD</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.transporteParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El transporte prorrateado
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="costoCordobaT"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">costoCordobaT</h3>
+  <p>El costo total en cordobas de esta linea</p>
+  <p><i class="math">COSTOTOTALCORDOBA =  COSTODOLAR * TIPOCAMBIO</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.costoCordobaT(<span class="summary-sig-arg">self</span>)</span>
+        - El costo total en cordobas de esta linea
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="costoCordoba"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">costoCordoba</h3>
+  <p>El costo unitario en cordobas</p>
+  <p><i class="math">COSTOCORDOBA =  COSTOTOTALCORDOBA / CANTIDAD </i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.costoCordoba(<span class="summary-sig-arg">self</span>)</span>
+        - El costo unitario en cordobas
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="costoDolarT"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">costoDolarT</h3>
+  <p>El Costo total en dolares</p>
+  <p><i class="math">COSTOTOTALDOLAR =  CIFPARCIAL + COMISIONPARCIAL + 
+  AGENCIAPARCIAL + ALMACENPARCIAL + PAPELERIAPARCIAL + TRANSPORTEPARCIAL + 
+  IMPUESTOSPARCIAL</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.costoDolarT(<span class="summary-sig-arg">self</span>)</span>
+        - El Costo total en dolares
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="costoDolar"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">costoDolar</h3>
+  <p>El costo unitario en dolares</p>
+  <p><i class="math">COSTODOLAR =  COSTOTOTALDOLARES / CANTIDAD </i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.costoDolar(<span class="summary-sig-arg">self</span>)</span>
+        - El costo unitario en dolares
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="otrosParcial"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">otrosParcial</h3>
+  <p>El total prorrateado de otros gastos</p>
+  <p><i class="math">OTROSGASTOSPARCIAL = ( OTROSGASTOSTOTAL / FOBTOTAL ) *
+  FOBPARCIAL</i></p>
+  <dl class="fields">
+    <dt>Metodo Get :</dt>
+    <dd class="value"><span class="summary-sig"><i>unreachable</i>.otrosParcial(<span class="summary-sig-arg">self</span>)</span>
+        - El total prorrateado de otros gastos
+    </dd>
+    <dt>Tipo:</dt>
+      <dd>Decimal</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="esquipulaspy.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

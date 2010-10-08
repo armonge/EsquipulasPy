@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>esquipulaspy.inventario.mainwindow</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="esquipulaspy.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="esquipulaspy-module.html">Paquete&nbsp;esquipulaspy</a> ::
+        <a href="esquipulaspy.inventario-module.html">Paquete&nbsp;inventario</a> ::
+        Modulo&nbsp;mainwindow
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="esquipulaspy.inventario.mainwindow-pysrc.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="esquipulaspy.inventario.mainwindow-module.html">Modulo esquipulaspy.inventario.mainwindow</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">Module implementing MainWindow.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtGui</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QMainWindow</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtCore</tt> <tt class="py-keyword">import</tt> <tt class="py-name">pyqtSlot</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Paquete esquipulaspy.document.entradacompra=esquipulaspy.document.entradacompra-module.html,Module esquipulaspy.inventario.entradacompra=esquipulaspy.inventario.entradacompra-module.html"><a title="esquipulaspy.document.entradacompra
+esquipulaspy.inventario.entradacompra" class="py-name" href="#" onclick="return doclink('link-0', 'entradacompra', 'link-0');">entradacompra</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Class esquipulaspy.inventario.entradacompra.frmEntradaCompra=esquipulaspy.inventario.entradacompra.frmEntradaCompra-class.html"><a title="esquipulaspy.inventario.entradacompra.frmEntradaCompra" class="py-name" href="#" onclick="return doclink('link-1', 'frmEntradaCompra', 'link-1');">frmEntradaCompra</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name" targets="Module esquipulaspy.caja.catalogos=esquipulaspy.caja.catalogos-module.html,Module esquipulaspy.inventario.catalogos=esquipulaspy.inventario.catalogos-module.html"><a title="esquipulaspy.caja.catalogos
+esquipulaspy.inventario.catalogos" class="py-name" href="#" onclick="return doclink('link-2', 'catalogos', 'link-2');">catalogos</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class esquipulaspy.inventario.catalogos.FrmCatMarcas=esquipulaspy.inventario.catalogos.FrmCatMarcas-class.html"><a title="esquipulaspy.inventario.catalogos.FrmCatMarcas" class="py-name" href="#" onclick="return doclink('link-3', 'FrmCatMarcas', 'link-3');">FrmCatMarcas</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Class esquipulaspy.inventario.catalogos.FrmCatConceptos=esquipulaspy.inventario.catalogos.FrmCatConceptos-class.html"><a title="esquipulaspy.inventario.catalogos.FrmCatConceptos" class="py-name" href="#" onclick="return doclink('link-4', 'FrmCatConceptos', 'link-4');">FrmCatConceptos</a></tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-5" class="py-name" targets="Paquete esquipulaspy.document.liquidacion=esquipulaspy.document.liquidacion-module.html,Module esquipulaspy.inventario.liquidacion=esquipulaspy.inventario.liquidacion-module.html"><a title="esquipulaspy.document.liquidacion
+esquipulaspy.inventario.liquidacion" class="py-name" href="#" onclick="return doclink('link-5', 'liquidacion', 'link-5');">liquidacion</a></tt> <tt class="py-keyword">import</tt> <tt id="link-6" class="py-name" targets="Class esquipulaspy.inventario.liquidacion.FrmLiquidacion=esquipulaspy.inventario.liquidacion.FrmLiquidacion-class.html"><a title="esquipulaspy.inventario.liquidacion.FrmLiquidacion" class="py-name" href="#" onclick="return doclink('link-6', 'FrmLiquidacion', 'link-6');">FrmLiquidacion</a></tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-7" class="py-name" targets="Module esquipulaspy.inventario.categorias=esquipulaspy.inventario.categorias-module.html"><a title="esquipulaspy.inventario.categorias" class="py-name" href="#" onclick="return doclink('link-7', 'categorias', 'link-7');">categorias</a></tt> <tt class="py-keyword">import</tt> <tt id="link-8" class="py-name" targets="Class esquipulaspy.inventario.categorias.FrmCategorias=esquipulaspy.inventario.categorias.FrmCategorias-class.html"><a title="esquipulaspy.inventario.categorias.FrmCategorias" class="py-name" href="#" onclick="return doclink('link-8', 'FrmCategorias', 'link-8');">FrmCategorias</a></tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-9" class="py-name" targets="Paquete esquipulaspy.document.kardex=esquipulaspy.document.kardex-module.html,Module esquipulaspy.inventario.kardex=esquipulaspy.inventario.kardex-module.html"><a title="esquipulaspy.document.kardex
+esquipulaspy.inventario.kardex" class="py-name" href="#" onclick="return doclink('link-9', 'kardex', 'link-9');">kardex</a></tt> <tt class="py-keyword">import</tt> <tt id="link-10" class="py-name" targets="Class esquipulaspy.inventario.kardex.frmKardex=esquipulaspy.inventario.kardex.frmKardex-class.html"><a title="esquipulaspy.inventario.kardex.frmKardex" class="py-name" href="#" onclick="return doclink('link-10', 'frmKardex', 'link-10');">frmKardex</a></tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-11" class="py-name" targets="Paquete esquipulaspy.document.kardexother=esquipulaspy.document.kardexother-module.html,Module esquipulaspy.inventario.kardexother=esquipulaspy.inventario.kardexother-module.html"><a title="esquipulaspy.document.kardexother
+esquipulaspy.inventario.kardexother" class="py-name" href="#" onclick="return doclink('link-11', 'kardexother', 'link-11');">kardexother</a></tt> <tt class="py-keyword">import</tt> <tt id="link-12" class="py-name" targets="Class esquipulaspy.inventario.kardexother.FrmKardexOther=esquipulaspy.inventario.kardexother.FrmKardexOther-class.html"><a title="esquipulaspy.inventario.kardexother.FrmKardexOther" class="py-name" href="#" onclick="return doclink('link-12', 'FrmKardexOther', 'link-12');">FrmKardexOther</a></tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-13" class="py-name" targets="Paquete esquipulaspy.ui=esquipulaspy.ui-module.html"><a title="esquipulaspy.ui" class="py-name" href="#" onclick="return doclink('link-13', 'ui', 'link-13');">ui</a></tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Module esquipulaspy.ui.Ui_mainwindowinventario=esquipulaspy.ui.Ui_mainwindowinventario-module.html"><a title="esquipulaspy.ui.Ui_mainwindowinventario" class="py-name" href="#" onclick="return doclink('link-14', 'Ui_mainwindowinventario', 'link-14');">Ui_mainwindowinventario</a></tt> <tt class="py-keyword">import</tt> <tt id="link-15" class="py-name" targets="Class esquipulaspy.ui.Ui_mainwindowcaja.Ui_MainWindow=esquipulaspy.ui.Ui_mainwindowcaja.Ui_MainWindow-class.html,Class esquipulaspy.ui.Ui_mainwindowcontabilidad.Ui_MainWindow=esquipulaspy.ui.Ui_mainwindowcontabilidad.Ui_MainWindow-class.html,Class esquipulaspy.ui.Ui_mainwindowcontablidad.Ui_MainWindow=esquipulaspy.ui.Ui_mainwindowcontablidad.Ui_MainWindow-class.html,Class esquipulaspy.ui.Ui_mainwindowinventario.Ui_MainWindow=esquipulaspy.ui.Ui_mainwindowinventario.Ui_MainWindow-class.html"><a title="esquipulaspy.ui.Ui_mainwindowcaja.Ui_MainWindow
+esquipulaspy.ui.Ui_mainwindowcontabilidad.Ui_MainWindow
+esquipulaspy.ui.Ui_mainwindowcontablidad.Ui_MainWindow
+esquipulaspy.ui.Ui_mainwindowinventario.Ui_MainWindow" class="py-name" href="#" onclick="return doclink('link-15', 'Ui_MainWindow', 'link-15');">Ui_MainWindow</a></tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-16" class="py-name" targets="Module esquipulaspy.inventario.articulos=esquipulaspy.inventario.articulos-module.html"><a title="esquipulaspy.inventario.articulos" class="py-name" href="#" onclick="return doclink('link-16', 'articulos', 'link-16');">articulos</a></tt> <tt class="py-keyword">import</tt> <tt id="link-17" class="py-name" targets="Class esquipulaspy.inventario.articulos.FrmArticulos=esquipulaspy.inventario.articulos.FrmArticulos-class.html"><a title="esquipulaspy.inventario.articulos.FrmArticulos" class="py-name" href="#" onclick="return doclink('link-17', 'FrmArticulos', 'link-17');">FrmArticulos</a></tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-18" class="py-name" targets="Paquete esquipulaspy.utility=esquipulaspy.utility-module.html"><a title="esquipulaspy.utility" class="py-name" href="#" onclick="return doclink('link-18', 'utility', 'link-18');">utility</a></tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Module esquipulaspy.utility.mainwindowbase=esquipulaspy.utility.mainwindowbase-module.html"><a title="esquipulaspy.utility.mainwindowbase" class="py-name" href="#" onclick="return doclink('link-19', 'mainwindowbase', 'link-19');">mainwindowbase</a></tt> <tt class="py-keyword">import</tt> <tt id="link-20" class="py-name" targets="Class esquipulaspy.utility.mainwindowbase.MainWindowBase=esquipulaspy.utility.mainwindowbase.MainWindowBase-class.html"><a title="esquipulaspy.utility.mainwindowbase.MainWindowBase" class="py-name" href="#" onclick="return doclink('link-20', 'MainWindowBase', 'link-20');">MainWindowBase</a></tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-21" class="py-name"><a title="esquipulaspy.utility" class="py-name" href="#" onclick="return doclink('link-21', 'utility', 'link-18');">utility</a></tt><tt class="py-op">.</tt><tt id="link-22" class="py-name" targets="Module esquipulaspy.utility.persona=esquipulaspy.utility.persona-module.html"><a title="esquipulaspy.utility.persona" class="py-name" href="#" onclick="return doclink('link-22', 'persona', 'link-22');">persona</a></tt> <tt class="py-keyword">import</tt> <tt id="link-23" class="py-name" targets="Class esquipulaspy.utility.persona.frmPersona=esquipulaspy.utility.persona.frmPersona-class.html"><a title="esquipulaspy.utility.persona.frmPersona" class="py-name" href="#" onclick="return doclink('link-23', 'frmPersona', 'link-23');">frmPersona</a></tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-24" class="py-name"><a title="esquipulaspy.utility" class="py-name" href="#" onclick="return doclink('link-24', 'utility', 'link-18');">utility</a></tt> <tt class="py-keyword">import</tt> <tt id="link-25" class="py-name" targets="Module esquipulaspy.utility.constantes=esquipulaspy.utility.constantes-module.html"><a title="esquipulaspy.utility.constantes" class="py-name" href="#" onclick="return doclink('link-25', 'constantes', 'link-25');">constantes</a></tt> </tt>
+<a name="MainWindow"></a><div id="MainWindow-def"><a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt> <a class="py-toggle" href="#" id="MainWindow-toggle" onclick="return toggle('MainWindow');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html">MainWindow</a><tt class="py-op">(</tt> <tt class="py-base-class">QMainWindow</tt><tt class="py-op">,</tt> <tt class="py-base-class">Ui_MainWindow</tt><tt class="py-op">,</tt> <tt class="py-base-class">MainWindowBase</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="MainWindow-expanded"><a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-docstring">    Class documentation goes here.</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">    <tt id="link-26" class="py-name" targets="Variable esquipulaspy.caja.mainwindow.MainWindow.ROL=esquipulaspy.caja.mainwindow.MainWindow-class.html#ROL,Variable esquipulaspy.contabilidad.mainwindow.MainWindow.ROL=esquipulaspy.contabilidad.mainwindow.MainWindow-class.html#ROL,Variable esquipulaspy.inventario.mainwindow.MainWindow.ROL=esquipulaspy.inventario.mainwindow.MainWindow-class.html#ROL"><a title="esquipulaspy.caja.mainwindow.MainWindow.ROL
+esquipulaspy.contabilidad.mainwindow.MainWindow.ROL
+esquipulaspy.inventario.mainwindow.MainWindow.ROL" class="py-name" href="#" onclick="return doclink('link-26', 'ROL', 'link-26');">ROL</a></tt> <tt class="py-op">=</tt> <tt id="link-27" class="py-name"><a title="esquipulaspy.utility.constantes" class="py-name" href="#" onclick="return doclink('link-27', 'constantes', 'link-25');">constantes</a></tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Variable esquipulaspy.utility.constantes.ACCESOINVENTARIO=esquipulaspy.utility.constantes-module.html#ACCESOINVENTARIO"><a title="esquipulaspy.utility.constantes.ACCESOINVENTARIO" class="py-name" href="#" onclick="return doclink('link-28', 'ACCESOINVENTARIO', 'link-28');">ACCESOINVENTARIO</a></tt> </tt>
+<a name="MainWindow.__init__"></a><div id="MainWindow.__init__-def"><a name="L26"></a><tt class="py-lineno"> 26</tt> <a class="py-toggle" href="#" id="MainWindow.__init__-toggle" onclick="return toggle('MainWindow.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#__init__">__init__</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">parent</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.__init__-expanded"><a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-docstring">        Constructor</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt> <tt id="link-29" class="py-name" targets="Class esquipulaspy.caja.mainwindow.MainWindow=esquipulaspy.caja.mainwindow.MainWindow-class.html,Class esquipulaspy.contabilidad.mainwindow.MainWindow=esquipulaspy.contabilidad.mainwindow.MainWindow-class.html,Class esquipulaspy.inventario.mainwindow.MainWindow=esquipulaspy.inventario.mainwindow.MainWindow-class.html"><a title="esquipulaspy.caja.mainwindow.MainWindow
+esquipulaspy.contabilidad.mainwindow.MainWindow
+esquipulaspy.inventario.mainwindow.MainWindow" class="py-name" href="#" onclick="return doclink('link-29', 'MainWindow', 'link-29');">MainWindow</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-30" class="py-name" targets="Method esquipulaspy.caja.apertura.AperturaModel.__init__()=esquipulaspy.caja.apertura.AperturaModel-class.html#__init__,Method esquipulaspy.caja.apertura.DlgApertura.__init__()=esquipulaspy.caja.apertura.DlgApertura-class.html#__init__,Method esquipulaspy.caja.arqueo.FrmArqueo.__init__()=esquipulaspy.caja.arqueo.FrmArqueo-class.html#__init__,Method esquipulaspy.caja.banks.FrmBanks.__init__()=esquipulaspy.caja.banks.FrmBanks-class.html#__init__,Method esquipulaspy.caja.cajas.FrmCajas.__init__()=esquipulaspy.caja.cajas.FrmCajas-class.html#__init__,Method esquipulaspy.caja.catalogos.FrmCatClientes.__init__()=esquipulaspy.caja.catalogos.FrmCatClientes-class.html#__init__,Method esquipulaspy.caja.cierrecaja.FrmCierreCaja.__init__()=esquipulaspy.caja.cierrecaja.FrmCierreCaja-class.html#__init__,Method esquipulaspy.caja.devolucion.DlgSelectBill.__init__()=esquipulaspy.caja.devolucion.DlgSelectBill-class.html#__init__,Method esquipulaspy.caja.devolucion.FrmDevolucion.__init__()=esquipulaspy.caja.devolucion.FrmDevolucion-class.html#__init__,Method esquipulaspy.caja.factura.Anular.__init__()=esquipulaspy.caja.factura.Anular-class.html#__init__,Method esquipulaspy.caja.factura.FrmFactura.__init__()=esquipulaspy.caja.factura.FrmFactura-class.html#__init__,Method esquipulaspy.caja.mainwindow.DatosSesion.__init__()=esquipulaspy.caja.mainwindow.DatosSesion-class.html#__init__,Method esquipulaspy.caja.mainwindow.MainWindow.__init__()=esquipulaspy.caja.mainwindow.MainWindow-class.html#__init__,Method esquipulaspy.caja.pago.FrmPago.__init__()=esquipulaspy.caja.pago.FrmPago-class.html#__init__,Method esquipulaspy.caja.recibo.DatosRecibo.__init__()=esquipulaspy.caja.recibo.DatosRecibo-class.html#__init__,Method esquipulaspy.caja.recibo.FrmRecibo.__init__()=esquipulaspy.caja.recibo.FrmRecibo-class.html#__init__,Method esquipulaspy.caja.recibo.ROFacturasModel.__init__()=esquipulaspy.caja.recibo.ROFacturasModel-class.html#__init__,Method esquipulaspy.caja.recibo.dlgRecibo.__init__()=esquipulaspy.caja.recibo.dlgRecibo-class.html#__init__,Method esquipulaspy.contabilidad.balancegeneral.Cuenta.__init__()=esquipulaspy.contabilidad.balancegeneral.Cuenta-class.html#__init__,Method esquipulaspy.contabilidad.balancegeneral.CuentaPadre.__init__()=esquipulaspy.contabilidad.balancegeneral.CuentaPadre-class.html#__init__,Method esquipulaspy.contabilidad.balancegeneral.CuentasModel.__init__()=esquipulaspy.contabilidad.balancegeneral.CuentasModel-class.html#__init__,Method esquipulaspy.contabilidad.balancegeneral.FrmBalanceGeneral.__init__()=esquipulaspy.contabilidad.balancegeneral.FrmBalanceGeneral-class.html#__init__,Method esquipulaspy.contabilidad.cheques.Anular.__init__()=esquipulaspy.contabilidad.cheques.Anular-class.html#__init__,Method esquipulaspy.contabilidad.cheques.ChequesFiltroDelegate.__init__()=esquipulaspy.contabilidad.cheques.ChequesFiltroDelegate-class.html#__init__,Method esquipulaspy.contabilidad.cheques.FrmCheques.__init__()=esquipulaspy.contabilidad.cheques.FrmCheques-class.html#__init__,Method esquipulaspy.contabilidad.cheques.ROAccountsModel.__init__()=esquipulaspy.contabilidad.cheques.ROAccountsModel-class.html#__init__,Method esquipulaspy.contabilidad.cierrecontable.FrmCierreContable.__init__()=esquipulaspy.contabilidad.cierrecontable.FrmCierreContable-class.html#__init__,Method esquipulaspy.contabilidad.conciliacion.DetalleTableModel.__init__()=esquipulaspy.contabilidad.conciliacion.DetalleTableModel-class.html#__init__,Method esquipulaspy.contabilidad.conciliacion.FrmConciliacion.__init__()=esquipulaspy.contabilidad.conciliacion.FrmConciliacion-class.html#__init__,Method esquipulaspy.contabilidad.conciliacion.dlgSelectCuenta.__init__()=esquipulaspy.contabilidad.conciliacion.dlgSelectCuenta-class.html#__init__,Method esquipulaspy.contabilidad.creditodebito.DlgSelectBill.__init__()=esquipulaspy.contabilidad.creditodebito.DlgSelectBill-class.html#__init__,Method esquipulaspy.contabilidad.creditodebito.FrmCreditoDebito.__init__()=esquipulaspy.contabilidad.creditodebito.FrmCreditoDebito-class.html#__init__,Method esquipulaspy.contabilidad.cuentas.Account.__init__()=esquipulaspy.contabilidad.cuentas.Account-class.html#__init__,Method esquipulaspy.contabilidad.cuentas.AccountsModel.__init__()=esquipulaspy.contabilidad.cuentas.AccountsModel-class.html#__init__,Method esquipulaspy.contabilidad.cuentas.DlgAccountMod.__init__()=esquipulaspy.contabilidad.cuentas.DlgAccountMod-class.html#__init__,Method esquipulaspy.contabilidad.cuentas.FrmAccounts.__init__()=esquipulaspy.contabilidad.cuentas.FrmAccounts-class.html#__init__,Method esquipulaspy.contabilidad.estadoresultado.FrmEstadoResultado.__init__()=esquipulaspy.contabilidad.estadoresultado.FrmEstadoResultado-class.html#__init__,Method esquipulaspy.contabilidad.mainwindow.MainWindow.__init__()=esquipulaspy.contabilidad.mainwindow.MainWindow-class.html#__init__,Method esquipulaspy.contabilidad.movimientosbancarios.FrmMovimientosBancarios.__init__()=esquipulaspy.contabilidad.movimientosbancarios.FrmMovimientosBancarios-class.html#__init__,Method esquipulaspy.contabilidad.movimientosbancarios.dlgMovimientosBancarios.__init__()=esquipulaspy.contabilidad.movimientosbancarios.dlgMovimientosBancarios-class.html#__init__,Method esquipulaspy.contabilidad.operations.FrmOperations.__init__()=esquipulaspy.contabilidad.operations.FrmOperations-class.html#__init__,Method esquipulaspy.document.arqueo.arqueodelegate.ArqueoDelegate.__init__()=esquipulaspy.document.arqueo.arqueodelegate.ArqueoDelegate-class.html#__init__,Method esquipulaspy.document.arqueo.arqueomodel.ArqueoModel.__init__()=esquipulaspy.document.arqueo.arqueomodel.ArqueoModel-class.html#__init__,Method esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.__init__()=esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo-class.html#__init__,Method esquipulaspy.document.cheque.chequemodel.ChequeModel.__init__()=esquipulaspy.document.cheque.chequemodel.ChequeModel-class.html#__init__,Method esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel.__init__()=esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#__init__,Method esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion.__init__()=esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion-class.html#__init__,Method esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel.__init__()=esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel-class.html#__init__,Method esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel.__init__()=esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel-class.html#__init__,Method esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion.__init__()=esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion-class.html#__init__,Method esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel.__init__()=esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#__init__,Method esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra.__init__()=esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra-class.html#__init__,Method esquipulaspy.document.factura.facturadelegate.FacturaDelegate.__init__()=esquipulaspy.document.factura.facturadelegate.FacturaDelegate-class.html#__init__,Method esquipulaspy.document.factura.facturamodel.FacturaModel.__init__()=esquipulaspy.document.factura.facturamodel.FacturaModel-class.html#__init__,Method esquipulaspy.document.factura.lineafactura.LineaFactura.__init__()=esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#__init__,Method esquipulaspy.document.kardex.kardexmodel.KardexModel.__init__()=esquipulaspy.document.kardex.kardexmodel.KardexModel-class.html#__init__,Method esquipulaspy.document.kardex.lineakardex.LineaKardex.__init__()=esquipulaspy.document.kardex.lineakardex.LineaKardex-class.html#__init__,Method esquipulaspy.document.kardexother.kardexotherdelegate.KardexOtherDelegate.__init__()=esquipulaspy.document.kardexother.kardexotherdelegate.KardexOtherDelegate-class.html#__init__,Method esquipulaspy.document.kardexother.kardexothermodel.KardexOtherAccountsModel.__init__()=esquipulaspy.document.kardexother.kardexothermodel.KardexOtherAccountsModel-class.html#__init__,Method esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel.__init__()=esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel-class.html#__init__,Method esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther.__init__()=esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther-class.html#__init__,Method esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.__init__()=esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#__init__,Method esquipulaspy.document.liquidacion.liquidaciondelegate.LiquidacionDelegate.__init__()=esquipulaspy.document.liquidacion.liquidaciondelegate.LiquidacionDelegate-class.html#__init__,Method esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionAccountsModel.__init__()=esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionAccountsModel-class.html#__init__,Method esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel.__init__()=esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#__init__,Method esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.__init__()=esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel-class.html#__init__,Method esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel.__init__()=esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel-class.html#__init__,Method esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.Modelo.__init__()=esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.Modelo-class.html#__init__,Method esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.__init__()=esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel-class.html#__init__,Method esquipulaspy.document.pago.compramodel.AbonoModel.__init__()=esquipulaspy.document.pago.compramodel.AbonoModel-class.html#__init__,Method esquipulaspy.document.pago.lineacompra.LineaAbono.__init__()=esquipulaspy.document.pago.lineacompra.LineaAbono-class.html#__init__,Method esquipulaspy.document.pago.lineapago.LineaRecibo.__init__()=esquipulaspy.document.pago.lineapago.LineaRecibo-class.html#__init__,Method esquipulaspy.document.pago.pagomodel.PagoModel.__init__()=esquipulaspy.document.pago.pagomodel.PagoModel-class.html#__init__,Method esquipulaspy.document.pago.recibodelegate.ReciboDelegate.__init__()=esquipulaspy.document.pago.recibodelegate.ReciboDelegate-class.html#__init__,Method esquipulaspy.document.recibo.abonomodel.AbonoModel.__init__()=esquipulaspy.document.recibo.abonomodel.AbonoModel-class.html#__init__,Method esquipulaspy.document.recibo.lineaabono.LineaAbono.__init__()=esquipulaspy.document.recibo.lineaabono.LineaAbono-class.html#__init__,Method esquipulaspy.document.recibo.linearecibo.LineaRecibo.__init__()=esquipulaspy.document.recibo.linearecibo.LineaRecibo-class.html#__init__,Method esquipulaspy.document.recibo.recibodelegate.ReciboDelegate.__init__()=esquipulaspy.document.recibo.recibodelegate.ReciboDelegate-class.html#__init__,Method esquipulaspy.document.recibo.recibomodel.ReciboModel.__init__()=esquipulaspy.document.recibo.recibomodel.ReciboModel-class.html#__init__,Method esquipulaspy.inventario.articulos.ArticlesModel.__init__()=esquipulaspy.inventario.articulos.ArticlesModel-class.html#__init__,Method esquipulaspy.inventario.articulos.FrmArticulos.__init__()=esquipulaspy.inventario.articulos.FrmArticulos-class.html#__init__,Method esquipulaspy.inventario.articulos.frmArticlesNew.__init__()=esquipulaspy.inventario.articulos.frmArticlesNew-class.html#__init__,Method esquipulaspy.inventario.catalogos.FrmCatConceptos.__init__()=esquipulaspy.inventario.catalogos.FrmCatConceptos-class.html#__init__,Method esquipulaspy.inventario.catalogos.FrmCatMarcas.__init__()=esquipulaspy.inventario.catalogos.FrmCatMarcas-class.html#__init__,Method esquipulaspy.inventario.catalogos.FrmCatProveedores.__init__()=esquipulaspy.inventario.catalogos.FrmCatProveedores-class.html#__init__,Method esquipulaspy.inventario.catalogos.PeopleDelegate.__init__()=esquipulaspy.inventario.catalogos.PeopleDelegate-class.html#__init__,Method esquipulaspy.inventario.catalogos.ProvidersModel.__init__()=esquipulaspy.inventario.catalogos.ProvidersModel-class.html#__init__,Method esquipulaspy.inventario.categorias.FrmCategorias.__init__()=esquipulaspy.inventario.categorias.FrmCategorias-class.html#__init__,Method esquipulaspy.inventario.categorias.dlgCategoriesMod.__init__()=esquipulaspy.inventario.categorias.dlgCategoriesMod-class.html#__init__,Method esquipulaspy.inventario.categoriesmodel.CategoriesModel.__init__()=esquipulaspy.inventario.categoriesmodel.CategoriesModel-class.html#__init__,Method esquipulaspy.inventario.categoriesmodel.CategoryItem.__init__()=esquipulaspy.inventario.categoriesmodel.CategoryItem-class.html#__init__,Method esquipulaspy.inventario.entradacompra.frmEntradaCompra.__init__()=esquipulaspy.inventario.entradacompra.frmEntradaCompra-class.html#__init__,Method esquipulaspy.inventario.kardex.dlgSelectDoc.__init__()=esquipulaspy.inventario.kardex.dlgSelectDoc-class.html#__init__,Method esquipulaspy.inventario.kardex.frmKardex.__init__()=esquipulaspy.inventario.kardex.frmKardex-class.html#__init__,Method esquipulaspy.inventario.kardexother.FrmKardexOther.__init__()=esquipulaspy.inventario.kardexother.FrmKardexOther-class.html#__init__,Method esquipulaspy.inventario.liquidacion.ArticlesModel.__init__()=esquipulaspy.inventario.liquidacion.ArticlesModel-class.html#__init__,Method esquipulaspy.inventario.liquidacion.FrmLiquidacion.__init__()=esquipulaspy.inventario.liquidacion.FrmLiquidacion-class.html#__init__,Method esquipulaspy.inventario.mainwindow.MainWindow.__init__()=esquipulaspy.inventario.mainwindow.MainWindow-class.html#__init__,Method esquipulaspy.utility.accountselector.AccountsSelectorDelegate.__init__()=esquipulaspy.utility.accountselector.AccountsSelectorDelegate-class.html#__init__,Method esquipulaspy.utility.accountselector.AccountsSelectorLine.__init__()=esquipulaspy.utility.accountselector.AccountsSelectorLine-class.html#__init__,Method esquipulaspy.utility.accountselector.AccountsSelectorModel.__init__()=esquipulaspy.utility.accountselector.AccountsSelectorModel-class.html#__init__,Method esquipulaspy.utility.base.Base.__init__()=esquipulaspy.utility.base.Base-class.html#__init__,Method esquipulaspy.utility.catgeneric.CatalogModel.__init__()=esquipulaspy.utility.catgeneric.CatalogModel-class.html#__init__,Method esquipulaspy.utility.catgeneric.FrmCatGeneric.__init__()=esquipulaspy.utility.catgeneric.FrmCatGeneric-class.html#__init__,Method esquipulaspy.utility.catgeneric.PeopleDelegate.__init__()=esquipulaspy.utility.catgeneric.PeopleDelegate-class.html#__init__,Method esquipulaspy.utility.database.dlgDatabaseConfig.__init__()=esquipulaspy.utility.database.dlgDatabaseConfig-class.html#__init__,Method esquipulaspy.utility.mainwindowbase.MainWindowBase.__init__()=esquipulaspy.utility.mainwindowbase.MainWindowBase-class.html#__init__,Method esquipulaspy.utility.persona.frmPersona.__init__()=esquipulaspy.utility.persona.frmPersona-class.html#__init__,Method esquipulaspy.utility.reports.frmReportes.__init__()=esquipulaspy.utility.reports.frmReportes-class.html#__init__,Method esquipulaspy.utility.searchpaneldelegate.SearchPanelDelegate.__init__()=esquipulaspy.utility.searchpaneldelegate.SearchPanelDelegate-class.html#__init__,Method esquipulaspy.utility.singleselectionmodel.SingleSelectionModel.__init__()=esquipulaspy.utility.singleselectionmodel.SingleSelectionModel-class.html#__init__,Method esquipulaspy.utility.treefilterproxymodel.TreeFilterProxyModel.__init__()=esquipulaspy.utility.treefilterproxymodel.TreeFilterProxyModel-class.html#__init__,Method esquipulaspy.utility.user.User.__init__()=esquipulaspy.utility.user.User-class.html#__init__,Method esquipulaspy.utility.user.dlgAbstractUserLogin.__init__()=esquipulaspy.utility.user.dlgAbstractUserLogin-class.html#__init__,Method esquipulaspy.utility.user.dlgPasswordChange.__init__()=esquipulaspy.utility.user.dlgPasswordChange-class.html#__init__,Method esquipulaspy.utility.widgets.searchpanel.SearchPanel.__init__()=esquipulaspy.utility.widgets.searchpanel.SearchPanel-class.html#__init__,Method esquipulaspy.utility.widgets.searchpanel.SearchPanelView.__init__()=esquipulaspy.utility.widgets.searchpanel.SearchPanelView-class.html#__init__,Method esquipulaspy.utility.widgets.searchpanel.SingleSelectionSearchPanelDelegate.__init__()=esquipulaspy.utility.widgets.searchpanel.SingleSelectionSearchPanelDelegate-class.html#__init__,Method esquipulaspy.utility.widgets.xdockwidget.XDockMainWidgetWrapper.__init__()=esquipulaspy.utility.widgets.xdockwidget.XDockMainWidgetWrapper-class.html#__init__,Method esquipulaspy.utility.widgets.xdockwidget.XDockWidget.__init__()=esquipulaspy.utility.widgets.xdockwidget.XDockWidget-class.html#__init__,Method esquipulaspy.utility.widgets.xdockwidget.XDockWidgetTitleBar.__init__()=esquipulaspy.utility.widgets.xdockwidget.XDockWidgetTitleBar-class.html#__init__,Method esquipulaspy.utility.widgets.xdockwidget.XDockWidgetTitleBarButton.__init__()=esquipulaspy.utility.widgets.xdockwidget.XDockWidgetTitleBarButton-class.html#__init__"><a title="esquipulaspy.caja.apertura.AperturaModel.__init__
+esquipulaspy.caja.apertura.DlgApertura.__init__
+esquipulaspy.caja.arqueo.FrmArqueo.__init__
+esquipulaspy.caja.banks.FrmBanks.__init__
+esquipulaspy.caja.cajas.FrmCajas.__init__
+esquipulaspy.caja.catalogos.FrmCatClientes.__init__
+esquipulaspy.caja.cierrecaja.FrmCierreCaja.__init__
+esquipulaspy.caja.devolucion.DlgSelectBill.__init__
+esquipulaspy.caja.devolucion.FrmDevolucion.__init__
+esquipulaspy.caja.factura.Anular.__init__
+esquipulaspy.caja.factura.FrmFactura.__init__
+esquipulaspy.caja.mainwindow.DatosSesion.__init__
+esquipulaspy.caja.mainwindow.MainWindow.__init__
+esquipulaspy.caja.pago.FrmPago.__init__
+esquipulaspy.caja.recibo.DatosRecibo.__init__
+esquipulaspy.caja.recibo.FrmRecibo.__init__
+esquipulaspy.caja.recibo.ROFacturasModel.__init__
+esquipulaspy.caja.recibo.dlgRecibo.__init__
+esquipulaspy.contabilidad.balancegeneral.Cuenta.__init__
+esquipulaspy.contabilidad.balancegeneral.CuentaPadre.__init__
+esquipulaspy.contabilidad.balancegeneral.CuentasModel.__init__
+esquipulaspy.contabilidad.balancegeneral.FrmBalanceGeneral.__init__
+esquipulaspy.contabilidad.cheques.Anular.__init__
+esquipulaspy.contabilidad.cheques.ChequesFiltroDelegate.__init__
+esquipulaspy.contabilidad.cheques.FrmCheques.__init__
+esquipulaspy.contabilidad.cheques.ROAccountsModel.__init__
+esquipulaspy.contabilidad.cierrecontable.FrmCierreContable.__init__
+esquipulaspy.contabilidad.conciliacion.DetalleTableModel.__init__
+esquipulaspy.contabilidad.conciliacion.FrmConciliacion.__init__
+esquipulaspy.contabilidad.conciliacion.dlgSelectCuenta.__init__
+esquipulaspy.contabilidad.creditodebito.DlgSelectBill.__init__
+esquipulaspy.contabilidad.creditodebito.FrmCreditoDebito.__init__
+esquipulaspy.contabilidad.cuentas.Account.__init__
+esquipulaspy.contabilidad.cuentas.AccountsModel.__init__
+esquipulaspy.contabilidad.cuentas.DlgAccountMod.__init__
+esquipulaspy.contabilidad.cuentas.FrmAccounts.__init__
+esquipulaspy.contabilidad.estadoresultado.FrmEstadoResultado.__init__
+esquipulaspy.contabilidad.mainwindow.MainWindow.__init__
+esquipulaspy.contabilidad.movimientosbancarios.FrmMovimientosBancarios.__init__
+esquipulaspy.contabilidad.movimientosbancarios.dlgMovimientosBancarios.__init__
+esquipulaspy.contabilidad.operations.FrmOperations.__init__
+esquipulaspy.document.arqueo.arqueodelegate.ArqueoDelegate.__init__
+esquipulaspy.document.arqueo.arqueomodel.ArqueoModel.__init__
+esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.__init__
+esquipulaspy.document.cheque.chequemodel.ChequeModel.__init__
+esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel.__init__
+esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion.__init__
+esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel.__init__
+esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel.__init__
+esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion.__init__
+esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel.__init__
+esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra.__init__
+esquipulaspy.document.factura.facturadelegate.FacturaDelegate.__init__
+esquipulaspy.document.factura.facturamodel.FacturaModel.__init__
+esquipulaspy.document.factura.lineafactura.LineaFactura.__init__
+esquipulaspy.document.kardex.kardexmodel.KardexModel.__init__
+esquipulaspy.document.kardex.lineakardex.LineaKardex.__init__
+esquipulaspy.document.kardexother.kardexotherdelegate.KardexOtherDelegate.__init__
+esquipulaspy.document.kardexother.kardexothermodel.KardexOtherAccountsModel.__init__
+esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel.__init__
+esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther.__init__
+esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.__init__
+esquipulaspy.document.liquidacion.liquidaciondelegate.LiquidacionDelegate.__init__
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionAccountsModel.__init__
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel.__init__
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.__init__
+esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel.__init__
+esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.Modelo.__init__
+esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.__init__
+esquipulaspy.document.pago.compramodel.AbonoModel.__init__
+esquipulaspy.document.pago.lineacompra.LineaAbono.__init__
+esquipulaspy.document.pago.lineapago.LineaRecibo.__init__
+esquipulaspy.document.pago.pagomodel.PagoModel.__init__
+esquipulaspy.document.pago.recibodelegate.ReciboDelegate.__init__
+esquipulaspy.document.recibo.abonomodel.AbonoModel.__init__
+esquipulaspy.document.recibo.lineaabono.LineaAbono.__init__
+esquipulaspy.document.recibo.linearecibo.LineaRecibo.__init__
+esquipulaspy.document.recibo.recibodelegate.ReciboDelegate.__init__
+esquipulaspy.document.recibo.recibomodel.ReciboModel.__init__
+esquipulaspy.inventario.articulos.ArticlesModel.__init__
+esquipulaspy.inventario.articulos.FrmArticulos.__init__
+esquipulaspy.inventario.articulos.frmArticlesNew.__init__
+esquipulaspy.inventario.catalogos.FrmCatConceptos.__init__
+esquipulaspy.inventario.catalogos.FrmCatMarcas.__init__
+esquipulaspy.inventario.catalogos.FrmCatProveedores.__init__
+esquipulaspy.inventario.catalogos.PeopleDelegate.__init__
+esquipulaspy.inventario.catalogos.ProvidersModel.__init__
+esquipulaspy.inventario.categorias.FrmCategorias.__init__
+esquipulaspy.inventario.categorias.dlgCategoriesMod.__init__
+esquipulaspy.inventario.categoriesmodel.CategoriesModel.__init__
+esquipulaspy.inventario.categoriesmodel.CategoryItem.__init__
+esquipulaspy.inventario.entradacompra.frmEntradaCompra.__init__
+esquipulaspy.inventario.kardex.dlgSelectDoc.__init__
+esquipulaspy.inventario.kardex.frmKardex.__init__
+esquipulaspy.inventario.kardexother.FrmKardexOther.__init__
+esquipulaspy.inventario.liquidacion.ArticlesModel.__init__
+esquipulaspy.inventario.liquidacion.FrmLiquidacion.__init__
+esquipulaspy.inventario.mainwindow.MainWindow.__init__
+esquipulaspy.utility.accountselector.AccountsSelectorDelegate.__init__
+esquipulaspy.utility.accountselector.AccountsSelectorLine.__init__
+esquipulaspy.utility.accountselector.AccountsSelectorModel.__init__
+esquipulaspy.utility.base.Base.__init__
+esquipulaspy.utility.catgeneric.CatalogModel.__init__
+esquipulaspy.utility.catgeneric.FrmCatGeneric.__init__
+esquipulaspy.utility.catgeneric.PeopleDelegate.__init__
+esquipulaspy.utility.database.dlgDatabaseConfig.__init__
+esquipulaspy.utility.mainwindowbase.MainWindowBase.__init__
+esquipulaspy.utility.persona.frmPersona.__init__
+esquipulaspy.utility.reports.frmReportes.__init__
+esquipulaspy.utility.searchpaneldelegate.SearchPanelDelegate.__init__
+esquipulaspy.utility.singleselectionmodel.SingleSelectionModel.__init__
+esquipulaspy.utility.treefilterproxymodel.TreeFilterProxyModel.__init__
+esquipulaspy.utility.user.User.__init__
+esquipulaspy.utility.user.dlgAbstractUserLogin.__init__
+esquipulaspy.utility.user.dlgPasswordChange.__init__
+esquipulaspy.utility.widgets.searchpanel.SearchPanel.__init__
+esquipulaspy.utility.widgets.searchpanel.SearchPanelView.__init__
+esquipulaspy.utility.widgets.searchpanel.SingleSelectionSearchPanelDelegate.__init__
+esquipulaspy.utility.widgets.xdockwidget.XDockMainWidgetWrapper.__init__
+esquipulaspy.utility.widgets.xdockwidget.XDockWidget.__init__
+esquipulaspy.utility.widgets.xdockwidget.XDockWidgetTitleBar.__init__
+esquipulaspy.utility.widgets.xdockwidget.XDockWidgetTitleBarButton.__init__" class="py-name" href="#" onclick="return doclink('link-30', '__init__', 'link-30');">__init__</a></tt><tt class="py-op">(</tt> <tt id="link-31" class="py-name" targets="Method esquipulaspy.contabilidad.balancegeneral.CuentaPadre.parent()=esquipulaspy.contabilidad.balancegeneral.CuentaPadre-class.html#parent,Method esquipulaspy.contabilidad.balancegeneral.CuentasModel.parent()=esquipulaspy.contabilidad.balancegeneral.CuentasModel-class.html#parent,Method esquipulaspy.contabilidad.cuentas.Account.parent()=esquipulaspy.contabilidad.cuentas.Account-class.html#parent,Method esquipulaspy.contabilidad.cuentas.AccountsModel.parent()=esquipulaspy.contabilidad.cuentas.AccountsModel-class.html#parent,Method esquipulaspy.inventario.categoriesmodel.CategoriesModel.parent()=esquipulaspy.inventario.categoriesmodel.CategoriesModel-class.html#parent,Method esquipulaspy.inventario.categoriesmodel.CategoryItem.parent()=esquipulaspy.inventario.categoriesmodel.CategoryItem-class.html#parent"><a title="esquipulaspy.contabilidad.balancegeneral.CuentaPadre.parent
+esquipulaspy.contabilidad.balancegeneral.CuentasModel.parent
+esquipulaspy.contabilidad.cuentas.Account.parent
+esquipulaspy.contabilidad.cuentas.AccountsModel.parent
+esquipulaspy.inventario.categoriesmodel.CategoriesModel.parent
+esquipulaspy.inventario.categoriesmodel.CategoryItem.parent" class="py-name" href="#" onclick="return doclink('link-31', 'parent', 'link-31');">parent</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Method esquipulaspy.caja.factura.Anular.setupUi()=esquipulaspy.caja.factura.Anular-class.html#setupUi,Method esquipulaspy.contabilidad.cheques.Anular.setupUi()=esquipulaspy.contabilidad.cheques.Anular-class.html#setupUi,Method esquipulaspy.contabilidad.cuentas.DlgAccountMod.setupUi()=esquipulaspy.contabilidad.cuentas.DlgAccountMod-class.html#setupUi,Method esquipulaspy.inventario.categorias.dlgCategoriesMod.setupUi()=esquipulaspy.inventario.categorias.dlgCategoriesMod-class.html#setupUi,Method esquipulaspy.inventario.kardex.dlgSelectDoc.setupUi()=esquipulaspy.inventario.kardex.dlgSelectDoc-class.html#setupUi,Method esquipulaspy.ui.Ui_apertura.Ui_dlgApertura.setupUi()=esquipulaspy.ui.Ui_apertura.Ui_dlgApertura-class.html#setupUi,Method esquipulaspy.ui.Ui_arqueo.Ui_frmArqueo.setupUi()=esquipulaspy.ui.Ui_arqueo.Ui_frmArqueo-class.html#setupUi,Method esquipulaspy.ui.Ui_articulos.Ui_frmArticlesNew.setupUi()=esquipulaspy.ui.Ui_articulos.Ui_frmArticlesNew-class.html#setupUi,Method esquipulaspy.ui.Ui_balancegeneral.Ui_frmBalanceGeneral.setupUi()=esquipulaspy.ui.Ui_balancegeneral.Ui_frmBalanceGeneral-class.html#setupUi,Method esquipulaspy.ui.Ui_categorias.Ui_FrmCategorias.setupUi()=esquipulaspy.ui.Ui_categorias.Ui_FrmCategorias-class.html#setupUi,Method esquipulaspy.ui.Ui_catgeneric.Ui_FrmCatGeneric.setupUi()=esquipulaspy.ui.Ui_catgeneric.Ui_FrmCatGeneric-class.html#setupUi,Method esquipulaspy.ui.Ui_cheques.Ui_frmCheques.setupUi()=esquipulaspy.ui.Ui_cheques.Ui_frmCheques-class.html#setupUi,Method esquipulaspy.ui.Ui_cierre.Ui_frmCierreContable.setupUi()=esquipulaspy.ui.Ui_cierre.Ui_frmCierreContable-class.html#setupUi,Method esquipulaspy.ui.Ui_conciliacion.Ui_frmConciliacion.setupUi()=esquipulaspy.ui.Ui_conciliacion.Ui_frmConciliacion-class.html#setupUi,Method esquipulaspy.ui.Ui_credito.Ui_dlgRecibo.setupUi()=esquipulaspy.ui.Ui_credito.Ui_dlgRecibo-class.html#setupUi,Method esquipulaspy.ui.Ui_creditodebito.Ui_frmCreditoDebito.setupUi()=esquipulaspy.ui.Ui_creditodebito.Ui_frmCreditoDebito-class.html#setupUi,Method esquipulaspy.ui.Ui_cuentas.Ui_frmAccounts.setupUi()=esquipulaspy.ui.Ui_cuentas.Ui_frmAccounts-class.html#setupUi,Method esquipulaspy.ui.Ui_devolucion.Ui_frmDevoluciones.setupUi()=esquipulaspy.ui.Ui_devolucion.Ui_frmDevoluciones-class.html#setupUi,Method esquipulaspy.ui.Ui_dlgmovimientosbancarios.Ui_dlgMovimientosBancarios.setupUi()=esquipulaspy.ui.Ui_dlgmovimientosbancarios.Ui_dlgMovimientosBancarios-class.html#setupUi,Method esquipulaspy.ui.Ui_dlgrecibo.Ui_dlgRecibo.setupUi()=esquipulaspy.ui.Ui_dlgrecibo.Ui_dlgRecibo-class.html#setupUi,Method esquipulaspy.ui.Ui_entradacompra.Ui_frmEntradaCompra.setupUi()=esquipulaspy.ui.Ui_entradacompra.Ui_frmEntradaCompra-class.html#setupUi,Method esquipulaspy.ui.Ui_estadoresultado.Ui_frmEstadoResultado.setupUi()=esquipulaspy.ui.Ui_estadoresultado.Ui_frmEstadoResultado-class.html#setupUi,Method esquipulaspy.ui.Ui_factura.Ui_frmFactura.setupUi()=esquipulaspy.ui.Ui_factura.Ui_frmFactura-class.html#setupUi,Method esquipulaspy.ui.Ui_frmmovimientosbancarios.Ui_frmMovimientosBancarios.setupUi()=esquipulaspy.ui.Ui_frmmovimientosbancarios.Ui_frmMovimientosBancarios-class.html#setupUi,Method esquipulaspy.ui.Ui_kardex.Ui_frmKardex.setupUi()=esquipulaspy.ui.Ui_kardex.Ui_frmKardex-class.html#setupUi,Method esquipulaspy.ui.Ui_kardexother.Ui_FrmKardexOther.setupUi()=esquipulaspy.ui.Ui_kardexother.Ui_FrmKardexOther-class.html#setupUi,Method esquipulaspy.ui.Ui_liquidacion.Ui_FrmLiquidacion.setupUi()=esquipulaspy.ui.Ui_liquidacion.Ui_FrmLiquidacion-class.html#setupUi,Method esquipulaspy.ui.Ui_mainwindowcaja.Ui_MainWindow.setupUi()=esquipulaspy.ui.Ui_mainwindowcaja.Ui_MainWindow-class.html#setupUi,Method esquipulaspy.ui.Ui_mainwindowcontabilidad.Ui_MainWindow.setupUi()=esquipulaspy.ui.Ui_mainwindowcontabilidad.Ui_MainWindow-class.html#setupUi,Method esquipulaspy.ui.Ui_mainwindowcontablidad.Ui_MainWindow.setupUi()=esquipulaspy.ui.Ui_mainwindowcontablidad.Ui_MainWindow-class.html#setupUi,Method esquipulaspy.ui.Ui_mainwindowinventario.Ui_MainWindow.setupUi()=esquipulaspy.ui.Ui_mainwindowinventario.Ui_MainWindow-class.html#setupUi,Method esquipulaspy.ui.Ui_notacredito.Ui_frmNotaCredito.setupUi()=esquipulaspy.ui.Ui_notacredito.Ui_frmNotaCredito-class.html#setupUi,Method esquipulaspy.ui.Ui_operations.Ui_frmOperations.setupUi()=esquipulaspy.ui.Ui_operations.Ui_frmOperations-class.html#setupUi,Method esquipulaspy.ui.Ui_pago.Ui_frmPago.setupUi()=esquipulaspy.ui.Ui_pago.Ui_frmPago-class.html#setupUi,Method esquipulaspy.ui.Ui_persona.Ui_frmPersona.setupUi()=esquipulaspy.ui.Ui_persona.Ui_frmPersona-class.html#setupUi,Method esquipulaspy.ui.Ui_products.Ui_frmProducts.setupUi()=esquipulaspy.ui.Ui_products.Ui_frmProducts-class.html#setupUi,Method esquipulaspy.ui.Ui_recibo.Ui_frmRecibo.setupUi()=esquipulaspy.ui.Ui_recibo.Ui_frmRecibo-class.html#setupUi,Method esquipulaspy.ui.Ui_subcategorias.Ui_frmSubcategorias.setupUi()=esquipulaspy.ui.Ui_subcategorias.Ui_frmSubcategorias-class.html#setupUi,Method esquipulaspy.ui.Ui_user.Ui_dlgUserLogin.setupUi()=esquipulaspy.ui.Ui_user.Ui_dlgUserLogin-class.html#setupUi,Method esquipulaspy.utility.database.dlgDatabaseConfig.setupUi()=esquipulaspy.utility.database.dlgDatabaseConfig-class.html#setupUi,Method esquipulaspy.utility.user.dlgAbstractUserLogin.setupUi()=esquipulaspy.utility.user.dlgAbstractUserLogin-class.html#setupUi,Method esquipulaspy.utility.user.dlgPasswordChange.setupUi()=esquipulaspy.utility.user.dlgPasswordChange-class.html#setupUi,Method esquipulaspy.utility.user.dlgSmallUserLogin.setupUi()=esquipulaspy.utility.user.dlgSmallUserLogin-class.html#setupUi,Method esquipulaspy.utility.user.dlgUserLogin.setupUi()=esquipulaspy.utility.user.dlgUserLogin-class.html#setupUi"><a title="esquipulaspy.caja.factura.Anular.setupUi
+esquipulaspy.contabilidad.cheques.Anular.setupUi
+esquipulaspy.contabilidad.cuentas.DlgAccountMod.setupUi
+esquipulaspy.inventario.categorias.dlgCategoriesMod.setupUi
+esquipulaspy.inventario.kardex.dlgSelectDoc.setupUi
+esquipulaspy.ui.Ui_apertura.Ui_dlgApertura.setupUi
+esquipulaspy.ui.Ui_arqueo.Ui_frmArqueo.setupUi
+esquipulaspy.ui.Ui_articulos.Ui_frmArticlesNew.setupUi
+esquipulaspy.ui.Ui_balancegeneral.Ui_frmBalanceGeneral.setupUi
+esquipulaspy.ui.Ui_categorias.Ui_FrmCategorias.setupUi
+esquipulaspy.ui.Ui_catgeneric.Ui_FrmCatGeneric.setupUi
+esquipulaspy.ui.Ui_cheques.Ui_frmCheques.setupUi
+esquipulaspy.ui.Ui_cierre.Ui_frmCierreContable.setupUi
+esquipulaspy.ui.Ui_conciliacion.Ui_frmConciliacion.setupUi
+esquipulaspy.ui.Ui_credito.Ui_dlgRecibo.setupUi
+esquipulaspy.ui.Ui_creditodebito.Ui_frmCreditoDebito.setupUi
+esquipulaspy.ui.Ui_cuentas.Ui_frmAccounts.setupUi
+esquipulaspy.ui.Ui_devolucion.Ui_frmDevoluciones.setupUi
+esquipulaspy.ui.Ui_dlgmovimientosbancarios.Ui_dlgMovimientosBancarios.setupUi
+esquipulaspy.ui.Ui_dlgrecibo.Ui_dlgRecibo.setupUi
+esquipulaspy.ui.Ui_entradacompra.Ui_frmEntradaCompra.setupUi
+esquipulaspy.ui.Ui_estadoresultado.Ui_frmEstadoResultado.setupUi
+esquipulaspy.ui.Ui_factura.Ui_frmFactura.setupUi
+esquipulaspy.ui.Ui_frmmovimientosbancarios.Ui_frmMovimientosBancarios.setupUi
+esquipulaspy.ui.Ui_kardex.Ui_frmKardex.setupUi
+esquipulaspy.ui.Ui_kardexother.Ui_FrmKardexOther.setupUi
+esquipulaspy.ui.Ui_liquidacion.Ui_FrmLiquidacion.setupUi
+esquipulaspy.ui.Ui_mainwindowcaja.Ui_MainWindow.setupUi
+esquipulaspy.ui.Ui_mainwindowcontabilidad.Ui_MainWindow.setupUi
+esquipulaspy.ui.Ui_mainwindowcontablidad.Ui_MainWindow.setupUi
+esquipulaspy.ui.Ui_mainwindowinventario.Ui_MainWindow.setupUi
+esquipulaspy.ui.Ui_notacredito.Ui_frmNotaCredito.setupUi
+esquipulaspy.ui.Ui_operations.Ui_frmOperations.setupUi
+esquipulaspy.ui.Ui_pago.Ui_frmPago.setupUi
+esquipulaspy.ui.Ui_persona.Ui_frmPersona.setupUi
+esquipulaspy.ui.Ui_products.Ui_frmProducts.setupUi
+esquipulaspy.ui.Ui_recibo.Ui_frmRecibo.setupUi
+esquipulaspy.ui.Ui_subcategorias.Ui_frmSubcategorias.setupUi
+esquipulaspy.ui.Ui_user.Ui_dlgUserLogin.setupUi
+esquipulaspy.utility.database.dlgDatabaseConfig.setupUi
+esquipulaspy.utility.user.dlgAbstractUserLogin.setupUi
+esquipulaspy.utility.user.dlgPasswordChange.setupUi
+esquipulaspy.utility.user.dlgSmallUserLogin.setupUi
+esquipulaspy.utility.user.dlgUserLogin.setupUi" class="py-name" href="#" onclick="return doclink('link-32', 'setupUi', 'link-32');">setupUi</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt id="link-33" class="py-name"><a title="esquipulaspy.utility.mainwindowbase.MainWindowBase" class="py-name" href="#" onclick="return doclink('link-33', 'MainWindowBase', 'link-20');">MainWindowBase</a></tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="esquipulaspy.caja.apertura.AperturaModel.__init__
+esquipulaspy.caja.apertura.DlgApertura.__init__
+esquipulaspy.caja.arqueo.FrmArqueo.__init__
+esquipulaspy.caja.banks.FrmBanks.__init__
+esquipulaspy.caja.cajas.FrmCajas.__init__
+esquipulaspy.caja.catalogos.FrmCatClientes.__init__
+esquipulaspy.caja.cierrecaja.FrmCierreCaja.__init__
+esquipulaspy.caja.devolucion.DlgSelectBill.__init__
+esquipulaspy.caja.devolucion.FrmDevolucion.__init__
+esquipulaspy.caja.factura.Anular.__init__
+esquipulaspy.caja.factura.FrmFactura.__init__
+esquipulaspy.caja.mainwindow.DatosSesion.__init__
+esquipulaspy.caja.mainwindow.MainWindow.__init__
+esquipulaspy.caja.pago.FrmPago.__init__
+esquipulaspy.caja.recibo.DatosRecibo.__init__
+esquipulaspy.caja.recibo.FrmRecibo.__init__
+esquipulaspy.caja.recibo.ROFacturasModel.__init__
+esquipulaspy.caja.recibo.dlgRecibo.__init__
+esquipulaspy.contabilidad.balancegeneral.Cuenta.__init__
+esquipulaspy.contabilidad.balancegeneral.CuentaPadre.__init__
+esquipulaspy.contabilidad.balancegeneral.CuentasModel.__init__
+esquipulaspy.contabilidad.balancegeneral.FrmBalanceGeneral.__init__
+esquipulaspy.contabilidad.cheques.Anular.__init__
+esquipulaspy.contabilidad.cheques.ChequesFiltroDelegate.__init__
+esquipulaspy.contabilidad.cheques.FrmCheques.__init__
+esquipulaspy.contabilidad.cheques.ROAccountsModel.__init__
+esquipulaspy.contabilidad.cierrecontable.FrmCierreContable.__init__
+esquipulaspy.contabilidad.conciliacion.DetalleTableModel.__init__
+esquipulaspy.contabilidad.conciliacion.FrmConciliacion.__init__
+esquipulaspy.contabilidad.conciliacion.dlgSelectCuenta.__init__
+esquipulaspy.contabilidad.creditodebito.DlgSelectBill.__init__
+esquipulaspy.contabilidad.creditodebito.FrmCreditoDebito.__init__
+esquipulaspy.contabilidad.cuentas.Account.__init__
+esquipulaspy.contabilidad.cuentas.AccountsModel.__init__
+esquipulaspy.contabilidad.cuentas.DlgAccountMod.__init__
+esquipulaspy.contabilidad.cuentas.FrmAccounts.__init__
+esquipulaspy.contabilidad.estadoresultado.FrmEstadoResultado.__init__
+esquipulaspy.contabilidad.mainwindow.MainWindow.__init__
+esquipulaspy.contabilidad.movimientosbancarios.FrmMovimientosBancarios.__init__
+esquipulaspy.contabilidad.movimientosbancarios.dlgMovimientosBancarios.__init__
+esquipulaspy.contabilidad.operations.FrmOperations.__init__
+esquipulaspy.document.arqueo.arqueodelegate.ArqueoDelegate.__init__
+esquipulaspy.document.arqueo.arqueomodel.ArqueoModel.__init__
+esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.__init__
+esquipulaspy.document.cheque.chequemodel.ChequeModel.__init__
+esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel.__init__
+esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion.__init__
+esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel.__init__
+esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel.__init__
+esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion.__init__
+esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel.__init__
+esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra.__init__
+esquipulaspy.document.factura.facturadelegate.FacturaDelegate.__init__
+esquipulaspy.document.factura.facturamodel.FacturaModel.__init__
+esquipulaspy.document.factura.lineafactura.LineaFactura.__init__
+esquipulaspy.document.kardex.kardexmodel.KardexModel.__init__
+esquipulaspy.document.kardex.lineakardex.LineaKardex.__init__
+esquipulaspy.document.kardexother.kardexotherdelegate.KardexOtherDelegate.__init__
+esquipulaspy.document.kardexother.kardexothermodel.KardexOtherAccountsModel.__init__
+esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel.__init__
+esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther.__init__
+esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.__init__
+esquipulaspy.document.liquidacion.liquidaciondelegate.LiquidacionDelegate.__init__
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionAccountsModel.__init__
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel.__init__
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionTotalsModel.__init__
+esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel.__init__
+esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.Modelo.__init__
+esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.__init__
+esquipulaspy.document.pago.compramodel.AbonoModel.__init__
+esquipulaspy.document.pago.lineacompra.LineaAbono.__init__
+esquipulaspy.document.pago.lineapago.LineaRecibo.__init__
+esquipulaspy.document.pago.pagomodel.PagoModel.__init__
+esquipulaspy.document.pago.recibodelegate.ReciboDelegate.__init__
+esquipulaspy.document.recibo.abonomodel.AbonoModel.__init__
+esquipulaspy.document.recibo.lineaabono.LineaAbono.__init__
+esquipulaspy.document.recibo.linearecibo.LineaRecibo.__init__
+esquipulaspy.document.recibo.recibodelegate.ReciboDelegate.__init__
+esquipulaspy.document.recibo.recibomodel.ReciboModel.__init__
+esquipulaspy.inventario.articulos.ArticlesModel.__init__
+esquipulaspy.inventario.articulos.FrmArticulos.__init__
+esquipulaspy.inventario.articulos.frmArticlesNew.__init__
+esquipulaspy.inventario.catalogos.FrmCatConceptos.__init__
+esquipulaspy.inventario.catalogos.FrmCatMarcas.__init__
+esquipulaspy.inventario.catalogos.FrmCatProveedores.__init__
+esquipulaspy.inventario.catalogos.PeopleDelegate.__init__
+esquipulaspy.inventario.catalogos.ProvidersModel.__init__
+esquipulaspy.inventario.categorias.FrmCategorias.__init__
+esquipulaspy.inventario.categorias.dlgCategoriesMod.__init__
+esquipulaspy.inventario.categoriesmodel.CategoriesModel.__init__
+esquipulaspy.inventario.categoriesmodel.CategoryItem.__init__
+esquipulaspy.inventario.entradacompra.frmEntradaCompra.__init__
+esquipulaspy.inventario.kardex.dlgSelectDoc.__init__
+esquipulaspy.inventario.kardex.frmKardex.__init__
+esquipulaspy.inventario.kardexother.FrmKardexOther.__init__
+esquipulaspy.inventario.liquidacion.ArticlesModel.__init__
+esquipulaspy.inventario.liquidacion.FrmLiquidacion.__init__
+esquipulaspy.inventario.mainwindow.MainWindow.__init__
+esquipulaspy.utility.accountselector.AccountsSelectorDelegate.__init__
+esquipulaspy.utility.accountselector.AccountsSelectorLine.__init__
+esquipulaspy.utility.accountselector.AccountsSelectorModel.__init__
+esquipulaspy.utility.base.Base.__init__
+esquipulaspy.utility.catgeneric.CatalogModel.__init__
+esquipulaspy.utility.catgeneric.FrmCatGeneric.__init__
+esquipulaspy.utility.catgeneric.PeopleDelegate.__init__
+esquipulaspy.utility.database.dlgDatabaseConfig.__init__
+esquipulaspy.utility.mainwindowbase.MainWindowBase.__init__
+esquipulaspy.utility.persona.frmPersona.__init__
+esquipulaspy.utility.reports.frmReportes.__init__
+esquipulaspy.utility.searchpaneldelegate.SearchPanelDelegate.__init__
+esquipulaspy.utility.singleselectionmodel.SingleSelectionModel.__init__
+esquipulaspy.utility.treefilterproxymodel.TreeFilterProxyModel.__init__
+esquipulaspy.utility.user.User.__init__
+esquipulaspy.utility.user.dlgAbstractUserLogin.__init__
+esquipulaspy.utility.user.dlgPasswordChange.__init__
+esquipulaspy.utility.widgets.searchpanel.SearchPanel.__init__
+esquipulaspy.utility.widgets.searchpanel.SearchPanelView.__init__
+esquipulaspy.utility.widgets.searchpanel.SingleSelectionSearchPanelDelegate.__init__
+esquipulaspy.utility.widgets.xdockwidget.XDockMainWidgetWrapper.__init__
+esquipulaspy.utility.widgets.xdockwidget.XDockWidget.__init__
+esquipulaspy.utility.widgets.xdockwidget.XDockWidgetTitleBar.__init__
+esquipulaspy.utility.widgets.xdockwidget.XDockWidgetTitleBarButton.__init__" class="py-name" href="#" onclick="return doclink('link-34', '__init__', 'link-30');">__init__</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name" targets="Method esquipulaspy.caja.mainwindow.MainWindow.init()=esquipulaspy.caja.mainwindow.MainWindow-class.html#init,Method esquipulaspy.contabilidad.mainwindow.MainWindow.init()=esquipulaspy.contabilidad.mainwindow.MainWindow-class.html#init,Method esquipulaspy.inventario.mainwindow.MainWindow.init()=esquipulaspy.inventario.mainwindow.MainWindow-class.html#init,Method esquipulaspy.utility.mainwindowbase.MainWindowBase.init()=esquipulaspy.utility.mainwindowbase.MainWindowBase-class.html#init"><a title="esquipulaspy.caja.mainwindow.MainWindow.init
+esquipulaspy.contabilidad.mainwindow.MainWindow.init
+esquipulaspy.inventario.mainwindow.MainWindow.init
+esquipulaspy.utility.mainwindowbase.MainWindowBase.init" class="py-name" href="#" onclick="return doclink('link-35', 'init', 'link-35');">init</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"> </tt>
+<a name="MainWindow.init"></a><div id="MainWindow.init-def"><a name="L35"></a><tt class="py-lineno"> 35</tt> <a class="py-toggle" href="#" id="MainWindow.init-toggle" onclick="return toggle('MainWindow.init');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#init">init</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.init-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.init-expanded"><a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name" targets="Module esquipulaspy.utility.user=esquipulaspy.utility.user-module.html,Variable esquipulaspy.utility.user.User.user=esquipulaspy.utility.user.User-class.html#user"><a title="esquipulaspy.utility.user
+esquipulaspy.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-36', 'user', 'link-36');">user</a></tt><tt class="py-op">.</tt><tt id="link-37" class="py-name" targets="Method esquipulaspy.utility.user.User.hasRole()=esquipulaspy.utility.user.User-class.html#hasRole"><a title="esquipulaspy.utility.user.User.hasRole" class="py-name" href="#" onclick="return doclink('link-37', 'hasRole', 'link-37');">hasRole</a></tt><tt class="py-op">(</tt> <tt class="py-string">'root'</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name"><a title="esquipulaspy.utility.user
+esquipulaspy.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-38', 'user', 'link-36');">user</a></tt><tt class="py-op">.</tt><tt id="link-39" class="py-name" targets="Method esquipulaspy.utility.user.User.hasAnyRole()=esquipulaspy.utility.user.User-class.html#hasAnyRole"><a title="esquipulaspy.utility.user.User.hasAnyRole" class="py-name" href="#" onclick="return doclink('link-39', 'hasAnyRole', 'link-39');">hasAnyRole</a></tt><tt class="py-op">(</tt> <tt class="py-op">[</tt> <tt class="py-string">'inventario'</tt><tt class="py-op">,</tt> <tt class="py-string">'contabilidad'</tt><tt class="py-op">]</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> <tt class="py-op">:</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">page</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">False</tt> <tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">toolBox</tt><tt class="py-op">.</tt><tt class="py-name">removeItem</tt><tt class="py-op">(</tt> <tt class="py-number">2</tt> <tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">page_2</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">False</tt> <tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">toolBox</tt><tt class="py-op">.</tt><tt class="py-name">removeItem</tt><tt class="py-op">(</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="esquipulaspy.utility.user
+esquipulaspy.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-40', 'user', 'link-36');">user</a></tt><tt class="py-op">.</tt><tt id="link-41" class="py-name"><a title="esquipulaspy.utility.user.User.hasRole" class="py-name" href="#" onclick="return doclink('link-41', 'hasRole', 'link-37');">hasRole</a></tt><tt class="py-op">(</tt> <tt class="py-string">'contabilidad'</tt> <tt class="py-op">)</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name"><a title="esquipulaspy.utility.user
+esquipulaspy.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-42', 'user', 'link-36');">user</a></tt><tt class="py-op">.</tt><tt id="link-43" class="py-name"><a title="esquipulaspy.utility.user.User.hasRole" class="py-name" href="#" onclick="return doclink('link-43', 'hasRole', 'link-37');">hasRole</a></tt><tt class="py-op">(</tt> <tt class="py-string">'kardex'</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnKExits</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">False</tt> <tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnKEntries</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">False</tt> <tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-44" class="py-name"><a title="esquipulaspy.utility.user
+esquipulaspy.utility.user.User.user" class="py-name" href="#" onclick="return doclink('link-44', 'user', 'link-36');">user</a></tt><tt class="py-op">.</tt><tt id="link-45" class="py-name"><a title="esquipulaspy.utility.user.User.hasAnyRole" class="py-name" href="#" onclick="return doclink('link-45', 'hasAnyRole', 'link-39');">hasAnyRole</a></tt><tt class="py-op">(</tt> <tt class="py-op">[</tt> <tt class="py-string">'kardex'</tt><tt class="py-op">,</tt> <tt class="py-string">'contabilidad'</tt> <tt class="py-op">]</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">            <tt class="py-comment">#Quitar la pesta&#241;a de kardex</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">widget</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">False</tt> <tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">toolBox</tt><tt class="py-op">.</tt><tt class="py-name">removeItem</tt><tt class="py-op">(</tt> <tt class="py-number">1</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"> </tt>
+<a name="MainWindow.closeEvent"></a><div id="MainWindow.closeEvent-def"><a name="L57"></a><tt class="py-lineno"> 57</tt> <a class="py-toggle" href="#" id="MainWindow.closeEvent-toggle" onclick="return toggle('MainWindow.closeEvent');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#closeEvent">closeEvent</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">event</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.closeEvent-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.closeEvent-expanded"><a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-docstring">u"""</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"><tt class="py-docstring">        Guardar el tama&#241;o, la posici&#243;n en la pantalla y la posici&#243;n de la barra de tareas</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"><tt class="py-docstring">        Preguntar si realmente se desea cerrar la pesta&#241;a cuando se esta en modo edici&#243;n</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">hijo</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">subWindowList</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">hijo</tt><tt class="py-op">.</tt><tt class="py-name">close</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">                <tt class="py-name">event</tt><tt class="py-op">.</tt><tt class="py-name">ignore</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> </tt>
+</div><a name="MainWindow.setControls"></a><div id="MainWindow.setControls-def"><a name="L66"></a><tt class="py-lineno"> 66</tt> <a class="py-toggle" href="#" id="MainWindow.setControls-toggle" onclick="return toggle('MainWindow.setControls');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#setControls">setControls</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">state</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.setControls-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.setControls-expanded"><a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"><tt class="py-docstring">        En esta funcion cambio el estado enabled de todos los items en el formulario</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"><tt class="py-docstring">        @param state: false = bloqueado        true = activado</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnArticles</tt><tt class="py-op">.</tt><tt class="py-name">setEnabled</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnBrands</tt><tt class="py-op">.</tt><tt class="py-name">setEnabled</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnCategories</tt><tt class="py-op">.</tt><tt class="py-name">setEnabled</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnEntries</tt><tt class="py-op">.</tt><tt class="py-name">setEnabled</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnLiquidations</tt><tt class="py-op">.</tt><tt class="py-name">setEnabled</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnProviders</tt><tt class="py-op">.</tt><tt class="py-name">setEnabled</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">setEnabled</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnKEntries</tt><tt class="py-op">.</tt><tt class="py-name">setEnabled</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnKExits</tt><tt class="py-op">.</tt><tt class="py-name">setEnabled</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">btnKOther</tt><tt class="py-op">.</tt><tt class="py-name">setEnabled</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">actionLockSession</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">actionUnlockSession</tt><tt class="py-op">.</tt><tt class="py-name">setVisible</tt><tt class="py-op">(</tt> <tt class="py-keyword">not</tt> <tt class="py-name">state</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="MainWindow.on_btnConceptos_clicked"></a><div id="MainWindow.on_btnConceptos_clicked-def"><a name="L89"></a><tt class="py-lineno"> 89</tt> <a class="py-toggle" href="#" id="MainWindow.on_btnConceptos_clicked-toggle" onclick="return toggle('MainWindow.on_btnConceptos_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#on_btnConceptos_clicked">on_btnConceptos_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.on_btnConceptos_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.on_btnConceptos_clicked-expanded"><a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"><tt class="py-docstring">        Slot documentation goes here.</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-name">conceptos</tt> <tt class="py-op">=</tt> <tt id="link-46" class="py-name"><a title="esquipulaspy.inventario.catalogos.FrmCatConceptos" class="py-name" href="#" onclick="return doclink('link-46', 'FrmCatConceptos', 'link-4');">FrmCatConceptos</a></tt><tt class="py-op">(</tt> <tt class="py-number">4</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">addSubWindow</tt><tt class="py-op">(</tt> <tt class="py-name">conceptos</tt> <tt class="py-op">)</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-name">conceptos</tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="MainWindow.on_btnEntries_clicked"></a><div id="MainWindow.on_btnEntries_clicked-def"><a name="L98"></a><tt class="py-lineno"> 98</tt> <a class="py-toggle" href="#" id="MainWindow.on_btnEntries_clicked-toggle" onclick="return toggle('MainWindow.on_btnEntries_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#on_btnEntries_clicked">on_btnEntries_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.on_btnEntries_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.on_btnEntries_clicked-expanded"><a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"><tt class="py-docstring">        Slot documentation goes here.</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt id="link-47" class="py-name"><a title="esquipulaspy.document.entradacompra
+esquipulaspy.inventario.entradacompra" class="py-name" href="#" onclick="return doclink('link-47', 'entradacompra', 'link-0');">entradacompra</a></tt> <tt class="py-op">=</tt> <tt id="link-48" class="py-name"><a title="esquipulaspy.inventario.entradacompra.frmEntradaCompra" class="py-name" href="#" onclick="return doclink('link-48', 'frmEntradaCompra', 'link-1');">frmEntradaCompra</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">addSubWindow</tt><tt class="py-op">(</tt> <tt id="link-49" class="py-name"><a title="esquipulaspy.document.entradacompra
+esquipulaspy.inventario.entradacompra" class="py-name" href="#" onclick="return doclink('link-49', 'entradacompra', 'link-0');">entradacompra</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">        <tt id="link-50" class="py-name"><a title="esquipulaspy.document.entradacompra
+esquipulaspy.inventario.entradacompra" class="py-name" href="#" onclick="return doclink('link-50', 'entradacompra', 'link-0');">entradacompra</a></tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="MainWindow.on_btnArticles_clicked"></a><div id="MainWindow.on_btnArticles_clicked-def"><a name="L107"></a><tt class="py-lineno">107</tt> <a class="py-toggle" href="#" id="MainWindow.on_btnArticles_clicked-toggle" onclick="return toggle('MainWindow.on_btnArticles_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#on_btnArticles_clicked">on_btnArticles_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.on_btnArticles_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.on_btnArticles_clicked-expanded"><a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"><tt class="py-docstring">        Slot documentation goes here.</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt class="py-name">catproducts</tt> <tt class="py-op">=</tt> <tt id="link-51" class="py-name"><a title="esquipulaspy.inventario.articulos.FrmArticulos" class="py-name" href="#" onclick="return doclink('link-51', 'FrmArticulos', 'link-17');">FrmArticulos</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">addSubWindow</tt><tt class="py-op">(</tt> <tt class="py-name">catproducts</tt> <tt class="py-op">)</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-name">catproducts</tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="MainWindow.on_btnCategories_clicked"></a><div id="MainWindow.on_btnCategories_clicked-def"><a name="L117"></a><tt class="py-lineno">117</tt> <a class="py-toggle" href="#" id="MainWindow.on_btnCategories_clicked-toggle" onclick="return toggle('MainWindow.on_btnCategories_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#on_btnCategories_clicked">on_btnCategories_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.on_btnCategories_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.on_btnCategories_clicked-expanded"><a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"><tt class="py-docstring">        Slot documentation goes here.</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-name">catcategorias</tt> <tt class="py-op">=</tt> <tt id="link-52" class="py-name"><a title="esquipulaspy.inventario.categorias.FrmCategorias" class="py-name" href="#" onclick="return doclink('link-52', 'FrmCategorias', 'link-8');">FrmCategorias</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">addSubWindow</tt><tt class="py-op">(</tt> <tt class="py-name">catcategorias</tt> <tt class="py-op">)</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">        <tt class="py-name">catcategorias</tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line"> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="MainWindow.on_btnBrands_clicked"></a><div id="MainWindow.on_btnBrands_clicked-def"><a name="L127"></a><tt class="py-lineno">127</tt> <a class="py-toggle" href="#" id="MainWindow.on_btnBrands_clicked-toggle" onclick="return toggle('MainWindow.on_btnBrands_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#on_btnBrands_clicked">on_btnBrands_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.on_btnBrands_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.on_btnBrands_clicked-expanded"><a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line"><tt class="py-docstring">        Slot documentation goes here.</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line"> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">        <tt class="py-name">catmarcas</tt> <tt class="py-op">=</tt> <tt id="link-53" class="py-name"><a title="esquipulaspy.inventario.catalogos.FrmCatMarcas" class="py-name" href="#" onclick="return doclink('link-53', 'FrmCatMarcas', 'link-3');">FrmCatMarcas</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">addSubWindow</tt><tt class="py-op">(</tt> <tt class="py-name">catmarcas</tt> <tt class="py-op">)</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">        <tt class="py-name">catmarcas</tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line"> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="MainWindow.on_btnProviders_clicked"></a><div id="MainWindow.on_btnProviders_clicked-def"><a name="L137"></a><tt class="py-lineno">137</tt> <a class="py-toggle" href="#" id="MainWindow.on_btnProviders_clicked-toggle" onclick="return toggle('MainWindow.on_btnProviders_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#on_btnProviders_clicked">on_btnProviders_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.on_btnProviders_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.on_btnProviders_clicked-expanded"><a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line"><tt class="py-docstring">        Slot documentation goes here.</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-name">dialog</tt> <tt class="py-op">=</tt> <tt id="link-54" class="py-name"><a title="esquipulaspy.utility.persona.frmPersona" class="py-name" href="#" onclick="return doclink('link-54', 'frmPersona', 'link-23');">frmPersona</a></tt><tt class="py-op">(</tt> <tt id="link-55" class="py-name"><a title="esquipulaspy.utility.constantes" class="py-name" href="#" onclick="return doclink('link-55', 'constantes', 'link-25');">constantes</a></tt><tt class="py-op">.</tt><tt id="link-56" class="py-name" targets="Variable esquipulaspy.inventario.entradacompra.PROVEEDOR=esquipulaspy.inventario.entradacompra-module.html#PROVEEDOR,Variable esquipulaspy.inventario.liquidacion.PROVEEDOR=esquipulaspy.inventario.liquidacion-module.html#PROVEEDOR,Variable esquipulaspy.utility.constantes.PROVEEDOR=esquipulaspy.utility.constantes-module.html#PROVEEDOR"><a title="esquipulaspy.inventario.entradacompra.PROVEEDOR
+esquipulaspy.inventario.liquidacion.PROVEEDOR
+esquipulaspy.utility.constantes.PROVEEDOR" class="py-name" href="#" onclick="return doclink('link-56', 'PROVEEDOR', 'link-56');">PROVEEDOR</a></tt><tt class="py-op">,</tt> <tt class="py-string">"Proveedor"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-name">dialog</tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line"><tt class="py-comment">#        catproveedores = FrmCatProveedores( self )</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"><tt class="py-comment">#        self.mdiArea.addSubWindow( catproveedores )</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line"><tt class="py-comment">#        catproveedores.show()</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="MainWindow.on_btnLiquidations_clicked"></a><div id="MainWindow.on_btnLiquidations_clicked-def"><a name="L148"></a><tt class="py-lineno">148</tt> <a class="py-toggle" href="#" id="MainWindow.on_btnLiquidations_clicked-toggle" onclick="return toggle('MainWindow.on_btnLiquidations_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#on_btnLiquidations_clicked">on_btnLiquidations_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.on_btnLiquidations_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.on_btnLiquidations_clicked-expanded"><a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line"><tt class="py-docstring">        Slot documentation goes here.</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">        <tt id="link-57" class="py-name"><a title="esquipulaspy.document.liquidacion
+esquipulaspy.inventario.liquidacion" class="py-name" href="#" onclick="return doclink('link-57', 'liquidacion', 'link-5');">liquidacion</a></tt> <tt class="py-op">=</tt> <tt id="link-58" class="py-name"><a title="esquipulaspy.inventario.liquidacion.FrmLiquidacion" class="py-name" href="#" onclick="return doclink('link-58', 'FrmLiquidacion', 'link-6');">FrmLiquidacion</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">addSubWindow</tt><tt class="py-op">(</tt> <tt id="link-59" class="py-name"><a title="esquipulaspy.document.liquidacion
+esquipulaspy.inventario.liquidacion" class="py-name" href="#" onclick="return doclink('link-59', 'liquidacion', 'link-5');">liquidacion</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">        <tt id="link-60" class="py-name"><a title="esquipulaspy.document.liquidacion
+esquipulaspy.inventario.liquidacion" class="py-name" href="#" onclick="return doclink('link-60', 'liquidacion', 'link-5');">liquidacion</a></tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="MainWindow.on_btnKEntries_clicked"></a><div id="MainWindow.on_btnKEntries_clicked-def"><a name="L157"></a><tt class="py-lineno">157</tt> <a class="py-toggle" href="#" id="MainWindow.on_btnKEntries_clicked-toggle" onclick="return toggle('MainWindow.on_btnKEntries_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#on_btnKEntries_clicked">on_btnKEntries_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.on_btnKEntries_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.on_btnKEntries_clicked-expanded"><a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line"><tt class="py-docstring">        Slot documentation goes here.</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">        <tt id="link-61" class="py-name"><a title="esquipulaspy.document.kardex
+esquipulaspy.inventario.kardex" class="py-name" href="#" onclick="return doclink('link-61', 'kardex', 'link-9');">kardex</a></tt> <tt class="py-op">=</tt> <tt id="link-62" class="py-name"><a title="esquipulaspy.inventario.kardex.frmKardex" class="py-name" href="#" onclick="return doclink('link-62', 'frmKardex', 'link-10');">frmKardex</a></tt><tt class="py-op">(</tt> <tt class="py-op">[</tt><tt class="py-number">7</tt><tt class="py-op">,</tt> <tt class="py-number">10</tt><tt class="py-op">,</tt> <tt class="py-number">21</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">addSubWindow</tt><tt class="py-op">(</tt> <tt id="link-63" class="py-name"><a title="esquipulaspy.document.kardex
+esquipulaspy.inventario.kardex" class="py-name" href="#" onclick="return doclink('link-63', 'kardex', 'link-9');">kardex</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt id="link-64" class="py-name"><a title="esquipulaspy.document.kardex
+esquipulaspy.inventario.kardex" class="py-name" href="#" onclick="return doclink('link-64', 'kardex', 'link-9');">kardex</a></tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line"> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="MainWindow.on_btnKOther_clicked"></a><div id="MainWindow.on_btnKOther_clicked-def"><a name="L166"></a><tt class="py-lineno">166</tt> <a class="py-toggle" href="#" id="MainWindow.on_btnKOther_clicked-toggle" onclick="return toggle('MainWindow.on_btnKOther_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#on_btnKOther_clicked">on_btnKOther_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.on_btnKOther_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.on_btnKOther_clicked-expanded"><a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line"><tt class="py-docstring">        Slot documentation goes here</tt> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line">        <tt id="link-65" class="py-name"><a title="esquipulaspy.document.kardex
+esquipulaspy.inventario.kardex" class="py-name" href="#" onclick="return doclink('link-65', 'kardex', 'link-9');">kardex</a></tt> <tt class="py-op">=</tt> <tt id="link-66" class="py-name"><a title="esquipulaspy.inventario.kardexother.FrmKardexOther" class="py-name" href="#" onclick="return doclink('link-66', 'FrmKardexOther', 'link-12');">FrmKardexOther</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">addSubWindow</tt><tt class="py-op">(</tt> <tt id="link-67" class="py-name"><a title="esquipulaspy.document.kardex
+esquipulaspy.inventario.kardex" class="py-name" href="#" onclick="return doclink('link-67', 'kardex', 'link-9');">kardex</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">        <tt id="link-68" class="py-name"><a title="esquipulaspy.document.kardex
+esquipulaspy.inventario.kardex" class="py-name" href="#" onclick="return doclink('link-68', 'kardex', 'link-9');">kardex</a></tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line"> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">pyqtSlot</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="MainWindow.on_btnKExits_clicked"></a><div id="MainWindow.on_btnKExits_clicked-def"><a name="L175"></a><tt class="py-lineno">175</tt> <a class="py-toggle" href="#" id="MainWindow.on_btnKExits_clicked-toggle" onclick="return toggle('MainWindow.on_btnKExits_clicked');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.inventario.mainwindow.MainWindow-class.html#on_btnKExits_clicked">on_btnKExits_clicked</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MainWindow.on_btnKExits_clicked-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="MainWindow.on_btnKExits_clicked-expanded"><a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line"><tt class="py-docstring">        Slot documentation goes here.</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">        <tt id="link-69" class="py-name"><a title="esquipulaspy.document.kardex
+esquipulaspy.inventario.kardex" class="py-name" href="#" onclick="return doclink('link-69', 'kardex', 'link-9');">kardex</a></tt> <tt class="py-op">=</tt> <tt id="link-70" class="py-name"><a title="esquipulaspy.inventario.kardex.frmKardex" class="py-name" href="#" onclick="return doclink('link-70', 'frmKardex', 'link-10');">frmKardex</a></tt><tt class="py-op">(</tt> <tt class="py-op">[</tt><tt class="py-number">5</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt> <tt class="py-op">)</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">mdiArea</tt><tt class="py-op">.</tt><tt class="py-name">addSubWindow</tt><tt class="py-op">(</tt> <tt id="link-71" class="py-name"><a title="esquipulaspy.document.kardex
+esquipulaspy.inventario.kardex" class="py-name" href="#" onclick="return doclink('link-71', 'kardex', 'link-9');">kardex</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line">        <tt id="link-72" class="py-name"><a title="esquipulaspy.document.kardex
+esquipulaspy.inventario.kardex" class="py-name" href="#" onclick="return doclink('link-72', 'kardex', 'link-9');">kardex</a></tt><tt class="py-op">.</tt><tt class="py-name">show</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="esquipulaspy.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

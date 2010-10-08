@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>esquipulaspy.document.factura.lineafactura</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="esquipulaspy.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="esquipulaspy-module.html">Paquete&nbsp;esquipulaspy</a> ::
+        <a href="esquipulaspy.document-module.html">Paquete&nbsp;document</a> ::
+        <a href="esquipulaspy.document.factura-module.html">Paquete&nbsp;factura</a> ::
+        Modulo&nbsp;lineafactura
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">ocultar&nbsp;privados</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">marcos</a
+            >]&nbsp;|&nbsp;<a href="esquipulaspy.document.factura.lineafactura-pysrc.html"
+            target="_top">sin&nbsp;marcos</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="esquipulaspy.document.factura.lineafactura-module.html">Modulo esquipulaspy.document.factura.lineafactura</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">Created on 18/05/2010</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring">@author: Luis Carlos Mejia Garcia</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-docstring">'''</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">unittest</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">"__main__"</tt><tt class="py-op">:</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">sip</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line">    <tt class="py-name">sip</tt><tt class="py-op">.</tt><tt class="py-name">setapi</tt><tt class="py-op">(</tt> <tt class="py-string">'QString'</tt><tt class="py-op">,</tt> <tt class="py-number">2</tt> <tt class="py-op">)</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">decimal</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Decimal</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtCore</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QCoreApplication</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">PyQt4</tt><tt class="py-op">.</tt><tt class="py-name">QtSql</tt> <tt class="py-keyword">import</tt> <tt class="py-name">QSqlQuery</tt> </tt>
+<a name="LineaFactura"></a><div id="LineaFactura-def"><a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-comment">#FIXME: Para que se usa el parametro parent???</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt> <a class="py-toggle" href="#" id="LineaFactura-toggle" onclick="return toggle('LineaFactura');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.LineaFactura-class.html">LineaFactura</a><tt class="py-op">:</tt> </tt>
+</div><div id="LineaFactura-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="LineaFactura-expanded"><a name="LineaFactura.__init__"></a><div id="LineaFactura.__init__-def"><a name="L19"></a><tt class="py-lineno"> 19</tt> <a class="py-toggle" href="#" id="LineaFactura.__init__-toggle" onclick="return toggle('LineaFactura.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#__init__">__init__</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">parent</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaFactura.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="LineaFactura.__init__-expanded"><a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">quantity</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-string">        @ivar: La cantidad de articulos en esta linea</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-string">        @type: int</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">itemDescription</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-string">        @ivar: La descripci&#243;n del articulo</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-string">        @type: string</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt class="py-comment">#FIXME: por que hay un setter y un getter aca? la propiedad no es ni siquiera privada.... si es por lo de decimal entonces</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt class="py-comment">#de principio se deberia de pasar como Decimal y no como string, eso es algo que el modelo le deberia de dar</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">price</tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-string">        @ivar: El precio en el que se vende el articulo en esta transacci&#243;n</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-string">        @type: Decimal</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt class="py-comment">#FIXME: Donde se ocupa esta propiedad???</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">costodolar</tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-string">        @ivar: El costo en dolares de este articulo</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-string">        @type: Decimal</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">itemId</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-string">        @ivar: El id de este item en la base de datos</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-string">        @type: Decimal</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Method esquipulaspy.contabilidad.balancegeneral.CuentaPadre.parent()=esquipulaspy.contabilidad.balancegeneral.CuentaPadre-class.html#parent,Method esquipulaspy.contabilidad.balancegeneral.CuentasModel.parent()=esquipulaspy.contabilidad.balancegeneral.CuentasModel-class.html#parent,Method esquipulaspy.contabilidad.cuentas.Account.parent()=esquipulaspy.contabilidad.cuentas.Account-class.html#parent,Method esquipulaspy.contabilidad.cuentas.AccountsModel.parent()=esquipulaspy.contabilidad.cuentas.AccountsModel-class.html#parent,Method esquipulaspy.inventario.categoriesmodel.CategoriesModel.parent()=esquipulaspy.inventario.categoriesmodel.CategoriesModel-class.html#parent,Method esquipulaspy.inventario.categoriesmodel.CategoryItem.parent()=esquipulaspy.inventario.categoriesmodel.CategoryItem-class.html#parent"><a title="esquipulaspy.contabilidad.balancegeneral.CuentaPadre.parent
+esquipulaspy.contabilidad.balancegeneral.CuentasModel.parent
+esquipulaspy.contabilidad.cuentas.Account.parent
+esquipulaspy.contabilidad.cuentas.AccountsModel.parent
+esquipulaspy.inventario.categoriesmodel.CategoriesModel.parent
+esquipulaspy.inventario.categoriesmodel.CategoryItem.parent" class="py-name" href="#" onclick="return doclink('link-0', 'parent', 'link-0');">parent</a></tt> <tt class="py-op">=</tt> <tt id="link-1" class="py-name"><a title="esquipulaspy.contabilidad.balancegeneral.CuentaPadre.parent
+esquipulaspy.contabilidad.balancegeneral.CuentasModel.parent
+esquipulaspy.contabilidad.cuentas.Account.parent
+esquipulaspy.contabilidad.cuentas.AccountsModel.parent
+esquipulaspy.inventario.categoriesmodel.CategoriesModel.parent
+esquipulaspy.inventario.categoriesmodel.CategoryItem.parent" class="py-name" href="#" onclick="return doclink('link-1', 'parent', 'link-0');">parent</a></tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"><tt class="py-string">        @ivar: FIXME: que es este parent???</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt class="py-string">        @type: ???</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">costo</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"><tt class="py-string">        @ivar: El costo unitario en cordobas para cada linea de la factura</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"><tt class="py-string">        @type: int</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">sugerido</tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"><tt class="py-string">        @ivar: El precio sugerido para este producto, se calcula multiplicando el costo del producto por su porcentaje de ganancia</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt class="py-string">        @type: Decimal</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">existencia</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-string">        @ivar: La existencia de este producto en la bodega</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-string">        @type: int</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">idbodega</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt class="py-string">        @ivar: El id de la bodega</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-string">        @type: int</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-string">        """</tt> </tt>
+</div><a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"> </tt>
+<a name="LineaFactura.getPrice"></a><div id="LineaFactura.getPrice-def"><a name="L83"></a><tt class="py-lineno"> 83</tt> <a class="py-toggle" href="#" id="LineaFactura.getPrice-toggle" onclick="return toggle('LineaFactura.getPrice');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#getPrice">getPrice</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaFactura.getPrice-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="LineaFactura.getPrice-expanded"><a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"><tt class="py-docstring">        el precio unitario del producto en esta linea</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">price</tt> </tt>
+</div><a name="LineaFactura.setPrice"></a><div id="LineaFactura.setPrice-def"><a name="L88"></a><tt class="py-lineno"> 88</tt> <a class="py-toggle" href="#" id="LineaFactura.setPrice-toggle" onclick="return toggle('LineaFactura.setPrice');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#setPrice">setPrice</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">price</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaFactura.setPrice-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="LineaFactura.setPrice-expanded"><a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">price</tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-name">price</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt id="link-2" class="py-name" targets="Variable esquipulaspy.document.factura.lineafactura.LineaFactura.itemPrice=esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#itemPrice"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura.itemPrice" class="py-name" href="#" onclick="return doclink('link-2', 'itemPrice', 'link-2');">itemPrice</a></tt> <tt class="py-op">=</tt> <tt class="py-name">property</tt><tt class="py-op">(</tt> <tt id="link-3" class="py-name" targets="Method esquipulaspy.document.factura.lineafactura.LineaFactura.getPrice()=esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#getPrice"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura.getPrice" class="py-name" href="#" onclick="return doclink('link-3', 'getPrice', 'link-3');">getPrice</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Method esquipulaspy.document.factura.lineafactura.LineaFactura.setPrice()=esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#setPrice"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura.setPrice" class="py-name" href="#" onclick="return doclink('link-4', 'setPrice', 'link-4');">setPrice</a></tt> <tt class="py-op">)</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="LineaFactura.total"></a><div id="LineaFactura.total-def"><a name="L94"></a><tt class="py-lineno"> 94</tt> <a class="py-toggle" href="#" id="LineaFactura.total-toggle" onclick="return toggle('LineaFactura.total');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#total">total</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaFactura.total-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="LineaFactura.total-expanded"><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"><tt class="py-docstring">        el total de esta linea</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">quantity</tt> <tt class="py-op">*</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura.itemPrice" class="py-name" href="#" onclick="return doclink('link-5', 'itemPrice', 'link-2');">itemPrice</a></tt> <tt class="py-op">)</tt> <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Variable esquipulaspy.caja.apertura.AperturaModel.valid=esquipulaspy.caja.apertura.AperturaModel-class.html#valid,Variable esquipulaspy.caja.factura.FrmFactura.valid=esquipulaspy.caja.factura.FrmFactura-class.html#valid,Variable esquipulaspy.caja.mainwindow.DatosSesion.valid=esquipulaspy.caja.mainwindow.DatosSesion-class.html#valid,Variable esquipulaspy.caja.pago.FrmPago.valid=esquipulaspy.caja.pago.FrmPago-class.html#valid,Method esquipulaspy.caja.recibo.DatosRecibo.valid()=esquipulaspy.caja.recibo.DatosRecibo-class.html#valid,Variable esquipulaspy.contabilidad.conciliacion.FrmConciliacion.valid=esquipulaspy.contabilidad.conciliacion.FrmConciliacion-class.html#valid,Variable esquipulaspy.document.arqueo.arqueomodel.ArqueoModel.valid=esquipulaspy.document.arqueo.arqueomodel.ArqueoModel-class.html#valid,Variable esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.valid=esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo-class.html#valid,Variable esquipulaspy.document.cheque.chequemodel.ChequeModel.valid=esquipulaspy.document.cheque.chequemodel.ChequeModel-class.html#valid,Variable esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel.valid=esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel-class.html#valid,Variable esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion.valid=esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion-class.html#valid,Variable esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel.valid=esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel-class.html#valid,Variable esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel.valid=esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel-class.html#valid,Variable esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion.valid=esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion-class.html#valid,Variable esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel.valid=esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel-class.html#valid,Method esquipulaspy.document.entradacompra.entradacompramodel.TestEntradaCompraSimple.valid()=esquipulaspy.document.entradacompra.entradacompramodel.TestEntradaCompraSimple-class.html#valid,Variable esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid=esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra-class.html#valid,Variable esquipulaspy.document.factura.lineafactura.LineaFactura.valid=esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#valid,Variable esquipulaspy.document.kardex.kardexmodel.KardexModel.valid=esquipulaspy.document.kardex.kardexmodel.KardexModel-class.html#valid,Variable esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel.valid=esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel-class.html#valid,Variable esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther.valid=esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther-class.html#valid,Variable esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.valid=esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion-class.html#valid,Variable esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel.valid=esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel-class.html#valid,Variable esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid=esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel-class.html#valid,Variable esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid=esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel-class.html#valid,Method esquipulaspy.document.pago.compramodel.AbonoModel.valid()=esquipulaspy.document.pago.compramodel.AbonoModel-class.html#valid,Variable esquipulaspy.document.pago.lineacompra.LineaAbono.valid=esquipulaspy.document.pago.lineacompra.LineaAbono-class.html#valid,Variable esquipulaspy.document.pago.lineapago.LineaRecibo.valid=esquipulaspy.document.pago.lineapago.LineaRecibo-class.html#valid,Variable esquipulaspy.document.recibo.abonomodel.AbonoModel.valid=esquipulaspy.document.recibo.abonomodel.AbonoModel-class.html#valid,Variable esquipulaspy.document.recibo.lineaabono.LineaAbono.valid=esquipulaspy.document.recibo.lineaabono.LineaAbono-class.html#valid,Variable esquipulaspy.document.recibo.linearecibo.LineaRecibo.valid=esquipulaspy.document.recibo.linearecibo.LineaRecibo-class.html#valid,Variable esquipulaspy.inventario.articulos.frmArticlesNew.valid=esquipulaspy.inventario.articulos.frmArticlesNew-class.html#valid,Variable esquipulaspy.utility.accountselector.AccountsSelectorLine.valid=esquipulaspy.utility.accountselector.AccountsSelectorLine-class.html#valid,Variable esquipulaspy.utility.accountselector.AccountsSelectorModel.valid=esquipulaspy.utility.accountselector.AccountsSelectorModel-class.html#valid,Variable esquipulaspy.utility.docbase.DocumentBase.valid=esquipulaspy.utility.docbase.DocumentBase-class.html#valid,Variable esquipulaspy.utility.docbase.LineaBase.valid=esquipulaspy.utility.docbase.LineaBase-class.html#valid,Variable esquipulaspy.utility.user.User.valid=esquipulaspy.utility.user.User-class.html#valid"><a title="esquipulaspy.caja.apertura.AperturaModel.valid
+esquipulaspy.caja.factura.FrmFactura.valid
+esquipulaspy.caja.mainwindow.DatosSesion.valid
+esquipulaspy.caja.pago.FrmPago.valid
+esquipulaspy.caja.recibo.DatosRecibo.valid
+esquipulaspy.contabilidad.conciliacion.FrmConciliacion.valid
+esquipulaspy.document.arqueo.arqueomodel.ArqueoModel.valid
+esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.valid
+esquipulaspy.document.cheque.chequemodel.ChequeModel.valid
+esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel.valid
+esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion.valid
+esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel.valid
+esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel.valid
+esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion.valid
+esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel.valid
+esquipulaspy.document.entradacompra.entradacompramodel.TestEntradaCompraSimple.valid
+esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid
+esquipulaspy.document.factura.lineafactura.LineaFactura.valid
+esquipulaspy.document.kardex.kardexmodel.KardexModel.valid
+esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel.valid
+esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther.valid
+esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.valid
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel.valid
+esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid
+esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid
+esquipulaspy.document.pago.compramodel.AbonoModel.valid
+esquipulaspy.document.pago.lineacompra.LineaAbono.valid
+esquipulaspy.document.pago.lineapago.LineaRecibo.valid
+esquipulaspy.document.recibo.abonomodel.AbonoModel.valid
+esquipulaspy.document.recibo.lineaabono.LineaAbono.valid
+esquipulaspy.document.recibo.linearecibo.LineaRecibo.valid
+esquipulaspy.inventario.articulos.frmArticlesNew.valid
+esquipulaspy.utility.accountselector.AccountsSelectorLine.valid
+esquipulaspy.utility.accountselector.AccountsSelectorModel.valid
+esquipulaspy.utility.docbase.DocumentBase.valid
+esquipulaspy.utility.docbase.LineaBase.valid
+esquipulaspy.utility.user.User.valid" class="py-name" href="#" onclick="return doclink('link-6', 'valid', 'link-6');">valid</a></tt> <tt class="py-keyword">else</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="LineaFactura.costototal"></a><div id="LineaFactura.costototal-def"><a name="L101"></a><tt class="py-lineno">101</tt> <a class="py-toggle" href="#" id="LineaFactura.costototal-toggle" onclick="return toggle('LineaFactura.costototal');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#costototal">costototal</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaFactura.costototal-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="LineaFactura.costototal-expanded"><a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"><tt class="py-docstring">        el costo total de esta linea</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">quantity</tt> <tt class="py-op">*</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">costo</tt> <tt class="py-op">)</tt> <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="esquipulaspy.caja.apertura.AperturaModel.valid
+esquipulaspy.caja.factura.FrmFactura.valid
+esquipulaspy.caja.mainwindow.DatosSesion.valid
+esquipulaspy.caja.pago.FrmPago.valid
+esquipulaspy.caja.recibo.DatosRecibo.valid
+esquipulaspy.contabilidad.conciliacion.FrmConciliacion.valid
+esquipulaspy.document.arqueo.arqueomodel.ArqueoModel.valid
+esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.valid
+esquipulaspy.document.cheque.chequemodel.ChequeModel.valid
+esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel.valid
+esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion.valid
+esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel.valid
+esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel.valid
+esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion.valid
+esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel.valid
+esquipulaspy.document.entradacompra.entradacompramodel.TestEntradaCompraSimple.valid
+esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid
+esquipulaspy.document.factura.lineafactura.LineaFactura.valid
+esquipulaspy.document.kardex.kardexmodel.KardexModel.valid
+esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel.valid
+esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther.valid
+esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.valid
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel.valid
+esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid
+esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid
+esquipulaspy.document.pago.compramodel.AbonoModel.valid
+esquipulaspy.document.pago.lineacompra.LineaAbono.valid
+esquipulaspy.document.pago.lineapago.LineaRecibo.valid
+esquipulaspy.document.recibo.abonomodel.AbonoModel.valid
+esquipulaspy.document.recibo.lineaabono.LineaAbono.valid
+esquipulaspy.document.recibo.linearecibo.LineaRecibo.valid
+esquipulaspy.inventario.articulos.frmArticlesNew.valid
+esquipulaspy.utility.accountselector.AccountsSelectorLine.valid
+esquipulaspy.utility.accountselector.AccountsSelectorModel.valid
+esquipulaspy.utility.docbase.DocumentBase.valid
+esquipulaspy.utility.docbase.LineaBase.valid
+esquipulaspy.utility.user.User.valid" class="py-name" href="#" onclick="return doclink('link-7', 'valid', 'link-6');">valid</a></tt> <tt class="py-keyword">else</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-number">0</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="LineaFactura.valid"></a><div id="LineaFactura.valid-def"><a name="L109"></a><tt class="py-lineno">109</tt> <a class="py-toggle" href="#" id="LineaFactura.valid-toggle" onclick="return toggle('LineaFactura.valid');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#valid">valid</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaFactura.valid-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="LineaFactura.valid-expanded"><a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-docstring">        es esta linea valida</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt>  <tt class="py-name">int</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">itemId</tt> <tt class="py-op">)</tt> <tt class="py-op">!=</tt> <tt class="py-number">0</tt>   <tt class="py-keyword">and</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura.itemPrice" class="py-name" href="#" onclick="return doclink('link-8', 'itemPrice', 'link-2');">itemPrice</a></tt> <tt class="py-op">)</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">0</tt> <tt class="py-keyword">and</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">quantity</tt> <tt class="py-op">)</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">0</tt> <tt class="py-op">:</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">True</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">False</tt> </tt>
+</div><a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"> </tt>
+<a name="LineaFactura.save"></a><div id="LineaFactura.save-def"><a name="L117"></a><tt class="py-lineno">117</tt> <a class="py-toggle" href="#" id="LineaFactura.save-toggle" onclick="return toggle('LineaFactura.save');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#save">save</a><tt class="py-op">(</tt> <tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">iddocumento</tt><tt class="py-op">,</tt> <tt class="py-param">linea</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LineaFactura.save-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="LineaFactura.save-expanded"><a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"><tt class="py-docstring">        Este metodo guarda la linea en la base de datos</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"><tt class="py-docstring">        @param iddocumento: el id del documento al que esta enlazada la linea</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name"><a title="esquipulaspy.caja.apertura.AperturaModel.valid
+esquipulaspy.caja.factura.FrmFactura.valid
+esquipulaspy.caja.mainwindow.DatosSesion.valid
+esquipulaspy.caja.pago.FrmPago.valid
+esquipulaspy.caja.recibo.DatosRecibo.valid
+esquipulaspy.contabilidad.conciliacion.FrmConciliacion.valid
+esquipulaspy.document.arqueo.arqueomodel.ArqueoModel.valid
+esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.valid
+esquipulaspy.document.cheque.chequemodel.ChequeModel.valid
+esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel.valid
+esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion.valid
+esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel.valid
+esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel.valid
+esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion.valid
+esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel.valid
+esquipulaspy.document.entradacompra.entradacompramodel.TestEntradaCompraSimple.valid
+esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid
+esquipulaspy.document.factura.lineafactura.LineaFactura.valid
+esquipulaspy.document.kardex.kardexmodel.KardexModel.valid
+esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel.valid
+esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther.valid
+esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.valid
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel.valid
+esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid
+esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid
+esquipulaspy.document.pago.compramodel.AbonoModel.valid
+esquipulaspy.document.pago.lineacompra.LineaAbono.valid
+esquipulaspy.document.pago.lineapago.LineaRecibo.valid
+esquipulaspy.document.recibo.abonomodel.AbonoModel.valid
+esquipulaspy.document.recibo.lineaabono.LineaAbono.valid
+esquipulaspy.document.recibo.linearecibo.LineaRecibo.valid
+esquipulaspy.inventario.articulos.frmArticlesNew.valid
+esquipulaspy.utility.accountselector.AccountsSelectorLine.valid
+esquipulaspy.utility.accountselector.AccountsSelectorModel.valid
+esquipulaspy.utility.docbase.DocumentBase.valid
+esquipulaspy.utility.docbase.LineaBase.valid
+esquipulaspy.utility.user.User.valid" class="py-name" href="#" onclick="return doclink('link-9', 'valid', 'link-6');">valid</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt> <tt class="py-string">"Se intento guardar una linea no valida"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt class="py-name">query</tt> <tt class="py-op">=</tt> <tt class="py-name">QSqlQuery</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">prepare</tt><tt class="py-op">(</tt>  </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt class="py-string">"""</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line"><tt class="py-string">        INSERT INTO articulosxdocumento (iddocumento, idarticulo, unidades,costounit, precioventa,nlinea ) </tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line"><tt class="py-string">        VALUES( :iddocumento, :idarticulo, :unidades,:costo, :precio,:linea )</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"><tt class="py-string">        """</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt> <tt class="py-string">"no esta preparada"</tt> <tt class="py-op">)</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line"> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":iddocumento"</tt><tt class="py-op">,</tt> <tt class="py-name">iddocumento</tt> <tt class="py-op">)</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":idarticulo"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">itemId</tt> <tt class="py-op">)</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":unidades"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">quantity</tt> <tt class="py-op">*</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt> <tt class="py-op">)</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":costo"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">costo</tt><tt class="py-op">.</tt><tt class="py-name">to_eng_string</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":precio"</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura.itemPrice" class="py-name" href="#" onclick="return doclink('link-10', 'itemPrice', 'link-2');">itemPrice</a></tt><tt class="py-op">.</tt><tt class="py-name">to_eng_string</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">bindValue</tt><tt class="py-op">(</tt> <tt class="py-string">":linea"</tt><tt class="py-op">,</tt> <tt class="py-name">linea</tt> <tt class="py-op">)</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line"> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line"> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Method esquipulaspy.contabilidad.conciliacion.dlgSelectCuenta.exec_()=esquipulaspy.contabilidad.conciliacion.dlgSelectCuenta-class.html#exec_"><a title="esquipulaspy.contabilidad.conciliacion.dlgSelectCuenta.exec_" class="py-name" href="#" onclick="return doclink('link-11', 'exec_', 'link-11');">exec_</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">            <tt class="py-keyword">print</tt><tt class="py-op">(</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">lastError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt> <tt class="py-string">"line"</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">itemId</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div></div><a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"> </tt>
+<a name="TestLineaFactura"></a><div id="TestLineaFactura-def"><a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line"> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt> <a class="py-toggle" href="#" id="TestLineaFactura-toggle" onclick="return toggle('TestLineaFactura');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.TestLineaFactura-class.html">TestLineaFactura</a><tt class="py-op">(</tt> <tt class="py-base-class">unittest</tt><tt class="py-op">.</tt><tt class="py-base-class">TestCase</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestLineaFactura-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="TestLineaFactura-expanded"><a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line"><tt class="py-docstring">    Esta clase es un TesCase para LineaFactura reproduce un caso com&#250;n y</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line"><tt class="py-docstring">    verifica los resultados del modelo con los esperados</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="TestLineaFactura.setUp"></a><div id="TestLineaFactura.setUp-def"><a name="L152"></a><tt class="py-lineno">152</tt> <a class="py-toggle" href="#" id="TestLineaFactura.setUp-toggle" onclick="return toggle('TestLineaFactura.setUp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.TestLineaFactura-class.html#setUp">setUp</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestLineaFactura.setUp-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TestLineaFactura.setUp-expanded"><a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">        <tt class="py-name">_app</tt> <tt class="py-op">=</tt> <tt class="py-name">QCoreApplication</tt><tt class="py-op">(</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> <tt class="py-op">)</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line"> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name" targets="Class esquipulaspy.document.factura.lineafactura.LineaFactura=esquipulaspy.document.factura.lineafactura.LineaFactura-class.html"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura" class="py-name" href="#" onclick="return doclink('link-12', 'LineaFactura', 'link-12');">LineaFactura</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt class="py-name">quantity</tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt class="py-name">itemId</tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura.itemPrice" class="py-name" href="#" onclick="return doclink('link-13', 'itemPrice', 'link-2');">itemPrice</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-string">'89'</tt> <tt class="py-op">)</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt class="py-name">costo</tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-string">'80'</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line"> </tt>
+<a name="TestLineaFactura.test_valid"></a><div id="TestLineaFactura.test_valid-def"><a name="L161"></a><tt class="py-lineno">161</tt> <a class="py-toggle" href="#" id="TestLineaFactura.test_valid-toggle" onclick="return toggle('TestLineaFactura.test_valid');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.TestLineaFactura-class.html#test_valid">test_valid</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestLineaFactura.test_valid-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TestLineaFactura.test_valid-expanded"><a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">assertTrue</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="esquipulaspy.caja.apertura.AperturaModel.valid
+esquipulaspy.caja.factura.FrmFactura.valid
+esquipulaspy.caja.mainwindow.DatosSesion.valid
+esquipulaspy.caja.pago.FrmPago.valid
+esquipulaspy.caja.recibo.DatosRecibo.valid
+esquipulaspy.contabilidad.conciliacion.FrmConciliacion.valid
+esquipulaspy.document.arqueo.arqueomodel.ArqueoModel.valid
+esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.valid
+esquipulaspy.document.cheque.chequemodel.ChequeModel.valid
+esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel.valid
+esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion.valid
+esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel.valid
+esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel.valid
+esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion.valid
+esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel.valid
+esquipulaspy.document.entradacompra.entradacompramodel.TestEntradaCompraSimple.valid
+esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid
+esquipulaspy.document.factura.lineafactura.LineaFactura.valid
+esquipulaspy.document.kardex.kardexmodel.KardexModel.valid
+esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel.valid
+esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther.valid
+esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.valid
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel.valid
+esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid
+esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid
+esquipulaspy.document.pago.compramodel.AbonoModel.valid
+esquipulaspy.document.pago.lineacompra.LineaAbono.valid
+esquipulaspy.document.pago.lineapago.LineaRecibo.valid
+esquipulaspy.document.recibo.abonomodel.AbonoModel.valid
+esquipulaspy.document.recibo.lineaabono.LineaAbono.valid
+esquipulaspy.document.recibo.linearecibo.LineaRecibo.valid
+esquipulaspy.inventario.articulos.frmArticlesNew.valid
+esquipulaspy.utility.accountselector.AccountsSelectorLine.valid
+esquipulaspy.utility.accountselector.AccountsSelectorModel.valid
+esquipulaspy.utility.docbase.DocumentBase.valid
+esquipulaspy.utility.docbase.LineaBase.valid
+esquipulaspy.utility.user.User.valid" class="py-name" href="#" onclick="return doclink('link-14', 'valid', 'link-6');">valid</a></tt><tt class="py-op">,</tt> <tt class="py-string">"La linea deberia de ser valida"</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line"> </tt>
+<a name="TestLineaFactura.test_costototal"></a><div id="TestLineaFactura.test_costototal-def"><a name="L164"></a><tt class="py-lineno">164</tt> <a class="py-toggle" href="#" id="TestLineaFactura.test_costototal-toggle" onclick="return toggle('TestLineaFactura.test_costototal');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.TestLineaFactura-class.html#test_costototal">test_costototal</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestLineaFactura.test_costototal-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TestLineaFactura.test_costototal-expanded"><a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">assertEqual</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Variable esquipulaspy.document.factura.lineafactura.LineaFactura.costototal=esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#costototal"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura.costototal" class="py-name" href="#" onclick="return doclink('link-15', 'costototal', 'link-15');">costototal</a></tt><tt class="py-op">,</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-string">'80'</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line"> </tt>
+<a name="TestLineaFactura.test_total"></a><div id="TestLineaFactura.test_total-def"><a name="L167"></a><tt class="py-lineno">167</tt> <a class="py-toggle" href="#" id="TestLineaFactura.test_total-toggle" onclick="return toggle('TestLineaFactura.test_total');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.TestLineaFactura-class.html#test_total">test_total</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestLineaFactura.test_total-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TestLineaFactura.test_total-expanded"><a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">assertEqual</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Variable esquipulaspy.caja.apertura.AperturaModel.total=esquipulaspy.caja.apertura.AperturaModel-class.html#total,Variable esquipulaspy.caja.recibo.DatosRecibo.total=esquipulaspy.caja.recibo.DatosRecibo-class.html#total,Variable esquipulaspy.contabilidad.conciliacion.DetalleTableModel.total=esquipulaspy.contabilidad.conciliacion.DetalleTableModel-class.html#total,Variable esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.total=esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo-class.html#total,Variable esquipulaspy.document.factura.facturamodel.FacturaModel.total=esquipulaspy.document.factura.facturamodel.FacturaModel-class.html#total,Variable esquipulaspy.document.factura.lineafactura.LineaFactura.total=esquipulaspy.document.factura.lineafactura.LineaFactura-class.html#total,Method esquipulaspy.document.pago.compramodel.AbonoModel.total()=esquipulaspy.document.pago.compramodel.AbonoModel-class.html#total,Variable esquipulaspy.document.recibo.abonomodel.AbonoModel.total=esquipulaspy.document.recibo.abonomodel.AbonoModel-class.html#total"><a title="esquipulaspy.caja.apertura.AperturaModel.total
+esquipulaspy.caja.recibo.DatosRecibo.total
+esquipulaspy.contabilidad.conciliacion.DetalleTableModel.total
+esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.total
+esquipulaspy.document.factura.facturamodel.FacturaModel.total
+esquipulaspy.document.factura.lineafactura.LineaFactura.total
+esquipulaspy.document.pago.compramodel.AbonoModel.total
+esquipulaspy.document.recibo.abonomodel.AbonoModel.total" class="py-name" href="#" onclick="return doclink('link-16', 'total', 'link-16');">total</a></tt><tt class="py-op">,</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-string">'89'</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div></div><a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line"> </tt>
+<a name="TestLineaFacturaInvalida"></a><div id="TestLineaFacturaInvalida-def"><a name="L170"></a><tt class="py-lineno">170</tt> <a class="py-toggle" href="#" id="TestLineaFacturaInvalida-toggle" onclick="return toggle('TestLineaFacturaInvalida');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.TestLineaFacturaInvalida-class.html">TestLineaFacturaInvalida</a><tt class="py-op">(</tt> <tt class="py-base-class">unittest</tt><tt class="py-op">.</tt><tt class="py-base-class">TestCase</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestLineaFacturaInvalida-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="TestLineaFacturaInvalida-expanded"><a name="TestLineaFacturaInvalida.setUp"></a><div id="TestLineaFacturaInvalida.setUp-def"><a name="L171"></a><tt class="py-lineno">171</tt> <a class="py-toggle" href="#" id="TestLineaFacturaInvalida.setUp-toggle" onclick="return toggle('TestLineaFacturaInvalida.setUp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.TestLineaFacturaInvalida-class.html#setUp">setUp</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestLineaFacturaInvalida.setUp-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TestLineaFacturaInvalida.setUp-expanded"><a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">        <tt class="py-name">_app</tt> <tt class="py-op">=</tt> <tt class="py-name">QCoreApplication</tt><tt class="py-op">(</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> <tt class="py-op">)</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line"> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt> <tt class="py-op">=</tt> <tt id="link-17" class="py-name"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura" class="py-name" href="#" onclick="return doclink('link-17', 'LineaFactura', 'link-12');">LineaFactura</a></tt><tt class="py-op">(</tt> <tt class="py-name">self</tt> <tt class="py-op">)</tt> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt class="py-name">quantity</tt> <tt class="py-op">=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura.itemPrice" class="py-name" href="#" onclick="return doclink('link-18', 'itemPrice', 'link-2');">itemPrice</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-string">'89'</tt> <tt class="py-op">)</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt class="py-name">costo</tt> <tt class="py-op">=</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-string">'80'</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line"> </tt>
+<a name="TestLineaFacturaInvalida.test_valid"></a><div id="TestLineaFacturaInvalida.test_valid-def"><a name="L179"></a><tt class="py-lineno">179</tt> <a class="py-toggle" href="#" id="TestLineaFacturaInvalida.test_valid-toggle" onclick="return toggle('TestLineaFacturaInvalida.test_valid');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.TestLineaFacturaInvalida-class.html#test_valid">test_valid</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestLineaFacturaInvalida.test_valid-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TestLineaFacturaInvalida.test_valid-expanded"><a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">assertFalse</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="esquipulaspy.caja.apertura.AperturaModel.valid
+esquipulaspy.caja.factura.FrmFactura.valid
+esquipulaspy.caja.mainwindow.DatosSesion.valid
+esquipulaspy.caja.pago.FrmPago.valid
+esquipulaspy.caja.recibo.DatosRecibo.valid
+esquipulaspy.contabilidad.conciliacion.FrmConciliacion.valid
+esquipulaspy.document.arqueo.arqueomodel.ArqueoModel.valid
+esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.valid
+esquipulaspy.document.cheque.chequemodel.ChequeModel.valid
+esquipulaspy.document.conciliacion.conciliacionmodel.ConciliacionModel.valid
+esquipulaspy.document.conciliacion.lineaconciliacion.LineaConciliacion.valid
+esquipulaspy.document.devolucion.creditodebito.CreditoDebitoModel.valid
+esquipulaspy.document.devolucion.devolucionmodel.DevolucionModel.valid
+esquipulaspy.document.devolucion.lineadevolucion.LineaDevolucion.valid
+esquipulaspy.document.entradacompra.entradacompramodel.EntradaCompraModel.valid
+esquipulaspy.document.entradacompra.entradacompramodel.TestEntradaCompraSimple.valid
+esquipulaspy.document.entradacompra.lineaentradacompra.LineaEntradaCompra.valid
+esquipulaspy.document.factura.lineafactura.LineaFactura.valid
+esquipulaspy.document.kardex.kardexmodel.KardexModel.valid
+esquipulaspy.document.kardexother.kardexothermodel.KardexOtherModel.valid
+esquipulaspy.document.kardexother.lineakardexother.LineaKardexOther.valid
+esquipulaspy.document.liquidacion.linealiquidacion.LineaLiquidacion.valid
+esquipulaspy.document.liquidacion.liquidacionmodel.LiquidacionModel.valid
+esquipulaspy.document.movimientosbancarios.datosdocmodel.DatosDocModel.valid
+esquipulaspy.document.movimientosbancarios.movimientosbancariosmodel.MovimientosBancariosModel.valid
+esquipulaspy.document.pago.compramodel.AbonoModel.valid
+esquipulaspy.document.pago.lineacompra.LineaAbono.valid
+esquipulaspy.document.pago.lineapago.LineaRecibo.valid
+esquipulaspy.document.recibo.abonomodel.AbonoModel.valid
+esquipulaspy.document.recibo.lineaabono.LineaAbono.valid
+esquipulaspy.document.recibo.linearecibo.LineaRecibo.valid
+esquipulaspy.inventario.articulos.frmArticlesNew.valid
+esquipulaspy.utility.accountselector.AccountsSelectorLine.valid
+esquipulaspy.utility.accountselector.AccountsSelectorModel.valid
+esquipulaspy.utility.docbase.DocumentBase.valid
+esquipulaspy.utility.docbase.LineaBase.valid
+esquipulaspy.utility.user.User.valid" class="py-name" href="#" onclick="return doclink('link-19', 'valid', 'link-6');">valid</a></tt><tt class="py-op">,</tt> <tt class="py-string">"La linea deberia de ser invalida"</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line"> </tt>
+<a name="TestLineaFacturaInvalida.test_costototal"></a><div id="TestLineaFacturaInvalida.test_costototal-def"><a name="L182"></a><tt class="py-lineno">182</tt> <a class="py-toggle" href="#" id="TestLineaFacturaInvalida.test_costototal-toggle" onclick="return toggle('TestLineaFacturaInvalida.test_costototal');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.TestLineaFacturaInvalida-class.html#test_costototal">test_costototal</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestLineaFacturaInvalida.test_costototal-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TestLineaFacturaInvalida.test_costototal-expanded"><a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">assertEqual</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name"><a title="esquipulaspy.document.factura.lineafactura.LineaFactura.costototal" class="py-name" href="#" onclick="return doclink('link-20', 'costototal', 'link-15');">costototal</a></tt><tt class="py-op">,</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-string">'0'</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line"> </tt>
+<a name="TestLineaFacturaInvalida.test_total"></a><div id="TestLineaFacturaInvalida.test_total-def"><a name="L185"></a><tt class="py-lineno">185</tt> <a class="py-toggle" href="#" id="TestLineaFacturaInvalida.test_total-toggle" onclick="return toggle('TestLineaFacturaInvalida.test_total');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="esquipulaspy.document.factura.lineafactura.TestLineaFacturaInvalida-class.html#test_total">test_total</a><tt class="py-op">(</tt> <tt class="py-param">self</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TestLineaFacturaInvalida.test_total-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="TestLineaFacturaInvalida.test_total-expanded"><a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">assertEqual</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">line</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="esquipulaspy.caja.apertura.AperturaModel.total
+esquipulaspy.caja.recibo.DatosRecibo.total
+esquipulaspy.contabilidad.conciliacion.DetalleTableModel.total
+esquipulaspy.document.arqueo.lineaarqueo.LineaArqueo.total
+esquipulaspy.document.factura.facturamodel.FacturaModel.total
+esquipulaspy.document.factura.lineafactura.LineaFactura.total
+esquipulaspy.document.pago.compramodel.AbonoModel.total
+esquipulaspy.document.recibo.abonomodel.AbonoModel.total" class="py-name" href="#" onclick="return doclink('link-21', 'total', 'link-16');">total</a></tt><tt class="py-op">,</tt> <tt class="py-name">Decimal</tt><tt class="py-op">(</tt> <tt class="py-string">'0'</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div></div><a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line"> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">"__main__"</tt><tt class="py-op">:</tt> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line">    <tt class="py-name">unittest</tt><tt class="py-op">.</tt><tt class="py-name">main</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="esquipulaspy.document-module.html">Inicio</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Arboles</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Ayuda</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >EsquipulasPy</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generado por Epydoc 3.0 
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
