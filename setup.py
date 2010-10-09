@@ -11,7 +11,7 @@ OPTIONS = {}
 FILES = {}
 
 if os.name == 'posix':
-    SCRIPTS = ['esquipulas-inventario', 'esquipulas-caja', 'esquipulas-contabilidad'],
+    SCRIPTS = ['esquipulas-inventario', 'esquipulas-caja', 'esquipulas-contabilidad']
 elif os.name == 'nt':
     SCRIPTS = []
 
@@ -22,6 +22,7 @@ setup(
     author = u'Andrés Reyes Monge, Luis Carlos Mejia Garcia,'\
     ' Marcos Antonio Moreno Gonzales',
     author_email = "armonge@gmail.com",
+    copyright = "GPL V3",
     packages = find_packages(),
     scripts = SCRIPTS,
     data_files = FILES,
