@@ -16,12 +16,12 @@ import shutil
 
 
 
-class Target(object):
+class Target( object ):
     """ A simple class that holds information on our executable file. """
-    def __init__(self, **kw):
+    def __init__( self, **kw ):
         """ Default class constructor. Update as you need. """
-        self.__dict__.update(kw)
-        
+        self.__dict__.update( kw )
+
 
 # Ok, let's explain why I am doing that.
 # Often, data_files, excludes and dll_excludes (but also resources)
@@ -29,8 +29,8 @@ class Target(object):
 # the setup call at the end of this file. So, I put all the big lists
 # here and I wrap them using the textwrap module.
 
-data_files = [('', [os.getcwd() + r'\help\doc.qch',
-                    os.getcwd() + r'\help\esquipulashelpcollection.qhc',
+data_files = [( '', [os.getcwd() + r'\..\doc\manual\doc.qch',
+                    os.getcwd() + r'\..\doc\manual\esquipulashelpcollection.qhc',
                     os.getcwd() + r'\ui\res\logo.ico',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\assistant.exe',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\libgcc_s_dw2-1.dll',
@@ -42,10 +42,10 @@ data_files = [('', [os.getcwd() + r'\help\doc.qch',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtCLucene4.dll',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtHelp4.dll',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtXml4.dll',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtXmlPatterns4.dll']),
-              ('sqldrivers', ['C:\\Python26\\Lib\\site-packages\\PyQt4\\plugins\\sqldrivers\\qsqlite4.dll',
-                              'C:\\Python26\\Lib\\site-packages\\PyQt4\\plugins\\sqldrivers\\qsqlmysql4.dll']),
-              ('translations', [os.getcwd() + r'\translations\\qt_es.qm'])]
+                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtXmlPatterns4.dll'] ),
+              ( 'sqldrivers', ['C:\\Python26\\Lib\\site-packages\\PyQt4\\plugins\\sqldrivers\\qsqlite4.dll',
+                              'C:\\Python26\\Lib\\site-packages\\PyQt4\\plugins\\sqldrivers\\qsqlmysql4.dll'] ),
+              ( 'translations', [os.getcwd() + r'\translations\\qt_es.qm'] )]
 
 includes = []
 excludes = ['_gtkagg', '_tkagg', 'bsddb', 'curses', 'email', 'pywin.debugger',
@@ -55,7 +55,7 @@ packages = ['PyQt4.QtCore', 'PyQt4.QtGui', 'PyQt4.QtNetwork', 'PyQt4.QtSql',
             'PyQt4.QtWebKit', 'sip']
 dll_excludes = ['libgdk-win32-2.0-0.dll', 'libgobject-2.0-0.dll', 'tcl84.dll',
                 'tk84.dll']
-icon_resources = [(1, os.getcwd() + r'\ui\res\logo.ico')]
+icon_resources = [( 1, os.getcwd() + r'\ui\res\logo.ico' )]
 bitmap_resources = []
 other_resources = []
 
@@ -84,18 +84,18 @@ py2exe.build_exe.isSystemDLL = is_system_dll
 # Ok, now we are going to build our target class.
 # I chose this building strategy as it works perfectly for me :-D
 
-GUI2Exe_Target_1 = Target(
+GUI2Exe_Target_1 = Target( 
     # what to build
     script = "esquipulas.py",
     icon_resources = icon_resources,
     bitmap_resources = bitmap_resources,
     other_resources = other_resources,
-    dest_base = "esquipulas",    
-    version = "0.1",
+    dest_base = "esquipulas",
+    version = "1.0",
     company_name = "Cusuco Soft",
     copyright = "GPL V3",
     name = "esquipulas.exe",
-    
+
     )
 
 # No custom class for UPX compression or Inno Setup script
@@ -103,14 +103,14 @@ GUI2Exe_Target_1 = Target(
 # That's serious now: we have all (or almost all) the options py2exe
 # supports. I put them all even if some of them are usually defaulted
 # and not used. Some of them I didn't even know about.
-                    
-setup(
+
+setup( 
 
     # No UPX or Inno Setup
 
     data_files = data_files,
 
-    options = {"py2exe": {"compressed": 2, 
+    options = {"py2exe": {"compressed": 2,
                           "optimize": 2,
                           "includes": includes,
                           "excludes": excludes,
