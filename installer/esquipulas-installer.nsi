@@ -39,7 +39,7 @@ Var StartMenuGroup
 
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE ..\src\LICENSE
+!insertmacro MUI_PAGE_LICENSE ..\esquipulaspy\LICENSE
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MULTIUSER_PAGE_INSTALLMODE
 !insertmacro MUI_PAGE_DIRECTORY
@@ -72,33 +72,32 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File ..\dist\_hashlib.pyd
-    File ..\dist\bz2.pyd
-    File ..\dist\esquipulas.exe
-    File ..\dist\libgcc_s_dw2-1.dll
-    File ..\dist\libmySQL.dll
-    File ..\dist\library.zip
-    File ..\dist\mingwm10.dll
-    File ..\dist\phonon4.dll
-    File ..\dist\PyQt4.QtCore.pyd
-    File ..\dist\PyQt4.QtGui.pyd
-    File ..\dist\PyQt4.QtNetwork.pyd
-    File ..\dist\PyQt4.QtSql.pyd
-    File ..\dist\PyQt4.QtWebKit.pyd
-    File ..\dist\python26.dll
-    File ..\dist\QtCore4.dll
-    File ..\dist\QtGui4.dll
-    File ..\dist\QtHelp4.dll
-    File ..\dist\QtNetwork4.dll
-    File ..\dist\QtSql4.dll
-    File ..\dist\QtWebKit4.dll
-    File ..\dist\select.pyd
-    File ..\dist\sip.pyd
-    File ..\dist\unicodedata.pyd
-    File ..\dist\w9xpopen.exe
-    File ..\dist\logo.ico
-    File /r ..\dist\sqldrivers
-    File /r ..\dist\translations
+    File ..\esquipulaspy\dist\_hashlib.pyd
+    File ..\esquipulaspy\dist\bz2.pyd
+    File ..\esquipulaspy\dist\esquipulas.exe
+    File ..\esquipulaspy\dist\libgcc_s_dw2-1.dll
+    File ..\esquipulaspy\dist\libmySQL.dll
+    File ..\esquipulaspy\dist\mingwm10.dll
+    File ..\esquipulaspy\dist\phonon4.dll
+    File ..\esquipulaspy\dist\PyQt4.QtCore.pyd
+    File ..\esquipulaspy\dist\PyQt4.QtGui.pyd
+    File ..\esquipulaspy\dist\PyQt4.QtNetwork.pyd
+    File ..\esquipulaspy\dist\PyQt4.QtSql.pyd
+    File ..\esquipulaspy\dist\PyQt4.QtWebKit.pyd
+    File ..\esquipulaspy\dist\python26.dll
+    File ..\esquipulaspy\dist\QtCore4.dll
+    File ..\esquipulaspy\dist\QtGui4.dll
+    File ..\esquipulaspy\dist\QtHelp4.dll
+    File ..\esquipulaspy\dist\QtNetwork4.dll
+    File ..\esquipulaspy\dist\QtSql4.dll
+    File ..\esquipulaspy\dist\QtWebKit4.dll
+    File ..\esquipulaspy\dist\select.pyd
+    File ..\esquipulaspy\dist\sip.pyd
+    File ..\esquipulaspy\dist\unicodedata.pyd
+    File ..\esquipulaspy\dist\w9xpopen.exe
+    File ..\esquipulaspy\dist\logo.ico
+    File /r ..\esquipulaspy\dist\sqldrivers
+    File /r ..\esquipulaspy\dist\translations
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
 SectionEnd
 
@@ -123,14 +122,14 @@ SectionEnd
 Section Ayuda SEC0004
     SetOutPath $INSTDIR
     SetOverwrite on
-    File ..\dist\assistant.exe
-    File ..\dist\doc.qch
-    File ..\dist\esquipulashelpcollection.qhc
-    File ..\dist\qt.conf
-    File ..\dist\QtAssistantClient4.dll
-    File ..\dist\QtCLucene4.dll
-    File ..\dist\QtXml4.dll
-    File ..\dist\QtXmlPatterns4.dll
+    File ..\esquipulaspy\dist\assistant.exe
+    File ..\esquipulaspy\dist\doc.qch
+    File ..\esquipulaspy\dist\esquipulashelpcollection.qhc
+    File ..\esquipulaspy\dist\qt.conf
+    File ..\esquipulaspy\dist\QtAssistantClient4.dll
+    File ..\esquipulaspy\dist\QtCLucene4.dll
+    File ..\esquipulaspy\dist\QtXml4.dll
+    File ..\esquipulaspy\dist\QtXmlPatterns4.dll
     SetOutPath $SMPROGRAMS\$StartMenuGroup
     createShortCut "$SMPROGRAMS\$StartMenuGroup\Ayuda.lnk" "$INSTDIR\assistant.exe" "-collectionFile '$INSTDIR\esquipulashelpcollection.qhc'" $INSTDIR\logo.ico
     WriteRegStr HKLM "${REGKEY}\Components" Ayuda 1
