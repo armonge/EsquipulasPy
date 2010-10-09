@@ -9,7 +9,7 @@ Created on 25/05/2010
 import logging
 from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, \
 QSortFilterProxyModel, QMessageBox, QCompleter, qApp
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QTimer
+from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QTimer,QDate 
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
 
 from decimal import Decimal
@@ -23,7 +23,7 @@ from utility import constantes
 #from PyQt4.QtGui import QMainWindow
 
 #controles
-IDDOCUMENTO, FECHA, NDOCIMPRESO, NOMBREBENEFICIARIO, TOTAL, TOTALC, TOTALD, NRETENCION, TASARETENCION, TOTALRETENCION, TOTALPAGADO, OBSERVACION, CONIVA, CONRETENCION, CONCEPTO = range( 15 )
+IDDOCUMENTO,NDOCIMPRESO,FECHA,NOMBREBENEFICIARIO,CONCEPTO,TOTALPAGADO,CONIVA, CONRETENCION,TASARETENCION,TOTALC,TOTALD,TOTAL,TOTALRETENCION, OBSERVACION,TIPOCAMBIO = range( 15 )
 
 class FrmPago( Ui_frmPago, QMainWindow, Base ):
     """
@@ -422,20 +422,9 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
 #    
 
     def updateDetailFilter( self, index ):
-        #FIXME: de donde sale IDDOCUMENTOT ??
-        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        iddoc = self.navmodel.record( index ).value( "iddocumento" ).toString()
-        self.detailsproxymodel.setFilterRegExp( iddoc )
+        self.dtPicker.setDate(QDate.fromString(self.navmodel.record( index ).value( "Fecha" ).toString(), "dd/MM/yyyy"))
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
-# FILTRO DE LOS ABONOS
-#        self.abonosproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-#        self.abonosproxymodel.setFilterRegExp( iddoc )
-#        
 
-#
-#    def updateFacturasFilter( self ):
-#        self.facturasproxymodel.setFilterKeyColumn( IDBENEFICIARIO )
-#        self.facturasproxymodel.setFilterRegExp( str( self.datosRecibo.beneficiarioId ) )
 
     def updateLabels( self ):
         """
@@ -463,21 +452,26 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
 
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
-
-
-            self.navmodel.setQuery( """
-                SELECT
+            
+            query = """
+SELECT
                 pago.iddocumento,
-                pago.fecha,
                 pago.ndocimpreso  as 'No. Comprobante',
+               pago.Fecha,
                 pago.nombre as Beneficiario,
-                SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totalc,
-                SUM(IF(mc.idtipomoneda =%d,mc.monto,0)) as totald,
-                pago.tasa,
+                pago.Concepto,
                 pago.total,
-                pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) as subtotal,
-                (pago.total / (1 +SUM(IF(ca.idtipocosto=%d,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (%d,%d),ca.valorcosto/100,0)) as retencion,
-                pago.Concepto
+                IF(SUM(IF(ca.idtipocosto=1,1,0))>0,1,0) as coniva,
+                IF(SUM(IF(ca.idtipocosto in (8,9),1,0))>0,1,0) as conret,
+                SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto,0)) as tasaret,
+                SUM(IF(mc.idtipomoneda =1,mc.monto,0)) as totalc,
+                SUM(IF(mc.idtipomoneda =2,mc.monto,0)) as totald,
+                ROUND(pago.total + (pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto/100,0)),4) as total,
+                -- pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) as subtotal,
+                ROUND((pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto/100,0)),4) as retencion,
+                pago.observacion,
+                pago.tasa
+
                 FROM costosagregados ca
                 JOIN costosxdocumento cxd ON ca.idcostoagregado = cxd.idcostoagregado
                 JOIN movimientoscaja mc ON mc.iddocumento = cxd.iddocumento
@@ -486,8 +480,8 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
                 SELECT
                 d.iddocumento,
                 d.ndocimpreso,
-                GROUP_CONCAT(IF(pxd.idaccion=%d,p.nombre,'') SEPARATOR '') as nombre,
-                DATE_FORMAT(d.fechacreacion,'%s') AS fecha,
+                GROUP_CONCAT(IF(pxd.idaccion=2,p.nombre,'') SEPARATOR '') as nombre,
+                DATE_FORMAT(d.fechacreacion,'%d/%m/%Y') AS fecha,
                 d.observacion,
                 con.descripcion as concepto,
                 tc.tasa,
@@ -497,11 +491,14 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
                 JOIN personasxdocumento pxd ON pxd.iddocumento = d.iddocumento
                 JOIN personas p ON p.idpersona = pxd.idpersona
                 JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
-                WHERE d.idtipodoc=%d
+                WHERE d.idtipodoc=30
                 GROUP BY d.iddocumento
                 ) pago on pago.iddocumento = cxd.iddocumento
                 GROUP BY pago.iddocumento
-                ; """ % ( constantes.IDCORDOBAS, constantes.IDDOLARES, constantes.IVA, constantes.IVA, constantes.RETENCIONFUENTE, constantes.RETENCIONPROFESIONALES, constantes.PROVEEDOR, '%d/%m/%Y', constantes.IDPAGO ) )
+                ; """ # % ( constantes.IDCORDOBAS, constantes.IDDOLARES, constantes.IVA, constantes.IVA, constantes.RETENCIONFUENTE, constantes.RETENCIONPROFESIONALES, constantes.PROVEEDOR, '%d/%m/%Y', constantes.IDPAGO )
+
+            print query
+            self.navmodel.setQuery(query )
 
             self.navproxymodel = QSortFilterProxyModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )
@@ -531,7 +528,7 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
     #        Este es el filtro del modelo anterior
             self.detailsproxymodel = QSortFilterProxyModel( self )
             self.detailsproxymodel.setSourceModel( self.detailsmodel )
-            self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
+            self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTO)
             self.detailsproxymodel.setFilterRegExp( '^0$' )
 # ESTE ES EL MODELO CON LOS DATOS DE Los ABONOS PARA NAVEGAR
             self.abonosmodel = QSqlQueryModel( self )
@@ -558,7 +555,7 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
 #            self.mapper.addMapping( self.txtretencion, NRETENCION , "text" )
 
             self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
-            self.mapper.addMapping( self.dtPicker, FECHA )
+#            self.mapper.addMapping( self.dtPicker, FECHA )
             self.mapper.addMapping( self.txtbeneficiario, NOMBREBENEFICIARIO, "text" )
             self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
             self.mapper.addMapping( self.txttasaret, TASARETENCION, "text" )
