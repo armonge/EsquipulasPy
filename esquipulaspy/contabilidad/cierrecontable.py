@@ -42,8 +42,7 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
                     raise UserWarning( "No se pudo conectar con la base de datos" )
-
-            self.navmodel.setQuery( u"""
+            q = u"""
             SELECT
                 iddocumento,
                 ndocimpreso as 'No. Documento',
@@ -55,11 +54,13 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
             FROM documentos d
             JOIN estadosdocumento estados ON estados.idestado=d.idestado
             JOIN tiposdoc td ON d.idtipodoc=td.idtipodoc
-            WHERE MONTH(fechacreacion)= %s  AND d.idtipodoc!=%d and d.idtipodoc!= %d
-            """ % ( "%d/%m/%Y", self.fecha.toString( "MM" ), +constantes.IDAPERTURA , constantes.IDCIERREMENSUAL ) )
+            WHERE MONTH(d.fechacreacion)= %s  AND d.idtipodoc!=%d and d.idtipodoc!= %d
+            """ % ( "%d/%m/%Y", self.fecha.toString( "MM" ), +constantes.IDAPERTURA , constantes.IDCIERREMENSUAL )
+            print q
+            self.navmodel.setQuery( q )
 
             query = QSqlQuery()
-            query.prepare( """
+            q = """
             SELECT
                 d2.iddocumento
             FROM documentos d
@@ -67,7 +68,9 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
             JOIN documentos d2 ON d2.iddocumento=dp.idhijo
             WHERE d.idtipodoc= %d and month(d2.fechacreacion)= %s
             LIMIT 1
-            """ % ( constantes.IDCIERREMENSUAL, self.fecha.toString( "MM" ) ) )
+            """ % ( constantes.IDCIERREMENSUAL, self.fecha.toString( "MM" ) )
+            print q
+            query.prepare( q )
 
             if not query.exec_():
                 print query.executedQuery()

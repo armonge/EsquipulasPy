@@ -140,7 +140,8 @@ class CuentasModel( QAbstractItemModel ):
     def insertRows( self, position, rows, parent, code, description, esdebe ):
         parentItem = self.getItem( parent )
         self.beginInsertRows( parent, position, position + rows - 1 )
-        success = parentItem.insertChildren( position, rows, [code, description, esdebe] );
+        success = parentItem.insertChildren( position, rows, \
+                                             [code, description, esdebe] )
         self.endInsertRows()
         return success
     def columnCount( self, parent ):
@@ -236,7 +237,8 @@ class Cuenta( object ):
 
         if self.id != 0:
             self.model = QSqlQueryModel()
-            self.model.setQuery( "CALL spBalance( %s )" % fecha.toString( "yyyyMMdd" ) )
+            q = "CALL spBalance( %s )" % fecha.toString( "yyyyMMdd" )
+            self.model.setQuery( q )
 
             modelo = self.model
             agregados = []

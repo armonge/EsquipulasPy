@@ -14,7 +14,8 @@ from decimal import Decimal
 from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtSql import QSqlQuery
 
-from utility.docbase import LineaBase, ifValid
+from utility.docbase import LineaBase
+from utility.decorators import  ifValid
 
 
 class LineaEntradaCompra( LineaBase ):

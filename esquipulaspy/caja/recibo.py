@@ -1075,7 +1075,7 @@ class ROFacturasModel( QSortFilterProxyModel ):
     basicamente esta creado para darle formato al total y al MONTO
     """
     def __init__( self, _dbcursor = None ):
-        super( QSortFilterProxyModel, self ).__init__()
+        super( ROFacturasModel, self ).__init__()
 
     def columnCount( self, _index = QModelIndex() ):
         return 4

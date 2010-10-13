@@ -4,19 +4,14 @@ Created on 21/05/2010
 
 @author: Andrés Reyes Monge
 '''
-import unittest
-if __name__ == "__main__":
-    import sip
-    sip.setapi( 'QString', 2 )
-
 
 import logging
 from decimal import Decimal, InvalidOperation
 
-from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtSql import QSqlQuery
 
-from utility.docbase import ifValid, LineaBase
+from utility.docbase import LineaBase
+from utility.decorators import ifValid
 
 class LineaLiquidacion( LineaBase ):
     def __init__( self, parent ):
@@ -428,52 +423,3 @@ class LineaLiquidacion( LineaBase ):
         if not query.exec_():
             logging.error( query.lastError().text() )
             raise Exception( "Error al insertar los costos de una de las lineas de la factura " )
-
-class TestLineaLiquidacion( unittest.TestCase ):
-    """
-    Esta clase es un TesCase para LineaLiquidacion reproduce un caso común y
-    verifica los resultados del modelo con los esperados
-    """
-    def setUp( self ):
-        unused_app = QCoreApplication( [] )
-
-        self.line = LineaLiquidacion( self )
-        self.line.quantity = 1
-        self.line.itemCost = Decimal( '1' )
-        self.line.rateDAI = Decimal( '5' )
-        self.line.rateISC = Decimal( '76' )
-        self.line.comisionValue = Decimal( '0' )
-        self.line.itemId = 1
-
-        self.cifTotal = Decimal( '1' )
-        self.fobTotal = Decimal( '1' )
-        self.agencyTotal = Decimal( '0' )
-        self.storeTotal = Decimal( '0' )
-        self.paperworkRate = Decimal( '0' )
-        self.transportRate = Decimal( '0' )
-        self.applyTaxes = True
-        self.tsimTotal = Decimal( '0' )
-        self.ivaRate = Decimal( '15' )
-        self.speTotal = Decimal( '5' )
-        self.isoRate = Decimal( '35' )
-        self.exchangeRate = Decimal( '21.5718' )
-        self.exchangeRateId = 1
-
-    def test_valid( self ):
-        self.assertTrue( self.line.valid )
-
-    def test_comision( self ):
-        self.assertEqual( self.line.comisionParcial, Decimal( '0' ) )
-
-    def test_isc( self ):
-        self.assertEqual( self.line.iscParcial, Decimal( '0.7980' ) )
-
-    def test_dai( self ):
-        self.assertEqual( self.line.daiParcial, Decimal( '0.05' ) )
-
-    def test_costo( self ):
-        self.assertEqual( self.line.costoDolarT, Decimal( '7.4752' ) )
-        self.assertNotAlmostEqual( self.line.costoCordobaT, Decimal( '161.2535' ) )
-
-if __name__ == "__main__":
-    unittest.main()

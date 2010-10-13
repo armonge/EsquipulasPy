@@ -627,13 +627,17 @@ class FrmCheques( Ui_frmCheques, QMainWindow, Base ):
         """
         Guardar el documento actual
         """
-        query = QSqlQuery( """SELECT
-                cc.idcuenta,
-                SUM(IFNULL(monto,0)) monto
-            FROM cuentascontables cc
-            LEFT JOIN cuentascontables ch ON cc.idcuenta = ch.padre
-            LEFT JOIN cuentasxdocumento cxd ON cc.idcuenta = cxd.idcuenta
-            WHERE cc.idcuenta = %d""" % ( self.cuentabancaria.record( self.cbocuenta.currentIndex() ).value( "idcuentacontable" ).toInt()[0] ) )
+        query = QSqlQuery( """
+        SELECT
+            cc.idcuenta,
+            SUM(IFNULL(monto,0)) monto
+        FROM cuentascontables cc
+        LEFT JOIN cuentascontables ch ON cc.idcuenta = ch.padre
+        LEFT JOIN cuentasxdocumento cxd ON cc.idcuenta = cxd.idcuenta
+        WHERE cc.idcuenta = %d""" % ( 
+                     self.cuentabancaria.record( 
+                        self.cbocuenta.currentIndex()
+                         ).value( "idcuentacontable" ).toInt()[0] ) )
         query.exec_()
         query.first()
         totalcuenta = query.value( 1 ).toString()
@@ -692,12 +696,13 @@ class ChequesFiltroDelegate( AccountsSelectorDelegate ):
 
         if index.column() in ( 1, 2 ):
             model.setData( index, [
-                                   self.accounts.index( editor.currentIndex(), 0 ).data(),
-                                   self.accounts.index( editor.currentIndex(), 1 ).data(),
-                                   self.accounts.index( editor.currentIndex(), 2 ).data()
-                                   ] )
+                       self.accounts.index( editor.currentIndex(), 0 ).data(),
+                       self.accounts.index( editor.currentIndex(), 1 ).data(),
+                       self.accounts.index( editor.currentIndex(), 2 ).data()
+                       ] )
             try:
-                index = self.accounts.mapToSource( self.accounts.index( editor.currentIndex(), 0 ) )
+                index = self.accounts.mapToSource( 
+                              self.accounts.index( editor.currentIndex(), 0 ) )
                 del self.__accounts.items[index.row()]
             except IndexError:
                 pass
@@ -781,6 +786,7 @@ class Anular( QDialog ):
         self.gridLayout.addWidget( self.txtObservaciones, 3, 1, 1, 1 )
         self.buttonBox = QtGui.QDialogButtonBox( self )
         self.buttonBox.setOrientation( QtCore.Qt.Horizontal )
-        self.buttonBox.setStandardButtons( QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok )
+        self.buttonBox.setStandardButtons( 
+                  QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok )
         self.buttonBox.setObjectName( "buttonBox" )
         self.gridLayout.addWidget( self.buttonBox, 4, 0, 1, 2 )

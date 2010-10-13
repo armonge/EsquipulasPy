@@ -4,23 +4,20 @@ Created on 21/05/2010
 
 @author: Andrés Reyes Monge
 '''
-import unittest
-if __name__ == "__main__":
-    import sip
-    sip.setapi( 'QString', 2 )
-
-from decimal import Decimal, ROUND_CEILING, InvalidOperation
-import logging
 
 
-from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt, QCoreApplication, QVariant
+from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
-
+from decimal import Decimal, ROUND_CEILING, InvalidOperation
 from document.liquidacion.linealiquidacion import LineaLiquidacion
-from utility.moneyfmt import moneyfmt
 from utility import constantes
 from utility.accountselector import AccountsSelectorModel
 from utility.docbase import DocumentBase
+from utility.moneyfmt import moneyfmt
+import logging
+
+
+
 
 
 IDARTICULO, ARTICULO, CANTIDAD, COSTOUNIT, FOB, FLETE, SEGURO, OTROS, CIF, IMPUESTOS, COMISION, AGENCIA, ALMACEN, PAPELERIA, TRANSPORTE, TCOSTOD, COSTOD, TCOSTOC, COSTOC = range( 19 )
@@ -40,7 +37,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         @param uid: El id del usuario que ha creado este documento
         """
         super( LiquidacionModel, self ).__init__()
-        self.lines = []
+        self.__lines = []
         """
         @ivar:La lista de lineas en el documento
         @type:LineaLiquidacion[]
@@ -217,6 +214,20 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         @type:LiquidacionTotalsModel
         """
 
+        self.__validError = ""
+        """
+        @ivar:Si existe un error de validación aca se almacena
+        @type: string
+        """
+
+    @property
+    def lines( self ):
+        return self.__lines
+
+    @property
+    def validError( self ):
+        return self.__validError
+
     @property
     def agencyTotal( self ):
         return self.agencyTotalC / self.exchangeRate
@@ -263,31 +274,28 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
 
         @rtype: bool
         """
-        if not self.printedDocumentNumber.strip() != "":
-            self.validError = "No ha introducido un numero de Poliza"
+        try:
+            if not self.printedDocumentNumber.strip() != "":
+                raise RuntimeWarning( "No ha introducido un numero de Poliza" )
+            elif not int( self.providerId ) > 0:
+                raise RuntimeWarning( "No ha seleccionado un proveedor" )
+            elif not  int( self.warehouseId ) > 0:
+                raise RuntimeWarning( "No ha seleccionado una bodega" )
+            elif not int( self.exchangeRateId ) > 0:
+                raise RuntimeWarning( "No existe un tipo de cambio "\
+                                      + "para esta fecha" )
+            elif not  int( self.validLines ) > 0:
+                raise RuntimeWarning( u"No existe ninguna linea valida en "\
+                                      + "la liquidación" )
+            elif not self.origin.strip() != "":
+                raise RuntimeWarning( "No ha escrito la procedencia" )
+            elif not int( self.tsimId ) > 0:
+                raise RuntimeWarning( "No existe un valor TSIM" )
+            elif not int( self.speId ) > 0:
+                raise RuntimeWarning( "No existe un valor SPE" )
+        except RuntimeWarning as inst:
+            self.__validError = unicode( inst )
             return False
-        elif not int( self.providerId ) > 0:
-            self.validError = "No ha seleccionado un proveedor"
-            return False
-        elif not  int( self.warehouseId ) > 0:
-            self.validError = "No ha seleccionado una bodega"
-            return False
-        elif not int( self.exchangeRateId ) > 0:
-            self.validError = "No existe un tipo de cambio para esta fecha"
-            return False
-        elif not  int( self.validLines ) > 0:
-            self.validError = u"No existe ninguna linea valida en la liquidación"
-            return False
-        elif not self.origin.strip() != "":
-            self.validError = "No ha escrito la procedencia"
-            return False
-        elif not int( self.tsimId ) > 0:
-            self.validError = "No existe un valor TSIM"
-            return False
-        elif not int( self.speId ) > 0:
-            self.validError = "No existe un valor SPE"
-            return False
-
         return True
 
 
@@ -306,7 +314,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         """
         Esta función se ejecuta cuando se cambia el costo o la cantidad de un articulo
         """
-        fob = sum( [linea.fobParcial for linea in self.lines if linea.valid ] )
+        fob = sum( [linea.fobParcial for linea in self.__lines if linea.valid ] )
         self.fobTotal = fob if fob > 0 else Decimal( 0 )
 
     @property
@@ -341,7 +349,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         M{ISCTOTAL = S{sum}ISCPARCIAL}
         @rtype: Decimal
         """
-        isc = sum( [ linea.iscParcial for linea in self.lines if linea.valid ] )
+        isc = sum( [ linea.iscParcial for linea in self.__lines if linea.valid ] )
         return isc if isc > 0 else Decimal( 0 )
 
     @property
@@ -389,7 +397,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         M{DAITOTAL = S{sum}DAIPARCIAL }
         @rtype: Decimal
         """
-        dai = sum( [ line.daiParcial for line in self.lines if line.valid] )
+        dai = sum( [ line.daiParcial for line in self.__lines if line.valid] )
         return dai if dai != 0 else Decimal( 0 )
 
     @property
@@ -415,7 +423,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         M{TOTALDOLARES = S{sum}COSTODOLARPARCIAL}
         @rtype: Decimal
         """
-        totalD = sum( [ line.costoDolarT for line in self.lines if line.valid ] )
+        totalD = sum( [ line.costoDolarT for line in self.__lines if line.valid ] )
         return totalD if totalD > 0 else Decimal( 0 )
 
     @property
@@ -434,23 +442,26 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         @rtype: bool
         @return: si se pudo o no borrar la fila
         """
-        #if len( self.lines ) > 1 and self.lines[position].valid :
+        #if len( self.__lines ) > 1 and self.__lines[position].valid :
         self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
         for n in range( rows ):
             try:
-                del self.lines[position + n]
+                del self.__lines[position + n]
             except IndexError:
                 pass
         self.endRemoveRows()
-        self.dirty = True
         self.updateFob()
         self.dataChanged.emit( index, index )
 
-        if len( self.lines ) == 0:
+        if len( self.__lines ) == 0:
             self.insertRow( 0 )
         return True
         #else:
             #return False
+    def updateLines( self, query ):
+        for line in [line for line in self.lines if line.itemId != 0]:
+            line.update( query )
+
 
     def save( self ):
         """
@@ -468,13 +479,18 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
 
             #insertar el documento
             if not query.prepare( """
-            INSERT INTO documentos(ndocimpreso, fechacreacion, idtipodoc,idestado, observacion, idtipocambio, total, idbodega)
-            VALUES( :ndocimpreso, :fechacreacion, :idtipodoc, :estado, :observacion, :tipocambio, :total, :idbodega)
+            INSERT INTO documentos(ndocimpreso, fechacreacion, idtipodoc,
+            idestado, observacion, idtipocambio, total, idbodega)
+            VALUES( :ndocimpreso, :fechacreacion, :idtipodoc, :estado,
+            :observacion, :tipocambio, :total, :idbodega)
             """ ):
-                raise Exception( "No se pudo preparar la consulta para ingresar el documento" )
+                raise Exception( "No se pudo preparar la consulta para"\
+                                 + " ingresar el documento" )
 
-            query.bindValue( ":ndocimpreso", self.printedDocumentNumber.strip() )
-            query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
+            query.bindValue( ":ndocimpreso",
+                             self.printedDocumentNumber.strip() )
+            query.bindValue( ":fechacreacion",
+                              self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":anulado", 0 )
             query.bindValue( ":observacion", self.observations )
@@ -486,15 +502,16 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
 
-
-            insertedId = query.lastInsertId().toInt()[0] #el id del documento que se acaba de insertar
+            #el id del documento que se acaba de insertar
+            insertedId = query.lastInsertId().toInt()[0]
 
             #insertar el usuario
             if not query.prepare( """
             INSERT INTO personasxdocumento (idpersona, iddocumento, idaccion)
             VALUE (:idusuario, :iddocumento, :accion)
             """ ):
-                raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
+                raise Exception( "No se pudo preparar la consulta para"\
+                                 + " ingresar el usuario" )
             query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":iddocumento", insertedId )
             query.bindValue( ":accion", constantes.AUTOR )
@@ -507,7 +524,8 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
             INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion)
             VALUE (:idproveedor, :iddocumento,:accion)
             """ ):
-                raise Exception( "No se pudo preparar la consulta para ingresar proveedor" )
+                raise Exception( "No se pudo preparar la consulta para"\
+                                 + " ingresar proveedor" )
             query.bindValue( ":idproveedor", self.providerId )
             query.bindValue( ":iddocumento", insertedId )
             query.bindValue( ":accion", constantes.PROVEEDOR )
@@ -519,8 +537,11 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
 
             #insertar la liquidacion
             if not query.prepare( """
-            INSERT INTO liquidaciones (iddocumento, procedencia, totalagencia, totalalmacen, porcentajepapeleria, porcentajetransporte, peso, fletetotal, segurototal, otrosgastos)
-            VALUES(:iddoc,:procedencia,:agencia,:almacen,:papeleria,:transporte,:peso,:flete,:seguro,:gastos)
+            INSERT INTO liquidaciones (iddocumento, procedencia, totalagencia, 
+            totalalmacen, porcentajepapeleria, porcentajetransporte, peso, 
+            fletetotal, segurototal, otrosgastos)
+            VALUES(:iddoc,:procedencia,:agencia,:almacen,:papeleria,
+            :transporte,:peso,:flete,:seguro,:gastos)
             """ ):
                 raise Exception( "No se pudo preparar la liquidacion" )
 
@@ -536,13 +557,16 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
             query.bindValue( ":gastos", self.otherTotal.to_eng_string() )
 
             if not query.exec_():
-                raise Exception( "No se pudieron insertar los datos de la liquidacion" )
+                raise Exception( "No se pudieron insertar los "\
+                                 + "datos de la liquidacion" )
 
             #insertar el tsim
             if not query.prepare( """
-            INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) VALUES ( :iddocumento, :idcostoagregado)
+            INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) 
+            VALUES ( :iddocumento, :idcostoagregado)
             """ ):
-                raise Exception( "No se pudo preparar la consulta para insertar el tsim" )
+                raise Exception( "No se pudo preparar la consulta"\
+                                 + " para insertar el tsim" )
             query.bindValue( ":iddocumento", insertedId )
             query.bindValue( ":idcostoagregado", self.tsimId )
 
@@ -552,9 +576,11 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
 
             #insertar el spe
             if not query.prepare( """
-            INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) VALUES (:iddocumento, :idcostoagregado )
+            INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) 
+            VALUES (:iddocumento, :idcostoagregado )
             """ ):
-                raise Exception( "No se pudo preparar la consulta para insertar el spe" )
+                raise Exception( "No se pudo preparar la consulta para "\
+                                 + "insertar el spe" )
             query.bindValue( ":iddocumento", insertedId )
             query.bindValue( ":idcostoagregado", self.speId )
 
@@ -565,9 +591,11 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
             #insertar el iva si aplica
             if self.applyIVA:
                 if not query.prepare( """
-                INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) VALUES (:iddocumento, :idcostoagregado )
+                INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) 
+                VALUES (:iddocumento, :idcostoagregado )
                 """ ):
-                    raise Exception( "No se pudo preparar la consulta para insertar el iva" )
+                    raise Exception( "No se pudo preparar la consulta para "\
+                                     + "insertar el iva" )
                 query.bindValue( ":iddocumento", insertedId )
                 query.bindValue( ":idcostoagregado", self.ivaId )
 
@@ -577,9 +605,11 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
             #insertar el iso si aplica
             if self.applyISO and self.applyTaxes:
                 if not query.prepare( """
-                INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) VALUES (:iddocumento, :idcostoagregado )
+                INSERT INTO costosxdocumento ( iddocumento, idcostoagregado) 
+                VALUES (:iddocumento, :idcostoagregado )
                 """ ):
-                    raise Exception( "No se pudo preparar la consulta para insertar el iso" )
+                    raise Exception( "No se pudo preparar la consulta para "\
+                                     + "insertar el iso" )
                 query.bindValue( ":iddocumento", insertedId )
                 query.bindValue( ":idcostoagregado", self.isoId )
 
@@ -588,8 +618,9 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
 
 
 
-            for i, line in enumerate( [line for line in  self.lines if line.valid] ):
-                    line.save( insertedId, i )
+            for i, line in enumerate( [line for line in
+                                       self.__lines if line.valid] ):
+                line.save( insertedId, i )
 
 
 
@@ -618,7 +649,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         EL numero de filas del modelo
         @rtype: int
         """
-        return len( self.lines )
+        return len( self.__lines )
 
     def flags( self, index ):
         """
@@ -693,10 +724,9 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         """
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
-            self.lines.insert( position + row, LineaLiquidacion( self ) )
+            self.__lines.insert( position + row, LineaLiquidacion( self ) )
 
         self.endInsertRows()
-        self.dirty = True
 
         return True
 
@@ -704,10 +734,10 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         """
         darle formato a los campos de la tabla
         """
-        if not index.isValid() or not ( 0 <= index.row() < len( self.lines ) ):
+        if not index.isValid() or not ( 0 <= index.row() < len( self.__lines ) ):
             return None
 
-        line = self.lines[index.row()]
+        line = self.__lines[index.row()]
         column = index.column()
 
         if role == Qt.DisplayRole:
@@ -763,7 +793,8 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
                     )
 
             elif column == IMPUESTOS:
-                return "DAI Parcial = %s\nISC Parcial = %s\nIVA Parcial = %s\n TSIM Parcial = %s\n SPE Parcial = %s\n ISO Parcial = %s" % ( \
+                return "DAI Parcial = %s\nISC Parcial = %s\nIVA Parcial = %s"\
+            + "\n TSIM Parcial = %s\n SPE Parcial = %s\n ISO Parcial = %s" % ( \
                     moneyfmt( line.daiParcial, 4, "US$" ) , \
                     moneyfmt( line.iscParcial, 4, "US$" ) , \
                     moneyfmt( line.ivaParcial, 4, "US$" ) , \
@@ -776,7 +807,13 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
                 return "Fob Total = % s" % moneyfmt( self.fobTotal, 4, "US$" )
 
             elif column == TCOSTOD:
-                return u"CIF Parcial = %s\nComisión Parcial = %s\nAgencia Parcial = %s\nAlmacen Parcial = %s\nPapeleria Parcial = %s\nTransporte Parcial = %s\nImpuestos Parcial = %s" % ( \
+                return u"""CIF Parcial = %s
+Comisión Parcial = %s
+Agencia Parcial = %s
+Almacen Parcial = %s
+Papeleria Parcial = %s
+Transporte Parcial = %s
+Impuestos Parcial = %s""" % ( \
                         moneyfmt( line.cifParcial, 4, "US$" ) , \
                         moneyfmt( line.comisionParcial, 4, "US$" ) , \
                         moneyfmt( line.agenciaParcial, 4, "US$" ) , \
@@ -802,8 +839,8 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         @rtype: bool
         @return: Si se pudo o no cambiar el valor del modelo
         """
-        if index.isValid() and 0 <= index.row() < len( self.lines ):
-            line = self.lines[index.row()]
+        if index.isValid() and 0 <= index.row() < len( self.__lines ):
+            line = self.__lines[index.row()]
             column = index.column()
             if column == ARTICULO:
                 line.itemId = value[0]
@@ -820,14 +857,13 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
 
 
 
-            self.dirty = True
 
 
             if column  in ( CANTIDAD, COSTOUNIT, ARTICULO, IDARTICULO ):
                 self.updateFob()
 
-            if index.row() == len( self.lines ) - 1 and line.valid:
-                self.insertRow( len( self.lines ) )
+            if index.row() == len( self.__lines ) - 1 and line.valid:
+                self.insertRow( len( self.__lines ) )
 
 
             self.dataChanged.emit( index, index )
@@ -906,11 +942,16 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
 
         if role == Qt.DisplayRole:
             if index.column() == FOBTOTAL:
-                return moneyfmt( self.parent.fobTotal, 4, "US$" ) + " / " + moneyfmt( self.parent.fobTotalC, 4, "C$" )
+                return "%s / %s" % ( 
+                            moneyfmt( self.parent.fobTotal, 4, "US$" ) ,
+                            moneyfmt( self.parent.fobTotalC, 4, "C$" ) )
             elif index.column() == CIFTOTAL:
-                return moneyfmt( self.parent.cifTotal, 4, "US$" ) + " / " + moneyfmt( self.parent.cifTotalC, 4, "C$" )
+                return "%s / %s" % ( 
+                                     moneyfmt( self.parent.cifTotal, 4, "US$" ),
+                                     moneyfmt( self.parent.cifTotalC, 4, "C$" ) )
             elif index.column() == IMPUESTOSTOTAL:
-                return moneyfmt( self.parent.taxesTotal, 4, "US$" ) + " / " + moneyfmt( self.parent.taxesTotalC, 4, "C$" )
+                return  "%s / %s" % ( moneyfmt( self.parent.taxesTotal, 4, "US$" ),
+                                      moneyfmt( self.parent.taxesTotalC, 4, "C$" ) )
             elif index.column() == COSTOCTOTAL:
                 return moneyfmt( self.parent.totalC, 4, "C$" )
             elif index.column() == COSTODTOTAL:
@@ -970,7 +1011,7 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
             query.bindValue( ":iddocumento", self.docid )
             query.bindValue( ":accion", constantes.ACCCONTABILIZA )
 
-            for number, line in enumerate( [ linea for linea in self.lines if linea.valid ] ):
+            for number, line in enumerate( [ linea for linea in self.__lines if linea.valid ] ):
                 line.save( self.docid, number )
 
 
@@ -988,70 +1029,3 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
 
 
 
-class TestLiquidacionSimple( unittest.TestCase ):
-    """
-    Esta clase es un TesCase para LiquidacionModel reproduce un caso común y
-    verifica los resultados del modelo con los esperados
-    """
-    def setUp( self ):
-        _app = QCoreApplication( [] )
-
-        self.liquidacion = LiquidacionModel( 1 )
-
-        self.liquidacion.exchangeRate = Decimal( '21.5689' )
-        self.liquidacion.exchangeRateId = 1
-        self.liquidacion.speTotal = 5
-        self.liquidacion.isoRate = Decimal( '35' )
-        self.liquidacion.ivaRate = Decimal( '15' )
-        self.liquidacion.tsimRate = Decimal( '0.5' )
-        self.liquidacion.weightFactor = 1000
-
-        self.liquidacion.insertRow( 0 )
-
-        self.liquidacion.setData( self.liquidacion.index( 0, COSTOUNIT ), QVariant( "1" ) )
-        self.liquidacion.setData( self.liquidacion.index( 0, ARTICULO ), [
-            1,
-            "FRICCIONES* BATERIA  N-150 DURUN",
-            Decimal( '5' ),
-            Decimal( '76' ),
-            0
-            ] )
-        self.liquidacion.setData( self.liquidacion.index( 0, CANTIDAD ), QVariant( "1" ) )
-
-    def test_valid( self ):
-        self.assertFalse( self.liquidacion.valid )
-
-    def test_dai( self ):
-        self.assertEqual( self.liquidacion.daiTotal, Decimal( '0.05' ) )
-
-    def test_isc( self ):
-        self.assertEqual( self.liquidacion.iscTotal, Decimal( '0.7980' ) )
-
-    def test_cif( self ):
-        self.assertEqual( self.liquidacion.cifTotal, Decimal( '1' ) )
-
-    def test_iva( self ):
-        self.assertEqual( self.liquidacion.ivaTotal, Decimal( '0.2772' ) )
-
-    def test_taxes( self ):
-        self.assertEqual( self.liquidacion.taxesTotal, Decimal( '6.4752' ) )
-
-    def test_speTotal( self ):
-        self.assertEqual( self.liquidacion.speTotal, Decimal( '5' ) )
-
-    def test_total( self ):
-        self.assertEqual( self.liquidacion.totalC, Decimal( '161.23184128' ) )
-        self.assertEqual( self.liquidacion.totalD, Decimal( '7.4752' ) )
-
-    def test_fob( self ):
-        self.assertEqual( self.liquidacion.fobTotal, 1 )
-        self.assertEqual( self.liquidacion.fobTotalC, Decimal( '21.5689' ) )
-
-    def test_numrows( self ):
-        self.assertEqual( self.liquidacion.rowCount(), 2 )
-
-    def test_iso( self ):
-        self.assertEqual( self.liquidacion.isoTotal, Decimal( '0.35' ) )
-
-if __name__ == "__main__":
-    unittest.main()

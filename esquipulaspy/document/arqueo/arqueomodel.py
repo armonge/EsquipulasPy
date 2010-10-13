@@ -463,8 +463,7 @@ class ArqueoModel( QAbstractTableModel ):
                 raise Exception( "No se pudo hacer commit" )
             result = True
         except UserWarning as inst:
-            self.saveError = unicode( inst )
-            logging.error( inst )
+            logging.error(unicode( inst ))
             logging.error( query.lastError().text() )
             self.database.rollback()
             result = False
@@ -476,7 +475,8 @@ class ArqueoModel( QAbstractTableModel ):
         finally:
             if self.database.isOpen():
                 self.database.close()
-            return result
+
+        return result
 
 
 

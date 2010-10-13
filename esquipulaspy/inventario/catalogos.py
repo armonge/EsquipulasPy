@@ -72,7 +72,8 @@ class FrmCatConceptos( FrmCatGeneric ):
             self.database.close()
             self.tableview.setColumnHidden( IDCONCEPTO, True )
             self.tableview.setColumnHidden( MODULO, True )
-            self.backmodel.setHeaderData( DESCRIPCION, Qt.Horizontal, "Descripcion", Qt.DisplayRole );
+            self.backmodel.setHeaderData( DESCRIPCION, Qt.Horizontal,
+                                           "Descripcion", Qt.DisplayRole );
             return True
         except Exception as inst:
             print inst
@@ -84,7 +85,8 @@ class FrmCatConceptos( FrmCatGeneric ):
 
     def new( self ):
         super( FrmCatConceptos, self ).new()
-        self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, MODULO ), self.modulo )
+        self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount()
+                                                   - 1, MODULO ), self.modulo )
 
 
 
@@ -92,7 +94,8 @@ class FrmCatConceptos( FrmCatGeneric ):
 
 
 
-IDPERSONA, NOMBRE, FECHACREACION, TELEFONO, EMAIL, RUC, ACTIVO, TIPOPERSONA, CUENTA = range( 9 )
+IDPERSONA, NOMBRE, FECHACREACION, TELEFONO, EMAIL, RUC, ACTIVO, \
+TIPOPERSONA, CUENTA = range( 9 )
 class FrmCatProveedores( FrmCatGeneric ):
     """
     Catalogo de Proveedores
@@ -121,11 +124,16 @@ class FrmCatProveedores( FrmCatGeneric ):
             self.tableview.setColumnHidden( TIPOPERSONA, True )
             self.tableview.setColumnHidden( CUENTA, True )
 
-            self.backmodel.setHeaderData( NOMBRE, Qt.Horizontal, "Nombre", Qt.DisplayRole );
-            self.backmodel.setHeaderData( TELEFONO, Qt.Horizontal, u"Telefóno", Qt.DisplayRole );
-            self.backmodel.setHeaderData( EMAIL, Qt.Horizontal, "e-mail", Qt.DisplayRole );
-            self.backmodel.setHeaderData( RUC, Qt.Horizontal, "RUC", Qt.DisplayRole );
-            self.backmodel.setHeaderData( ACTIVO, Qt.Horizontal, "Activo", Qt.DisplayRole );
+            self.backmodel.setHeaderData( NOMBRE, Qt.Horizontal,
+                                           "Nombre", Qt.DisplayRole )
+            self.backmodel.setHeaderData( TELEFONO, Qt.Horizontal,
+                                           u"Telefóno", Qt.DisplayRole )
+            self.backmodel.setHeaderData( EMAIL, Qt.Horizontal,
+                                          "e-mail", Qt.DisplayRole )
+            self.backmodel.setHeaderData( RUC, Qt.Horizontal,
+                                           "RUC", Qt.DisplayRole )
+            self.backmodel.setHeaderData( ACTIVO, Qt.Horizontal,
+                                          "Activo", Qt.DisplayRole )
 
             return True
 
@@ -143,8 +151,12 @@ class FrmCatProveedores( FrmCatGeneric ):
 
     def new( self ):
         super( FrmCatProveedores, self ).new()
-        self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, TIPOPERSONA ), 2 )
-        self.backmodel.setData( self.backmodel.index( self.backmodel.rowCount() - 1, ACTIVO ), 1 )
+        self.backmodel.setData( self.backmodel.index( 
+                                                     self.backmodel.rowCount()
+                                                     - 1, TIPOPERSONA ), 2 )
+        self.backmodel.setData( self.backmodel.index( 
+                                                      self.backmodel.rowCount()
+                                                      - 1, ACTIVO ), 1 )
 
 
 class ProvidersModel( QSortFilterProxyModel ):
@@ -155,7 +167,8 @@ class ProvidersModel( QSortFilterProxyModel ):
         if not index.isValid():
             return None
 
-        if index.column() == ACTIVO and role in ( Qt.CheckStateRole, Qt.DisplayRole ):
+        if index.column() == ACTIVO and role in ( Qt.CheckStateRole,
+                                                  Qt.DisplayRole ):
             if role == Qt.CheckStateRole:
                 value = QVariant( Qt.Checked ) if index.data( Qt.EditRole ).toBool() else QVariant( Qt.Unchecked )
                 return value
@@ -219,7 +232,8 @@ class PeopleDelegate( QStyledItemDelegate ):
 
     def setEditorData( self, editor, index ):
         """
-        Aca se definen los datos iniciales que tendra el control, justo antes de mostrarlo
+        Aca se definen los datos iniciales que tendra el control, 
+        justo antes de mostrarlo
         """
         if index.column() in ( NOMBRE, TELEFONO, RUC, EMAIL ):
             text = index.model().data( index, Qt.DisplayRole )

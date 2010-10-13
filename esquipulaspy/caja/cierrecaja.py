@@ -8,6 +8,7 @@ from PyQt4.QtCore import pyqtSlot
 from PyQt4.QtGui import QDialog
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from ui.Ui_apertura import Ui_dlgApertura
+from utility import constantes
 class FrmCierreCaja ( QDialog, Ui_dlgApertura ):
     def __init__( self, user, user2, sesion, parent = None ):
         super( FrmCierreCaja, self ).__init__( parent )
@@ -15,11 +16,20 @@ class FrmCierreCaja ( QDialog, Ui_dlgApertura ):
         self.user = user
         self.user2 = user2
         self.db = QSqlDatabase.database()
-        self.query = QSqlQuery( """SELECT d.fechacreacion,c.idcaja,c.descripcion FROM documentos d
-            LEFT JOIN docpadrehijos dp ON dp.idpadre=d.iddocumento
-            LEFT JOIN documentos hijo ON dp.idhijo=hijo.iddocumento and hijo.idtipodoc=22
-            JOIN cajas c on d.idcaja=c.idcaja
-            where d.idtipodoc=22 and d.idusuario=""" + str( user.uid ) + """ AND hijo.iddocumento IS  NULL order by d.iddocumento desc limit 1;""" )
+        self.query = QSqlQuery( """
+        SELECT 
+            d.fechacreacion,
+            c.idcaja,
+            c.descripcion 
+        FROM documentos d
+        LEFT JOIN docpadrehijos dp ON dp.idpadre=d.iddocumento
+        LEFT JOIN documentos hijo ON dp.idhijo=hijo.iddocumento AND hijo.idtipodoc=%d
+        JOIN cajas c on d.idcaja=c.idcaja
+        WHERE d.idtipodoc=%d and d.idusuario= %d 
+        AND hijo.iddocumento IS  NULL 
+        ORDER BY d.iddocumento DESC
+        LIMIT 1;""" % ( constantes.IDAPERTURA, constantes.IDAPERTURA, user.uid ) )
+
         if not self.query.exec_():
             raise Exception( "No se pudo preparar la Query" )
         self.query.first()
@@ -51,13 +61,16 @@ class FrmCierreCaja ( QDialog, Ui_dlgApertura ):
             ndocimpreso = query.value( 0 ).toString()
             if ndocimpreso == "0" :
                 ndocimpreso = "1"
-            if not query.prepare( """INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,idusuario,idcaja,observacion)
-            values(:ndocimpreso,:total,:fecha,:tipodoc,:usuario,:caja,:observacion)""" ):
+            if not query.prepare( """
+            INSERT INTO documentos(ndocimpreso,total,fechacreacion,
+            idtipodoc,idusuario,idcaja,observacion)
+            VALUES(:ndocimpreso,:total,:fecha,:tipodoc,
+            :usuario,:caja,:observacion)""" ):
                 raise Exception( query.lastError().text() )
             query.bindValue( ":ndocimpreso", ndocimpreso )
             query.bindValue( ":total", self.txtMonto.text() )
             query.bindValue( ":fecha", self.dtFechaTime.dateTime().toString( "yyyyMMddhhmmss" ) )
-            query.bindValue( ":tipodoc", 17 )
+            query.bindValue( ":tipodoc", constantes.IDCIERRESESION )
             query.bindValue( ":usuario", self.user.uid )
             query.bindValue( ":caja", self.query.value( 1 ) )
             query.bindValue( ":observacion", self.user2 )
@@ -66,7 +79,9 @@ class FrmCierreCaja ( QDialog, Ui_dlgApertura ):
                 raise Exception( " Insert de cierre " )
 
             idcierre = self.query.lastInsertId().toInt()[0]
-            if not query.prepare( """INSERT INTO docpadrehijos(idpadre,idhijo,monto) values(:idpadre,:idhijo,:monto)""" ):
+            if not query.prepare( """
+            INSERT INTO docpadrehijos(idpadre,idhijo,monto) 
+            VALUES(:idpadre,:idhijo,:monto)""" ):
                 raise Exception( query.lastError().text() )
             query.bindValue( ":idpadre", self.sesion )
             query.bindValue( ":idhijo", idcierre )

@@ -6,7 +6,7 @@ Module implementing MainWindow.
 
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSlot
-from entradacompra import frmEntradaCompra
+from entradacompra import FrmEntradaCompra
 from catalogos import FrmCatMarcas, FrmCatConceptos
 from liquidacion import FrmLiquidacion
 from categorias import FrmCategorias
@@ -99,7 +99,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        entradacompra = frmEntradaCompra( self )
+        entradacompra = FrmEntradaCompra( self )
         self.mdiArea.addSubWindow( entradacompra )
         entradacompra.show()
 

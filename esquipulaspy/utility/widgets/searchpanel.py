@@ -28,8 +28,10 @@ class SingleSelectionSearchPanelDelegate( QStyledItemDelegate ):
 
     def createEditor( self, parent, _option, index ):
         """
-        Esta función debera reimplementarse en los hijos de esta clase, idealmente mandara a llamar a este metodo base despues de
-        haber actualizadao el proxymodel y solamente cuando la columna sea la indicada
+        Esta función debera reimplementarse en los hijos de esta clase, 
+        idealmente mandara a llamar a este metodo base despues de
+        haber actualizadao el proxymodel y solamente cuando la columna sea la 
+        indicada
         """
         sp = SearchPanel( self.proxymodel, parent, self.showTable )
         sp.setColumn( index.column() )
@@ -38,6 +40,10 @@ class SingleSelectionSearchPanelDelegate( QStyledItemDelegate ):
 
 
     def filter( self, model, current ):
+        """
+        Crea la expresión regular que filtrara los elementos ya incluidos en el
+        modelo del delegado
+        """
         filtro = "|^".join( [str( line.itemId ) for line in model.lines if line.itemId != 0 and line.itemId != current ] )
         if filtro != "":
             filtro = "[^" + filtro + "]"
@@ -48,15 +54,16 @@ class SingleSelectionSearchPanelDelegate( QStyledItemDelegate ):
 
 class SearchPanel( QComboBox ):
     def __init__( self, model, parent = None, showTable = False ):
-        QComboBox.__init__( self, parent )
+        super( SearchPanel, self ).__init__( parent )
 
         self.tabla = None
         self.setFocusPolicy( Qt.StrongFocus )
         self.setEditable( True )
 #        self.setModel( model )
         self.setEditable( True )
-        self.completer = QCompleter( self );
-        self.completer.setCompletionMode( QCompleter.UnfilteredPopupCompletion ) # always show all completions
+        self.completer = QCompleter( self )
+        # always show all completions
+        self.completer.setCompletionMode( QCompleter.UnfilteredPopupCompletion )
         self.pFilterModel = QSortFilterProxyModel( self )
         self.pFilterModel.setFilterCaseSensitivity( Qt.CaseInsensitive )
         self.showTable = showTable
@@ -82,7 +89,7 @@ class SearchPanel( QComboBox ):
 
     def setModel( self, model ):
         QComboBox.setModel( self, model )
-        self.pFilterModel.setSourceModel( model );
+        self.pFilterModel.setSourceModel( model )
 
     def setColumn( self, column ):
         self.setModelColumn( 1 )
@@ -113,7 +120,7 @@ class SearchPanel( QComboBox ):
 
 class SearchPanelView( QTableView ):
     '''
-    classdocs
+    La tabla que se muestra en un Widget SearchPanel
     '''
     def __init__( self, parent = None ):
         '''

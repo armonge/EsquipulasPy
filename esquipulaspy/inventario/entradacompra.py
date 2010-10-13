@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Module implementing frmEntradaCompra.
+Module implementing FrmEntradaCompra.
 """
 from decimal import Decimal
 import logging
@@ -20,10 +20,12 @@ from utility import constantes
 
 
 #controles
-IDDOCUMENTO, NDOCIMPRESO, FECHA, PROVEEDOR , OBSERVACION, SUBTOTALC, IVAC, TOTALC, TOTALD, TIPOPAGO = range( 10 )
+IDDOCUMENTO, NDOCIMPRESO, FECHA, PROVEEDOR , OBSERVACION, SUBTOTALC, IVAC, \
+TOTALC, TOTALD, TIPOPAGO = range( 10 )
 #table
-IDARTICULO, DESCRIPCION, CANTIDAD, PRECIOC, PRECIOD, TOTALPRODC, TOTALPRODD, IDDOCUMENTOT = range( 8 )
-class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
+IDARTICULO, DESCRIPCION, CANTIDAD, PRECIOC, PRECIOD, TOTALPRODC, \
+TOTALPRODD, IDDOCUMENTOT = range( 8 )
+class FrmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
@@ -32,7 +34,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         """
         Constructor
         """
-        super( frmEntradaCompra, self ).__init__( parent )
+        super( FrmEntradaCompra, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
@@ -55,6 +57,7 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         self.detailsproxymodel = QSortFilterProxyModel( self )
         self.detailsproxymodel.setSourceModel( self.detailsmodel )
 
+        self.providersModel = QSqlQueryModel()
 
         #inicializando el documento
         self.editmodel = None
@@ -174,38 +177,37 @@ class frmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
 
     def updateEditModels( self ):
 #            Rellenar el combobox de los proveedores
-            self.providersModel = QSqlQueryModel()
-            self.providersModel.setQuery( """
-                SELECT idpersona , nombre AS proveedor 
-                FROM personas
-                WHERE tipopersona = 2
-            """ )
-            if not self.providersModel.rowCount( QModelIndex() ) > 0:
-                raise UserWarning( "No existen proveedores en la base de datos" )
-            self.cbProvider.setModel( self.providersModel )
-            self.cbProvider.setModelColumn( 1 )
+        self.providersModel.setQuery( """
+            SELECT idpersona , nombre AS proveedor 
+            FROM personas
+            WHERE tipopersona = 2
+        """ )
+        if not self.providersModel.rowCount( QModelIndex() ) > 0:
+            raise UserWarning( "No existen proveedores en la base de datos" )
+        self.cbProvider.setModel( self.providersModel )
+        self.cbProvider.setModelColumn( 1 )
 
-            completer = QCompleter()
-            completer.setCaseSensitivity( Qt.CaseInsensitive )
-            completer.setModel( self.providersModel )
-            completer.setCompletionColumn( 1 )
+        completer = QCompleter()
+        completer.setCaseSensitivity( Qt.CaseInsensitive )
+        completer.setModel( self.providersModel )
+        completer.setCompletionColumn( 1 )
 
-            self.editmodel.providerId = self.providersModel.record( self.cbProvider.currentIndex() ).value( "idpersona" ).toInt()[0]
-            query = QSqlQuery( """
-            SELECT idarticulo, Descripcion as descripcion FROM vw_articulosdescritos
-            """ )
-            if not query.size() > 0:
-                raise UserWarning( "No existen productos en la base de datos" )
-            prods = SingleSelectionModel()
-            query.exec_()
-            while query.next():
-                prods.items.append( [
-                    query.value( 0 ).toInt()[0],
-                    query.value( 1 ).toString()
-                           ] )
+        self.editmodel.providerId = self.providersModel.record( self.cbProvider.currentIndex() ).value( "idpersona" ).toInt()[0]
+        query = QSqlQuery( """
+        SELECT idarticulo, Descripcion as descripcion FROM vw_articulosdescritos
+        """ )
+        if not query.size() > 0:
+            raise UserWarning( "No existen productos en la base de datos" )
+        prods = SingleSelectionModel()
+        query.exec_()
+        while query.next():
+            prods.items.append( [
+                query.value( 0 ).toInt()[0],
+                query.value( 1 ).toString()
+                       ] )
 
-            prods.headers = ["idarticulo", "Articulo"]
-            self.delegate.prods = prods
+        prods.headers = ["idarticulo", "Articulo"]
+        self.delegate.prods = prods
 
 
     def updateLabels( self ):

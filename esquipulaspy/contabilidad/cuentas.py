@@ -20,7 +20,8 @@ from utility import user
 from ui.Ui_cuentas import Ui_frmAccounts
 
 CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, IDCUENTA, ACUMULADO = range( 8 )
-headers = [ "Codigo", u"Descripción", "Es Debe", "hijos", "Monto", "Padre", "Id", "Acumulado"]
+headers = [ "Codigo", u"Descripción", "Es Debe", "hijos",
+            "Monto", "Padre", "Id", "Acumulado"]
 class FrmAccounts( QMainWindow, Ui_frmAccounts ):
     """
 
@@ -58,7 +59,9 @@ class FrmAccounts( QMainWindow, Ui_frmAccounts ):
     def on_btnAdd_clicked( self ):
         proxyindex = self.accountsTree.currentIndex()
         row = proxyindex.row()
-        index = self.accountsTree.model().mapToSource( self.accountsTree.model().index( row, CODIGO, proxyindex.parent() ) )
+        index = self.accountsTree.model().mapToSource( 
+                           self.accountsTree.model().index( 
+                                   row, CODIGO, proxyindex.parent() ) )
 
 
         dlg = DlgAccountMod( self )
@@ -91,9 +94,16 @@ class FrmAccounts( QMainWindow, Ui_frmAccounts ):
         dlg.txtDescription.setText( self.accountsTree.model().index( row, DESCRIPCION, index.parent() ).data().toString() )
         dlg.cbEsdebe.setCheckState( Qt.Checked if self.accountsTree.model().index( row, ESDEBE, index.parent() ).data().toInt()[0] else Qt.Unchecked )
         if dlg.exec_() == QDialog.Accepted:
-            self.accountsTree.model().setData( self.accountsTree.model().index( row, DESCRIPCION, index.parent() ), dlg.txtDescription.text() )
-            self.accountsTree.model().setData( self.accountsTree.model().index( row, CODIGO, index.parent() ), " ".join( [txt.text() for txt in dlg.txtCodes ] ) )
-            self.accountsTree.model().setData( self.accountsTree.model().index( row, ESDEBE, index.parent() ), 1 if dlg.cbEsdebe.checkState() == Qt.Checked else 0 )
+            self.accountsTree.model().setData( 
+              self.accountsTree.model().index( 
+                      row, DESCRIPCION, index.parent() ), dlg.txtDescription.text() )
+            self.accountsTree.model().setData( 
+              self.accountsTree.model().index( 
+                    row, CODIGO, index.parent() ), " ".join( [txt.text() for txt in dlg.txtCodes ] ) )
+
+            self.accountsTree.model().setData( 
+                    self.accountsTree.model().index( 
+                        row, ESDEBE, index.parent() ), 1 if dlg.cbEsdebe.checkState() == Qt.Checked else 0 )
 
 
     @pyqtSlot( "QString" )
@@ -435,7 +445,11 @@ class DlgAccountMod( QDialog ):
 
         regexp = QRegExp( r"\d{3}" )
 
-        self.validators = [QRegExpValidator( self ), QRegExpValidator( self ), QRegExpValidator( self ), QRegExpValidator( self ), QRegExpValidator( self )]
+        self.validators = [QRegExpValidator( self ),
+                           QRegExpValidator( self ),
+                           QRegExpValidator( self ),
+                           QRegExpValidator( self ),
+                           QRegExpValidator( self )]
         for validator in self.validators:
             validator.setRegExp( regexp )
 
@@ -474,12 +488,14 @@ class DlgAccountMod( QDialog ):
     def accept( self ):
         result = True
         if self.txtDescription.text().strip() == '':
-            QMessageBox.warning( self, qApp.organizationName(), u"Verifique la descripción de la cuenta" )
+            QMessageBox.warning( self, qApp.organizationName(),
+                                 u"Verifique la descripción de la cuenta" )
             result = False
         if result:
             for index, validator in enumerate( self.validators ):
                 if validator.validate( self.txtCodes[index].text(), 3 )[0] != QValidator.Acceptable:
-                    QMessageBox.warning( self, qApp.organizationName(), "Verifique el codigo de la cuenta" )
+                    QMessageBox.warning( self, qApp.organizationName(),
+                                         "Verifique el codigo de la cuenta" )
                     result = False
                     break
             super( DlgAccountMod, self ).accept()

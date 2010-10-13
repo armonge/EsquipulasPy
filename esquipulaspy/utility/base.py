@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Module implementing Base
+"""
 from decimal import  Decimal
 import functools
 import logging
@@ -36,8 +39,10 @@ class Base( object ):
         """
 
         settings = QSettings()
-        self.restoreGeometry( settings.value( self.windowTitle() + "/Geometry" ).toByteArray() )
-        self.restoreState( settings.value( self.windowTitle() + "/State" ).toByteArray() )
+        self.restoreGeometry( settings.value( self.windowTitle()
+                                              + "/Geometry" ).toByteArray() )
+        self.restoreState( settings.value( self.windowTitle()
+                                            + "/State" ).toByteArray() )
 
         self.parentWindow.addToolBar( self.toolBar )
         """
@@ -48,15 +53,27 @@ class Base( object ):
         self.printProgressBar = QProgressBar( self )
         self.printProgressBar.setVisible( False )
 
-        _tab1shortcut = QShortcut( QKeySequence( "Ctrl+1" ), self, functools.partial( self.tabWidget.setCurrentIndex, 0 ) )
-        _tab2shortcut = QShortcut( QKeySequence( "Ctrl+2" ), self, functools.partial( self.tabWidget.setCurrentIndex, 1 ) )
+        _tab1shortcut = QShortcut( QKeySequence( "Ctrl+1" ),
+                                   self,
+                                   functools.partial( self.tabWidget.setCurrentIndex, 0 ) )
+        _tab2shortcut = QShortcut( QKeySequence( "Ctrl+2" ),
+                                   self,
+                                   functools.partial( self.tabWidget.setCurrentIndex, 1 ) )
 
 
         self.mapper.currentIndexChanged[int].connect( self.updateDetailFilter )
-        self.actionGoFirst.triggered.connect( functools.partial( self.navigate, 'first' ) )
-        self.actionGoPrevious.triggered.connect( functools.partial( self.navigate, 'previous' ) )
-        self.actionGoNext.triggered.connect( functools.partial( self.navigate, 'next' ) )
-        self.actionGoLast.triggered.connect( functools.partial( self.navigate, 'last' ) )
+        self.actionGoFirst.triggered.connect( functools.partial( 
+                                                                self.navigate,
+                                                                 'first' ) )
+        self.actionGoPrevious.triggered.connect( functools.partial( 
+                                                                   self.navigate,
+                                                                    'previous' ) )
+        self.actionGoNext.triggered.connect( functools.partial( 
+                                                               self.navigate,
+                                                               'next' ) )
+        self.actionGoLast.triggered.connect( functools.partial( 
+                                                                self.navigate,
+                                                                 'last' ) )
 
         self.actionCut.setVisible( False )
         self.actionPaste.setVisible( False )
@@ -216,7 +233,8 @@ class Base( object ):
     def on_txtSearch_textChanged( self, searchstring ):
         """
         Cambiar el filtro para el navigation model
-        @param searchstring: Es el contenido por el cual se va a filtrar el modelo de navegación
+        @param searchstring: Es el contenido por el cual se va a 
+        filtrar el modelo de navegación
         @type searchstring: string
         """
         self.navproxymodel.setFilterFixedString( searchstring )
@@ -224,8 +242,8 @@ class Base( object ):
     @pyqtSlot( QModelIndex )
     def on_tablenavigation_doubleClicked( self, index ):
         """
-        Al hacer doble click en la tabla de navegación el se cambia a la pestaña detalles 
-        mostrando el documento seleccionado
+        Al hacer doble click en la tabla de navegación el se cambia a la
+        pestaña detalles mostrando el documento seleccionado
         @param index: El indice de la tabla en la que se dio doble click
         @type index: QModelIndex 
         """
@@ -240,10 +258,13 @@ class Base( object ):
     def save( self , ask = True ):
         """
         Guardar el documento actual
-        @param ask: Si se deberia o no preguntar al usuario si esta seguro antes de proceder
+        @param ask: Si se deberia o no preguntar al usuario si 
+            esta seguro antes de proceder
         @type ask: bool
         """
-        if ask == False or QMessageBox.question( self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+        if ask == False or QMessageBox.question( self, qApp.organizationName(),
+                         u"¿Esta seguro que desea guardar?",
+                         QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
             if self.editmodel.valid:
                 if self.editmodel.save():
                     QMessageBox.information( self,
@@ -271,13 +292,14 @@ class Base( object ):
         @param status: 
         @type status: bool
         """
-        QMessageBox.information( self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada" )
+        QMessageBox.information( self, qApp.organizationName(),
+                                 u"Esta parte del sistema no ha sido implementada" )
         raise NotImplementedError()
 
     def addLine( self ):
         """
-        añadir una linea a table edit, solo se llama directamente en una ocasion, al
-        comenzar la edicion de un documento
+        añadir una linea a table edit, solo se llama directamente 
+        en una ocasion, al comenzar la edicion de un documento
         """
         row = self.editmodel.rowCount()
         self.editmodel.insertRows( row )
@@ -327,7 +349,8 @@ class Base( object ):
         """
         Empezar la edición de un nuevo documento
         """
-        QMessageBox.information( self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada" )
+        QMessageBox.information( self, qApp.organizationName(),
+                                 u"Esta parte del sistema no ha sido implementada" )
         raise NotImplementedError()
 
 
@@ -335,18 +358,24 @@ class Base( object ):
         """
         Cancelar la edición del nuevo documento
         """
-        QMessageBox.information( self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada" )
+        QMessageBox.information( self, qApp.organizationName(),
+                                 u"Esta parte del sistema no ha sido implementada" )
         raise NotImplementedError()
 
     @property
     def printIdentifier( self ):
         """
-        La identificación de este documento para reporte, normalmente sera el iddocumento o el ndocimpreso
+        La identificación de este documento para reporte,
+         normalmente sera el iddocumento o el ndocimpreso
         @rtype:string
         """
-        raise NotImplementedError( u"printIdentifier debe implementarse para poder imprimir" )
+        raise NotImplementedError( u"printIdentifier debe implementarse para "\
+                                   + "poder imprimir" )
 
     def preview( self ):
+        """
+        Muestra el dialogo de vista previa de impresión
+        """
         try:
             printer = QPrinter()
             printer.setOrientation( self.orientation )
@@ -355,13 +384,16 @@ class Base( object ):
             report = reports.frmReportes( web, printer, self )
             report.exec_()
         except NotImplementedError as inst:
-            QMessageBox.information( self, qApp.organizationName(), u"No se ha implementado la función de impresión para este modulo" )
+            QMessageBox.information( self, qApp.organizationName(),
+            u"No se ha implementado la función de impresión para este modulo" )
             logging.error( unicode( inst ) )
         except UserWarning as inst:
-            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                   unicode( inst ) )
             logging.error( unicode( inst ) )
         except Exception as inst:
-            QMessageBox.critical( self, qApp.organizationName(), "Hubo un error al intentar mostrar su reporte" )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                "Hubo un error al intentar mostrar su reporte" )
             logging.critical( unicode( inst ) )
 
     def printDocument( self ):
@@ -370,14 +402,16 @@ class Base( object ):
             base = reports.Reports.url
 
             if base == "":
-                raise UserWarning( u"No existe una configuración para el servidor de reportes" )
+                raise UserWarning( u"No existe una configuración para el "\
+                                   + "servidor de reportes" )
 
             self.printer = QPrinter()
             self.printer.setOrientation( self.orientation )
             self.printer.setPageSize( self.pageSize )
 
             self.webview = QWebView()
-            web = base + self.web + self.printIdentifier + "&uname=" + self.user.user + "&hash=" + self.user.hash
+            web = base + self.web + self.printIdentifier + "&uname=" + \
+                self.user.user + "&hash=" + self.user.hash
             self.loaded = False
 
 
@@ -388,13 +422,16 @@ class Base( object ):
             self.webview.loadProgress[int].connect( self.on_webview_loadProgress )
         except NotImplementedError as inst:
             logging.error( unicode( inst ) )
-            QMessageBox.information( self, qApp.organizationName(), u"La función de impresión no se ha implementado para este modulo" )
+            QMessageBox.information( self, qApp.organizationName(),
+                                     u"La función de impresión no se ha implementado para este modulo" )
         except UserWarning as inst:
             logging.error( unicode( inst ) )
-            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                   unicode( inst ) )
         except Exception as inst:
             logging.critical( unicode( inst ) )
-            QMessageBox.critical( self, qApp.organizationName(), "Hubo un problema al intentar imprimir su reporte" )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                   "Hubo un problema al intentar imprimir su reporte" )
 
     def on_webview_loadProgress( self, progress ):
         self.printProgressBar.setValue( progress )
@@ -404,7 +441,8 @@ class Base( object ):
         if self.printProgressBar.isVisible():
             self.printProgressBar.hide()
         if not status:
-            QMessageBox.critical( self, qApp.organizationName(), "El reporte no se pudo cargar" )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                   "El reporte no se pudo cargar" )
             logging.error( "No se pudo cargar el reporte" )
 
         self.loaded = True
@@ -432,24 +470,59 @@ class Base( object ):
 
 
     def createActions( self ):
-        self.actionNew = self.createAction( text = "Nuevo", tip = "Crear un nuevo documento", icon = ":/icons/res/document-new.png", shortcut = "Ctrl+n", slot = self.newDocument )
-        self.actionPreview = self.createAction( text = "Previsualizar", tip = u"Vista de impresión del documento", icon = ":/icons/res/document-preview.png", shortcut = "Ctrl+p", slot = self.preview )
-        self.actionPrint = self.createAction( text = "Imprimir", tip = "Imprimir el documento", icon = ":/icons/res/document-print.png", slot = self.printDocument )
-        self.actionSave = self.createAction( text = "Guardar", tip = "Guardar el documento", icon = ":/icons/res/document-save.png", shortcut = "Ctrl+g", slot = self.save )
-        self.actionCancel = self.createAction( text = "Cancelar", tip = "Cancelar la creación del nuevo documento", icon = ":/icons/res/dialog-cancel.png", shortcut = "Esc", slot = self.cancel )
+        self.actionNew = self.createAction( text = "Nuevo",
+                                         tip = "Crear un nuevo documento",
+                                         icon = ":/icons/res/document-new.png",
+                                          shortcut = "Ctrl+n",
+                                          slot = self.newDocument )
+        self.actionPreview = self.createAction( text = "Previsualizar",
+                                                 tip = u"Vista de impresión del documento",
+                                                 icon = ":/icons/res/document-preview.png",
+                                                 shortcut = "Ctrl+p",
+                                                  slot = self.preview )
+        self.actionPrint = self.createAction( text = "Imprimir",
+                                              tip = "Imprimir el documento",
+                                               icon = ":/icons/res/document-print.png",
+                                               slot = self.printDocument )
+        self.actionSave = self.createAction( text = "Guardar",
+                                             tip = "Guardar el documento",
+                                             icon = ":/icons/res/document-save.png",
+                                             shortcut = "Ctrl+g",
+                                             slot = self.save )
+        self.actionCancel = self.createAction( text = "Cancelar",
+                                               tip = "Cancelar la creación del nuevo documento",
+                                               icon = ":/icons/res/dialog-cancel.png",
+                                               shortcut = "Esc",
+                                               slot = self.cancel )
 
         #edicion, TODO: QUE FUNCIONEN ESTAS ACCIONES
-        self.actionCopy = self.createAction( text = "Copiar", icon = ":/icons/res/edit-copy.png", shortcut = "Ctrl+c" )
-        self.actionCut = self.createAction( text = "Cortar", icon = ":/icons/res/edit-cut.png", shortcut = "Ctrl+x" )
-        self.actionPaste = self.createAction( text = "Pegar", icon = ":/icons/res/edit-paste.png", shortcut = "Ctrl+v" )
+        self.actionCopy = self.createAction( text = "Copiar",
+                                              icon = ":/icons/res/edit-copy.png",
+                                              shortcut = "Ctrl+c" )
+        self.actionCut = self.createAction( text = "Cortar",
+                                            icon = ":/icons/res/edit-cut.png",
+                                            shortcut = "Ctrl+x" )
+        self.actionPaste = self.createAction( text = "Pegar",
+                                              icon = ":/icons/res/edit-paste.png",
+                                              shortcut = "Ctrl+v" )
 
         #navegación
-        self.actionGoFirst = self.createAction( text = "Primer documento", tip = "Ir al primer documento", icon = ":/icons/res/go-first.png" )
-        self.actionGoPrevious = self.createAction( text = "Documento anterior", tip = "Ir al documento anterior", icon = ":/icons/res/go-previous.png" )
-        self.actionGoLast = self.createAction( text = "Ultimo documento", tip = "Ir al ultimo documento", icon = ":/icons/res/go-last.png" )
-        self.actionGoNext = self.createAction( text = "Documento siguiente", tip = "Ir al siguiente documento" , icon = ":/icons/res/go-next.png" )
+        self.actionGoFirst = self.createAction( text = "Primer documento",
+                                                tip = "Ir al primer documento",
+                                                icon = ":/icons/res/go-first.png" )
+        self.actionGoPrevious = self.createAction( text = "Documento anterior",
+                                                   tip = "Ir al documento anterior",
+                                                   icon = ":/icons/res/go-previous.png" )
+        self.actionGoLast = self.createAction( text = "Ultimo documento",
+                                               tip = "Ir al ultimo documento",
+                                               icon = ":/icons/res/go-last.png" )
+        self.actionGoNext = self.createAction( text = "Documento siguiente",
+                                               tip = "Ir al siguiente documento" ,
+                                               icon = ":/icons/res/go-next.png" )
 
-        self.actionDeleteRow = self.createAction( text = "Borrar la fila", icon = ":/icons/res/edit-delete.png", slot = self.deleteRow )
+        self.actionDeleteRow = self.createAction( text = "Borrar la fila",
+                                                  icon = ":/icons/res/edit-delete.png",
+                                                  slot = self.deleteRow )
 
         self.addActionsToToolBar()
 

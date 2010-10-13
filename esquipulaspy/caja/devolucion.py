@@ -25,7 +25,8 @@ from utility import constantes
 
 
 #navmodel
-IDDOCUMENTO, NDOCIMPRESO, FACTURA, CLIENTE, OBSERVACION, FECHA, SUBTOTAL, IMPUESTOS, COSTO, TOTAL, TASA, CONCEPTO, NOMBREBODEGA = range( 13 )
+IDDOCUMENTO, NDOCIMPRESO, FACTURA, CLIENTE, OBSERVACION, FECHA, \
+SUBTOTAL, IMPUESTOS, COSTO, TOTAL, TASA, CONCEPTO, NOMBREBODEGA = range( 13 )
 #detailsmodel
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD, IDDOCUMENTOT = range( 6 )
 class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
@@ -71,7 +72,8 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 
     def addLine( self ):
         """
-        Redefiniendo addLine, se supone que en una liquidacion no se pueden añadir lineas
+        Redefiniendo addLine, se supone que en una 
+        liquidacion no se pueden añadir lineas
         """
         raise RuntimeError( "Las devoluciones no deben de añadir lineas nuevas" )
 
@@ -286,20 +288,30 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             dlgbill = DlgSelectBill()
             if dlgbill.exec_() == QDialog.Accepted:
                 self.editmodel = DevolucionModel()
-                self.editmodel.invoiceId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 0 ).data().toInt()[0]
-                self.editmodel.billPrinted = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 1 ).data().toString()
-                self.editmodel.clientName = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 3 ).data().toString()
+                self.editmodel.invoiceId = dlgbill.filtermodel.index( 
+                                                 dlgbill.tblBills.selectionModel().currentIndex().row(), 0 ).data().toInt()[0]
+                self.editmodel.billPrinted = dlgbill.filtermodel.index( 
+                                               dlgbill.tblBills.selectionModel().currentIndex().row(), 1 ).data().toString()
+                self.editmodel.clientName = dlgbill.filtermodel.index( 
+                                                  dlgbill.tblBills.selectionModel().currentIndex().row(), 3 ).data().toString()
 
-                self.editmodel.clientId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 5 ).data().toInt()[0]
+                self.editmodel.clientId = dlgbill.filtermodel.index( 
+                                            dlgbill.tblBills.selectionModel().currentIndex().row(), 5 ).data().toInt()[0]
 
-                self.editmodel.ivaRate = Decimal( dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 6 ).data().toString() )
-                self.editmodel.ivaRateId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 7 ).data().toInt()[0]
+                self.editmodel.ivaRate = Decimal( dlgbill.filtermodel.index( 
+                                             dlgbill.tblBills.selectionModel().currentIndex().row(), 6 ).data().toString() )
+                self.editmodel.ivaRateId = dlgbill.filtermodel.index( 
+                                             dlgbill.tblBills.selectionModel().currentIndex().row(), 7 ).data().toInt()[0]
 
-                self.editmodel.exchangeRate = Decimal( dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 8 ).data().toString() )
-                self.editmodel.exchangeRateId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 9 ).data().toInt()[0]
+                self.editmodel.exchangeRate = Decimal( dlgbill.filtermodel.index( 
+                                                 dlgbill.tblBills.selectionModel().currentIndex().row(), 8 ).data().toString() )
+                self.editmodel.exchangeRateId = dlgbill.filtermodel.index( 
+                                                  dlgbill.tblBills.selectionModel().currentIndex().row(), 9 ).data().toInt()[0]
 
-                self.editmodel.warehouseName = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 10 ).data().toString()
-                self.editmodel.warehouseId = dlgbill.filtermodel.index( dlgbill.tblBills.selectionModel().currentIndex().row(), 11 ).data().toInt()[0]
+                self.editmodel.warehouseName = dlgbill.filtermodel.index( 
+                                                 dlgbill.tblBills.selectionModel().currentIndex().row(), 10 ).data().toString()
+                self.editmodel.warehouseId = dlgbill.filtermodel.index( 
+                                               dlgbill.tblBills.selectionModel().currentIndex().row(), 11 ).data().toInt()[0]
 
 
                 self.editmodel.uid = self.user.uid

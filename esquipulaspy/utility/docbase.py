@@ -4,20 +4,11 @@ Created on 16/08/2010
 
 @author: Andrés Reyes Monge
 '''
-import functools
-from decimal import Decimal
-
-def ifValid(fn):
-    u"""
-    Decorador que retorna 0 si la linea no es valida, esto es más facil que usar "if valid else Decimal(0)" en todos lados
-    """
-    @functools.wraps(fn)
-    def wrapper(self=None):
-        return fn(self) if self.valid else Decimal(0)
-    return wrapper
 
 
-class DocumentBase(object):
+
+
+class DocumentBase( object ):
     __documentType = NotImplementedError()
     """
     Esta se convertira en un futuro en la clase base para los nuevos documentos
@@ -37,13 +28,14 @@ class DocumentBase(object):
         return len( [line for line in self.lines if line.valid] )
 
     @property
-    def valid(self):
-        raise NotImplementedError("El metodo valid deberia de ser implementado en todos los documentos")
+    def valid( self ):
+        raise NotImplementedError( "El metodo valid deberia de ser"\
+                                  + " implementado en todos los documentos" )
 
-    def save(self):
+    def save( self ):
         raise NotImplementedError()
-    
-class LineaBase(object):
+
+class LineaBase( object ):
     u"""
     Esta se convertira en un futuro en la clase base para las nuevas lineas,
     con suerte se podran pasar aca muchos metodos genericos
@@ -54,7 +46,7 @@ class LineaBase(object):
         Es esta linea valida
         @rtype: bool
         """
-        raise NotImplementedError("No se ha implementado la propiedad Valid")
+        raise NotImplementedError( "No se ha implementado la propiedad Valid" )
 
     def save( self, iddocumento, nlinea ):
         """
@@ -63,4 +55,4 @@ class LineaBase(object):
         @rtype: bool
         @return: Si se pudo o no guardar el documento
         """
-        raise NotImplementedError("No se ha implementado el metodo save")
+        raise NotImplementedError( "No se ha implementado el metodo save" )

@@ -34,6 +34,10 @@ class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
 
 #        self.__status = True
         self.backmodel = ArticlesModel()
+        self.filtermodel = QSortFilterProxyModel()
+        self.filtermodel.setSourceModel( self.backmodel )
+        self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
+
         self.updateModels()
 #        self.tableview.addActions( ( self.actionEdit, self.actionNew ) )
         self.tableview.setColumnHidden( 0, True )
@@ -47,22 +51,28 @@ class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
 
     def updateModels( self ):
         """
-        Actualizar los modelos, despues de toda operacion que cambie la base de datos se tienen que actualizar los modelos
+        Actualizar los modelos, despues de toda operacion que cambie la base 
+        de datos se tienen que actualizar los modelos
         """
         try:
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( "No se pudo abrir la base de datos" )
             self.backmodel.setQuery( """
-                SELECT idarticulo, descripcion, dai, isc, comision, ganancia, activo
+                SELECT 
+                    idarticulo, 
+                    descripcion, 
+                    dai, 
+                    isc, 
+                    comision, 
+                    ganancia, 
+                    activo
                 FROM vw_articulosconcostosactuales v
             """ )
             if self.backmodel.rowCount() == 0:
                 self.actionEdit.setEnabled( False )
-            self.filtermodel = QSortFilterProxyModel()
-            self.filtermodel.setSourceModel( self.backmodel )
+
             self.filtermodel.setFilterKeyColumn( -1 )
-            self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
             self.tableview.setModel( self.filtermodel )
         except UserWarning as inst:
             logging.error( unicode( inst ) )
@@ -184,7 +194,9 @@ class ArticlesModel( QSqlQueryModel ):
         if not query.exec_():
             raise Exception( "No se pudo ejecutar el update" )
 
-        if not query.prepare( "insert into costosagregados (valorcosto,activo,idtipocosto,idarticulo) values(:valor,1,3,:idarticulo)" ):
+        if not query.prepare( "INSERT INTO costosagregados"\
+                              + " (valorcosto,activo,idtipocosto,idarticulo)"\
+                              + " VALUES(:valor,1,3,:idarticulo)" ):
             raise Exception( "No se pudo preparar el insert" )
         query.bindValue( ":idarticulo", id )
         query.bindValue( ":valor", value )
@@ -198,13 +210,16 @@ class ArticlesModel( QSqlQueryModel ):
         @param value: El Valor a guardar en el record del Index        
         """
         query = QSqlQuery()
-        if not query.prepare( "update costosagregados set activo=0 where idarticulo=:idarticulo and idtipocosto=2" ):
+        if not query.prepare( "UPDATE costosagregados SET activo=0"\
+                          + " WHERE idarticulo=:idarticulo AND idtipocosto=2" ):
             raise Exception( "No se pudo preparar el update" )
         query.bindValue( ":idarticulo", id )
         if not query.exec_():
             raise Exception( "No se pudo ejecutar el update" )
 
-        if not query.prepare( "insert into costosagregados (valorcosto,activo,idtipocosto,idarticulo) values(:valor,1,2,:idarticulo)" ):
+        if not query.prepare( "INSERT INTO costosagregados"\
+                              + " (valorcosto,activo,idtipocosto,idarticulo)"\
+                              + " VALUES(:valor,1,2,:idarticulo)" ):
             raise Exception( "No se pudo preparar el insert" )
         query.bindValue( ":idarticulo", id )
         query.bindValue( ":valor", value )
@@ -218,13 +233,16 @@ class ArticlesModel( QSqlQueryModel ):
         @param value: El Valor a guardar en el record del Index        
         """
         query = QSqlQuery()
-        if not query.prepare( "update costosagregados set activo=0 where idarticulo=:idarticulo and idtipocosto=7" ):
+        if not query.prepare( "UPDATE costosagregados SET activo=0"\
+                              + " WHERE idarticulo=:idarticulo AND idtipocosto=7" ):
             raise Exception( "No se pudo preparar el update" )
         query.bindValue( ":idarticulo", id )
         if not query.exec_():
             raise Exception( "No se pudo ejecutar el update" )
 
-        if not query.prepare( "insert into costosagregados (valorcosto,activo,idtipocosto,idarticulo) values(:valor,1,7,:idarticulo)" ):
+        if not query.prepare( "INSERT INTO costosagregados "\
+                              + " (valorcosto,activo,idtipocosto,idarticulo) "\
+                              + " VALUES (:valor,1,7,:idarticulo) " ):
             raise Exception( "No se pudo preparar el insert" )
         query.bindValue( ":idarticulo", id )
         query.bindValue( ":valor", value )
@@ -239,7 +257,8 @@ class ArticlesModel( QSqlQueryModel ):
         @param value: El Valor a guardar en el record del Index        
         """
         query = QSqlQuery()
-        if not query.prepare( "UPDATE articulos SET ganancia= :value WHERE idarticulo= :idarticulo" ):
+        if not query.prepare( "UPDATE articulos SET ganancia= :value "\
+                              + " WHERE idarticulo= :idarticulo" ):
             raise Exception( "No se pudo preparar el update" )
         query.bindValue( ":value", value )
         query.bindValue( ":idarticulo", id )
@@ -278,7 +297,6 @@ class frmArticlesNew( QDialog, Ui_frmArticlesNew ):
     '''
     classdocs
     '''
-
 
     def __init__( self, parent = None ):
         '''
@@ -360,7 +378,16 @@ class frmArticlesNew( QDialog, Ui_frmArticlesNew ):
                     raise UserWarning( "No se pudo conectar con la base de datos" )
 
 
-            query.prepare( "CALL spAgregarArticulos(:activo,:marca, :subcategoria, :dai, :isc, :comision, :ganancia )" )
+            query.prepare( """
+                    CALL spAgregarArticulos(
+                        :activo,
+                        :marca, 
+                        :subcategoria, 
+                        :dai,
+                        :isc, 
+                        :comision, 
+                        :ganancia 
+                        )""" )
             query.bindValue( ":activo", 1 )
             query.bindValue( ":marca", self.brandId )
             query.bindValue( ":subcategoria", self.catId )
@@ -400,21 +427,28 @@ class frmArticlesNew( QDialog, Ui_frmArticlesNew ):
         marca = ["", True]
         marcaDescripcion = ""
         while marcaDescripcion == "" and marca[1] == True:
-            marca = QInputDialog.getText( self, "Agregar Marca", "Ingrese la Marca" )
+            marca = QInputDialog.getText( self, "Agregar Marca",
+                                          "Ingrese la Marca" )
             marcaDescripcion = marca[0].strip()
             if marcaDescripcion != "":
                 proxy = self.brandsproxymodel
                 proxy.setFilterRegExp( "^" + marcaDescripcion + "$" )
 
                 if proxy.rowCount() > 0:
-                    QMessageBox.information( None, "Crear Marca", "La marca " + marcaDescripcion + " ya existe" )
+                    QMessageBox.information( None, "Crear Marca",
+                                         "La marca %s ya existe" %
+                                          marcaDescripcion )
                     marca = ["", True]
                     marcaDescripcion = ""
 
         self.brandsproxymodel.setFilterRegExp( "" )
 
         if marca[1]:
-            if QMessageBox.question( None, "Crear Marca", u"¿Está seguro que desea crear la marca " + marcaDescripcion + "?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+            if QMessageBox.question( None, "Crear Marca",
+                                      u"¿Está seguro que desea crear la marca %s ?" %
+                                      marcaDescripcion,
+                                      QMessageBox.Yes | QMessageBox.No
+                                       ) == QMessageBox.Yes:
                 if not QSqlDatabase.database().isOpen():
                     if not QSqlDatabase.database().open():
 
@@ -424,7 +458,8 @@ class frmArticlesNew( QDialog, Ui_frmArticlesNew ):
                 query.bindValue( ":marca", marcaDescripcion )
                 if not query.exec_():
                     logging.error( query.lastError().text() )
-                    QMessageBox.warning( None, "Error al crear la marca", "No se pudo insertar la marca" )
+                    QMessageBox.warning( None, "Error al crear la marca",
+                                          "No se pudo insertar la marca" )
                 else:
                     self.cargarMarcas()
 
@@ -461,7 +496,9 @@ class frmArticlesNew( QDialog, Ui_frmArticlesNew ):
 
     def updateBrand( self, selected, _deselected ):
         if self.brandsproxymodel.rowCount() >= 0:
-            self.brandId = self.brandsproxymodel.index( selected.indexes()[0].row(), 0 ).data().toInt()[0]
+            self.brandId = self.brandsproxymodel.index( 
+                                   selected.indexes()[0].row(),
+                                    0 ).data().toInt()[0]
 
 
     def updateCategory( self, selected, _deselected ):
@@ -469,6 +506,8 @@ class frmArticlesNew( QDialog, Ui_frmArticlesNew ):
             row = selected.indexes()[0].row()
             parent = selected.indexes()[0].parent()
             self.catvalid = parent.data().toString() != ""
-            self.catId = self.catproxymodel.data( self.catproxymodel.index( row, 1, parent ), Qt.DisplayRole )
+            self.catId = self.catproxymodel.data( 
+                              self.catproxymodel.index( row, 1,
+                                         parent ), Qt.DisplayRole )
         except IndexError:
             pass

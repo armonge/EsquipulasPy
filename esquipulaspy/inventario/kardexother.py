@@ -19,7 +19,8 @@ from utility import constantes, movimientos
 from utility.accountselector import AccountsSelectorDelegate, AccountsSelectorLine
 
 
-IDDOCUMENTO, NDOCIMPRESO, FECHA, OBSERVACIONES, BODEGA, TOTAL, ESTADO, CONCEPT, PENDIENTE = range( 9 )
+IDDOCUMENTO, NDOCIMPRESO, FECHA, OBSERVACIONES, BODEGA, TOTAL, ESTADO, \
+CONCEPT, PENDIENTE = range( 9 )
 IDARTICULO, DESCRIPCION, COSTO, CANTIDAD, IDDOCUMENTOD = range( 5 )
 IDCUENTA, CODIGO, NOMBRECUENTA, MONTOCUENTA, IDDOCUMENTOC = range( 5 )
 
@@ -135,7 +136,10 @@ class FrmKardexOther( QMainWindow, Ui_FrmKardexOther, Base ):
             self.actionGoLast
         ] )
         if self.user.hasRole( "kardex" ): #si el usuario no es de kardex no deberia de poder dar entrada a bodega
-            self.actionGiveEntry = self.createAction( text = "Dar entrada al documento", icon = ":/icons/res/dialog-ok-apply.png", slot = self.giveEntry )
+            self.actionGiveEntry = self.createAction( 
+                                                     text = "Dar entrada al documento",
+                                                     icon = ":/icons/res/dialog-ok-apply.png",
+                                                     slot = self.giveEntry )
             self.toolBar.addActions( [
                 self.actionGiveEntry
             ] )
@@ -143,7 +147,9 @@ class FrmKardexOther( QMainWindow, Ui_FrmKardexOther, Base ):
         """
         Dar entrada a un kardex
         """
-        if QMessageBox.question( self, qApp.organizationName(), u"¿Realmente desea dar entrada a este documento?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+        if QMessageBox.question( self, qApp.organizationName(),
+                                 u"¿Realmente desea dar entrada a este documento?",
+                                  QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
             iddoc = self.navmodel.record( self.mapper.currentIndex() ).value( IDDOCUMENTO ).toInt()[0]
 
 
@@ -163,8 +169,10 @@ class FrmKardexOther( QMainWindow, Ui_FrmKardexOther, Base ):
                     raise Exception( u"No se pudo actualizar el estado del documento" )
 
                 if not query.exec_( """
-                    INSERT INTO documentos (ndocimpreso, fechacreacion, idtipodoc, total, idtipocambio, idbodega)
-                    SELECT fnConsecutivo(%d,NULL), NOW(), %d, total, idtipocambio, idbodega FROM documentos
+                    INSERT INTO documentos (ndocimpreso, fechacreacion,
+                     idtipodoc, total, idtipocambio, idbodega)
+                    SELECT fnConsecutivo(%d,NULL), NOW(), %d, total, 
+                    idtipocambio, idbodega FROM documentos
                     WHERE iddocumento = %d;
                 """ % ( constantes.IDKARDEX, constantes.IDKARDEX, iddoc ) ):
                     raise Exception( u"No se pudo insertar el documento kardex" )
@@ -174,11 +182,13 @@ class FrmKardexOther( QMainWindow, Ui_FrmKardexOther, Base ):
                 if not query.exec_( """
                     INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (%d, %d)
                 """ % ( iddoc, insertedId ) ):
-                    raise Exception( u"No se pudo crear la relación entre el documento ajuste de bodega y su kardex" )
+                    raise Exception( u"No se pudo crear la relación entre el"\
+                                     + " documento ajuste de bodega y su kardex" )
 
                 if not self.database.commit():
                     raise Exception( u"No se pudo hacer commit" )
-                QMessageBox.information( self, qApp.organizationName(), "El documento se ha guardado con exito" )
+                QMessageBox.information( self, qApp.organizationName(),
+                                          "El documento se ha guardado con exito" )
                 self.updateModels()
             except UserWarning as inst:
                 logging.error( unicode( inst ) )
@@ -187,7 +197,8 @@ class FrmKardexOther( QMainWindow, Ui_FrmKardexOther, Base ):
             except Exception as inst:
                 logging.critical( unicode( inst ) )
                 self.database.rollback()
-                QMessageBox.critical( self, qApp.organizationName(), u"No se pudo confirmar la entrada de este documento" )
+                QMessageBox.critical( self, qApp.organizationName(),
+                                      u"No se pudo confirmar la entrada de este documento" )
 
 
 
@@ -277,11 +288,13 @@ class FrmKardexOther( QMainWindow, Ui_FrmKardexOther, Base ):
 
 
     def updateDetailFilter( self, index ):
+        curr_id = self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0]
+
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOD )
-        self.detailsproxymodel.setFilterRegExp( "^%d$" % self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
+        self.detailsproxymodel.setFilterRegExp( "^%d$" % curr_id )
 
         self.accountsproxymodel.setFilterKeyColumn( IDDOCUMENTOC )
-        self.accountsproxymodel.setFilterRegExp( "^%d$" % self.navmodel.record( index ).value( IDDOCUMENTO ).toInt()[0] )
+        self.accountsproxymodel.setFilterRegExp( "^%d$" % curr_id )
 
         if self.user.hasRole( 'kardex' ):
             estado = self.navmodel.record( index ).value( PENDIENTE ).toInt()[0]
@@ -383,8 +396,8 @@ class FrmKardexOther( QMainWindow, Ui_FrmKardexOther, Base ):
 
     def cancel( self ):
         u"""
-        Borrar todos los modelos que se hallan creado para el modo edición, asignar los modelos de navegación a las 
-        vistas
+        Borrar todos los modelos que se hallan creado para el modo edición,
+        asignar los modelos de navegación a las vistas
         """
         self.editmodel = None
         self.tabledetails.setModel( self.detailsproxymodel )

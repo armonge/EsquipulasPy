@@ -50,13 +50,15 @@ class CategoryItem( object ):
                             raise Exception( "No se pudo conectar con la base de datos" )
                     if self.parentItem is None:
                         if not query.prepare( """
-                        INSERT INTO categorias (nombre) VALUES ( :nombre)
+                        INSERT INTO categorias (nombre) 
+                        VALUES ( :nombre)
                         """ ):
                             raise Exception( "No se pudo preparar la consulta para insertar la categoria" )
 
                     else:
                         if not query.prepare( """
-                        INSERT INTO categorias (nombre, padre) VALUES ( :nombre, %d)
+                        INSERT INTO categorias (nombre, padre) 
+                        VALUES ( :nombre, %d)
                         """ % self.data( 1 ) ):
                             raise Exception( "No se pudo preparar la consulta para insertar la categoria" )
 
@@ -73,12 +75,14 @@ class CategoryItem( object ):
                 try:
                     if type( self.itemData[0] ) == int:
                         if not query.prepare( """
-                        INSERT INTO categorias (padre, nombre) VALUES (%d, :nombre)
+                        INSERT INTO categorias (padre, nombre)
+                        VALUES (%d, :nombre)
                         """ % self.itemData[0] ):
                             raise Exception( "No se pudo preparar la consulta para insertar la categoria" )
                     else:
                         if not query.prepare( """
-                        INSERT INTO categorias (nombre) VALUES ( :nombre)
+                        INSERT INTO categorias (nombre) 
+                        VALUES ( :nombre)
                         """ ):
                             raise Exception( "No se pudo preparar la consulta para insertar la categoria" )
                     query.bindValue( ":nombre", data[1].strip() )

@@ -125,11 +125,13 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         Actualizar los modelos de edición
         """
         if not self.readOnly:
-            if QMessageBox.question( self, qApp.organizationName(), u"Se perderán todos los cambios en la factura. ¿Esta seguro que desea actualizar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.No:
+            if QMessageBox.question( self, qApp.organizationName(),
+                                      u"Se perderán todos los cambios en la factura. ¿Esta seguro que desea actualizar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.No:
                 return
 
         if self.updateModels():
-            QMessageBox.information( None, "Factura", u"Los datos fueron actualizados con éxito" )
+            QMessageBox.information( None, "Factura",
+                                 u"Los datos fueron actualizados con éxito" )
 
 
     def save( self ):
@@ -197,13 +199,17 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
     @pyqtSlot()
     def on_actionAnular_activated( self ):
         if self.anulable == 2:
-            QMessageBox.warning( None, "Anular Factura", u"La factura no puede anularse. Solo las facturas confirmadas o en proceso de autorización pueden anularse" )
+            QMessageBox.warning( None, "Anular Factura",
+                                  u"La factura no puede anularse. Solo las facturas confirmadas o en proceso de autorización pueden anularse" )
         elif self.anulable == 3:
-            QMessageBox.warning( None, "Anular Factura", u"La factura no puede anularse porque no es del día de hoy" )
+            QMessageBox.warning( None, "Anular Factura",
+                                  u"La factura no puede anularse porque no es del día de hoy" )
         elif self.anulable == 4:
-            QMessageBox.warning( None, "Anular Factura", u"La factura no puede anularse porque tiene abonos" )
+            QMessageBox.warning( None, "Anular Factura",
+                                  u"La factura no puede anularse porque tiene abonos" )
         elif self.anulable == 5:
-            QMessageBox.warning( None, "Anular Factura", u"La factura no puede anularse porque tiene devoluciones" )
+            QMessageBox.warning( None, "Anular Factura",
+                                  u"La factura no puede anularse porque tiene devoluciones" )
         elif self.anulable == 1:
 
             doc = self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toInt()[0]
@@ -260,7 +266,8 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                                         raise Exception( "No se logro cambiar el estado a el documento" )
 
                                     #Insertar documento anulacion
-                                    if not query.prepare( """INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
+                                    if not query.prepare( """
+                                    INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
                                     VALUES(:ndocimpreso,:total,NOW(),:idtipodoc,:observacion,:idestado)""" ):
                                         raise Exception( query.lastError().text() )
                                     query.bindValue( ":ndocimpreso", nfac )
@@ -415,7 +422,8 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.lblsubtotal.setText( "0.0000" )
             self.lbliva.setText( "0.0000" )
             self.lbltotal.setText( "0.0000" )
-            self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
+            self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed
+                                               | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.lblanulado.setHidden( True )
 
 #            self.tabledetails.horizontalHeader().setStretchLastSection(True)
