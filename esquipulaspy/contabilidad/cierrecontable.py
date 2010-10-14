@@ -66,7 +66,7 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
             FROM documentos d
             JOIN docpadrehijos dp ON d.iddocumento=dp.idpadre
             JOIN documentos d2 ON d2.iddocumento=dp.idhijo
-            WHERE d.idtipodoc= %d and month(d2.fechacreacion)= %s
+            WHERE d.idtipodoc=%d and month(d2.fechacreacion)=%s
             LIMIT 1
             """ % ( constantes.IDCIERREMENSUAL, self.fecha.toString( "MM" ) )
             print q
@@ -122,7 +122,8 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
                 :GASTOS,
                 :GASTOSFINANCIEROS,
                 :PRODUCTOSFINANCIEROS,
-                :OTROSGASTOS)""" )
+                :OTROSGASTOS,
+                :PERDIDASGANANCIAS)""" )
                 query.bindValue( ":IDCIERRE", constantes.IDCIERREMENSUAL )
                 query.bindValue( ":MES", self.fecha.toString( "MM" ) )
                 query.bindValue( ":ESTADO", constantes.CONFIRMADO )
@@ -135,7 +136,7 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
                 query.bindValue( ":GASTOSFINANCIEROS", constantes.GASTOSFINANCIEROS )
                 query.bindValue( ":PRODUCTOSFINANCIEROS", constantes.PRODUCTOSFINANCIEROS )
                 query.bindValue( ":OTROSGASTOS", constantes.OTROSGASTOS )
-
+                query.bindValue( ":PERDIDASGANANCIAS", constantes.PERDIDASGANANCIAS )
                 if not query.exec_():
                     raise UserWarning( "No se pudo Cerrar el mes Contable" )
 
