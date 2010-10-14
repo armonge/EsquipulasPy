@@ -4,6 +4,7 @@ Module implementing frmConciliacion.
 """
 import functools
 from decimal import Decimal
+import logging
 
 from PyQt4.QtCore import pyqtSlot, QModelIndex, Qt, QTimer, \
     QDate, QVariant
@@ -177,8 +178,14 @@ class FrmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
 
             self.ocultarCols()
 
+        except UserWarning as inst:
+            logging.error(unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
         except Exception as inst:
-            print inst
+            logging.critical(unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(),
+                u"Hubo un error al tratar de iniciar una nueva conciliación "\
+                +"bancaria")
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
@@ -291,81 +298,89 @@ class FrmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
         """
         Slot documentation goes here.
         """
-        if not QSqlDatabase.database().open():
-            raise Exception( u"No se pudo establecer una conexión con la base de datos" )
-
-        dlgCuenta = dlgSelectCuenta( self )
-        fila = -1
-#REPETIR MIENTRAS NO SELECCIONE UNA FILA
-        while fila == -1:
-            if dlgCuenta.exec_() == QDialog.Accepted:
-                fila = dlgCuenta.tblCuenta.selectionModel().currentIndex().row()
-                if fila == -1:
-                    QMessageBox.information( self, "Cuentas Bancarias ", "Por favor seleccione una cuenta" )
-            else:
-#SALIR
-                return None
-
-# SI SELECCIONO UNA FILA SIGUE              
-        self.editmodel = ConciliacionModel()
-        self.editmodel.uid = self.user.uid
-        self.txtbanco.setText( dlgCuenta.filtermodel.index( fila, 0 ).data().toString() )
-        self.txtcuentabanco.setText( dlgCuenta.filtermodel.index( fila, 1 ).data().toString() )
-        self.txtmoneda.setText( dlgCuenta.filtermodel.index( fila, 2 ).data().toString() )
-        self.txtcuenta.setText( dlgCuenta.filtermodel.index( fila, 3 ).data().toString() )
-        self.txtcuenta.setToolTip( dlgCuenta.filtermodel.index( fila, 5 ).data().toString() )
-
-        self.editmodel.idCuentaContable = dlgCuenta.filtermodel.index( fila, 4 ).data().toInt()[0]
-
-        fecha = dlgCuenta.dtPicker.date()
-        self.lblfecha.setText( fecha.toString( "MMMM yyyy" ).upper() )
-        self.editmodel.fechaConciliacion = QDate( fecha.year(), fecha.month(), fecha.daysInMonth() )
-
-
         query = QSqlQuery()
-        if not query.exec_( "CALL spMovimientoCuenta(" + str( self.editmodel.idCuentaContable ) + "," + self.editmodel.fechaConciliacion.toString( "yyyyMMdd" ) + ")" ):
-            print query.lastError().text()
-            raise Exception( "Ocurrio un error en la consulta" )
+        try:
+            if not QSqlDatabase.database().open():
+                raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
 
-        row = 0
-        while query.next():
-            linea = LineaConciliacion( self.editmodel )
-            linea.fecha = query.value( FECHA ).toString()
-            linea.concepto = query.value( CONCEPTO ).toString()
-            linea.monto = Decimal( query.value( DEBE ).toString() )
-            linea.saldo = Decimal( query.value( 3 ).toString() )
+            dlgCuenta = dlgSelectCuenta( self )
+            fila = -1
+    #REPETIR MIENTRAS NO SELECCIONE UNA FILA
+            while fila == -1:
+                if dlgCuenta.exec_() == QDialog.Accepted:
+                    fila = dlgCuenta.tblCuenta.selectionModel().currentIndex().row()
+                    if fila == -1:
+                        QMessageBox.information( self, "Cuentas Bancarias ", "Por favor seleccione una cuenta" )
+                else:
+    #SALIR
+                    return None
 
-            linea.delBanco = query.value( 5 ).toInt()[0]
-            linea.conciliado = linea.delBanco
+    # SI SELECCIONO UNA FILA SIGUE
+            self.editmodel = ConciliacionModel()
+            self.editmodel.uid = self.user.uid
+            self.txtbanco.setText( dlgCuenta.filtermodel.index( fila, 0 ).data().toString() )
+            self.txtcuentabanco.setText( dlgCuenta.filtermodel.index( fila, 1 ).data().toString() )
+            self.txtmoneda.setText( dlgCuenta.filtermodel.index( fila, 2 ).data().toString() )
+            self.txtcuenta.setText( dlgCuenta.filtermodel.index( fila, 3 ).data().toString() )
+            self.txtcuenta.setToolTip( dlgCuenta.filtermodel.index( fila, 5 ).data().toString() )
 
-            linea.idTipoDoc = query.value( 6 ).toInt()[0]
-            linea.concepto2 = query.value( 7 ).toString()
-            linea.idDoc = query.value( 8 ).toInt()[0]
+            self.editmodel.idCuentaContable = dlgCuenta.filtermodel.index( fila, 4 ).data().toInt()[0]
 
-            self.editmodel.insertRows( row )
-            self.editmodel.lines[row] = linea
-            row = row + 1
-
-        self.editmodel.saldoInicialLibro = self.editmodel.lines[row - 1].saldo
-        self.txtsaldolibro.setText( moneyfmt( self.editmodel.lines[row - 1].saldo, 4, "C$" ) )
-        self.updateLabels()
-
-        self.proxymodel.setSourceModel( self.editmodel )
-
-        self.setControls( False )
-        self.tabnavigation.setEnabled( False )
-        self.tabWidget.setCurrentIndex( 0 )
-        self.tabledetails.setModel( self.editmodel )
-
-        self.tabledetails.resizeColumnsToContents()
-
-        self.ocultarCols()
-
-        self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
+            fecha = dlgCuenta.dtPicker.date()
+            self.lblfecha.setText( fecha.toString( "MMMM yyyy" ).upper() )
+            self.editmodel.fechaConciliacion = QDate( fecha.year(), fecha.month(), fecha.daysInMonth() )
 
 
-        if QSqlDatabase.database().isOpen():
-            QSqlDatabase.database().close()
+            query.prepare( "CALL spMovimientoCuenta( %d, %s )" % (self.editmodel.idCuentaContable,
+                self.editmodel.fechaConciliacion.toString( "yyyyMMdd" )) )
+            if not query.exec_():
+                raise Exception( query.lastError().text() )
+
+            row = 0
+            while query.next():
+                linea = LineaConciliacion( self.editmodel )
+                linea.fecha = query.value( FECHA ).toString()
+                linea.concepto = query.value( CONCEPTO ).toString()
+                linea.monto = Decimal( query.value( DEBE ).toString() )
+                linea.saldo = Decimal( query.value( 3 ).toString() )
+
+                linea.delBanco = query.value( 5 ).toInt()[0]
+                linea.conciliado = linea.delBanco
+
+                linea.idTipoDoc = query.value( 6 ).toInt()[0]
+                linea.concepto2 = query.value( 7 ).toString()
+                linea.idDoc = query.value( 8 ).toInt()[0]
+
+                self.editmodel.insertRows( row )
+                self.editmodel.lines[row] = linea
+                row = row + 1
+
+            self.editmodel.saldoInicialLibro = self.editmodel.lines[row - 1].saldo
+            self.txtsaldolibro.setText( moneyfmt( self.editmodel.lines[row - 1].saldo, 4, "C$" ) )
+            self.updateLabels()
+
+            self.proxymodel.setSourceModel( self.editmodel )
+
+            self.setControls( False )
+            self.tabnavigation.setEnabled( False )
+            self.tabWidget.setCurrentIndex( 0 )
+            self.tabledetails.setModel( self.editmodel )
+
+            self.tabledetails.resizeColumnsToContents()
+
+            self.ocultarCols()
+
+            self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
+            
+        except UserWarning as inst:
+            logging.error(unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+        except Exception as inst:
+            logging.critical(unicode(inst))
+            QMessageBox.critical(self, qApp.organizationName(), u"Hubo un error al intentar iniciar una nueva conciliación")
+        finally:
+            if self.database.isOpen():
+                self.database.close()
 
     def ocultarCols( self ):
         #OCULTAR COLUMNAS    
@@ -505,7 +520,7 @@ class dlgSelectCuenta( QDialog ):
         JOIN bancos b ON cb.idbanco=b.idbanco
         JOIN cuentascontables c ON c.idcuenta=cb.idcuentacontable
         JOIN tiposmoneda tm ON tm.idtipomoneda=cb.idtipomoneda
-        LEFT JOIN conciliaciones con ON con.idcuentacontable=cb.idcuentacontable
+        LEFT JOIN conciliaciones con ON con.idcuentabancaria=cb.idcuentacontable
         LEFT JOIN cuentasxdocumento cd ON cd.idcuenta=c.idcuenta
         LEFT JOIN documentos d ON cd.iddocumento = d.iddocumento
         WHERE d.iddocumento IS NOT NULL
@@ -590,7 +605,8 @@ class dlgSelectCuenta( QDialog ):
 
     def exec_( self ):
         if self.ctaBancomodel.rowCount() == 0:
-            QMessageBox.critical( self.padre, "Cuentas Bancarias", "No existe ninguna cuenta bancaria" )
+            QMessageBox.critical( self.padre, "Cuentas Bancarias",
+                "No existe ninguna cuenta bancaria con movimientos en este mes" )
             return self.reject()
         else:
             return QDialog.exec_( self )

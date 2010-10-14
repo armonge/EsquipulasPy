@@ -29,7 +29,6 @@ class AccountsSelectorModel( QAbstractTableModel ):
 
     @property
     def valid( self ):
-        print "current sum is 0 ", self.currentSum == 0
         return  self.currentSum == 0 and self.validLines > 0
 
     @property
@@ -59,14 +58,12 @@ class AccountsSelectorModel( QAbstractTableModel ):
             self.lines.insert( position + row, AccountsSelectorLine() )
             self.lines[-1].amount = self.currentSum * -1
         self.endInsertRows()
-        self.dirty = True
         return True
 
     def removeRows( self, position, rows = 1, _parent = QModelIndex ):
         self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
         self.lines = self.lines[:position] + self.lines[position + rows:]
         self.endRemoveRows()
-        self.dirty = True
         return True
 
 
@@ -89,7 +86,7 @@ class AccountsSelectorModel( QAbstractTableModel ):
                 return moneyfmt( line.amount, 4, "C$" ) if line.amount != 0 else ""
         if role == Qt.EditRole:
             if column == MONTO:
-                return line.amount
+                return float(line.amount)
 
     def setData( self, index, value, _role = Qt.EditRole ):
         if index.isValid() and 0 <= index.row() < len( self.lines ):
@@ -241,7 +238,8 @@ class AccountsSelectorLine( object ):
         query = QSqlQuery()
 
         if not query.prepare( """
-        INSERT INTO cuentasxdocumento (idcuenta, iddocumento, monto, nlinea) VALUES ( :idcuenta, :iddocumento, :monto, :nlinea)
+        INSERT INTO cuentasxdocumento (idcuenta, iddocumento, monto, nlinea)
+        VALUES ( :idcuenta, :iddocumento, :monto, :nlinea)
         """ ):
             raise Exception( "No se pudo preparar la consulta para insertar un movimiento" )
         query.bindValue( ":idcuenta", self.itemId )

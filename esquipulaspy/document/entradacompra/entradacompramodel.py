@@ -4,11 +4,6 @@ Created on 18/05/2010
 
 @author: Andrés Reyes Monge
 '''
-import unittest
-if __name__ == "__main__":
-    import sip
-    sip.setapi( 'QString', 2 )
-
 from decimal import Decimal
 import logging
 
@@ -447,49 +442,3 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
         return True
 
 
-class TestEntradaCompraSimple( unittest.TestCase ):
-    """
-    Esta clase es un TesCase para EntradaCompraModel reproduce un caso común y
-    verifica los resultados del modelo con los esperados
-    """
-    def setUp( self ):
-        _app = QCoreApplication( [] )
-
-        self.entrada = EntradaCompraModel()
-
-
-        self.entrada.insertRow( 0 )
-        self.entrada.exchangeRate = Decimal( "21.21" )
-        self.entrada.rateIVA = Decimal( '15' )
-        self.entrada.exchangeRateId = 1
-        self.entrada.exchangeRate = Decimal( '21' )
-
-        self.entrada.setData( self.entrada.index( 0, CANTIDAD ), QVariant( "1" ) )
-        self.entrada.setData( self.entrada.index( 0, PRECIO ), QVariant( "1" ) )
-        self.entrada.setData( self.entrada.index( 0, DESCRIPCION ), [
-            1,
-            "FRICCIONES* BATERIA  N-150 DURUN"
-        ] )
-
-
-    def valid( self ):
-        self.assertTrue( self.entrada.valid, "El documento deberia tener un estado de valido" )
-
-    def test_validLines( self ):
-        self.assertEqual( self.entrada.validLines, 1, "El documento deberia tener exactamente una linea valida" )
-
-    def test_iva( self ):
-        self.assertEqual( self.entrada.IVAC, Decimal( '0.15' ), "El iva en cordobas deberia ser exactamente 0.15 y es %s" % self.entrada.IVAC.to_eng_string() )
-        self.assertEqual( self.entrada.IVAD, Decimal( '0.007142857142857142857142857143' ) )
-
-    def test_total( self ):
-        self.assertEqual( self.entrada.totalC, Decimal( '1.15' ) )
-        self.assertEqual( self.entrada.totalD, Decimal( '0.05476190476190476190476190476' ) )
-
-
-    def test_numrows( self ):
-        self.assertEqual( self.entrada.rowCount(), 2, "El documento deberia tener 2 lineas" )
-
-
-if __name__ == "__main__":
-    unittest.main()

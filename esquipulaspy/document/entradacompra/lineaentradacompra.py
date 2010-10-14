@@ -4,11 +4,6 @@ Created on 18/05/2010
 
 @author: Andrés Reyes Monge
 '''
-import unittest
-if __name__ == "__main__":
-    import sip
-    sip.setapi( 'QString', 2 )
-
 from decimal import Decimal
 
 from PyQt4.QtCore import QCoreApplication
@@ -111,29 +106,3 @@ class LineaEntradaCompra( LineaBase ):
 
 
 
-class TestLineaLineaEntradCompra( unittest.TestCase ):
-    """
-    Esta clase es un TesCase para LineaEntradaCompra reproduce un caso común y
-    verifica los resultados del modelo con los esperados
-    """
-    def setUp( self ):
-        _app = QCoreApplication( [] )
-
-        self.exchangeRate = Decimal( '21.21' )
-        self.exchangeRateId = 1
-
-        self.line = LineaEntradaCompra( self )
-        self.line.quantity = 1
-        self.line.itemId = 1
-        self.line.itemPriceC = Decimal( '1' )
-
-    def test_valid( self ):
-        self.assertTrue( self.line.valid, "La linea deberia de ser valida" )
-
-    def test_total( self ):
-        self.assertEqual( self.line.totalC, Decimal( '1' ), "El total en cordobas deberia de ser 1 y es %s" % self.line.totalC.to_eng_string() )
-        self.assertEqual( self.line.totalD, Decimal( '0.04714757190004714757190004715' ), "El total en dolares deberia de ser y es %s" % self.line.totalD.to_eng_string() )
-
-
-if __name__ == "__main__":
-    unittest.main()

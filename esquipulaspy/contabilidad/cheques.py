@@ -199,6 +199,12 @@ class FrmCheques( Ui_frmCheques, QMainWindow, Base ):
         self.subtotal.setReadOnly( status )
         self.txtobservaciones.setReadOnly( status )
 
+        self.actionGoFirst.setVisible( status)
+        self.actionGoPrevious.setVisible( status)
+        self.actionGoNext.setVisible(status)
+        self.actionGoLast.setVisible(status)
+        self.actionAnular.setVisible(status)
+
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
         self.actionNew.setVisible( status )

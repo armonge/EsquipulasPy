@@ -21,7 +21,7 @@ logging.basicConfig( level = logging.DEBUG,
                 )
 
 from PyQt4 import QtGui, QtCore
-from utility import constantes, user
+import utility
 
 app = QtGui.QApplication( sys.argv )
 app.setOrganizationName( "Llantera Esquipulas" )
@@ -83,17 +83,17 @@ if "--inventario" in sys.argv:
     app.setApplicationName( "Compras e Inventario" )
     from inventario.mainwindow import MainWindow
 #    module = "inventario"
-    module = constantes.ACCESOINVENTARIO
+    module = utility.constantes.ACCESOINVENTARIO
 elif "--caja" in sys.argv:
     app.setApplicationName( "Caja" )
     from caja.mainwindow import MainWindow
 #    module = "caja"
-    module = constantes.ACCESOCAJA
+    module = utility.constantes.ACCESOCAJA
 elif "--contabilidad" in sys.argv:
     app.setApplicationName( "Contabilidad" )
     from contabilidad.mainwindow import MainWindow
 #    module = "contabilidad"
-    module = constantes.ACCESOCONTABILIDAD
+    module = utility.constantes.ACCESOCONTABILIDAD
 else:
     raise Exception( "No se selecciono un modulo" )
 
@@ -108,14 +108,14 @@ if "--reportconfig" in sys.argv:
 
 
 #Database.getDatabase("","--dbconfig" in sys.argv)
-dlguser = user.dlgUserLogin()
+dlguser = utility.user.dlgUserLogin()
 #cont = 0
 #valido = False
 dlguser.txtPassword.setText( "" )
 if dlguser.exec_() == QtGui.QDialog.Accepted:
-    user.LoggedUser = dlguser.user
-    if user.LoggedUser.valid:
-        if  user.LoggedUser.hasAnyRole( module ):
+    utility.user.LoggedUser = dlguser.user
+    if utility.user.LoggedUser.valid:
+        if  utility.user.LoggedUser.hasAnyRole( module ):
 
 
             mainwindow = MainWindow()
@@ -130,7 +130,7 @@ if dlguser.exec_() == QtGui.QDialog.Accepted:
     else:
         QtGui.QMessageBox.critical( None,
         QtGui.qApp.organizationName(),
-        user.LoggedUser.error,
+        utility.user.LoggedUser.error,
         QtGui.QMessageBox.StandardButtons( QtGui.QMessageBox.Ok ) )
 
 sys.exit()

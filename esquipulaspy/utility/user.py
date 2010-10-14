@@ -17,7 +17,13 @@ QFrame, QGridLayout, QSpacerItem, QSizePolicy, QFont, qApp
 import database
 
 UID, FULLNAME, ROLE = range( 3 )
+
 LoggedUser = None
+"""
+@var: Este variable almacena al usuario loggeado en el sistema
+@type: User
+"""
+
 class dlgAbstractUserLogin( QDialog ):
     """
     Clase base para todos los dialogos que requieren autenticar a un usuario
@@ -483,7 +489,6 @@ class User:
 
 
     def checkPassword( self, password ):
-        #strength = ['Blank','Very Weak','Weak','Medium','Strong','Very Strong']
         score = 1
 
         if len( password ) < 1:

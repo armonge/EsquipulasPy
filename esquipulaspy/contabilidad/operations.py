@@ -172,13 +172,15 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
             self.dtPicker.setMaximumDateTime( QDateTime.currentDateTime() )
 
             self.conceptsmodel = QSqlQueryModel()
-            self.conceptsmodel.setQuery( """
-            SELECT 
-                idconcepto, 
-                descripcion 
-            FROM conceptos 
+            q = """
+            SELECT
+                idconcepto,
+                descripcion
+            FROM conceptos
             WHERE idtipodoc = %d
-             """ % constantes.IDAJUSTECONTABLE )
+             """ % constantes.IDAJUSTECONTABLE
+            print q
+            self.conceptsmodel.setQuery( q )
 
             if self.conceptsmodel.rowCount() < 1:
                 raise UserWarning( "No existen conceptos" )
