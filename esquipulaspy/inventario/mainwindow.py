@@ -10,7 +10,7 @@ from entradacompra import FrmEntradaCompra
 from catalogos import FrmCatMarcas, FrmCatConceptos
 from liquidacion import FrmLiquidacion
 from categorias import FrmCategorias
-from kardex import frmKardex
+from kardex import FrmKardex
 from kardexother import FrmKardexOther
 from ui.Ui_mainwindowinventario import Ui_MainWindow
 from articulos import FrmArticulos
@@ -158,7 +158,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        kardex = frmKardex( [7, 10, 21], self )
+        kardex = FrmKardex( [7, 10, 21], self )
         self.mdiArea.addSubWindow( kardex )
         kardex.show()
 

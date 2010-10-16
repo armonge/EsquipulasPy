@@ -535,12 +535,7 @@ class Base( object ):
             self.actionCancel
         ] )
         self.toolBar.addSeparator()
-        #self.toolBar.addActions([
-            #self.actionCopy,
-            #self.actionCut,
-            #self.actionPaste
-        #])
-        #self.toolBar.addSeparator()
+
         self.toolBar.addActions( [
             self.actionGoFirst,
             self.actionGoPrevious,

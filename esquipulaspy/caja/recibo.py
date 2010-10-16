@@ -102,7 +102,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         Aca se cancela la edicion del documento
         """
         self.status = True
-        
+
     @property
     def printIdentifier( self ):
         return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
@@ -133,7 +133,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             FROM vw_saldofacturas s
             WHERE s.saldo>0 and s.idestado = %d
             ;
-        """%constantes.CONFIRMADO )
+        """ % constantes.CONFIRMADO )
 
             self.tablefacturas.setModel( self.facturasproxymodel )
             self.tablefacturas.setColumnHidden( IDDOCUMENTO, True )
@@ -150,7 +150,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             GROUP BY s.idpersona
             HAVING SUM(s.saldo)>0
             ORDER BY s.nombre
-            """% constantes.CONFIRMADO )
+            """ % constantes.CONFIRMADO )
 #Verificar si existen clientes morosos            
             if self.clientesModel.rowCount() == 0:
                 QMessageBox.information( None, "Recibo", "No existen clientes morosos" )
@@ -503,19 +503,19 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             AND p.tipopersona=%d
             GROUP BY padre.iddocumento
             ORDER BY padre.iddocumento;
-            """ % ( '%',constantes.IDFACTURA, constantes.IDRECIBO, constantes.CLIENTE ) 
-            print query 
-            
-            self.navmodel.setQuery( query)
+            """ % ( '%', constantes.IDFACTURA, constantes.IDRECIBO, constantes.CLIENTE )
+            print query
+
+            self.navmodel.setQuery( query )
 
 # Proxy model que se utilizara desde el formulario de facturacion SOLAMENTE
             self.remoteProxyModel = QSortFilterProxyModel()
-            self.remoteProxyModel.setSourceModel(self.navmodel)
-            self.remoteProxyModel.setFilterKeyColumn(IDFACTURAS)
-            self.remoteProxyModel.setFilterRegExp('')
-            
-            
-            
+            self.remoteProxyModel.setSourceModel( self.navmodel )
+            self.remoteProxyModel.setFilterKeyColumn( IDFACTURAS )
+            self.remoteProxyModel.setFilterRegExp( '' )
+
+
+
             self.navproxymodel = RONavigationModel( self )
             self.navproxymodel.setSourceModel( self.remoteProxyModel )
             self.navproxymodel.setFilterKeyColumn( -1 )
@@ -583,7 +583,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.tablenavigation.setColumnHidden( 0, True )
             self.tablenavigation.setColumnHidden( TOTALRETENCION, True )
             self.tablenavigation.setColumnHidden( CONRETENCION, True )
-            
+
 
         except Exception as inst:
             print inst
@@ -593,9 +593,9 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
 
 
-class dlgRecibo( Ui_dlgRecibo, QDialog ):
+class DlgRecibo( Ui_dlgRecibo, QDialog ):
     def __init__( self, factura, readOnly = False ):
-        super( dlgRecibo, self ).__init__( factura )
+        super( DlgRecibo, self ).__init__( factura )
 #        self.setModal(True)
         self.editmodel = None
         self.setupUi( self )
@@ -606,10 +606,10 @@ class dlgRecibo( Ui_dlgRecibo, QDialog ):
 
     def accept( self ):
         if self.readOnly:
-            return super( dlgRecibo, self ).accept()
+            return super( DlgRecibo, self ).accept()
 
         if self.datosRecibo.valid( self ):
-            return super( dlgRecibo, self ).accept()
+            return super( DlgRecibo, self ).accept()
         else:
             self.setResult( -1 )
 

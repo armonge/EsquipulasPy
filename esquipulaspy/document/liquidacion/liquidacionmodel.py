@@ -793,8 +793,8 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
                     )
 
             elif column == IMPUESTOS:
-                return "DAI Parcial = %s\nISC Parcial = %s\nIVA Parcial = %s"\
-            + "\n TSIM Parcial = %s\n SPE Parcial = %s\n ISO Parcial = %s" % ( \
+                return """DAI Parcial = %s\nISC Parcial = %s\nIVA Parcial = %s"\
+TSIM Parcial = %s\n SPE Parcial = %s\n ISO Parcial = %s""" % ( \
                     moneyfmt( line.daiParcial, 4, "US$" ) , \
                     moneyfmt( line.iscParcial, 4, "US$" ) , \
                     moneyfmt( line.ivaParcial, 4, "US$" ) , \
@@ -1011,7 +1011,7 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
             query.bindValue( ":iddocumento", self.docid )
             query.bindValue( ":accion", constantes.ACCCONTABILIZA )
 
-            for number, line in enumerate( [ linea for linea in self.__lines if linea.valid ] ):
+            for number, line in enumerate( [ linea for linea in self.lines if linea.valid ] ):
                 line.save( self.docid, number )
 
 

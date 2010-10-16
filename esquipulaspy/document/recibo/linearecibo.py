@@ -8,7 +8,10 @@ from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery
 from utility import constantes
 #FIXME: para que sirve parent???? creo que esto se da por copiar y pegar....
-class LineaRecibo:
+class LineaRecibo( object ):
+    """
+    Esta clase implementa las lineas del recibo
+    """
     def __init__( self, parent ):
         self.pagoId = 0
         self.bancoId = 0
@@ -74,7 +77,7 @@ class LineaRecibo:
 
         if not query.exec_():
             print( query.lastError().text() )
-            raise Exception( "No se pudo insertar la linea " + str( linea ) )
+            raise Exception( "No se pudo insertar la linea %d" % linea )
 
 
 

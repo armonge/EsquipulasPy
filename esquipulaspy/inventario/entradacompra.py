@@ -69,6 +69,8 @@ class FrmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         self.rbCheck.clicked[bool].connect( self.updatePay )
         self.rbCredit.clicked[bool].connect( self.updatePay )
 
+        self.tabledetails.setOrder( 1, 4 )
+
         QTimer.singleShot( 0, self.loadModels )
 
 

@@ -29,7 +29,7 @@
          <normaloff>:/icons/res/document-edit.png</normaloff>:/icons/res/document-edit.png</iconset>
        </attribute>
        <attribute name="title">
-        <string notr="true"/>
+        <string notr="true">''</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -316,7 +316,7 @@ color: rgb(255, 0, 0);</string>
          </layout>
         </item>
         <item>
-         <widget class="QTableView" name="tabledetails">
+         <widget class="OrderedEditTable" name="tabledetails">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -328,6 +328,9 @@ color: rgb(255, 0, 0);</string>
             <width>0</width>
             <height>100</height>
            </size>
+          </property>
+          <property name="contextMenuPolicy">
+           <enum>Qt::ActionsContextMenu</enum>
           </property>
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
@@ -536,7 +539,7 @@ color: rgb(255, 0, 0);</string>
          <normaloff>:/icons/res/table.png</normaloff>:/icons/res/table.png</iconset>
        </attribute>
        <attribute name="title">
-        <string notr="true"/>
+        <string notr="true">''</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
@@ -667,7 +670,7 @@ color: rgb(255, 0, 0);</string>
   </action>
   <action name="actionRecibo">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/icons/res/okteta.png</normaloff>:/icons/res/okteta.png</iconset>
    </property>
    <property name="text">
@@ -678,6 +681,13 @@ color: rgb(255, 0, 0);</string>
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>OrderedEditTable</class>
+   <extends>QTableView</extends>
+   <header>utility.widgets.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>cbcliente</tabstop>
   <tabstop>cbvendedor</tabstop>

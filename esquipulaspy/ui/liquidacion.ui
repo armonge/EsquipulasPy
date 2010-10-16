@@ -555,7 +555,7 @@
          </layout>
         </item>
         <item>
-         <widget class="LiquidacionTableDetails" name="tabledetails">
+         <widget class="OrderedEditTable" name="tabledetails">
           <property name="contextMenuPolicy">
            <enum>Qt::ActionsContextMenu</enum>
           </property>
@@ -736,15 +736,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>XDockWidget</class>
-   <extends>QDockWidget</extends>
-   <header>utility.widgets.xdockwidget.h</header>
-   <container>1</container>
+   <class>OrderedEditTable</class>
+   <extends>QTableView</extends>
+   <header>utility.widgets.h</header>
   </customwidget>
   <customwidget>
-   <class>LiquidacionTableDetails</class>
-   <extends>QTableView</extends>
-   <header>inventario.liquidaciontable.h</header>
+   <class>XDockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>utility.widgets.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

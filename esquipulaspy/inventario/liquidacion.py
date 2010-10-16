@@ -95,6 +95,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         self.editmodel = None
 
 
+        self.tabledetails.setOrder( 1, 3 )
 
         QTimer.singleShot( 0, self.loadModels )
 
@@ -125,6 +126,7 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
                 self.actionEditAccounts.setVisible( True )
         else:
             self.actionEditAccounts.setVisible( False )
+
 
 
     def setControls( self, status ):

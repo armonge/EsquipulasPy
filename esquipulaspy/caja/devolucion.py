@@ -95,8 +95,8 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 
         try:
 
-            if not QSqlDatabase.database().isOpen():
-                if not QSqlDatabase.database().open():
+            if not self.database.isOpen():
+                if not self.database.open():
                     raise UserWarning( u"No se pudo abrir la conexión con la base de datos" )
             query = u"""
              SELECT
@@ -185,8 +185,8 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al cargar la lista de devoluciones" )
             print inst
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+            if self.database.isOpen():
+                self.database.close()
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
@@ -271,8 +271,9 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         """
         query = QSqlQuery()
         try:
-            if not QSqlDatabase.database().open():
-                raise Exception( u"No se pudo establecer una conexión con la base de datos" )
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise Exception( u"No se pudo establecer una conexión con la base de datos" )
 
             self.conceptsmodel = QSqlQueryModel()
             self.conceptsmodel.setQuery( """
@@ -285,7 +286,7 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
                 raise UserWarning( u"No existen conceptos para devolución" )
 
 
-            dlgbill = DlgSelectBill()
+            dlgbill = DlgSelectInvoice()
             if dlgbill.exec_() == QDialog.Accepted:
                 self.editmodel = DevolucionModel()
                 self.editmodel.invoiceId = dlgbill.filtermodel.index( 
@@ -387,8 +388,8 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
             print inst
             self.status = True
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+            if self.database.isOpen():
+                self.database.close()
 
     @pyqtSlot( "int" )
     def on_cbConcept_currentIndexChanged( self, index ):
@@ -410,40 +411,10 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
 
 
         self.status = True
-#
-#    def save( self ):
-#        """
-#        Slot documentation goes here.
-#        """
-##        self.datosRecibo.lineasAbonos =self.abonoeditmodel.lines
-##        self.datosRecibo.lineas = self.editmodel.lines
-#        self.datosRecibo.observaciones = self.txtObservations.toPlainText()
-#        if self.datosRecibo.valid(self):
-#            if QMessageBox.question(self, qApp.organizationName(), u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-#                if not QSqlDatabase.database().isOpen():
-#                    QSqlDatabase.database().open()
-#    
-#          
-#                if self.datosRecibo.save():
-#                    QMessageBox.information( None,
-#                        self.trUtf8( qApp.organizationName() ),
-#                        self.trUtf8( u"""El documento se ha guardado con éxito""" ) )
-#                    self.editmodel = None
-#                    self.updateModels()
-#                    self.navigate( 'last' )
-#                    self.status = True
-#                else:
-#                    QMessageBox.critical( None,
-#                        self.trUtf8( qApp.organizationName() ),
-#                        self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
-#    
-#                if QSqlDatabase.database().isOpen():
-#                    QSqlDatabase.database().close()
 
-
-class DlgSelectBill( QDialog ):
+class DlgSelectInvoice( QDialog ):
     def __init__( self, parent = None ):
-        super( DlgSelectBill, self ).__init__( parent )
+        super( DlgSelectInvoice, self ).__init__( parent )
         self.billsmodel = QSqlQueryModel()
         query = """
         SELECT * FROM (

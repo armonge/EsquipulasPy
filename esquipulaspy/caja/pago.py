@@ -9,7 +9,7 @@ Created on 25/05/2010
 import logging
 from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, \
 QSortFilterProxyModel, QMessageBox, QCompleter, qApp
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QTimer,QDate 
+from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QTimer, QDate
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
 
 from decimal import Decimal
@@ -23,7 +23,7 @@ from utility import constantes
 #from PyQt4.QtGui import QMainWindow
 
 #controles
-IDDOCUMENTO,NDOCIMPRESO,FECHA,NOMBREBENEFICIARIO,CONCEPTO,TOTALPAGADO,CONIVA, CONRETENCION,TASARETENCION,TOTALC,TOTALD,TOTAL,TOTALRETENCION, OBSERVACION,TIPOCAMBIO = range( 15 )
+IDDOCUMENTO, NDOCIMPRESO, FECHA, NOMBREBENEFICIARIO, CONCEPTO, TOTALPAGADO, CONIVA, CONRETENCION, TASARETENCION, TOTALC, TOTALD, TOTAL, TOTALRETENCION, OBSERVACION, TIPOCAMBIO = range( 15 )
 
 class FrmPago( Ui_frmPago, QMainWindow, Base ):
     """
@@ -99,8 +99,9 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
         """
         activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
         """
-        if not QSqlDatabase.database().isOpen():
-            raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
+        if not self.database.isOpen():
+            if not self.database.open():
+                raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
         query = QSqlQuery()
         try:
 
@@ -205,7 +206,11 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             self.sbtotalc.setMaximum( maxCordoba )
             self.sbtotald.setMaximum( maxDolar )
 
-            query = QSqlQuery( "SELECT idcostoagregado, valorcosto FROM costosagregados c  WHERE idtipocosto = %d AND activo = 1;" % constantes.IVA )
+            query = QSqlQuery( """
+            SELECT idcostoagregado, valorcosto 
+            FROM costosagregados c  
+            WHERE idtipocosto = %d AND activo = 1;
+            """ % constantes.IVA )
             if not query.exec_():
                 raise UserWarning( u"No pudo obtenerse la tasa de IVA" )
             query.first()
@@ -225,7 +230,8 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             logging.error( query.lastError().text() )
         except Exception as inst:
             print inst
-            QMessageBox.critical( self, qApp.organizationName(), "Hubo un problema al tratar de crear el nuevo pago" )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                   "Hubo un problema al tratar de crear el nuevo pago" )
             logging.critical( unicode( inst ) )
             logging.error( query.lastError().text() )
         finally:
@@ -424,7 +430,7 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
 #    
 
     def updateDetailFilter( self, index ):
-        self.dtPicker.setDate(QDate.fromString(self.navmodel.record( index ).value( "Fecha" ).toString(), "dd/MM/yyyy"))
+        self.dtPicker.setDate( QDate.fromString( self.navmodel.record( index ).value( "Fecha" ).toString(), "dd/MM/yyyy" ) )
         valor = Decimal(self.navmodel.record( index ).value( "totalc" ).toString())
         self.sbtotalc.setMaximum(valor)
         self.sbtotalc.setValue(valor)
@@ -462,7 +468,7 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
 
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
-            
+
             query = """
 SELECT
                 pago.iddocumento,
@@ -508,7 +514,7 @@ SELECT
                 ; """ # % ( constantes.IDCORDOBAS, constantes.IDDOLARES, constantes.IVA, constantes.IVA, constantes.RETENCIONFUENTE, constantes.RETENCIONPROFESIONALES, constantes.PROVEEDOR, '%d/%m/%Y', constantes.IDPAGO )
 
             print query
-            self.navmodel.setQuery(query )
+            self.navmodel.setQuery( query )
 
             self.navproxymodel = QSortFilterProxyModel( self )
             self.navproxymodel.setSourceModel( self.navmodel )
@@ -538,7 +544,7 @@ SELECT
     #        Este es el filtro del modelo anterior
             self.detailsproxymodel = QSortFilterProxyModel( self )
             self.detailsproxymodel.setSourceModel( self.detailsmodel )
-            self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTO)
+            self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTO )
             self.detailsproxymodel.setFilterRegExp( '^0$' )
 # ESTE ES EL MODELO CON LOS DATOS DE Los ABONOS PARA NAVEGAR
             self.abonosmodel = QSqlQueryModel( self )

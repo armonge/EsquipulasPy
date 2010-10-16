@@ -128,10 +128,10 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         estado = not self.abierto
         query = QSqlQuery()
         if estado:
-            db = QSqlDatabase.database()
+            database = QSqlDatabase.database()
 #            try:
-            if not db.isOpen():
-                if not db.open():
+            if not database.isOpen():
+                if not database.open():
                     raise UserWarning( u"No se pudo abrir la conexión con la base de datos" )
 
             q = """
@@ -182,17 +182,8 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
                 if apertura.exec_() == QDialog.Accepted:
                     self.status = estado
 
-            if db.isOpen():
-                db.close()
-#
-#            except UserWarning as inst:
-#                QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
-#                logging.error(unicode(inst))
-#                logging.error(query.lastError().text())
-#            except Exception as inst:
-#                QMessageBox.critical(self, qApp.organizationName(), "Hubo un problema al tratar de abrir la caja")
-#                logging.critical(unicode(inst))
-#                logging.error(query.lastError().text())
+            if database.isOpen():
+                database.close()
         else:
             arqueo = FrmArqueo( self )
             arqueo.show()

@@ -4,64 +4,113 @@ Created on 18/05/2010
 
 @author: Luis Carlos Mejia Garcia
 '''
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, QDate
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
-from lineafactura import LineaFactura
 from decimal import Decimal
+from lineafactura import LineaFactura
+from utility import constantes
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movFacturaCredito
-from utility import constantes
+import logging
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD = range( 5 )
 class FacturaModel( QAbstractTableModel ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
+    __documentType = constantes.IDFACTURA
+
     def __init__( self, datosSesion ):
         super( FacturaModel, self ).__init__()
 
 
         self.dirty = False
-        self.__documentType = 5
+
 
         self.clienteId = 0
+        """
+        @ivar: El id del cliente al que se le esta facturando
+        @type: int
+        """
         self.vendedorId = 0
+        """
+        @ivar: El id del vendedor que realiza la venta
+        @type: int
+        """
         self.bodegaId = 0
+        """
+        @ivar: El id de la bodega 
+        @type: int
+        """
         self.observaciones = ""
+        """
+        @ivar: Las observaciones del documento
+        @type: string
+        """
         self.ivaTasa = Decimal( 0 )
+        """
+        @ivar: La tasa de IVA en la factura
+        @type: Decimal
+        """
         self.ivaId = 0
+        """
+        @ivar: El id del IVA
+        @type: int
+        """
         self.lines = []
+        """
+        @ivar: las lineas de la factura
+        @type: LineaFactura[]
+        """
         self.printedDocumentNumber = ""
-#        self.datetime =None #QDateTime.currentDateTime()
-#        
-##        self.sesionId = sesion
-##        self.userId = 0
-##        self.tipoCambioId = 0
-##        self.tipoCambioOficial = Decimal( 0 )
+
         self.datosSesion = datosSesion
+        """
+        @ivar: La información de la sesión de caja
+        @type: DatosSesion
+        """
 
         self.escontado = 1
-        self.costototal = Decimal( 0 )
 
-        self.warehouseId = 0
-        self.warehouseName = ""
+        self.database = QSqlDatabase.database()
 
+        self.__fechaTope = None
+        """
+        @ivar: Si la factura es de credito aca se almacena la fecha tope
+        @type: QDate
+        """
+        self.multa = Decimal( 0 )
+        """
+        @ivar: Si la factura es de credito esta sera la multa que se aplique en 
+            caso de mora
+        @type: Decimal
+        """
 
+    def setFechaTope( self, value ):
+        if value < self.datosSesion.fecha:
+            raise ValueError( u"value debe ser mayor que la fecha de la sesión" )
+
+        self.__fechaTope = value
+    def getFechaTope( self ):
+        return self.__fechaTope
+    fechaTope = property( getFechaTope, setFechaTope )
 
 
     def removeRows( self, position, rows = 1, _index = QModelIndex() ):
-        nrows = len( self.lines )
-        if nrows > 0 and nrows > position:
+
+        if self.rowCount() > 0 and self.rowCount() > position:
             self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
             n = position + rows - 1
 # borrar el rango de lineas indicado de la ascendente para que no halla problema con el indice de las lineas 
 # muestro la fila de la tabla facturas que esta relacionada a la linea que borre
             while n >= position:
-                    del self.lines[n]
-                    n = n - 1
+                del self.lines[n]
+                n = n - 1
 
             self.endRemoveRows()
             self.dirty = True
+            if self.rowCount() < 1:
+                self.insertRow( 0 )
             return True
         else:
             return False
@@ -70,13 +119,17 @@ class FacturaModel( QAbstractTableModel ):
     def subtotal( self ):
         """
         El subtotal del documento, esto es el total antes de aplicarse el IVA
+        @rtype: Decimal
         """
 
         tmpsubtotal = sum( [linea.total for linea in self.lines if linea.valid] )
-        self.costototal = sum( [linea.costototal for linea in self.lines if linea.valid] )
         return tmpsubtotal if tmpsubtotal != 0 else Decimal( 0 )
 
-
+    @property
+    def costototal( self ):
+        tmpcostototal = sum( [linea.costototal for linea in self.lines if linea.valid] )
+        print "Costo: ", tmpcostototal
+        return tmpcostototal if tmpcostototal != 0 else Decimal( 0 )
 
     @property
     def total( self ):
@@ -90,24 +143,31 @@ class FacturaModel( QAbstractTableModel ):
     def IVA( self ):
         """
         El IVA total del documento, se calcula en base a subtotal y rateIVA
+        @rtype: Decimal
         """
-        return  Decimal( 0 ) if self.bodegaId != 1 else self.subtotal * ( self.ivaTasa / Decimal( 100 ) )
+        return  self.subtotal * ( self.ivaTasa / Decimal( 100 ) ) if self.applyIva else Decimal( 0 )
+
+    @property
+    def applyIva( self ):
+        """
+        Si se debe o no aplicar IVA a esta factura, esto es un metodo distinto
+        para que sea más facil actualizarlo si la regla de negocio cambia
+        """
+        return self.bodegaId != 1
 
     @property
     def validLines( self ):
         """
         la cantidad de lineas validas que hay en el documento
+        @rtype: int
         """
-        foo = 0
-        for line in self.lines:
-            if line.valid:foo += 1
-        return foo
+        return len( [line for line in self.lines if line.valid] )
 
     #Clases especificas del modelo
-    def rowCount( self, _index = QModelIndex ):
+    def rowCount( self, _index = QModelIndex() ):
         return len( self.lines )
 
-    def columnCount( self, _index = QModelIndex ):
+    def columnCount( self, _index = QModelIndex() ):
         return 5
 
     def data( self, index, role = Qt.DisplayRole ):
@@ -127,7 +187,7 @@ class FacturaModel( QAbstractTableModel ):
             elif column == CANTIDAD:
                 return line.quantity if line.quantity != 0 else ""
             elif column == PRECIO:
-                return moneyfmt( Decimal( line.itemPrice ), 4, "US$" ) if line.itemPrice != 0 else ""
+                return moneyfmt( line.itemPrice , 4, "US$" ) if line.itemPrice != 0 else ""
             elif column == TOTALPROD:
                 return moneyfmt( line.total , 4, "US$" ) if line.itemId != 0 else ""
         elif role == Qt.EditRole:
@@ -140,12 +200,13 @@ class FacturaModel( QAbstractTableModel ):
                 return Qt.AlignRight | Qt.AlignVCenter
         elif role == Qt.ToolTipRole:
             if column == CANTIDAD:
-                return u"Máximo " + str( line.existencia )
+                return u"Máximo %d" % line.existencia
 
     def flags( self, index ):
         if not index.isValid():
             return Qt.ItemIsEnabled
-        return Qt.ItemFlags( QAbstractTableModel.flags( self, index ) | Qt.ItemIsEditable )
+        return Qt.ItemFlags( QAbstractTableModel.flags( self, index )
+                             | Qt.ItemIsEditable )
 
     def setData( self, index, value, _role = Qt.EditRole ):
         """
@@ -158,7 +219,7 @@ class FacturaModel( QAbstractTableModel ):
                 line.itemId = value[0]
                 line.itemDescription = value[1]
                 line.sugerido = Decimal( value[2] )
-                line.itemPrice = line.sugerido
+                line.itemPrice = Decimal( line.sugerido )
                 line.costodolar = Decimal( value[3] )
                 line.costo = Decimal( value[4] )
                 line.existencia = value[5]
@@ -181,10 +242,10 @@ class FacturaModel( QAbstractTableModel ):
             return True
         return False
 
-    def insertRows( self, position, rows = 1, _index = QModelIndex ):
+    def insertRows( self, position, rows = 1, _index = QModelIndex() ):
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
-            self.lines.insert( position + row, LineaFactura( self ) )
+            self.lines.insert( position + row, LineaFactura() )
         self.endInsertRows()
         self.dirty = True
         return True
@@ -207,22 +268,42 @@ class FacturaModel( QAbstractTableModel ):
             elif section == CANTIDAD:
                 return "Cantidad"
         return int( section + 1 )
+    @property
+    def valid( self ):
+        if not self.validLines > 0:
+            return False
+        if not self.ivaId > 0:
+            return False
+        if not self.total > 0:
+            return False
+        if not self.bodegaId > 0:
+            return False
 
-#TODO: INSERCION
+        if self.escontado == False:
+            if not self.fechaTope > self.datosSesion.fecha:
+                return False
+
+        return True
     def save( self , otrosDatosModel ):
         """
         Este metodo guarda la factura en la base de datos
         """
         query = QSqlQuery()
 
+
         try:
 
-            if not QSqlDatabase.database().transaction():
+            if not self.database.transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
 
+            if not self.valid:
+                raise Exception( u"Se intento guardar una factura no valida" )
+
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,observacion,total,idbodega,escontado,idtipocambio,idcaja,idestado) 
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total,:bodega,:escontado,:idtc,:caja,:estado)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,
+            observacion,total,idbodega,escontado,idtipocambio,idcaja,idestado) 
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,
+            :total,:bodega,:escontado,:idtc,:caja,:estado)
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
@@ -241,7 +322,6 @@ class FacturaModel( QAbstractTableModel ):
 
 
             insertedId = query.lastInsertId().toString()
-            self.facturaId = query.lastInsertId().toString()
 #INSERTAR LA RELACION CON LA SESION DE CAJA            
             query.prepare( """
                 INSERT INTO docpadrehijos (idpadre,idhijo)
@@ -272,58 +352,52 @@ class FacturaModel( QAbstractTableModel ):
             if not query.exec_():
                 raise Exception( "No se Inserto la relacion entre el documento y las personas" )
 
-            i = 0
-            for linea in self.lines:
-                if linea.valid:
-                    linea.save( insertedId, i )
-                    i = i + 1
+            for i, linea in enumerate( [line for line in self.lines if line.valid] ):
+                linea.save( insertedId, i )
 
 #VERIFICO SI el id del iva es cero. NO SERA CERO CUANDO LA BODEGA=1 PORQUE ESTA NO ES exonerada                     
 
             if self.bodegaId == 1 :
                 query.prepare( """
-                INSERT INTO costosxdocumento (iddocumento, idcostoagregado) VALUES( :iddocumento, :idcostoagregado )
+                INSERT INTO costosxdocumento (iddocumento, idcostoagregado) 
+                VALUES( :iddocumento, :idcostoagregado )
                 """ )
                 query.bindValue( ":iddocumento", insertedId )
                 query.bindValue( ":idcostoagregado", self.ivaId )
 
                 if not query.exec_():
-                    print insertedId
-                    print self.ivaId
                     raise Exception( "El iva NO SE INSERTO" )
 
             #manejar las cuentas contables en Cordobas
             # el costo no se multiplica porque ya esta en cordobas                
 
-            guardar = True
             if self.escontado:
-                movFacturaCredito( insertedId, self.subtotal * self.datosSesion.tipoCambioOficial , self.IVA * self.datosSesion.tipoCambioOficial, self.costototal )
+                movFacturaCredito( insertedId,
+                                    self.subtotal * self.datosSesion.tipoCambioOficial ,
+                                    self.IVA * self.datosSesion.tipoCambioOficial,
+                                    self.costototal )
                 # Como es al contado el modelo otrosDatosModel guarda datos del recibo
                 otrosDatosModel.lineasAbonos[0].idFac = insertedId
-                guardar = otrosDatosModel.save( False )
+                if not otrosDatosModel.save( False ):
+                    raise Exception( "No se pudo guardar el modelo de otros datos" )
             else:
-                # Como es al credito el modelo otrosDatosModel guarda datos del credito
                 query.prepare( """
-                INSERT INTO creditos (iddocumento, fechatope,tasamulta) VALUES( :iddocumento, :fechatope, :multa )
+                INSERT INTO creditos (iddocumento, fechatope,tasamulta) 
+                VALUES( :iddocumento, :fechatope, :multa )
                 """ )
                 query.bindValue( ":iddocumento", insertedId )
-                query.bindValue( ":fechatope", self.ivaId )
-                query.bindValue( ":multa", self.ivaId )
+                query.bindValue( ":fechatope", self.fechaTope )
+                query.bindValue( ":multa", self.multa )
 
-                guardar = query.exec_()
-                if not guardar:
-                    print insertedId
-                    print self.ivaId
-                    raise Exception( "El iva NO SE INSERTO" )
+                if not query.exec_():
+                    raise Exception( "No se pudo insertar el credito" )
 
-
-            if not guardar or not QSqlDatabase.database().commit():
+            if not self.database.commit():
                 raise Exception( "No se pudo guardar la factura" )
         except Exception as inst:
-            print  query.lastError().databaseText()
-            print query.lastError().driverText()
-            print inst.args
-            QSqlDatabase.database().rollback()
+            logging.critical( query.lastError().text() )
+            logging.critical( unicode( inst ) )
+            self.database.rollback()
             return False
 
         return True
