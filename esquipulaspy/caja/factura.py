@@ -332,9 +332,9 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         @rtype: bool
         """
         result = False
-        try:
-            if not self.valid:
-                raise UserWarning( u"El recibo no es valido" )
+#        try:
+        if not self.valid:
+            raise UserWarning( u"El recibo no es valido" )
 
 #<<<<<<< .mine
 #        recibo = None
@@ -349,63 +349,63 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
 #                                    QMessageBox.Ok ),
 #                                    QMessageBox.Ok )
 #=======
-            if self.editmodel.escontado:
-                recibo = DlgRecibo( self )
-                if recibo.datosRecibo.retencionValida:
-                    if recibo.datosRecibo.retencionModel.rowCount() == 0:
-                        raise UserWarning( "No es posible crear un recibo "\
-                        + "porque no existen retenciones en la base de datos" )
-                else:
-                    recibo.ckretener.setChecked( False )
-                    recibo.ckretener.setEnabled( False )
-
-
-                if recibo.exec_() == QDialog.Rejected:
-
-                    return
+        if self.editmodel.escontado:
+            recibo = DlgRecibo( self )
+            if recibo.datosRecibo.retencionValida:
+                if recibo.datosRecibo.retencionModel.rowCount() == 0:
+                    raise UserWarning( "No es posible crear un recibo "\
+                    + "porque no existen retenciones en la base de datos" )
             else:
-                credito = DlgCredito( self )
-                if not credito.exec_() == QDialog.Accepted:
-                    return
+                recibo.ckretener.setChecked( False )
+                recibo.ckretener.setEnabled( False )
 
-                self.editmodel.fechaTope = credito.dtFechaTope.date()
-                self.editmodel.multa = Decimal( str( credito.sbTaxRate.value() ) )
 
-            if QMessageBox.question( self, qApp.organizationName(),
-                                     u"¿Esta seguro que desea guardar la factura?",
-                                     QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+            if recibo.exec_() == QDialog.Rejected:
 
-                if not self.database.isOpen():
-                    if not self.database.open():
-                        raise UserWarning( u"No se pudo conectar con la base de datos" )
+                return
+        else:
+            credito = DlgCredito( self )
+            if not credito.exec_() == QDialog.Accepted:
+                return
 
-                self.editmodel.observaciones = self.txtobservaciones.toPlainText()
-                if self.editmodel.escontado:
-                    recibo.datosRecibo.observaciones = recibo.txtobservaciones.toPlainText()
-                if not self.editmodel.save( recibo.datosRecibo if self.editmodel.escontado else None ):
-                    raise UserWarning( "No se ha podido guardar la factura" )
+            self.editmodel.fechaTope = credito.dtFechaTope.date()
+            self.editmodel.multa = Decimal( str( credito.sbTaxRate.value() ) )
 
-                QMessageBox.information( None,
-                     qApp.organizationName() ,
-                     u"""El documento se ha guardado con éxito""" )
+        if QMessageBox.question( self, qApp.organizationName(),
+                                 u"¿Esta seguro que desea guardar la factura?",
+                                 QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
 
-                self.editmodel = None
-                self.readOnly = True
-                self.updateModels()
-                self.navigate( 'last' )
-                self.status = True
-                result = True
-        except UserWarning as inst:
-            logging.error( unicode( inst ) )
-            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
-        except Exception as inst:
-            logging.critical( unicode( inst ) )
-            QMessageBox.critical( self, qApp.organizationName(),
-                                 u"Hubo un error al guardar la factura" )
-        finally:
-            if self.database.isOpen():
-                self.database.close()
-        return result
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning( u"No se pudo conectar con la base de datos" )
+
+            self.editmodel.observaciones = self.txtobservaciones.toPlainText()
+            if self.editmodel.escontado:
+                recibo.datosRecibo.observaciones = recibo.txtobservaciones.toPlainText()
+            if not self.editmodel.save( recibo.datosRecibo if self.editmodel.escontado else None ):
+                raise UserWarning( "No se ha podido guardar la factura" )
+
+            QMessageBox.information( None,
+                 qApp.organizationName() ,
+                 u"""El documento se ha guardado con éxito""" )
+
+            self.editmodel = None
+            self.readOnly = True
+            self.updateModels()
+            self.navigate( 'last' )
+            self.status = True
+            result = True
+#        except UserWarning as inst:
+#            logging.error( unicode( inst ) )
+#            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+#        except Exception as inst:
+#            logging.critical( unicode( inst ) )
+#            QMessageBox.critical( self, qApp.organizationName(),
+#                                 u"Hubo un error al guardar la factura" )
+#        finally:
+#            if self.database.isOpen():
+#                self.database.close()
+#        return result
 
 
 
@@ -1022,7 +1022,7 @@ class DlgCredito( QDialog ):
 
         formLayout = QFormLayout()
 
-        self.fechaTope.setCalendarPopup(True)
+        self.dtFechaTope.setCalendarPopup(True)
         self.sbTaxRate.setSuffix('%')
 
         formLayout.addRow( u"<b>Fecha Tope</b>", self.dtFechaTope )

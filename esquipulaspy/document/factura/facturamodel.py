@@ -122,7 +122,6 @@ class FacturaModel( QAbstractTableModel ):
         El subtotal del documento, esto es el total antes de aplicarse el IVA
         @rtype: Decimal
         """
-
         tmpsubtotal = sum( [linea.total for linea in self.lines if linea.valid] )
         return tmpsubtotal if tmpsubtotal != 0 else Decimal( 0 )
 
@@ -153,7 +152,7 @@ class FacturaModel( QAbstractTableModel ):
         Si se debe o no aplicar IVA a esta factura, esto es un metodo distinto
         para que sea más facil actualizarlo si la regla de negocio cambia
         """
-        return self.bodegaId != 1
+        return self.bodegaId == 1
 
     @property
     def validLines( self ):
