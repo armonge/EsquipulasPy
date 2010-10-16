@@ -504,7 +504,6 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             GROUP BY padre.iddocumento
             ORDER BY padre.iddocumento;
             """ % ( '%', constantes.IDFACTURA, constantes.IDRECIBO, constantes.CLIENTE )
-            print query
 
             self.navmodel.setQuery( query )
 
@@ -827,7 +826,7 @@ class DatosRecibo( object ):
             foo = 0
             for line in self.lineasAbonos:
                 foo += 1
-                print line.monto
+                
                 if not line.valid:
                     QMessageBox.information( None, "Guardar Recibo", u"La linea " + str( foo ) + u" de las facturas abonadas no es válida" )
                     return False
@@ -924,7 +923,7 @@ class DatosRecibo( object ):
 
 
     #INSERTAR LA RELACION CON El USUARIO y EL CLIENTE
-    #            print "recibo ID " + insertedId            
+   
             query.prepare( 
                 "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +
                 "(" + insertedId + ",:iduser,:autor),"

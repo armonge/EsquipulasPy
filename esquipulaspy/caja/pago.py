@@ -447,7 +447,6 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
         """
         self.ckretener.setEnabled( self.editmodel.tieneRetencion )
         retencion = self.editmodel.retencionCordoba
-        print retencion
         self.lblretencion.setText( moneyfmt( retencion / self.editmodel.datosSesion.tipoCambioBanco, 4, "US$ " ) )
         self.lblretencion.setToolTip( moneyfmt( retencion, 4, "C$ " ) )
 
@@ -513,7 +512,6 @@ SELECT
                 GROUP BY pago.iddocumento
                 ; """ # % ( constantes.IDCORDOBAS, constantes.IDDOLARES, constantes.IVA, constantes.IVA, constantes.RETENCIONFUENTE, constantes.RETENCIONPROFESIONALES, constantes.PROVEEDOR, '%d/%m/%Y', constantes.IDPAGO )
 
-            print query
             self.navmodel.setQuery( query )
 
             self.navproxymodel = QSortFilterProxyModel( self )

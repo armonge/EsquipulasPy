@@ -59,7 +59,16 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
                 if self.cajasmodel.rowCount()==0:
                     QMessageBox.critical(self, "Abrir Caja","No existe ninguna caja en la base de datos")
                     
-                query = QSqlQuery("")
+                query = QSqlQuery("""
+                SELECT
+                    fechacreacion
+                    FROM esquipulasdb.documentos d
+                    LEFT JOIN personasxdocumento pd on pd.iddocumento = d.iddocumento
+                    WHERE pd.idpersona = %d and idtipodoc =%d
+                    ;
+                    """ %(self.editmodel.datosSesion.usuarioId,constantes.IDARQUEO))
+                query.first()
+                
             except UserWarning as inst:
                 QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
                 logging.error(unicode(inst))
@@ -72,8 +81,10 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
                     QSqlDatabase.database().close()
 
     #        self.dtFechaTime.setReadOnly( True )
+            self.dtFechaTime.setDisplayFormat('dd/MM/yyyy')
             self.dtFechaTime.setMaximumDateTime(QDateTime.currentDateTime())
-            self.dtFechaTime.setMinimumDate()
+            if query.value(0).toDate() != None:
+                self.dtFechaTime.setMinimumDate(query.value(0).toDate())
 
                 
             self.cbcaja.setModel( self.cajasmodel )
