@@ -432,7 +432,9 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
             currentIndex = self.mapper.currentIndex()
             doc = self.navmodel.record( currentIndex ).value( "iddocumento" ).toInt()[0]
             estado = self.navmodel.record( currentIndex ).value( "idestado" ).toInt()[0]
-            total = Decimal( self.navmodel.record( currentIndex ).value( "totalfac" ).toString() )
+            total = self.navmodel.record( currentIndex ).value( "totalfac" ).toString()
+            if total !="":
+                total = Decimal( total )
 
             try:
                 if not self.database.isOpen():
@@ -683,8 +685,10 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
 #            self.recibo.setHidden(True)
 
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.detailsproxymodel.setFilterRegExp( 
-                                   record.value( "iddocumento" ).toString() )
+        print record.value( "iddocumento" ).toString()
+        print self.detailsproxymodel.rowCount()
+        self.detailsproxymodel.setFilterRegExp(record.value( "iddocumento" ).toString())
+        print self.detailsproxymodel.rowCount()
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
     def updateLabels( self ):
@@ -699,268 +703,264 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         Recargar todos los modelos
         """
 
-#        try:
-        if not self.database.isOpen():
-            if not self.database.open():
-                raise UserWarning( u"No se pudo establecer la "\
-                                   + "conexión con la base de datos" )
-        
-        if self.readOnly:
-#        El modelo principal
-
-            query = """
-            SELECT
-                    d.iddocumento,
-                    d.ndocimpreso as 'No. Factura',
-                    GROUP_CONCAT(IF(pxd.idaccion=%d,p.nombre,"") SEPARATOR '') as Cliente,
-                    GROUP_CONCAT(IF(pxd.idaccion=%d,p.nombre,"") SEPARATOR '') as Vendedor,
-                    CONCAT('US$ ',FORMAT(ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4),4))  as subtotal,
-                    CONCAT('US$ ',FORMAT(d.total- ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4),4))  as iva,
-                    CONCAT('US$ ',FORMAT(d.Total,4)) as Total,
-                    d.observacion,
-                    d.fechacreacion as Fecha,
-                    b.nombrebodega as Bodega,
-                    tc.tasa as 'Tipo de Cambio Oficial',
-                    valorcosto as tasaiva,
-                    ed.descripcion as Estado,
-                    d.idestado,
-                    d.escontado,
-                    d.total as totalfac,
-                    fnFacturaAnulable(d.iddocumento,d.idtipodoc,%d,%d,%d,%d) as anulable
-                FROM documentos d
-                JOIN estadosdocumento ed ON ed.idestado = d.idestado
-                JOIN bodegas b ON b.idbodega=d.idbodega
-                JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
-                JOIN personasxdocumento pxd ON pxd.iddocumento=d.iddocumento
-                JOIN personas p ON p.idpersona=pxd.idpersona
-                LEFT JOIN costosxdocumento cd ON cd.iddocumento=d.iddocumento
-                LEFT JOIN costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
-                WHERE d.idtipodoc=%d
-                GROUP BY d.iddocumento
-                ORDER BY CAST(IF(ndocimpreso='S/N',0,d.ndocimpreso) AS SIGNED)
-                ;
-            """ % ( constantes.CLIENTE, constantes.VENDEDOR, constantes.IDRECIBO, constantes.IDNC, constantes.CONFIRMADO, constantes.PENDIENTE, constantes.IDFACTURA )
-            self.navmodel.setQuery( query )
-#>>>>>>> .r383
-
-
-
-    #        Este es el modelo con los datos de la tabla para navegar
-            self.detailsmodel.setQuery( u"""
+        try:
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning( u"No se pudo establecer la "\
+                                       + "conexión con la base de datos" )
+            
+            if self.readOnly:
+    #        El modelo principal
+    
+                query = """
                 SELECT
-                    ad.idarticulo,
-                    ad.descripcion as 'Descripción',
-                    -a.unidades as Unidades,
-                    CONCAT('US$ ',FORMAT(a.precioventa,4)) as 'Precio Unit.',
-                    CONCAT('US$ ',FORMAT(-a.unidades*a.precioventa,4)) as 'Total',
-                    a.iddocumento
-                FROM articulosxdocumento a
-                JOIN vw_articulosdescritos ad on a.idarticulo=ad.idarticulo
-                WHERE a.precioventa IS NOT NULL
-                ;
-            """ )
-
-    #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
-            
-            self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
-            
-            self.mapper.setModel( self.navproxymodel )
-            self.mapper.addMapping( self.lblnfac, NDOCIMPRESO , "text" )
-            self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
-            self.mapper.addMapping( self.txtcliente, CLIENTE, "text" )
-            self.mapper.addMapping( self.txtvendedor, VENDEDOR, "text" )
-            self.mapper.addMapping( self.txtbodega, BODEGA, "text" )
-            self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
-            self.mapper.addMapping( self.lblsubtotal, SUBTOTAL, "text" )
-            self.mapper.addMapping( self.lbliva, IVA, "text" )
-            self.mapper.addMapping( self.dtPicker, FECHA )
-
-#
-#                self.mapper.addMapping( self.recibo.lbltotal, TOTAL, "text" )
-#                self.mapper.addMapping( self.recibo.txtcliente, CLIENTE, "text" )
-#                self.mapper.addMapping( self.recibo.lblfecha, FECHA, "text" )
-
-    #        asignar los modelos a sus tablas
-
-            self.tablenavigation.setModel( self.navproxymodel )
-            self.tabledetails.setModel( self.detailsproxymodel )
-
-            self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
-            self.tablenavigation.setColumnHidden( OBSERVACION, True )
-            self.tablenavigation.setColumnHidden( SUBTOTAL, True )
-            self.tablenavigation.setColumnHidden( IVA, True )
-            self.tablenavigation.setColumnHidden( TASAIVA, True )
-            self.tablenavigation.setColumnHidden( TASA, True )
-            self.tablenavigation.setColumnHidden( ESCONTADO, True )
-            self.tablenavigation.setColumnHidden( ANULADO, True )
-            self.tablenavigation.setColumnHidden( TOTALFAC, True )
-
-
-#<<<<<<< .mine
-    #            Rellenar el combobox de los CLLIENTES 
-            
-            self.editmodel = FacturaModel( self.parentWindow.datosSesion )
-            
-            
-        #           Cargar el numero de la factura actual
-            query = QSqlQuery( "SELECT fnConsecutivo(5,NULL);" )
-            
-            if not query.exec_():
-                raise Exception( "No se pudo obtener el numero de la factura" )
-            
-            query.first()
-            n = query.value( 0 ).toString()
-
-
-            self.editmodel.printedDocumentNumber = n
-
-            self.clientesModel.setQuery( """
-                        SELECT idpersona , nombre AS cliente 
-                        FROM personas
-                        WHERE tipopersona = %d
-                    """ % constantes.CLIENTE )
-            if self.clientesModel.rowCount() == 0:
-                QMessageBox.information( None, "Factura", "No existen clientes en la base de datos" )
-                return
-
-    #            Rellenar el combobox de los vendedores
-
-            self.vendedoresModel.setQuery( """
-                SELECT 
-                idpersona, 
-                nombre AS Vendedor 
-                FROM personas
-                WHERE tipopersona = %d
-            """ % constantes.VENDEDOR )
-
-    #Verificar si existen clientes            
-            if self.vendedoresModel.rowCount() == 0:
-                QMessageBox.information( None, "Factura", "No existen vendedores en la base de datos" )
-                return
-
-        #Crear el delegado con los articulo y verificar si existen articulos
-            self.existenciaModel.setQuery( QSqlQuery( """
-                        SELECT
-                idarticulo,
-                descripcion,
-                precio,
-                costodolar,
-                ROUND(costo,4) as costo,
-                Existencia,
-                idbodega
-            FROM vw_articulosenbodegas
-             WHERE existencia >0
-                    """ ) )
-            self.proxyexistenciaModel = QSortFilterProxyModel()
-            self.proxyexistenciaModel.setSourceModel( self.existenciaModel )
-            self.proxyexistenciaModel.setFilterKeyColumn( 6 )
-
-            
-            delegate = FacturaDelegate( self.proxyexistenciaModel )
-            
-            if delegate.proxymodel.rowCount() == 0:
-                QMessageBox.information( None, "Factura", "No hay articulos en existencia" )
-                return
-
-    #            Rellenar el combobox de las BODEGAS
-
-            self.bodegasModel.setQuery( """
-                     SELECT
-                            b.idbodega,
-                            b.nombrebodega as Bodega
-                    FROM bodegas b
-                    JOIN documentos d ON b.idbodega=d.idbodega
-                    JOIN docpadrehijos ph ON ph.idpadre =d.iddocumento
-                    JOIN documentos k ON ph.idhijo = k.iddocumento AND k.idtipodoc = 27
-            JOIN articulosxdocumento ad ON ad.iddocumento=d.iddocumento
-            GROUP BY b.idbodega
-            HAVING SUM(ad.unidades)>0    
-                    """ )
-
-        #Verificar si existen bodegas            
-            if self.bodegasModel.rowCount() == 0:
-                        QMessageBox.information( None, "Factura", "No existe ninguna bodega en la base de datos" )
-                        return
-
-    #Verificar IVA    
-            query = QSqlQuery( """
-                    SELECT idcostoagregado, valorcosto 
-                    FROM costosagregados c 
-                    WHERE idtipocosto = 1 AND activo = 1 
-                    ORDER BY idtipocosto;
-                    """ )
-            
-            query.exec_()
-            if not query.size() == 1:
-                QMessageBox.information( None, "Factura", "No fue posible obtener el porcentaje del IVA" )
-                return
-            query.first()
-
-
-            self.editmodel.ivaId = query.value( 0 ).toInt()[0]
-            self.lbltasaiva.setText( ( '0' if self.editmodel.bodegaId <> 1 else str( self.editmodel.ivaTasa ) ) + '%' )
-            self.editmodel.ivaTasa = Decimal( query.value( 1 ).toString() )
-
-
-            self.tabledetails.setItemDelegate( delegate )
-
-
-            self.cbcliente.setModel( self.clientesModel )
-            self.cbcliente.setCurrentIndex( -1 )
-            self.cbcliente.setFocus()
-            self.cbcliente.setModelColumn( 1 )
-            self.completer = QCompleter()
-            self.completer.setCaseSensitivity( Qt.CaseInsensitive )
-            self.completer.setModel( self.clientesModel )
-            self.completer.setCompletionColumn( 1 )
-            self.cbcliente.setCompleter( self.completer )
-
-
-            self.cbbodega.setModel( self.bodegasModel )
-            self.cbbodega.setCurrentIndex( -1 )
-            self.cbbodega.setModelColumn( 1 )
-            self.completerbodega = QCompleter()
-            self.completerbodega.setCaseSensitivity( Qt.CaseInsensitive )
-            self.completerbodega.setModel( self.bodegasModel )
-            self.completerbodega.setCompletionColumn( 1 )
-            self.cbbodega.setCompleter( self.completerbodega )
-
-            self.cbvendedor.setModel( self.vendedoresModel )
-            self.cbvendedor.setCurrentIndex( -1 )
-            self.cbvendedor.setModelColumn( 1 )
-            self.completerVendedor = QCompleter()
-            self.completerVendedor.setCaseSensitivity( Qt.CaseInsensitive )
-            self.completerVendedor.setModel( self.vendedoresModel )
-            self.completerVendedor.setCompletionColumn( 1 )
-            self.cbvendedor.setCompleter( self.completerVendedor )
-
-            self.tabledetails.setModel( self.editmodel )
-            self.addLine()
-            self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
-
-            self.rbcontado.setChecked( True )
-            self.txtobservaciones.setPlainText( "" )
-            
-
-#=======
-#        #            Rellenar el combobox de los CLLIENTES
-#>>>>>>> .r383
-        resultado = True
-#        except UserWarning as inst:
-#            logging.error( unicode( inst ) )
-#            QMessageBox.critical( self, qApp.organizationName(),
-#                                  unicode( inst ) )
-#            self.status = True
-#            resultado = False
-#        except Exception as inst:
-#            logging.critical( unicode( inst ) )
-#            QMessageBox.critical( self, qApp.organizationName(),
-#                                  u"Hubo un error al actualizar los datos" )
-#            self.status = True
-#            resultado = False
-#        finally:
-#            if self.database.isOpen():
-#                self.database.close()
+                
+                        d.iddocumento,
+                        d.ndocimpreso as 'No. Factura',
+                        GROUP_CONCAT(IF(pxd.idaccion=%d,p.nombre,"") SEPARATOR '') as Cliente,
+                        GROUP_CONCAT(IF(pxd.idaccion=%d,p.nombre,"") SEPARATOR '') as Vendedor,
+                        CONCAT('US$ ',FORMAT(ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4),4))  as subtotal,
+                        CONCAT('US$ ',FORMAT(d.total- ROUND(d.total / (1+ IF(valorcosto IS NULL,0,valorcosto/100)),4),4))  as iva,
+                        CONCAT('US$ ',FORMAT(d.Total,4)) as Total,
+                        d.observacion,
+                        d.fechacreacion as Fecha,
+                        b.nombrebodega as Bodega,
+                        tc.tasa as 'Tipo de Cambio Oficial',
+                        valorcosto as tasaiva,
+                        ed.descripcion as Estado,
+                        d.idestado,
+                        d.escontado,
+                        d.total as totalfac,
+                        fnFacturaAnulable(d.iddocumento,d.idtipodoc,%d,%d,%d,%d) as anulable
+                    FROM documentos d
+                    JOIN estadosdocumento ed ON ed.idestado = d.idestado
+                    JOIN bodegas b ON b.idbodega=d.idbodega
+                    JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
+                    JOIN personasxdocumento pxd ON pxd.iddocumento=d.iddocumento
+                    JOIN personas p ON p.idpersona=pxd.idpersona
+                    LEFT JOIN costosxdocumento cd ON cd.iddocumento=d.iddocumento
+                    LEFT JOIN costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
+                    WHERE d.idtipodoc=%d
+                    GROUP BY d.iddocumento
+                    ORDER BY CAST(IF(ndocimpreso='S/N',0,d.ndocimpreso) AS SIGNED)
+                    ;
+                """ % ( constantes.CLIENTE, constantes.VENDEDOR, constantes.IDRECIBO, constantes.IDNC, constantes.CONFIRMADO, constantes.PENDIENTE, constantes.IDFACTURA )
+                self.navmodel.setQuery( query )
+    #>>>>>>> .r383
+    
+    
+    
+        #        Este es el modelo con los datos de la tabla para navegar
+                self.detailsmodel.setQuery( u"""
+                    SELECT
+                        ad.idarticulo,
+                        ad.descripcion as 'Descripción',
+                        -a.unidades as Unidades,
+                        CONCAT('US$ ',FORMAT(a.precioventa,4)) as 'Precio Unit.',
+                        CONCAT('US$ ',FORMAT(-a.unidades*a.precioventa,4)) as 'Total',
+                        a.iddocumento
+                    FROM articulosxdocumento a
+                    JOIN vw_articulosdescritos ad on a.idarticulo=ad.idarticulo
+                    WHERE a.precioventa IS NOT NULL
+                    ;
+                """ )
+    
+        #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
+                
+                self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
+                
+                self.mapper.setModel( self.navproxymodel )
+                self.mapper.addMapping( self.lblnfac, NDOCIMPRESO , "text" )
+                self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
+                self.mapper.addMapping( self.txtcliente, CLIENTE, "text" )
+                self.mapper.addMapping( self.txtvendedor, VENDEDOR, "text" )
+                self.mapper.addMapping( self.txtbodega, BODEGA, "text" )
+                self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
+                self.mapper.addMapping( self.lblsubtotal, SUBTOTAL, "text" )
+                self.mapper.addMapping( self.lbliva, IVA, "text" )
+                self.mapper.addMapping( self.dtPicker, FECHA )
+    
+    #
+    #                self.mapper.addMapping( self.recibo.lbltotal, TOTAL, "text" )
+    #                self.mapper.addMapping( self.recibo.txtcliente, CLIENTE, "text" )
+    #                self.mapper.addMapping( self.recibo.lblfecha, FECHA, "text" )
+    
+        #        asignar los modelos a sus tablas
+    
+                self.tablenavigation.setModel( self.navproxymodel )
+                self.tabledetails.setModel( self.detailsproxymodel )
+    
+                self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
+                self.tablenavigation.setColumnHidden( OBSERVACION, True )
+                self.tablenavigation.setColumnHidden( SUBTOTAL, True )
+                self.tablenavigation.setColumnHidden( IVA, True )
+                self.tablenavigation.setColumnHidden( TASAIVA, True )
+                self.tablenavigation.setColumnHidden( TASA, True )
+                self.tablenavigation.setColumnHidden( ESCONTADO, True )
+                self.tablenavigation.setColumnHidden( ANULADO, True )
+                self.tablenavigation.setColumnHidden( TOTALFAC, True )
+    
+            else:
+                    
+                self.editmodel = FacturaModel( self.parentWindow.datosSesion )
+                
+                
+            #           Cargar el numero de la factura actual
+                query = QSqlQuery( "SELECT fnConsecutivo(5,NULL);" )
+                
+                if not query.exec_():
+                    raise Exception( "No se pudo obtener el numero de la factura" )
+                
+                query.first()
+                n = query.value( 0 ).toString()
+    
+    
+                self.editmodel.printedDocumentNumber = n
+    
+                self.clientesModel.setQuery( """
+                            SELECT idpersona , nombre AS cliente 
+                            FROM personas
+                            WHERE tipopersona = %d
+                        """ % constantes.CLIENTE )
+                if self.clientesModel.rowCount() == 0:
+                    QMessageBox.information( None, "Factura", "No existen clientes en la base de datos" )
+                    return
+    
+        #            Rellenar el combobox de los vendedores
+    
+                self.vendedoresModel.setQuery( """
+                    SELECT 
+                    idpersona, 
+                    nombre AS Vendedor 
+                    FROM personas
+                    WHERE tipopersona = %d
+                """ % constantes.VENDEDOR )
+    
+        #Verificar si existen clientes            
+                if self.vendedoresModel.rowCount() == 0:
+                    QMessageBox.information( None, "Factura", "No existen vendedores en la base de datos" )
+                    return
+    
+            #Crear el delegado con los articulo y verificar si existen articulos
+                self.existenciaModel.setQuery( QSqlQuery( """
+                            SELECT
+                    idarticulo,
+                    descripcion,
+                    precio,
+                    costodolar,
+                    ROUND(costo,4) as costo,
+                    Existencia,
+                    idbodega
+                FROM vw_articulosenbodegas
+                 WHERE existencia >0
+                        """ ) )
+                self.proxyexistenciaModel = QSortFilterProxyModel()
+                self.proxyexistenciaModel.setSourceModel( self.existenciaModel )
+                self.proxyexistenciaModel.setFilterKeyColumn( 6 )
+    
+                
+                delegate = FacturaDelegate( self.proxyexistenciaModel )
+                
+                if delegate.proxymodel.rowCount() == 0:
+                    QMessageBox.information( None, "Factura", "No hay articulos en existencia" )
+                    return
+    
+        #            Rellenar el combobox de las BODEGAS
+    
+                self.bodegasModel.setQuery( """
+                         SELECT
+                                b.idbodega,
+                                b.nombrebodega as Bodega
+                        FROM bodegas b
+                        JOIN documentos d ON b.idbodega=d.idbodega
+                        JOIN docpadrehijos ph ON ph.idpadre =d.iddocumento
+                        JOIN documentos k ON ph.idhijo = k.iddocumento AND k.idtipodoc = 27
+                JOIN articulosxdocumento ad ON ad.iddocumento=d.iddocumento
+                GROUP BY b.idbodega
+                HAVING SUM(ad.unidades)>0    
+                        """ )
+    
+            #Verificar si existen bodegas            
+                if self.bodegasModel.rowCount() == 0:
+                            QMessageBox.information( None, "Factura", "No existe ninguna bodega en la base de datos" )
+                            return
+    
+        #Verificar IVA    
+                query = QSqlQuery( """
+                        SELECT idcostoagregado, valorcosto 
+                        FROM costosagregados c 
+                        WHERE idtipocosto = 1 AND activo = 1 
+                        ORDER BY idtipocosto;
+                        """ )
+                
+                query.exec_()
+                if not query.size() == 1:
+                    QMessageBox.information( None, "Factura", "No fue posible obtener el porcentaje del IVA" )
+                    return
+                query.first()
+    
+    
+                self.editmodel.ivaId = query.value( 0 ).toInt()[0]
+                self.lbltasaiva.setText( ( '0' if self.editmodel.bodegaId <> 1 else str( self.editmodel.ivaTasa ) ) + '%' )
+                self.editmodel.ivaTasa = Decimal( query.value( 1 ).toString() )
+    
+    
+                self.tabledetails.setItemDelegate( delegate )
+    
+    
+                self.cbcliente.setModel( self.clientesModel )
+                self.cbcliente.setCurrentIndex( -1 )
+                self.cbcliente.setFocus()
+                self.cbcliente.setModelColumn( 1 )
+                self.completer = QCompleter()
+                self.completer.setCaseSensitivity( Qt.CaseInsensitive )
+                self.completer.setModel( self.clientesModel )
+                self.completer.setCompletionColumn( 1 )
+                self.cbcliente.setCompleter( self.completer )
+    
+    
+                self.cbbodega.setModel( self.bodegasModel )
+                self.cbbodega.setCurrentIndex( -1 )
+                self.cbbodega.setModelColumn( 1 )
+                self.completerbodega = QCompleter()
+                self.completerbodega.setCaseSensitivity( Qt.CaseInsensitive )
+                self.completerbodega.setModel( self.bodegasModel )
+                self.completerbodega.setCompletionColumn( 1 )
+                self.cbbodega.setCompleter( self.completerbodega )
+    
+                self.cbvendedor.setModel( self.vendedoresModel )
+                self.cbvendedor.setCurrentIndex( -1 )
+                self.cbvendedor.setModelColumn( 1 )
+                self.completerVendedor = QCompleter()
+                self.completerVendedor.setCaseSensitivity( Qt.CaseInsensitive )
+                self.completerVendedor.setModel( self.vendedoresModel )
+                self.completerVendedor.setCompletionColumn( 1 )
+                self.cbvendedor.setCompleter( self.completerVendedor )
+    
+                self.tabledetails.setModel( self.editmodel )
+                self.addLine()
+                self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
+    
+                self.rbcontado.setChecked( True )
+                self.txtobservaciones.setPlainText( "" )
+                
+    
+            resultado = True
+        except UserWarning as inst:
+            logging.error( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                  unicode( inst ) )
+            self.status = True
+            resultado = False
+        except Exception as inst:
+            logging.critical( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                  u"Hubo un error al actualizar los datos" )
+            self.status = True
+            resultado = False
+        finally:
+            if self.database.isOpen():
+                self.database.close()
         return resultado
 
 

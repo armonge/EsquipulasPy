@@ -25,6 +25,7 @@ class FacturaModel( QAbstractTableModel ):
 
 
         self.dirty = False
+        self.errorMessage = ""
 
 
         self.clienteId = 0
@@ -267,19 +268,25 @@ class FacturaModel( QAbstractTableModel ):
             elif section == CANTIDAD:
                 return "Cantidad"
         return int( section + 1 )
+    
     @property
     def valid( self ):
         if not self.validLines > 0:
+            self.errorMessage = "Existe una linea no valida"
             return False
         if not self.ivaId > 0:
+            self.errorMessage = "Existe una linea no valida"
             return False
         if not self.total > 0:
+            self.errorMessage = "Existe una linea no valida"
             return False
         if not self.bodegaId > 0:
+            self.errorMessage = "Existe una linea no valida"
             return False
 
         if self.escontado == False:
             if not self.fechaTope > self.datosSesion.fecha:
+                self.errorMessage = "Fecha Tope Incorrecta"
                 return False
 
         return True
@@ -290,113 +297,113 @@ class FacturaModel( QAbstractTableModel ):
         query = QSqlQuery()
 
 
-        try:
+#        try:
 
-            if not self.database.transaction():
-                raise Exception( u"No se pudo comenzar la transacción" )
+        if not self.database.transaction():
+            raise Exception( u"No se pudo comenzar la transacción" )
 
-            if not self.valid:
-                raise Exception( u"Se intento guardar una factura no valida" )
+        if not self.valid:
+            print self.errorMessage
+            raise Exception( u"Se intento guardar una factura no valida ")
 
-            if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,
-            observacion,total,idbodega,escontado,idtipocambio,idcaja,idestado) 
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,
-            :total,:bodega,:escontado,:idtc,:caja,:estado)
-            """ ):
-                raise Exception( "No se pudo guardar el documento" )
-            query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-            query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString( "hhmmss" ) )
-            query.bindValue( ":idtipodoc", self.__documentType )
-            query.bindValue( ":observacion", self.observaciones )
-            query.bindValue( ":total", self.total.to_eng_string() )
-            query.bindValue( ":bodega", self.bodegaId )
-            query.bindValue( ":escontado", self.escontado )
-            query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
-            query.bindValue( ":caja", self.datosSesion.cajaId )
-            query.bindValue( ":estado", constantes.CONFIRMADO if self.escontado else constantes.PENDIENTE )
+        if not query.prepare( """
+        INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,
+        observacion,total,idbodega,escontado,idtipocambio,idcaja,idestado) 
+        VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,
+        :total,:bodega,:escontado,:idtc,:caja,:estado)
+        """ ):
+            raise Exception( "No se pudo guardar el documento" )
+        query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
+        query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString( "hhmmss" ) )
+        query.bindValue( ":idtipodoc", self.__documentType )
+        query.bindValue( ":observacion", self.observaciones )
+        query.bindValue( ":total", self.total.to_eng_string() )
+        query.bindValue( ":bodega", self.bodegaId )
+        query.bindValue( ":escontado", self.escontado )
+        query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
+        query.bindValue( ":caja", self.datosSesion.cajaId )
+        query.bindValue( ":estado", constantes.CONFIRMADO if self.escontado else constantes.PENDIENTE )
 
-            if not query.exec_():
-                raise Exception( "No se pudo insertar el documento" )
+        if not query.exec_():
+            raise Exception( "No se pudo insertar el documento" )
 
 
-            insertedId = query.lastInsertId().toString()
+        insertedId = query.lastInsertId().toString()
 #INSERTAR LA RELACION CON LA SESION DE CAJA            
-            query.prepare( """
-                INSERT INTO docpadrehijos (idpadre,idhijo)
-                VALUES (:idsesion,:idfac)
-                """ )
+        query.prepare( """
+            INSERT INTO docpadrehijos (idpadre,idhijo)
+            VALUES (:idsesion,:idfac)
+            """ )
 
-            query.bindValue( ":idsesion", self.datosSesion.sesionId )
-            query.bindValue( ":idfac", insertedId )
+        query.bindValue( ":idsesion", self.datosSesion.sesionId )
+        query.bindValue( ":idfac", insertedId )
 
-            if not query.exec_():
-                raise Exception( "No se Inserto la relacion entre la sesion de caja y la factura" )
+        if not query.exec_():
+            raise Exception( "No se Inserto la relacion entre la sesion de caja y la factura" )
 
 #INSERTAR LA RELACION CON El USUARIO , EL CLIENTE Y EL PROVEEDOR            
-            query.prepare( 
-                "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +
-                "(" + insertedId + ",:iduser,:autor),"
-                "(" + insertedId + ",:idcliente,:cliente),"
-                "(" + insertedId + ",:idvendedor,:vendedor)"
-                )
+        query.prepare( 
+            "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +
+            "(" + insertedId + ",:iduser,:autor),"
+            "(" + insertedId + ",:idcliente,:cliente),"
+            "(" + insertedId + ",:idvendedor,:vendedor)"
+            )
 
-            query.bindValue( ":iduser", self.datosSesion.usuarioId )
-            query.bindValue( ":idcliente", self.clienteId )
-            query.bindValue( ":idvendedor", self.vendedorId )
-            query.bindValue( ":autor", constantes.AUTOR )
-            query.bindValue( ":cliente", constantes.CLIENTE )
-            query.bindValue( ":vendedor", constantes.VENDEDOR )
+        query.bindValue( ":iduser", self.datosSesion.usuarioId )
+        query.bindValue( ":idcliente", self.clienteId )
+        query.bindValue( ":idvendedor", self.vendedorId )
+        query.bindValue( ":autor", constantes.AUTOR )
+        query.bindValue( ":cliente", constantes.CLIENTE )
+        query.bindValue( ":vendedor", constantes.VENDEDOR )
 
-            if not query.exec_():
-                raise Exception( "No se Inserto la relacion entre el documento y las personas" )
+        if not query.exec_():
+            raise Exception( "No se Inserto la relacion entre el documento y las personas" )
 
-            for i, linea in enumerate( [line for line in self.lines if line.valid] ):
-                linea.save( insertedId, i )
+        for i, linea in enumerate( [line for line in self.lines if line.valid] ):
+            linea.save( insertedId, i )
 
 #VERIFICO SI el id del iva es cero. NO SERA CERO CUANDO LA BODEGA=1 PORQUE ESTA NO ES exonerada                     
 
-            if self.bodegaId == 1 :
-                query.prepare( """
-                INSERT INTO costosxdocumento (iddocumento, idcostoagregado) 
-                VALUES( :iddocumento, :idcostoagregado )
-                """ )
-                query.bindValue( ":iddocumento", insertedId )
-                query.bindValue( ":idcostoagregado", self.ivaId )
+        if self.bodegaId == 1 :
+            query.prepare( """
+            INSERT INTO costosxdocumento (iddocumento, idcostoagregado) 
+            VALUES( :iddocumento, :idcostoagregado )
+            """ )
+            query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":idcostoagregado", self.ivaId )
 
-                if not query.exec_():
-                    raise Exception( "El iva NO SE INSERTO" )
+            if not query.exec_():
+                raise Exception( "El iva NO SE INSERTO" )
 
-            #manejar las cuentas contables en Cordobas
-            # el costo no se multiplica porque ya esta en cordobas                
+        #manejar las cuentas contables en Cordobas
+        # el costo no se multiplica porque ya esta en cordobas                
 
-            if self.escontado:
-                movFacturaCredito( insertedId,
-                                    self.subtotal * self.datosSesion.tipoCambioOficial ,
-                                    self.IVA * self.datosSesion.tipoCambioOficial,
-                                    self.costototal )
-                # Como es al contado el modelo otrosDatosModel guarda datos del recibo
-                otrosDatosModel.lineasAbonos[0].idFac = insertedId
-                if not otrosDatosModel.save( False ):
-                    raise Exception( "No se pudo guardar el modelo de otros datos" )
-            else:
-                query.prepare( """
-                INSERT INTO creditos (iddocumento, fechatope,tasamulta) 
-                VALUES( :iddocumento, :fechatope, :multa )
-                """ )
-                query.bindValue( ":iddocumento", insertedId )
-                query.bindValue( ":fechatope", self.fechaTope )
-                query.bindValue( ":multa", self.multa )
+        if self.escontado:
+            movFacturaCredito( insertedId,
+                                self.subtotal * self.datosSesion.tipoCambioOficial ,
+                                self.IVA * self.datosSesion.tipoCambioOficial,
+                                self.costototal )
+            # Como es al contado el modelo otrosDatosModel guarda datos del recibo
+            otrosDatosModel.lineasAbonos[0].idFac = insertedId
+            if not otrosDatosModel.save( False ):
+                raise Exception( "No se pudo guardar el modelo de otros datos" )
+        else:
+            query.prepare( """
+            INSERT INTO creditos (iddocumento, fechatope,tasamulta) 
+            VALUES( :iddocumento, :fechatope, :multa )
+            """ )
+            query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":fechatope", self.fechaTope )
+            query.bindValue( ":multa", self.multa )
 
-                if not query.exec_():
-                    raise Exception( "No se pudo insertar el credito" )
+            if not query.exec_():
+                raise Exception( "No se pudo insertar el credito" )
 
-            if not self.database.commit():
-                raise Exception( "No se pudo guardar la factura" )
-        except Exception as inst:
-            logging.critical( query.lastError().text() )
-            logging.critical( unicode( inst ) )
-            self.database.rollback()
-            return False
-
+        if not self.database.commit():
+            raise Exception( "No se pudo guardar la factura" )
+#        except Exception as inst:
+#            logging.critical( query.lastError().text() )
+#            logging.critical( unicode( inst ) )
+#            self.database.rollback()
+#            return False
         return True
