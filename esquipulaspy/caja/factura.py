@@ -66,15 +66,10 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         #inicializando el documento
         self.editmodel = None
         self.lblanulado.setHidden( True )
-        self.recibo = FrmRecibo( self )  #dlgRecibo( self, True )
-        self.recibo.setWindowModality( Qt.WindowModal )
-        self.recibo.setWindowFlags( Qt.Dialog )
-        self.recibo.parentWindow.removeToolBar( self.recibo.toolBar )
-        self.recibo.addToolBar( self.recibo.toolBar )
-#        self.recibo.setMaximumHeight(self.recibo.minimumHeight())
         self.toolBar.removeAction( self.actionAnular )
         self.toolBar.addAction( self.actionAnular )
-
+        
+        self.cargarRecibos()
 
         self.existenciaModel = QSqlQueryModel()
         self.vendedoresModel = QSqlQueryModel()
@@ -90,6 +85,14 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
 
 
         QTimer.singleShot( 0, self.loadModels )
+
+    def cargarRecibos(self):
+        self.recibo = FrmRecibo( self )  #dlgRecibo( self, True )
+        self.recibo.setWindowModality( Qt.WindowModal )
+        self.recibo.setWindowFlags( Qt.Dialog )
+        self.recibo.parentWindow.removeToolBar( self.recibo.toolBar )
+        self.recibo.addToolBar( self.recibo.toolBar )
+        self.recibo.actionNew.setVisible(False)
 
     def cancel( self ):
         """
@@ -391,7 +394,9 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
 
             self.editmodel = None
             self.readOnly = True
+            
             self.updateModels()
+            self.cargarRecibos()
             self.navigate( 'last' )
             self.status = True
             result = True
@@ -549,12 +554,17 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
     @pyqtSlot()
     def on_actionRecibo_activated( self ):
         record = self.navmodel.record( self.mapper.currentIndex() )
-        if record.value( ESCONTADO ).toInt()[0] == 0:
-            credito = DlgCredito(self)
-            credito.show()
-        else:
-            self.recibo.remoteProxyModel.setFilterRegExp( "(%s)" % record.value( "iddocumento" ).toString() )
+#        if record.value( ESCONTADO ).toInt()[0] == 0:
+#        if self.rbcredito.isChecked():
+#            credito = DlgCredito(self)
+#            credito.show()
+#        else:
+#        self.recibo.updateModels()
+        self.recibo.remoteProxyModel.setFilterRegExp( "(%s)" % record.value( "iddocumento" ).toString() )
+        if self.recibo.remoteProxyModel.rowCount()!=0: 
+            self.recibo.mapper.setCurrentIndex(0)
             self.recibo.show()
+        
 
     @pyqtSlot( int )
     def on_cboFiltro_currentIndexChanged( self, index ):
@@ -702,7 +712,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         Recargar todos los modelos
         """
-
+        
         try:
             if not self.database.isOpen():
                 if not self.database.open():
@@ -710,6 +720,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                                        + "conexión con la base de datos" )
             
             if self.readOnly:
+                
     #        El modelo principal
     
                 query = """
@@ -799,6 +810,8 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.tablenavigation.setColumnHidden( ESCONTADO, True )
                 self.tablenavigation.setColumnHidden( ANULADO, True )
                 self.tablenavigation.setColumnHidden( TOTALFAC, True )
+                
+                
     
             else:
                     
@@ -961,6 +974,8 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         finally:
             if self.database.isOpen():
                 self.database.close()
+                
+        
         return resultado
 
 

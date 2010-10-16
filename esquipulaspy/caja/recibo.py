@@ -469,126 +469,126 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
         Recargar todos los modelos
         """
-        try:
+#        try:
 
-            if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
+        if not QSqlDatabase.database().isOpen():
+            QSqlDatabase.database().open()
 #        El modelo principal
-            query = """
-        SELECT
-                            padre.iddocumento,
-                            DATE(padre.fechacreacion) as 'Fecha',
-                            padre.ndocimpreso as 'No. Recibo',
-                            p.nombre as 'Cliente',
-                            padre.total + IFNULL(hijo.total,0) as 'Total',
-                            c.descripcion as 'En cocepto de',
-                            IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
-                            IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%s')) as 'Retencion',
-                            IFNULL(hijo.total,'-') as 'Total Ret C$',
-                            padre.total as 'Total Pagado', 
-                           padre.observacion ,
-                           IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion',
-                        GROUP_CONCAT('(',fac.iddocumento, ')' SEPARATOR '') as idfacturas
-            FROM documentos padre
-            JOIN docpadrehijos phfac ON phfac.idhijo = padre.iddocumento
-            JOIN documentos fac ON phfac.idpadre = fac.iddocumento AND fac.idtipodoc = %d
-            JOIN personasxdocumento pxd ON pxd.iddocumento = padre.iddocumento
-            JOIN personas p ON p.idpersona = pxd.idpersona
-            JOIN conceptos c ON  c.idconcepto=padre.idconcepto
-            LEFT JOIN costosxdocumento cd ON cd.iddocumento=padre.iddocumento
-            LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
-            LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
-            LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
-            WHERE padre.idtipodoc=%d
-            AND p.tipopersona=%d
-            GROUP BY padre.iddocumento
-            ORDER BY padre.iddocumento;
-            """ % ( '%', constantes.IDFACTURA, constantes.IDRECIBO, constantes.CLIENTE )
+        query = """
+    SELECT
+                        padre.iddocumento,
+                        DATE(padre.fechacreacion) as 'Fecha',
+                        padre.ndocimpreso as 'No. Recibo',
+                        p.nombre as 'Cliente',
+                        padre.total + IFNULL(hijo.total,0) as 'Total',
+                        c.descripcion as 'En cocepto de',
+                        IF(hijo.ndocimpreso IS NULL,'-',hijo.ndocimpreso) as 'No. Retencion',
+                        IF(ca.valorcosto IS NULL, '-',CONCAT(CAST(ca.valorcosto AS CHAR),'%s')) as 'Retencion',
+                        IFNULL(hijo.total,'-') as 'Total Ret C$',
+                        padre.total as 'Total Pagado', 
+                       padre.observacion ,
+                       IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion',
+                    GROUP_CONCAT('(',fac.iddocumento, ')' SEPARATOR '') as idfacturas
+        FROM documentos padre
+        JOIN docpadrehijos phfac ON phfac.idhijo = padre.iddocumento
+        JOIN documentos fac ON phfac.idpadre = fac.iddocumento AND fac.idtipodoc = %d
+        JOIN personasxdocumento pxd ON pxd.iddocumento = padre.iddocumento
+        JOIN personas p ON p.idpersona = pxd.idpersona
+        JOIN conceptos c ON  c.idconcepto=padre.idconcepto
+        LEFT JOIN costosxdocumento cd ON cd.iddocumento=padre.iddocumento
+        LEFT JOIN  costosagregados ca ON ca.idcostoagregado=cd.idcostoagregado
+        LEFT JOIN docpadrehijos ph ON  padre.iddocumento=ph.idpadre
+        LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
+        WHERE padre.idtipodoc=%d
+        AND p.tipopersona=%d
+        GROUP BY padre.iddocumento
+        ORDER BY padre.iddocumento;
+        """ % ( '%', constantes.IDFACTURA, constantes.IDRECIBO, constantes.CLIENTE )
 
-            self.navmodel.setQuery( query )
+        self.navmodel.setQuery( query )
 
 # Proxy model que se utilizara desde el formulario de facturacion SOLAMENTE
-            self.remoteProxyModel = QSortFilterProxyModel()
-            self.remoteProxyModel.setSourceModel( self.navmodel )
-            self.remoteProxyModel.setFilterKeyColumn( IDFACTURAS )
-            self.remoteProxyModel.setFilterRegExp( '' )
+        self.remoteProxyModel = QSortFilterProxyModel()
+        self.remoteProxyModel.setSourceModel( self.navmodel )
+        self.remoteProxyModel.setFilterKeyColumn( IDFACTURAS )
+        self.remoteProxyModel.setFilterRegExp( '' )
 
 
 
-            self.navproxymodel = RONavigationModel( self )
-            self.navproxymodel.setSourceModel( self.remoteProxyModel )
-            self.navproxymodel.setFilterKeyColumn( -1 )
-            self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
+        self.navproxymodel = RONavigationModel( self )
+        self.navproxymodel.setSourceModel( self.remoteProxyModel )
+        self.navproxymodel.setFilterKeyColumn( -1 )
+        self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
 
-    #        Este es el modelo con los datos de la tabla para navegar
+#        Este es el modelo con los datos de la tabla para navegar
 #FIXME: Se el simbolo de la moneda deberia de salir desde la tabla tiposmoneda    
-            self.detailsmodel.setQuery( """
-                SELECT
-                p.iddocumento,
-                CONCAT(tp.descripcion, ' ' , tm.moneda) as 'Tipo de Pago',
-                 p.refexterna as 'No. Referencia',
-                 b.descripcion as Banco,
-                 CONCAT(tm.simbolo,' ',FORMAT(monto,4)) as 'Monto',
-                 CONCAT('US$ ',FORMAT(monto / IF(p.idtipomoneda=2,1,IFNULL(tc.tasaBanco,tc.tasa)),4)) as 'Monto US$'
-            FROM movimientoscaja p
-            JOIN documentos d ON d.iddocumento=p.iddocumento AND d.idtipodoc=18
-            JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
-            JOIN tiposmoneda tm ON tm.idtipomoneda=p.idtipomoneda
-            JOIN tiposmovimientocaja tp ON tp.idtipomovimiento=p.idtipomovimiento
-            LEFT JOIN bancos b ON b.idbanco = p.idbanco
-            ORDER BY p.nlinea
-            ;
-            """ )
+        self.detailsmodel.setQuery( """
+            SELECT
+            p.iddocumento,
+            CONCAT(tp.descripcion, ' ' , tm.moneda) as 'Tipo de Pago',
+             p.refexterna as 'No. Referencia',
+             b.descripcion as Banco,
+             CONCAT(tm.simbolo,' ',FORMAT(monto,4)) as 'Monto',
+             CONCAT('US$ ',FORMAT(monto / IF(p.idtipomoneda=2,1,IFNULL(tc.tasaBanco,tc.tasa)),4)) as 'Monto US$'
+        FROM movimientoscaja p
+        JOIN documentos d ON d.iddocumento=p.iddocumento AND d.idtipodoc=18
+        JOIN tiposcambio tc ON tc.idtc=d.idtipocambio
+        JOIN tiposmoneda tm ON tm.idtipomoneda=p.idtipomoneda
+        JOIN tiposmovimientocaja tp ON tp.idtipomovimiento=p.idtipomovimiento
+        LEFT JOIN bancos b ON b.idbanco = p.idbanco
+        ORDER BY p.nlinea
+        ;
+        """ )
 
-    #        Este es el filtro del modelo anterior
-            self.detailsproxymodel = QSortFilterProxyModel( self )
-            self.detailsproxymodel.setSourceModel( self.detailsmodel )
-            self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-            self.detailsproxymodel.setFilterRegExp( '^0$' )
+#        Este es el filtro del modelo anterior
+        self.detailsproxymodel = QSortFilterProxyModel( self )
+        self.detailsproxymodel.setSourceModel( self.detailsmodel )
+        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
+        self.detailsproxymodel.setFilterRegExp( '^0$' )
 # ESTE ES EL MODELO CON LOS DATOS DE Los ABONOS PARA NAVEGAR
-            self.abonosmodel = QSqlQueryModel( self )
-            self.abonosmodel.setQuery( """
-           SELECT
-            d.idhijo as idrecibo,
-            padre.ndocimpreso as 'No. Factura',
-            CONCAT('US$ ',FORMAT(d.monto,4)) as 'Saldo'
-            FROM docpadrehijos d
-            JOIN documentos padre ON d.idpadre=padre.iddocumento
-            WHERE padre.idtipodoc=%d and d.monto is not null
-            ORDER BY d.nlinea
+        self.abonosmodel = QSqlQueryModel( self )
+        self.abonosmodel.setQuery( """
+       SELECT
+        d.idhijo as idrecibo,
+        padre.ndocimpreso as 'No. Factura',
+        CONCAT('US$ ',FORMAT(d.monto,4)) as 'Saldo'
+        FROM docpadrehijos d
+        JOIN documentos padre ON d.idpadre=padre.iddocumento
+        WHERE padre.idtipodoc=%d and d.monto is not null
+        ORDER BY d.nlinea
 ;
-            """ % constantes.IDFACTURA )
+        """ % constantes.IDFACTURA )
 
-    #        Este es el filtro del modelo anterior
-            self.abonosproxymodel.setSourceModel( self.abonosmodel )
-
-
-    #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
-            self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
-            self.mapper.setModel( self.navproxymodel )
-            self.mapper.addMapping( self.lblnrec, NDOCIMPRESO , "text" )
-            self.mapper.addMapping( self.lblnreten, NRETENCION , "text" )
-
-            self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
-            self.mapper.addMapping( self.dtPicker, FECHA )
-            self.mapper.addMapping( self.txtcliente, NOMBRECLIENTE, "text" )
-            self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
-            self.mapper.addMapping( self.lbltotalreten, TOTALRETENCION, "text" )
-            self.mapper.addMapping( self.txttasaret, TASARETENCION, "text" )
-            self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
-            self.mapper.addMapping( self.lbltotalrecibo, TOTALPAGADO, "text" )
-            self.mapper.addMapping( self.ckretener, CONRETENCION, "checked" )
-
-            self.tablenavigation.setColumnHidden( 0, True )
-            self.tablenavigation.setColumnHidden( TOTALRETENCION, True )
-            self.tablenavigation.setColumnHidden( CONRETENCION, True )
+#        Este es el filtro del modelo anterior
+        self.abonosproxymodel.setSourceModel( self.abonosmodel )
 
 
-        except Exception as inst:
-            print inst
-        finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+#        Este objeto mapea una fila del modelo self.navproxymodel a los controles
+        self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
+        self.mapper.setModel( self.navproxymodel )
+        self.mapper.addMapping( self.lblnrec, NDOCIMPRESO , "text" )
+        self.mapper.addMapping( self.lblnreten, NRETENCION , "text" )
+
+        self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
+        self.mapper.addMapping( self.dtPicker, FECHA )
+        self.mapper.addMapping( self.txtcliente, NOMBRECLIENTE, "text" )
+        self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
+        self.mapper.addMapping( self.lbltotalreten, TOTALRETENCION, "text" )
+        self.mapper.addMapping( self.txttasaret, TASARETENCION, "text" )
+        self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
+        self.mapper.addMapping( self.lbltotalrecibo, TOTALPAGADO, "text" )
+        self.mapper.addMapping( self.ckretener, CONRETENCION, "checked" )
+
+        self.tablenavigation.setColumnHidden( 0, True )
+        self.tablenavigation.setColumnHidden( TOTALRETENCION, True )
+        self.tablenavigation.setColumnHidden( CONRETENCION, True )
+
+
+#        except Exception as inst:
+#            print inst
+#        finally:
+#            if QSqlDatabase.database().isOpen():
+#                QSqlDatabase.database().close()
 
 
 
