@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/recibo.ui'
+# Form implementation generated from reading ui file '/windows/C/workspace/EsquipulasPy/esquipulaspy/ui/recibo.ui'
 #
-# Created: Mon Aug 23 03:14:13 2010
-#      by: PyQt4 UI code generator 4.7.4
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmRecibo(object):
-    def setupUi(self, FrmRecibo):
-        FrmRecibo.setObjectName("frmRecibo")
-        FrmRecibo.resize(698, 630)
-        self.centralwidget = QtGui.QWidget(FrmRecibo)
+    def setupUi(self, frmRecibo):
+        frmRecibo.setObjectName("frmRecibo")
+        frmRecibo.resize(698, 630)
+        self.centralwidget = QtGui.QWidget(frmRecibo)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_8 = QtGui.QHBoxLayout(self.centralwidget)
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
@@ -450,44 +449,44 @@ class Ui_frmRecibo(object):
         icon1.addPixmap(QtGui.QPixmap(":/icons/res/table.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.tabnavigation, icon1, "")
         self.horizontalLayout_8.addWidget(self.tabWidget)
-        FrmRecibo.setCentralWidget(self.centralwidget)
-        self.statusbar = QtGui.QStatusBar(FrmRecibo)
+        frmRecibo.setCentralWidget(self.centralwidget)
+        self.statusbar = QtGui.QStatusBar(frmRecibo)
         self.statusbar.setObjectName("statusbar")
-        FrmRecibo.setStatusBar(self.statusbar)
-        self.toolBar = QtGui.QToolBar(FrmRecibo)
+        frmRecibo.setStatusBar(self.statusbar)
+        self.toolBar = QtGui.QToolBar(frmRecibo)
         self.toolBar.setObjectName("toolBar")
-        FrmRecibo.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        frmRecibo.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.label_5.setBuddy(self.dtPicker)
         self.label_6.setBuddy(self.txtconcepto)
         self.label_4.setBuddy(self.txtSearch)
 
-        self.retranslateUi(FrmRecibo)
+        self.retranslateUi(frmRecibo)
         self.tabWidget.setCurrentIndex(0)
         self.swcliente.setCurrentIndex(1)
         self.swconcepto.setCurrentIndex(1)
         self.swtasaret.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(FrmRecibo)
-        FrmRecibo.setTabOrder(self.cbcliente, self.cbconcepto)
-        FrmRecibo.setTabOrder(self.cbconcepto, self.ckretener)
-        FrmRecibo.setTabOrder(self.ckretener, self.cbtasaret)
-        FrmRecibo.setTabOrder(self.cbtasaret, self.tablefacturas)
-        FrmRecibo.setTabOrder(self.tablefacturas, self.btnadd)
-        FrmRecibo.setTabOrder(self.btnadd, self.btnaddall)
-        FrmRecibo.setTabOrder(self.btnaddall, self.btnremove)
-        FrmRecibo.setTabOrder(self.btnremove, self.btnremoveall)
-        FrmRecibo.setTabOrder(self.btnremoveall, self.tableabonos)
-        FrmRecibo.setTabOrder(self.tableabonos, self.tabledetails)
-        FrmRecibo.setTabOrder(self.tabledetails, self.txtobservaciones)
-        FrmRecibo.setTabOrder(self.txtobservaciones, self.dtPicker)
-        FrmRecibo.setTabOrder(self.dtPicker, self.tabWidget)
-        FrmRecibo.setTabOrder(self.tabWidget, self.txtcliente)
-        FrmRecibo.setTabOrder(self.txtcliente, self.txtconcepto)
-        FrmRecibo.setTabOrder(self.txtconcepto, self.txttasaret)
-        FrmRecibo.setTabOrder(self.txttasaret, self.txtSearch)
-        FrmRecibo.setTabOrder(self.txtSearch, self.tablenavigation)
+        QtCore.QMetaObject.connectSlotsByName(frmRecibo)
+        frmRecibo.setTabOrder(self.cbcliente, self.cbconcepto)
+        frmRecibo.setTabOrder(self.cbconcepto, self.ckretener)
+        frmRecibo.setTabOrder(self.ckretener, self.cbtasaret)
+        frmRecibo.setTabOrder(self.cbtasaret, self.tablefacturas)
+        frmRecibo.setTabOrder(self.tablefacturas, self.btnadd)
+        frmRecibo.setTabOrder(self.btnadd, self.btnaddall)
+        frmRecibo.setTabOrder(self.btnaddall, self.btnremove)
+        frmRecibo.setTabOrder(self.btnremove, self.btnremoveall)
+        frmRecibo.setTabOrder(self.btnremoveall, self.tableabonos)
+        frmRecibo.setTabOrder(self.tableabonos, self.tabledetails)
+        frmRecibo.setTabOrder(self.tabledetails, self.txtobservaciones)
+        frmRecibo.setTabOrder(self.txtobservaciones, self.dtPicker)
+        frmRecibo.setTabOrder(self.dtPicker, self.tabWidget)
+        frmRecibo.setTabOrder(self.tabWidget, self.txtcliente)
+        frmRecibo.setTabOrder(self.txtcliente, self.txtconcepto)
+        frmRecibo.setTabOrder(self.txtconcepto, self.txttasaret)
+        frmRecibo.setTabOrder(self.txttasaret, self.txtSearch)
+        frmRecibo.setTabOrder(self.txtSearch, self.tablenavigation)
 
-    def retranslateUi(self, FrmRecibo):
-        FrmRecibo.setWindowTitle(QtGui.QApplication.translate("frmRecibo", "Recibo Oficial de Caja", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, frmRecibo):
+        frmRecibo.setWindowTitle(QtGui.QApplication.translate("frmRecibo", "Recibo Oficial de Caja", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_4.setTitle(QtGui.QApplication.translate("frmRecibo", "Datos del Recibo", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("frmRecibo", "<b>Recibo No.</b>", None, QtGui.QApplication.UnicodeUTF8))
         self.lblnrec.setText(QtGui.QApplication.translate("frmRecibo", "-", None, QtGui.QApplication.UnicodeUTF8))
@@ -530,9 +529,9 @@ import res_rc
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    FrmRecibo = QtGui.QMainWindow()
+    frmRecibo = QtGui.QMainWindow()
     ui = Ui_frmRecibo()
-    ui.setupUi(FrmRecibo)
-    FrmRecibo.show()
+    ui.setupUi(frmRecibo)
+    frmRecibo.show()
     sys.exit(app.exec_())
 

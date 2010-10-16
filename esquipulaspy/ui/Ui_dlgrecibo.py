@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\src\ui\dlgrecibo.ui'
+# Form implementation generated from reading ui file '/windows/C/workspace/EsquipulasPy/esquipulaspy/ui/dlgrecibo.ui'
 #
-# Created: Mon Sep 06 11:39:06 2010
-#      by: PyQt4 UI code generator 4.7.3
+# Created by: PyQt4 UI code generator 4.7.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -295,4 +294,14 @@ class Ui_dlgRecibo(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Total Recibido</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.lbltotalrecibo.setText(QtGui.QApplication.translate("dlgRecibo", "0.0000", None, QtGui.QApplication.UnicodeUTF8))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    dlgRecibo = QtGui.QDialog()
+    ui = Ui_dlgRecibo()
+    ui.setupUi(dlgRecibo)
+    dlgRecibo.show()
+    sys.exit(app.exec_())
 

@@ -36,7 +36,7 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
         self.txtPassword.setEchoMode( QLineEdit.Password )
         self.setWindowIcon( QIcon( ":/icons/res/logo.png" ) )
         
-        self.dtFechaTime.setReadOnly( True )
+        
         self.txtSaldoC.setAlignment(Qt.AlignRight)
         self.txtSaldoD.setAlignment(Qt.AlignRight)
         self.supervisor = None
@@ -58,6 +58,8 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
                 self.cajasmodel.setQuery( "SELECT idcaja, descripcion from cajas" )
                 if self.cajasmodel.rowCount()==0:
                     QMessageBox.critical(self, "Abrir Caja","No existe ninguna caja en la base de datos")
+                    
+                query = QSqlQuery("")
             except UserWarning as inst:
                 QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
                 logging.error(unicode(inst))
@@ -68,6 +70,11 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
             finally:
                 if QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().close()
+
+    #        self.dtFechaTime.setReadOnly( True )
+            self.dtFechaTime.setMaximumDateTime(QDateTime.currentDateTime())
+            self.dtFechaTime.setMinimumDate()
+
                 
             self.cbcaja.setModel( self.cajasmodel )
             self.cbcaja.setModelColumn( 1 )

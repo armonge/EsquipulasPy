@@ -16,7 +16,7 @@ from ui.Ui_factura import Ui_frmFactura
 from document.factura.facturadelegate import FacturaDelegate
 from document.factura.facturamodel import FacturaModel
 from utility.moneyfmt import moneyfmt
-from recibo import dlgRecibo
+from recibo import FrmRecibo, dlgRecibo
 from utility import constantes
 
 #controles
@@ -57,8 +57,12 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         #inicializando el documento
         self.editmodel = None
         self.lblanulado.setHidden( True )
-        self.recibo = dlgRecibo( self, True )
-
+        self.recibo = FrmRecibo(self)  #dlgRecibo( self, True )
+        self.recibo.setWindowModality(Qt.WindowModal)
+        self.recibo.setWindowFlags(Qt.Dialog)
+        self.recibo.parentWindow.removeToolBar(self.recibo.toolBar)
+        self.recibo.addToolBar(self.recibo.toolBar)
+#        self.recibo.setMaximumHeight(self.recibo.minimumHeight())
         self.toolBar.removeAction( self.actionAnular )
         self.toolBar.addAction( self.actionAnular )
 
@@ -178,7 +182,6 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 QMessageBox.information( None,
                      qApp.organizationName() ,
                      u"""El documento se ha guardado con éxito""" )
-                self.btnrecibo.setHidden( not self.editmodel.escontado )
 
                 self.editmodel = None
                 self.readOnly = True
@@ -319,7 +322,8 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                     QSqlDatabase.database().close()
 
     @pyqtSlot()
-    def on_btnrecibo_clicked( self ):
+    def on_actionRecibo_activated( self ):
+        self.recibo.remoteProxyModel.setFilterRegExp("(%s)"%self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString() )
         self.recibo.show()
 
     @pyqtSlot( "int" )
@@ -413,7 +417,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.swvendedor.setCurrentIndex( 1 )
             self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
-            self.btnrecibo.setHidden( True )
+#            self.btnrecibo.setHidden( True )
             self.tabWidget.setCurrentIndex( 0 )
             self.lblnfac.setText( self.editmodel.printedDocumentNumber )
             self.swcliente.setCurrentIndex( 0 )
@@ -489,8 +493,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
             if self.readOnly:
 #        El modelo principal
 
-
-                self.navmodel.setQuery( """
+                query ="""
                 SELECT
                         d.iddocumento,
                         d.ndocimpreso as 'No. Factura',
@@ -521,7 +524,10 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                     GROUP BY d.iddocumento
                     ORDER BY CAST(IF(ndocimpreso='S/N',0,d.ndocimpreso) AS SIGNED)
                     ;
-                """ % ( constantes.CLIENTE, constantes.VENDEDOR, "DATE_FORMAT(d.fechacreacion,'%d/%m/%Y')", constantes.IDRECIBO, constantes.IDNC, constantes.CONFIRMADO, constantes.PENDIENTE, constantes.IDFACTURA ) )
+                """ % ( constantes.CLIENTE, constantes.VENDEDOR, "DATE_FORMAT(d.fechacreacion,'%d/%m/%Y')", constantes.IDRECIBO, constantes.IDNC, constantes.CONFIRMADO, constantes.PENDIENTE, constantes.IDFACTURA ) 
+                print query  
+                self.navmodel.setQuery( query)
+                
 
 
         #        Este es el modelo con los datos de la tabla para navegar
@@ -552,10 +558,10 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.mapper.addMapping( self.lblsubtotal, SUBTOTAL, "text" )
                 self.mapper.addMapping( self.lbliva, IVA, "text" )
 
-
-                self.mapper.addMapping( self.recibo.lbltotal, TOTAL, "text" )
-                self.mapper.addMapping( self.recibo.txtcliente, CLIENTE, "text" )
-                self.mapper.addMapping( self.recibo.lblfecha, FECHA, "text" )
+#
+#                self.mapper.addMapping( self.recibo.lbltotal, TOTAL, "text" )
+#                self.mapper.addMapping( self.recibo.txtcliente, CLIENTE, "text" )
+#                self.mapper.addMapping( self.recibo.lblfecha, FECHA, "text" )
 
         #        asignar los modelos a sus tablas
 

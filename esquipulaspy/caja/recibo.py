@@ -22,7 +22,7 @@ from utility import constantes
 #from PyQt4.QtGui import QMainWindow
 
 #controles
-IDDOCUMENTO, FECHA, NDOCIMPRESO, NOMBRECLIENTE, TOTAL, CONCEPTO, NRETENCION, TASARETENCION, TOTALRETENCION, TOTALPAGADO, OBSERVACION, CONRETENCION = range( 12 )
+IDDOCUMENTO, FECHA, NDOCIMPRESO, NOMBRECLIENTE, TOTAL, CONCEPTO, NRETENCION, TASARETENCION, TOTALRETENCION, TOTALPAGADO, OBSERVACION, CONRETENCION, IDFACTURAS = range( 13 )
 
 #table
 IDDOCUMENTOT, DESCRIPCION, REFERENCIA, BANCO, MONTO, MONTODOLAR, IDMONEDA = range( 7 )
@@ -102,7 +102,10 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         Aca se cancela la edicion del documento
         """
         self.status = True
-
+        
+    @property
+    def printIdentifier( self ):
+        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
     def newDocument( self ):
         """
@@ -128,9 +131,9 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 s.tasaiva,
                 s.idpersona
             FROM vw_saldofacturas s
-            WHERE s.saldo>0
+            WHERE s.saldo>0 and s.idestado = %d
             ;
-        """ )
+        """%constantes.CONFIRMADO )
 
             self.tablefacturas.setModel( self.facturasproxymodel )
             self.tablefacturas.setColumnHidden( IDDOCUMENTO, True )
@@ -143,10 +146,11 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             s.idpersona,
             s.nombre
             FROM vw_saldofacturas s
+            WHERE s.idestado = %d
             GROUP BY s.idpersona
             HAVING SUM(s.saldo)>0
             ORDER BY s.nombre
-            """ )
+            """% constantes.CONFIRMADO )
 #Verificar si existen clientes morosos            
             if self.clientesModel.rowCount() == 0:
                 QMessageBox.information( None, "Recibo", "No existen clientes morosos" )
@@ -190,10 +194,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                 QMessageBox.warning( None, "Recibo", u"No existe ninguna tasa de retención. Por favor contacte al administrador del sistema" )
                 return ""
 
-
 # Asigno el modelo del recibo
-
-
             self.datosRecibo.cargarNumeros( self )
 
             self.tablefacturas.setSelectionMode( QAbstractItemView.SingleSelection )
@@ -219,9 +220,6 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         if QSqlDatabase.database().isOpen():
             QSqlDatabase.database().close()
 
-    @property
-    def printIdentifier( self ):
-        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
     def save( self ):
         """
@@ -403,7 +401,6 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         else:
             self.tabWidget.setCurrentIndex( 0 )
             self.dtPicker.setDate( self.parentWindow.datosSesion.fecha )
-            self.cbcliente.setCurrentIndex( -1 )
             self.swcliente.setCurrentIndex( 0 )
             self.swconcepto.setCurrentIndex( 0 )
             self.swtasaret.setCurrentIndex( 0 )
@@ -415,6 +412,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.ckretener.setChecked( False )
             self.tabledetails.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
             self.tableabonos.setEditTriggers( QAbstractItemView.EditKeyPressed | QAbstractItemView.AnyKeyPressed | QAbstractItemView.DoubleClicked )
+            self.cbcliente.setCurrentIndex( -1 )
 
 
         self.tableabonos.setColumnHidden( IDDOCUMENTO, True )
@@ -438,7 +436,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
     def updateFacturasFilter( self ):
         self.facturasproxymodel.setFilterKeyColumn( IDCLIENTE )
-        self.facturasproxymodel.setFilterRegExp( str( self.datosRecibo.clienteId ) )
+        self.facturasproxymodel.setFilterRegExp( "^" + str( self.datosRecibo.clienteId ) + "$" )
 
 
     def updateLabels( self ):
@@ -476,9 +474,8 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
 #        El modelo principal
-#FIXME: como escapar el % ???
-            self.navmodel.setQuery( """
-                        SELECT
+            query = """
+        SELECT
                             padre.iddocumento,
                             DATE(padre.fechacreacion) as 'Fecha',
                             padre.ndocimpreso as 'No. Recibo',
@@ -490,8 +487,11 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
                             IFNULL(hijo.total,'-') as 'Total Ret C$',
                             padre.total as 'Total Pagado', 
                            padre.observacion ,
-                           IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion'
+                           IF(hijo.iddocumento IS NULL, 0,1) as 'Con Retencion',
+                        GROUP_CONCAT('(',fac.iddocumento, ')' SEPARATOR '') as idfacturas
             FROM documentos padre
+            JOIN docpadrehijos phfac ON phfac.idhijo = padre.iddocumento
+            JOIN documentos fac ON phfac.idpadre = fac.iddocumento AND fac.idtipodoc = %d
             JOIN personasxdocumento pxd ON pxd.iddocumento = padre.iddocumento
             JOIN personas p ON p.idpersona = pxd.idpersona
             JOIN conceptos c ON  c.idconcepto=padre.idconcepto
@@ -501,11 +501,23 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             LEFT JOIN documentos hijo ON hijo.iddocumento=ph.idhijo
             WHERE padre.idtipodoc=%d
             AND p.tipopersona=%d
-            ORDER BY padre.iddocumento
-            """ % ( '%', constantes.IDRECIBO, constantes.CLIENTE ) )
+            GROUP BY padre.iddocumento
+            ORDER BY padre.iddocumento;
+            """ % ( '%',constantes.IDFACTURA, constantes.IDRECIBO, constantes.CLIENTE ) 
+            print query 
+            
+            self.navmodel.setQuery( query)
 
+# Proxy model que se utilizara desde el formulario de facturacion SOLAMENTE
+            self.remoteProxyModel = QSortFilterProxyModel()
+            self.remoteProxyModel.setSourceModel(self.navmodel)
+            self.remoteProxyModel.setFilterKeyColumn(IDFACTURAS)
+            self.remoteProxyModel.setFilterRegExp('')
+            
+            
+            
             self.navproxymodel = RONavigationModel( self )
-            self.navproxymodel.setSourceModel( self.navmodel )
+            self.navproxymodel.setSourceModel( self.remoteProxyModel )
             self.navproxymodel.setFilterKeyColumn( -1 )
             self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
 
@@ -568,9 +580,10 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.mapper.addMapping( self.lbltotalrecibo, TOTALPAGADO, "text" )
             self.mapper.addMapping( self.ckretener, CONRETENCION, "checked" )
 
-            self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
+            self.tablenavigation.setColumnHidden( 0, True )
             self.tablenavigation.setColumnHidden( TOTALRETENCION, True )
             self.tablenavigation.setColumnHidden( CONRETENCION, True )
+            
 
         except Exception as inst:
             print inst

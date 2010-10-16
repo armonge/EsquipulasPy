@@ -403,6 +403,8 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             self.swconcepto.setCurrentIndex( 0 )
             self.swtasaret.setCurrentIndex( 0 )
             self.txtobservaciones.setPlainText( "" )
+            self.sbtotalc.setValue(0)
+            self.sbtotald.setValue(0)
             self.lbltotal.setText( "US$ 0.0000" )
             self.lblretencion.setText( "US$ 0.0000" )
             self.lbltotalpago.setText( "US$ 0.0000" )
@@ -423,6 +425,14 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
 
     def updateDetailFilter( self, index ):
         self.dtPicker.setDate(QDate.fromString(self.navmodel.record( index ).value( "Fecha" ).toString(), "dd/MM/yyyy"))
+        valor = Decimal(self.navmodel.record( index ).value( "totalc" ).toString())
+        self.sbtotalc.setMaximum(valor)
+        self.sbtotalc.setValue(valor)
+        
+        valor = Decimal(self.navmodel.record( index ).value( "totald" ).toString())
+        self.sbtotald.setMaximum(valor)
+        self.sbtotald.setValue(valor)
+        
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
 
@@ -464,8 +474,8 @@ SELECT
                 IF(SUM(IF(ca.idtipocosto=1,1,0))>0,1,0) as coniva,
                 IF(SUM(IF(ca.idtipocosto in (8,9),1,0))>0,1,0) as conret,
                 SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto,0)) as tasaret,
-                SUM(IF(mc.idtipomoneda =1,mc.monto,0)) as totalc,
-                SUM(IF(mc.idtipomoneda =2,mc.monto,0)) as totald,
+                SUM(IF(mc.idtipomoneda =1,-mc.monto,0)) as totalc,
+                SUM(IF(mc.idtipomoneda =2,-mc.monto,0)) as totald,
                 ROUND(pago.total + (pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto/100,0)),4) as total,
                 -- pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) as subtotal,
                 ROUND((pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto/100,0)),4) as retencion,
@@ -560,8 +570,11 @@ SELECT
             self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
             self.mapper.addMapping( self.txttasaret, TASARETENCION, "text" )
             self.mapper.addMapping( self.lbltotalpago, TOTALPAGADO, "text" )
+            self.mapper.addMapping( self.lbltotalpago, TOTALPAGADO, "text" )
+            self.mapper.addMapping( self.lbltotalpago, TOTALPAGADO, "text" )
             self.mapper.addMapping( self.ckretener, CONRETENCION, "checked" )
             self.mapper.addMapping( self.ckiva, CONIVA, "checked" )
+#            self.mapper.addMapping( self.sbtotalc, TOTALC, "value" )
 
             self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
             self.tablenavigation.setColumnHidden( TOTALRETENCION, True )
