@@ -128,7 +128,6 @@ class FacturaModel( QAbstractTableModel ):
     @property
     def costototal( self ):
         tmpcostototal = sum( [linea.costototal for linea in self.lines if linea.valid] )
-        print "Costo: ", tmpcostototal
         return tmpcostototal if tmpcostototal != 0 else Decimal( 0 )
 
     @property

@@ -45,13 +45,14 @@ class LiquidacionDelegate( SingleSelectionSearchPanelDelegate ):
             self.proxymodel.setSourceModel( self.prods )
             current = index.model().data( index.model().index( index.row(), IDARTICULO ) )
             self.proxymodel.setFilterRegExp( self.filter( index.model(), current ) )
+            
             sp = super( LiquidacionDelegate, self ).createEditor( parent, option, index )
             sp.setColumnHidden( IDARTICULO )
             sp.setMinimumWidth( 600 )
             return sp
 
         else:
-            QStyledItemDelegate.createEditor( self, parent, option, index )
+            super(LiquidacionDelegate, self).createEditor( parent, option, index )
 
 
     def setEditorData( self, editor, index ):
@@ -64,7 +65,7 @@ class LiquidacionDelegate( SingleSelectionSearchPanelDelegate ):
 
             i = editor.findText( text )
             if i == -1:
-                i = 1
+                i = 0
 
             editor.setCurrentIndex( i )
             editor.lineEdit().selectAll()
@@ -72,7 +73,7 @@ class LiquidacionDelegate( SingleSelectionSearchPanelDelegate ):
         elif index.column() == COSTOUNIT:
             editor.setValue( index.data( Qt.EditRole ).toDouble()[0] if index.data( Qt.EditRole ).toDouble()[0] != 0 else 1 )
         else:
-            QStyledItemDelegate.setEditorData( self, editor, index )
+            super(LiquidacionDelegate, self).setEditorData(  editor, index )
 
     def setModelData( self, editor, model, index ):
         if index.column() in ( IDARTICULO, ARTICULO ):
@@ -81,13 +82,13 @@ class LiquidacionDelegate( SingleSelectionSearchPanelDelegate ):
                 sourceindex = self.proxymodel.mapToSource( proxyindex )
                 model.setData( index, self.prods.items[sourceindex.row() ] )
         else:
-            QStyledItemDelegate.setModelData( self, editor, model, index )
+            super(LiquidacionDelegate, self).setModelData(  editor, model, index )
 
     def sizeHint( self, option, index ):
         fm = option.fontMetrics
         if index.column() == ARTICULO:
             return QSize( 250, fm.height() )
 
-        return QStyledItemDelegate.sizeHint( self, option, index )
+        return super(LiquidacionDelegate, self ).sizeHint( option, index )
 
 

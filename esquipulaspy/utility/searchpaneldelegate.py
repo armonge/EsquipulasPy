@@ -82,7 +82,7 @@ class SearchPanelDelegate( QStyledItemDelegate ):
 
     def sizeHint( self, option, index ):
         u"""
-        El tama�o sugerido de los datos en el modelo
+        El tamaño sugerido de los datos en el modelo
         """
         fm = option.fontMetrics
         if index.column() == CODCUENTA:
