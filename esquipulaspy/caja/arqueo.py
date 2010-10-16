@@ -10,7 +10,7 @@ import logging
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, \
 QMessageBox, QDataWidgetMapper, QMdiArea, \
 qApp, QDialog
-from PyQt4.QtCore import pyqtSlot,  QTime, QTimer, QModelIndex, Qt
+from PyQt4.QtCore import pyqtSlot,  QTime, QTimer, QModelIndex, Qt, QDateTime
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 
 from utility import constantes
@@ -407,7 +407,7 @@ class FrmArqueo( QMainWindow, Ui_frmArqueo, Base ):
             if self.database.isOpen():
                 self.database.close()
 
-    @pyqtSlot( "QDateTime" )
+    @pyqtSlot( QDateTime )
     def on_dtPicker_dateTimeChanged( self, datetime ):
         pass
 
@@ -507,42 +507,42 @@ class FrmArqueo( QMainWindow, Ui_frmArqueo, Base ):
 
 
             
-    @pyqtSlot("double")
+    @pyqtSlot(float)
     def on_sbCkD_valueChanged(self, value):
         if not self.editmodel is None:
             self.editmodel.totalCkD = Decimal(str(value))
             
-    @pyqtSlot("double")
+    @pyqtSlot(float)
     def on_sbCkC_valueChanged(self, value):
         if not self.editmodel is None:
             self.editmodel.totalCkC = Decimal(str(value))
             
-    @pyqtSlot("double")
+    @pyqtSlot(float)
     def on_sbCardD_valueChanged(self, value):
         if not self.editmodel is None:
             self.editmodel.totalCardD = Decimal(str(value))
             
-    @pyqtSlot("double")
+    @pyqtSlot(float)
     def on_sbCardC_valueChanged(self, value):
         if not self.editmodel is None:
             self.editmodel.totalCardC = Decimal(str(value))
             
-    @pyqtSlot("double")
+    @pyqtSlot(float)
     def on_sbDepositD_valueChanged(self, value):
         if not self.editmodel is None:
             self.editmodel.totalDepositD = Decimal(str(value))
             
-    @pyqtSlot("double")
+    @pyqtSlot(float)
     def on_sbDepositC_valueChanged(self, value):
         if not self.editmodel is None:
             self.editmodel.totalDepositC = Decimal(str(value))
 
-    @pyqtSlot("double")
+    @pyqtSlot(float)
     def on_sbTransferD_valueChanged(self, value):
         if not self.editmodel is None:
                 self.editmodel.totalTransferD = Decimal(str(value))
 
-    @pyqtSlot("double")
+    @pyqtSlot(float)
     def on_sbTransferC_valueChanged(self, value):
         if not self.editmodel is None:
             self.editmodel.totalTransferC = Decimal(str(value))

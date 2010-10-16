@@ -4,6 +4,7 @@ Modulo en el que se maneja la logica de usuarios
 
 @author: Andrés Reyes Monge
 """
+from __future__ import division
 import hashlib
 import functools
 import logging

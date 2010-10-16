@@ -554,7 +554,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
             self.recibo.remoteProxyModel.setFilterRegExp( "(%s)" % record.value( "iddocumento" ).toString() )
             self.recibo.show()
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
     def on_cboFiltro_currentIndexChanged( self, index ):
         """
         asignar la bodega al objeto self.editmodel
@@ -566,7 +566,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         else:
             self.navproxymodel.setFilterRegExp( "^%d$" % index )
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
     def on_cbbodega_currentIndexChanged( self, index ):
         """
         asignar la bodega al objeto self.editmodel
@@ -586,7 +586,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
 
 
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
     def on_cbcliente_currentIndexChanged( self, index ):
         """
         asignar proveedor al objeto self.editmodel
@@ -594,7 +594,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         if not self.editmodel is None:
             self.editmodel.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0]
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
     def on_cbvendedor_currentIndexChanged( self, index ):
         """
         asignar proveedor al objeto self.editmodel
@@ -1022,7 +1022,8 @@ class DlgCredito( QDialog ):
 
         formLayout = QFormLayout()
 
-
+        self.fechaTope.setCalendarPopup(True)
+        self.sbTaxRate.setSuffix('%')
 
         formLayout.addRow( u"<b>Fecha Tope</b>", self.dtFechaTope )
         formLayout.addRow( u"<b>Tasa de multa</b>", self.sbTaxRate )
