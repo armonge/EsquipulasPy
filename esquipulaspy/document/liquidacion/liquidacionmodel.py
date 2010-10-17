@@ -237,21 +237,21 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         return self.storeTotalC / self.exchangeRate
 
 
-    def setIvaRate( self, ivarate ):
+    def _setIvaRate( self, ivarate ):
         self.__ivaRate = ivarate
-    def getIvaRate( self ):
+    def _getIvaRate( self ):
         """
         El porcentaje IVA usado en esta liquidacion
         @rtype: Decimal
         """
         return self.__ivaRate if self.applyIVA  else Decimal( 0 )
-    ivaRate = property( getIvaRate, setIvaRate )
+    ivaRate = property( _getIvaRate, _setIvaRate )
 
-    def setApplyIVA( self, applyIVA ):
+    def _setApplyIVA( self, applyIVA ):
         self.__applyIVA = applyIVA
-    def getApplyIVA( self ):
+    def _getApplyIVA( self ):
         return self.__applyIVA if self.applyTaxes else False
-    applyIVA = property( getApplyIVA, setApplyIVA )
+    applyIVA = property( _getApplyIVA, _setApplyIVA )
 
     @property
     def valid( self ):

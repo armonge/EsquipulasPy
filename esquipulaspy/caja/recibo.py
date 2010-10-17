@@ -4,32 +4,40 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtGui import QMainWindow, QDialog, QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, QAbstractItemView, QCompleter, qApp
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, QModelIndex, QTimer
+from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QDateTime, QModelIndex, \
+    QTimer
+from PyQt4.QtGui import QDialog, QDataWidgetMapper, QSortFilterProxyModel, \
+    QMessageBox, QAbstractItemView, QCompleter, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
-
 from decimal import Decimal
-from utility.movimientos import movAbonoDeCliente
-from utility.base import Base
-from ui.Ui_recibo import Ui_frmRecibo
-from ui.Ui_dlgrecibo import Ui_dlgRecibo
-from document.recibo.recibodelegate import ReciboDelegate
-#from document.recibo.abonodelegate import AbonoDelegate
-from document.recibo.recibomodel import ReciboModel
 from document.recibo.abonomodel import AbonoModel, LineaAbono, AbonoDelegate
-from utility.moneyfmt import moneyfmt
+from document.recibo.recibodelegate import ReciboDelegate
+from document.recibo.recibomodel import ReciboModel
+from ui.Ui_dlgrecibo import Ui_dlgRecibo
+from ui.Ui_recibo import Ui_frmRecibo
 from utility import constantes
+from utility.base import Base
+from utility.moneyfmt import moneyfmt
+from utility.movimientos import movAbonoDeCliente
+import logging
+
+#from document.recibo.abonodelegate import AbonoDelegate
 #from PyQt4.QtGui import QMainWindow
 
 #controles
-IDDOCUMENTO, FECHA, NDOCIMPRESO, NOMBRECLIENTE, TOTAL, CONCEPTO, NRETENCION, TASARETENCION, TOTALRETENCION, TOTALPAGADO, OBSERVACION, CONRETENCION, IDFACTURAS = range( 13 )
+IDDOCUMENTO, FECHA, NDOCIMPRESO, NOMBRECLIENTE, TOTAL, CONCEPTO, NRETENCION, \
+TASARETENCION, TOTALRETENCION, TOTALPAGADO, OBSERVACION, \
+CONRETENCION, IDFACTURAS = range( 13 )
 
 #table
-IDDOCUMENTOT, DESCRIPCION, REFERENCIA, BANCO, MONTO, MONTODOLAR, IDMONEDA = range( 7 )
+IDDOCUMENTOT, DESCRIPCION, REFERENCIA, BANCO, MONTO, \
+MONTODOLAR, IDMONEDA = range( 7 )
+
 IDPAGO = 0
 TOTALFAC = 3
+
 IDRECIBODOC, NFAC, SALDO, TASAIVA, IDCLIENTE, SALDOFINAL = range( 6 )
-class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
+class FrmRecibo( Ui_frmRecibo, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
@@ -40,11 +48,8 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         Constructor
         '''
         super( FrmRecibo, self ).__init__( parent )
-        self.setupUi( self )
-        self.parentWindow = parent
-        Base.__init__( self )
 
-        self.__status = True
+
 
 #       las acciones deberian de estar ocultas
         self.frbotones.setVisible( False )
@@ -76,6 +81,8 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         #inicializando el documento
         self.editmodel = None
         self.datosRecibo = None
+
+        self.status = True
 
         QTimer.singleShot( 0, self.loadModels )
 
@@ -111,17 +118,11 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         """
         activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
         """
-        if not QSqlDatabase.database().isOpen():
-            if not QSqlDatabase.database().open():
-                raise Exception( u"No se pudo establecer la conexión con la base de datos" )
-
-            QMessageBox.warning( None,
-            qApp.organizationName(),
-            """Hubo un error al conectarse con la base de datos""",
-            QMessageBox.StandardButtons( \
-                QMessageBox.Ok ),
-            QMessageBox.Ok )
-        else:
+        try:
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning( u"No se pudo establecer la conexión"\
+                                       + " con la base de datos" )
 
             self.facturasmodel.setQuery( """          
             SELECT
@@ -153,17 +154,19 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             """ % constantes.CONFIRMADO )
 #Verificar si existen clientes morosos            
             if self.clientesModel.rowCount() == 0:
-                QMessageBox.information( None, "Recibo", "No existen clientes morosos" )
-                return ""
+                raise UserWarning( "No existen clientes morosos" )
 
 #            Rellenar el combobox de las CONCEPTOS
             self.conceptosModel = QSqlQueryModel()
             self.conceptosModel.setQuery( """
-               SELECT idconcepto, descripcion FROM conceptos c WHERE idtipodoc = %d;
+               SELECT idconcepto, descripcion 
+               FROM conceptos c 
+               WHERE idtipodoc = %d;
             """ % constantes.IDRECIBO )
             if self.conceptosModel.rowCount() == 0:
-                QMessageBox.information( None, "Recibo", "No existen conceptos para los recibos, por favor cree uno" )
-                return ""
+                raise UserWarning( "No existen conceptos para los recibos,"\
+                                        + " por favor cree uno" )
+
 
 
             self.cbcliente.setModel( self.clientesModel )
@@ -191,9 +194,9 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.datosRecibo.cargarRetenciones( self.cbtasaret )
 
             if self.datosRecibo.retencionModel.rowCount() == 0:
-                QMessageBox.warning( None, "Recibo", u"No existe ninguna tasa de retención. Por favor contacte al administrador del sistema" )
-                return ""
-
+                raise UserWarning( u"No existe ninguna tasa de retención."\
+                                      + " Por favor contacte al administrador"\
+                                      + " del sistema" )
 # Asigno el modelo del recibo
             self.datosRecibo.cargarNumeros( self )
 
@@ -216,9 +219,16 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.updateFacturasFilter()
 
             self.abonoeditmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
-
-        if QSqlDatabase.database().isOpen():
-            QSqlDatabase.database().close()
+        except UserWarning as inst:
+            logging.error( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+        except Exception as inst:
+            logging.critical( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                  u"Hubo un error al tratar de obtener los datos" )
+        finally:
+            if self.database.isOpen():
+                self.database.close()
 
 
     def save( self ):
@@ -229,29 +239,31 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 #        self.datosRecibo.lineas = self.editmodel.lines
         self.datosRecibo.observaciones = self.txtobservaciones.toPlainText()
         if self.datosRecibo.valid( self ):
-            if QMessageBox.question( self, qApp.organizationName(), u"¿Esta seguro que desea guardar el recibo?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+            if QMessageBox.question( self, qApp.organizationName(),
+                                 u"¿Esta seguro que desea guardar el recibo?",
+                                 QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
                 if not QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().open()
 
 
                 if self.datosRecibo.save():
-                    QMessageBox.information( None,
-                        self.trUtf8( qApp.organizationName() ),
-                        self.trUtf8( u"""El documento se ha guardado con éxito""" ) )
+                    QMessageBox.information( self,
+                        qApp.organizationName() ,
+                         u"""El documento se ha guardado con éxito""" )
                     self.editmodel = None
                     self.updateModels()
                     self.navigate( 'last' )
                     self.status = True
                 else:
-                    QMessageBox.critical( None,
-                        self.trUtf8( qApp.organizationName() ),
-                        self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
+                    QMessageBox.critical( self,
+                         qApp.organizationName(),
+                         """Ha ocurrido un error al guardar el documento""" )
 
-                if QSqlDatabase.database().isOpen():
-                    QSqlDatabase.database().close()
+                if self.database.isOpen():
+                    self.database.close()
 
 
-    @pyqtSlot( "bool" )
+    @pyqtSlot( bool )
     def on_btnadd_clicked( self, _on ):
         """
         Asignar el contenido al objeto documeto
@@ -265,7 +277,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
 
 
 
-    @pyqtSlot( "bool" )
+    @pyqtSlot( bool )
     def on_btnaddall_clicked( self, _on ):
         """
         Asignar el contenido al objeto documeto
@@ -278,7 +290,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         self.updateLabels()
 
 
-    @pyqtSlot( "bool" )
+    @pyqtSlot( bool )
     def on_btnremove_clicked( self, _on ):
         """
         Asignar el contenido al objeto documeto
@@ -288,7 +300,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.abonoeditmodel.removeRows( r, self.tablefacturas )
             self.updateLabels()
 
-    @pyqtSlot( "bool" )
+    @pyqtSlot( bool )
     def on_btnremoveall_clicked( self, _on ):
         """
         Asignar el contenido al objeto documeto
@@ -297,14 +309,9 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         if  rows > 0:
             self.abonoeditmodel.removeRows( 0, self.tablefacturas, rows )
             self.updateLabels()
-#
-#    @pyqtSlot(  )
-#    def on_txtpersona_editingFinished( self ):
-#        if not  self.__status:
-#            self.datos.observaciones = self.txtpersona.text()
 
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
     def on_cbcliente_currentIndexChanged( self, index ):
         """
         asignar proveedor al objeto self.editmodel
@@ -313,12 +320,13 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.datosRecibo.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0] if index != -1 else - 1
             self.tableabonos.setEnabled( index != -1 )
             self.frbotones.setEnabled( index != -1 )
-            self.abonoeditmodel.removeRows( 0, self.tablefacturas, self.abonoeditmodel.rowCount() )
+            self.abonoeditmodel.removeRows( 0, self.tablefacturas,
+                                             self.abonoeditmodel.rowCount() )
             self.abonoeditmodel.idcliente = self.datosRecibo.clienteId
             self.updateFacturasFilter()
             self.updateLabels()
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
     def on_cbconcepto_currentIndexChanged( self, index ):
         """
         asignar la concepto al objeto self.editmodel
@@ -326,7 +334,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
         if not self.editmodel is None:
             self.datosRecibo.conceptoId = self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
     def on_cbtasaret_currentIndexChanged( self, index ):
         """
         asignar la retencion al objeto self.editmodel
@@ -336,7 +344,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.updateLabels()
 
 # MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
-    @pyqtSignature( "bool" )
+    @pyqtSlot( bool )
     def on_ckretener_toggled( self, on ):
         """
         """
@@ -345,7 +353,7 @@ class FrmRecibo( Ui_frmRecibo, QMainWindow, Base ):
             self.cbtasaret.setEnabled( on )
             self.cbtasaret.setCurrentIndex( -1 )
 
-    @pyqtSlot( "QDateTime" )
+    @pyqtSlot( QDateTime )
     def on_dtPicker_dateTimeChanged( self, datetime ):
         pass
 
@@ -826,7 +834,7 @@ class DatosRecibo( object ):
             foo = 0
             for line in self.lineasAbonos:
                 foo += 1
-                
+
                 if not line.valid:
                     QMessageBox.information( None, "Guardar Recibo", u"La linea " + str( foo ) + u" de las facturas abonadas no es válida" )
                     return False
@@ -923,7 +931,7 @@ class DatosRecibo( object ):
 
 
     #INSERTAR LA RELACION CON El USUARIO y EL CLIENTE
-   
+
             query.prepare( 
                 "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +
                 "(" + insertedId + ",:iduser,:autor),"

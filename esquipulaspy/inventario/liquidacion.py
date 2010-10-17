@@ -39,7 +39,7 @@ DTOTALD, DUNITD, DTOTALC, DUNITC, IDDOCUMENTOT = range( 20 )
 
 #accounts model
 IDCUENTA, CODCUENTA, NCUENTA, MONTOCUENTA, IDDOCUMENTOC = range( 5 )
-class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
+class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
     """
     Class documentation goes here.
     """
@@ -50,10 +50,8 @@ class FrmLiquidacion( QMainWindow, Ui_FrmLiquidacion, Base ):
         """
         @param parent: El formulario padre de este documento
         """
-        QMainWindow.__init__( self, parent )
-        self.setupUi( self )
-        self.parentWindow = parent
-        Base.__init__( self )
+        super( FrmLiquidacion, self ).__init__( parent )
+
 
 
         #los modelos de edicion

@@ -25,7 +25,7 @@ from document.cheque.chequemodel import ChequeModel
 IDDOCUMENTO, NCHEQUE, CUENTABANCARIA, NOMBRE, FECHA, CONCEPTO, TOTAL, SUBTOTAL, IVA, TOTALRET, TIPOCAMBIO, TASARETENCION, ESTADO, IDESTADO, TOTALCHEQUE = range( 15 )
 #accounts model
 IDDOC, IDCUENTA, CODIGO, DESCRIPCION, MONTO = range( 5 )
-class FrmCheques( Ui_frmCheques, QMainWindow, Base ):
+class FrmCheques( Ui_frmCheques, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
@@ -36,9 +36,6 @@ class FrmCheques( Ui_frmCheques, QMainWindow, Base ):
         '''
         super( FrmCheques, self ).__init__( parent )
 
-        self.setupUi( self )
-        self.parentWindow = parent
-        Base.__init__( self )
 
         self.navmodel = QSqlQueryModel( self )
         self.navproxymodel = QSortFilterProxyModel( self )
@@ -199,11 +196,11 @@ class FrmCheques( Ui_frmCheques, QMainWindow, Base ):
         self.subtotal.setReadOnly( status )
         self.txtobservaciones.setReadOnly( status )
 
-        self.actionGoFirst.setVisible( status)
-        self.actionGoPrevious.setVisible( status)
-        self.actionGoNext.setVisible(status)
-        self.actionGoLast.setVisible(status)
-        self.actionAnular.setVisible(status)
+        self.actionGoFirst.setVisible( status )
+        self.actionGoPrevious.setVisible( status )
+        self.actionGoNext.setVisible( status )
+        self.actionGoLast.setVisible( status )
+        self.actionAnular.setVisible( status )
 
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )

@@ -22,15 +22,12 @@ import logging
 
 
 
-class FrmCreditoDebito( Ui_frmCreditoDebito, QMainWindow, Base ):
+class FrmCreditoDebito( Ui_frmCreditoDebito, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
     def __init__( self, parent ):
         super( FrmCreditoDebito, self ).__init__( parent )
-        self.setupUi( self )
-        self.parentWindow = parent
-        Base.__init__( self )
 
 
 

@@ -25,7 +25,7 @@ from utility import constantes
 #controles
 IDDOCUMENTO, NDOCIMPRESO, FECHA, NOMBREBENEFICIARIO, CONCEPTO, TOTALPAGADO, CONIVA, CONRETENCION, TASARETENCION, TOTALC, TOTALD, TOTAL, TOTALRETENCION, OBSERVACION, TIPOCAMBIO = range( 15 )
 
-class FrmPago( Ui_frmPago, QMainWindow, Base ):
+class FrmPago( Ui_frmPago, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
@@ -36,10 +36,8 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
         Constructor
         '''
         super( FrmPago, self ).__init__( parent )
-        self.setupUi( self )
-        self.parentWindow = parent
+
         self.tabledetails = None
-        Base.__init__( self )
         self.setWindowModality( Qt.WindowModal )
         self.setWindowFlags( Qt.Dialog )
         self.parentWindow.removeToolBar( self.toolBar )
@@ -409,8 +407,8 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
             self.swconcepto.setCurrentIndex( 0 )
             self.swtasaret.setCurrentIndex( 0 )
             self.txtobservaciones.setPlainText( "" )
-            self.sbtotalc.setValue(0)
-            self.sbtotald.setValue(0)
+            self.sbtotalc.setValue( 0 )
+            self.sbtotald.setValue( 0 )
             self.lbltotal.setText( "US$ 0.0000" )
             self.lblretencion.setText( "US$ 0.0000" )
             self.lbltotalpago.setText( "US$ 0.0000" )
@@ -431,14 +429,14 @@ class FrmPago( Ui_frmPago, QMainWindow, Base ):
 
     def updateDetailFilter( self, index ):
         self.dtPicker.setDate( QDate.fromString( self.navmodel.record( index ).value( "Fecha" ).toString(), "dd/MM/yyyy" ) )
-        valor = Decimal(self.navmodel.record( index ).value( "totalc" ).toString())
-        self.sbtotalc.setMaximum(valor)
-        self.sbtotalc.setValue(valor)
-        
-        valor = Decimal(self.navmodel.record( index ).value( "totald" ).toString())
-        self.sbtotald.setMaximum(valor)
-        self.sbtotald.setValue(valor)
-        
+        valor = Decimal( self.navmodel.record( index ).value( "totalc" ).toString() )
+        self.sbtotalc.setMaximum( valor )
+        self.sbtotalc.setValue( valor )
+
+        valor = Decimal( self.navmodel.record( index ).value( "totald" ).toString() )
+        self.sbtotald.setMaximum( valor )
+        self.sbtotald.setValue( valor )
+
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
 

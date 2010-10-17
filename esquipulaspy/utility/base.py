@@ -2,20 +2,22 @@
 """
 Module implementing Base
 """
-from decimal import  Decimal
+from PyQt4.QtCore import pyqtSlot, QSettings, QUrl, QDateTime, QModelIndex, \
+    QTimer
+from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, \
+    QProgressBar, QPrinter, QPrintDialog, QDialog, qApp, QShortcut, QKeySequence, \
+    QMainWindow
+from PyQt4.QtSql import QSqlDatabase, QSqlQuery
+from PyQt4.QtWebKit import QWebView
+from decimal import Decimal
 import functools
 import logging
-
-from PyQt4.QtCore import  pyqtSlot, QSettings, QUrl, QDateTime, QModelIndex
-from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, \
-QProgressBar, QPrinter, QPrintDialog, QDialog, qApp, QShortcut, QKeySequence
-from PyQt4.QtWebKit import QWebView
-
 import reports
 import user
 
-class Base( object ):
+
+
+class Base( QMainWindow ):
     """
     Esta clase sirve de base para muchos  todos aquello formularios que siguen el estandar de dos pestañas, una para navegación
     y otra para edición
@@ -24,19 +26,36 @@ class Base( object ):
     pageSize = QPrinter.Letter
     web = ""
 
-    def __init__( self ):
+    def __init__( self , parent = None ):
+        super( Base, self ).__init__( parent )
+        self.parentWindow = parent
         self.user = user.LoggedUser
-        self.mapper = QDataWidgetMapper( self )
-        u"""
-        @type: QDataWidgetMapper
-        @ivar: El mapper que se encarga de asignar los datos del modelo de navegación a los distintos widgets
-        """
+        self.__status = True
+
+
 
         self.database = QSqlDatabase.database()
         """
         @type: QSqlDatabase
         @ivar: La base de datos a la cual se conecta el sistema
         """
+
+        self.mapper = QDataWidgetMapper( self )
+        u"""
+        @type: QDataWidgetMapper
+        @ivar: El mapper que se encarga de asignar los datos del modelo de navegación a los distintos widgets
+        """
+
+        self.printProgressBar = QProgressBar( self )
+
+        self.startUi()
+
+
+    def startUi( self ):
+        self.setupUi( self )
+
+
+
 
         settings = QSettings()
         self.restoreGeometry( settings.value( self.windowTitle()
@@ -50,7 +69,7 @@ class Base( object ):
         """
         self.createActions()
 
-        self.printProgressBar = QProgressBar( self )
+
         self.printProgressBar.setVisible( False )
 
         _tab1shortcut = QShortcut( QKeySequence( "Ctrl+1" ),
@@ -78,7 +97,6 @@ class Base( object ):
         self.actionCut.setVisible( False )
         self.actionPaste.setVisible( False )
         self.actionCopy.setVisible( False )
-
 
     def closeEvent( self, event ):
         u"""
@@ -130,7 +148,8 @@ class Base( object ):
             try:
                 if not self.database.isOpen():
                     if not self.database.open():
-                        raise Exception( "No se pudo conectar a la base de datos para recuperar los tipos de cambio" )
+                        raise Exception( "No se pudo conectar a la base de "\
+                                         + "datos para recuperar los tipos de cambio" )
 
                 q = """
                     SELECT idtc, tasa
@@ -142,10 +161,13 @@ class Base( object ):
 
                 if not query.exec_( q ):
                     logging.critical( query.lastError().text() )
-                    raise UserWarning( "No se pudieron recuperar los tipos de cambio" )
+                    raise UserWarning( "No se pudieron recuperar los tipos de "\
+                                       + "cambio" )
                 if not query.size() == 1:
-                    logging.critical( u"La consulta para obtener tipos de cambio no devolvio exactamente un valor" )
-                    raise UserWarning( u"Hubo un error al obtener los tipos de cambio" )
+                    logging.critical( u"La consulta para obtener tipos de "\
+                                      + "cambio no devolvio exactamente un valor" )
+                    raise UserWarning( u"Hubo un error al obtener los tipos "\
+                                       + "de cambio" )
 
                 query.first()
                 self.editmodel.exchangeRateId = query.value( 0 ).toInt()[0]
@@ -160,7 +182,9 @@ class Base( object ):
                 logging.error( inst )
             except Exception as inst:
                 print "in exception"
-                QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al obtener los tipos de cambio" )
+                QMessageBox.critical( self, qApp.organizationName(),
+                                      u"Hubo un error al obtener los tipos de"\
+                                      + " cambio" )
                 logging.critical( inst )
                 self.dtPicker.setDateTime( self.editmodel.datetime )
 
@@ -169,7 +193,8 @@ class Base( object ):
     def navigate( self, to ):
         """
         Esta funcion se encarga de navegar entro los distintos documentos
-        @param to: es una string que puede tomar los valores 'next' 'previous' 'first' 'last'
+        @param to: es una string que puede tomar los valores 'next' 'previous'
+         'first' 'last'
         """
         if self.mapper.currentIndex != -1:
             row = self.mapper.currentIndex()
@@ -197,18 +222,20 @@ class Base( object ):
 
     def updateDetailFilter( self, unused_index ):
         """
-        Esta función se debe implementar en los formularios para que al navegar se actualize
-        el filtro de la tabla detalles
-        @param index: Este es el indice del mapper en el que actualmente se encuentra navegando
+        Esta función se debe implementar en los formularios para que al 
+        navegar se actualize el filtro de la tabla detalles
+        @param index: Este es el indice del mapper en el que actualmente 
+        se encuentra navegando
         @type index: int 
         """
-        QMessageBox.information( self, qApp.organizationName(), u"Esta parte del sistema no ha sido implementada" )
+        QMessageBox.information( self, qApp.organizationName(),
+                                  u"Esta parte del sistema no ha sido implementada" )
         raise NotImplementedError()
 
     def loadModels( self ):
         """
-        Esta función se ejecuta en el constructor del formulario mediante un QTimer,
-        carga los formularios por primera vez
+        Esta función se ejecuta en el constructor del formulario mediante
+        un QTimer, carga los formularios por primera vez
         """
         self.updateModels()
         self.navigate( 'last' )
@@ -282,9 +309,12 @@ class Base( object ):
 
             else:
                 try:
-                    QMessageBox.warning( self, qApp.organizationName() , self.editmodel.validError )
+                    QMessageBox.warning( self, qApp.organizationName() ,
+                                         self.editmodel.validError )
                 except AttributeError:
-                    QMessageBox.warning( self, qApp.organizationName() , u"El documento no puede guardarse ya que la información no esta completa" )
+                    QMessageBox.warning( self, qApp.organizationName() ,
+                                         u"El documento no puede guardarse"\
+                                         + " ya que la información no esta completa" )
 
     def setControls( self, unused_status ):
         """
@@ -423,7 +453,8 @@ class Base( object ):
         except NotImplementedError as inst:
             logging.error( unicode( inst ) )
             QMessageBox.information( self, qApp.organizationName(),
-                                     u"La función de impresión no se ha implementado para este modulo" )
+                                 u"La función de impresión no se ha "\
+                                 + "implementado para este modulo" )
         except UserWarning as inst:
             logging.error( unicode( inst ) )
             QMessageBox.critical( self, qApp.organizationName(),
@@ -431,7 +462,8 @@ class Base( object ):
         except Exception as inst:
             logging.critical( unicode( inst ) )
             QMessageBox.critical( self, qApp.organizationName(),
-                                   "Hubo un problema al intentar imprimir su reporte" )
+                                   "Hubo un problema al intentar imprimir"\
+                                   + " su reporte" )
 
     def on_webview_loadProgress( self, progress ):
         self.printProgressBar.setValue( progress )

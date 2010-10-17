@@ -4,7 +4,6 @@
 Module implementing MainWindow.
 """
 
-from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSlot
 from entradacompra import FrmEntradaCompra
 from catalogos import FrmCatMarcas, FrmCatConceptos
@@ -15,10 +14,10 @@ from kardexother import FrmKardexOther
 from ui.Ui_mainwindowinventario import Ui_MainWindow
 from articulos import FrmArticulos
 from utility.mainwindowbase import MainWindowBase
-from utility.persona import frmPersona
+from utility.persona import FrmPersona
 from utility import constantes
 
-class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
+class MainWindow( MainWindowBase, Ui_MainWindow ):
     """
     Class documentation goes here.
     """
@@ -28,8 +27,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         Constructor
         """
         super( MainWindow, self ).__init__( parent )
-        self.setupUi( self )
-        MainWindowBase.__init__( self )
+        self.startUi()
         self.init()
 
     def init( self ):
@@ -138,7 +136,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        dialog = frmPersona( constantes.PROVEEDOR, "Proveedor", self )
+        dialog = FrmPersona( constantes.PROVEEDOR, "Proveedor", self )
         dialog.show()
 #        catproveedores = FrmCatProveedores( self )
 #        self.mdiArea.addSubWindow( catproveedores )
@@ -176,6 +174,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         """
         Slot documentation goes here.
         """
-        kardex = frmKardex( [5], self, False )
+        kardex = FrmKardex( [5], self, False )
         self.mdiArea.addSubWindow( kardex )
         kardex.show()

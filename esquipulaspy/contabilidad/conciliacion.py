@@ -26,7 +26,7 @@ from movimientosbancarios import dlgMovimientosBancarios
 
 FECHA, CONCEPTO, DEBE, HABER, SALDO, CONCILIADO, DELBANCO, IDTIPODOC = range( 8 )
 FECHA, BANCO, CUENTABANCO, MONEDA, CUENTA, SALDOBANCO, SALDOLIBRO, IDCUENTABANCO, IDDOC = range( 9 )
-class FrmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
+class FrmConciliacion( Ui_frmConciliacion, Base ):
     """
     Formulario para crear nuevas conciliaciones bancarias
     """
@@ -35,10 +35,7 @@ class FrmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
         Constructor
         """
 
-        QMainWindow.__init__( self, parent )
-        self.setupUi( self )
-        self.parentWindow = parent
-        Base.__init__( self )
+        super( FrmConciliacion, self ).__init__( parent )
 
 
         self.editmodel = None
@@ -179,13 +176,13 @@ class FrmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
             self.ocultarCols()
 
         except UserWarning as inst:
-            logging.error(unicode(inst))
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            logging.error( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
         except Exception as inst:
-            logging.critical(unicode(inst))
-            QMessageBox.critical(self, qApp.organizationName(),
+            logging.critical( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
                 u"Hubo un error al tratar de iniciar una nueva conciliación "\
-                +"bancaria")
+                + "bancaria" )
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
@@ -331,8 +328,8 @@ class FrmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
             self.editmodel.fechaConciliacion = QDate( fecha.year(), fecha.month(), fecha.daysInMonth() )
 
 
-            query.prepare( "CALL spMovimientoCuenta( %d, %s )" % (self.editmodel.idCuentaContable,
-                self.editmodel.fechaConciliacion.toString( "yyyyMMdd" )) )
+            query.prepare( "CALL spMovimientoCuenta( %d, %s )" % ( self.editmodel.idCuentaContable,
+                self.editmodel.fechaConciliacion.toString( "yyyyMMdd" ) ) )
             if not query.exec_():
                 raise Exception( query.lastError().text() )
 
@@ -371,13 +368,13 @@ class FrmConciliacion( QMainWindow, Ui_frmConciliacion, Base ):
             self.ocultarCols()
 
             self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
-            
+
         except UserWarning as inst:
-            logging.error(unicode(inst))
-            QMessageBox.critical(self, qApp.organizationName(), unicode(inst))
+            logging.error( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
         except Exception as inst:
-            logging.critical(unicode(inst))
-            QMessageBox.critical(self, qApp.organizationName(), u"Hubo un error al intentar iniciar una nueva conciliación")
+            logging.critical( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al intentar iniciar una nueva conciliación" )
         finally:
             if self.database.isOpen():
                 self.database.close()

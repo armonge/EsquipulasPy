@@ -23,7 +23,7 @@ from ui.Ui_mainwindowcontabilidad import Ui_MainWindow
 from utility import constantes
 from utility.mainwindowbase import MainWindowBase
 
-class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
+class MainWindow( MainWindowBase, Ui_MainWindow ):
     """
 
     """
@@ -33,8 +33,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         Constructor
         """
         super( MainWindow, self ).__init__( parent )
-        self.setupUi( self )
-        MainWindowBase.__init__( self )
+        self.startUi()
         self.init()
 
 

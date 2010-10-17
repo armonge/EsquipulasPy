@@ -24,7 +24,7 @@ CONCEPT, PENDIENTE = range( 9 )
 IDARTICULO, DESCRIPCION, COSTO, CANTIDAD, IDDOCUMENTOD = range( 5 )
 IDCUENTA, CODIGO, NOMBRECUENTA, MONTOCUENTA, IDDOCUMENTOC = range( 5 )
 
-class FrmKardexOther( QMainWindow, Ui_FrmKardexOther, Base ):
+class FrmKardexOther( Ui_FrmKardexOther, Base ):
     '''
     classdocs
     '''
@@ -34,9 +34,6 @@ class FrmKardexOther( QMainWindow, Ui_FrmKardexOther, Base ):
         Constructor
         '''
         super( FrmKardexOther, self ).__init__( parent )
-        self.setupUi( self )
-        self.parentWindow = parent
-        Base.__init__( self )
 
         self.navmodel = QSqlQueryModel()
 

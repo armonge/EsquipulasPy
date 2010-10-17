@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# -*- coding: utf-8 -*-
-
 """
     Module implementing MainWindow.
 """
@@ -20,10 +18,10 @@ from utility.mainwindowbase import MainWindowBase
 from inventario.catalogos import FrmCatConceptos
 from arqueo import FrmArqueo
 from devolucion import FrmDevolucion
-from utility.persona import frmPersona
+from utility.persona import FrmPersona
 from utility import constantes
 
-class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
+class MainWindow( MainWindowBase, Ui_MainWindow, ):
     """
     Esta clase implementa el MainWindow de Caja
     """
@@ -33,8 +31,8 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         Constructor
         """
         super( MainWindow, self ).__init__( parent )
-        self.setupUi( self )
-        MainWindowBase.__init__( self )
+        self.startUi()
+#        MainWindowBase.__init__( self )
         self.init()
 
     def init( self ):
@@ -44,19 +42,6 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
         self.abierto = False
         self.setControls( True )
 
-#    def closeEvent( self, event ):
-#        u"""
-#        Guardar el tamaño, la posición en la pantalla y la posición de la barra de tareas
-#        Preguntar si realmente se desea cerrar la pestaña cuando se esta en modo edición
-#        """
-#        for hijo in self.mdiArea.subWindowList():
-#            if not hijo.close():
-#                event.ignore()
-#                return
-
-
-#        if not QMessageBox.question(self, qApp.organizationName(), u"¿Está seguro que desea salir?", QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
-#            event.ignore()        
 
     def setControls( self, state ):
         """
@@ -93,7 +78,7 @@ class MainWindow( QMainWindow, Ui_MainWindow, MainWindowBase ):
 
     @pyqtSlot()
     def on_actionClients_activated( self ):
-        clientes = frmPersona( constantes.CLIENTE, "Cliente", self )
+        clientes = FrmPersona( constantes.CLIENTE, "Cliente", self )
         clientes.show()
 
     @pyqtSlot()

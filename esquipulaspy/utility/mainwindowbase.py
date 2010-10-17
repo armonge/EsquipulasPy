@@ -4,24 +4,37 @@ Created on 11/06/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot, QSize
+
+import sys
+from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot, QSize, QProcess
 from PyQt4.QtGui import QDialog, QMessageBox, QIcon, QWidget, QVBoxLayout, \
-QPushButton, qApp
+QPushButton, qApp, QMainWindow
 from PyQt4.QtSql import QSqlDatabase
 
 import utility.user
 
-class MainWindowBase( object ):
+class MainWindowBase( QMainWindow ):
     '''
-    classdocs
+    Esta clase implementa la funcionalidad que es común a todas las ventanas
+    principales del sistema.
     '''
-    def __init__( self ):
+    def __init__( self , parent ):
         '''
         Constructor
         '''
+        super( MainWindowBase, self ).__init__( parent )
+        self.process = QProcess()
+        """
+        @ivar: Este es el proceso en el que se llamara la ayuda
+        @type:QProcess
+        """
 
         self.user = utility.user.LoggedUser
-
+        """
+        @type: User
+        """
+    def startUi( self ):
+        self.setupUi( self )
         dockaction = self.dockWidget.toggleViewAction()
         dockaction.setIcon( QIcon( ":/icons/res/utilities-desktop-extra.png" ) )
         self.toolBar.addAction( dockaction )
@@ -123,12 +136,13 @@ class MainWindowBase( object ):
         "junto con el programa." )
 
     def help( self ):
-        pass
-        #settings = QSettings()
-        #base = settings.value( "Reports/base" ).toString()
+        if sys.platform == "linux2":
+            self.process.setWorkingDirectory( "/usr/share/doc/packages/misesquipulas/manual/" )
+        elif sys.platform == "win32":
+            self.process.setWorkingDirectory( r"C:\Archivos de programa\Esquipulas\manual" )
 
-        #ds = QDesktopServices()
-        #ds.openUrl(QUrl(base + "../help/"))
+        self.process.start( "assistant -collectionFile esquipulashelpcollection.qhc" )
+
 
     def changePassword( self ):
         dlg = utility.user.dlgPasswordChange( self.user )
@@ -147,12 +161,12 @@ class MainWindowBase( object ):
                 window.widget().toolBar.setVisible( True )
 
 
-    def setStatus( self, status ):
+    def _setStatus( self, status ):
         self.__status = status
         self.setControls( self.__status )
-    def getStatus( self ):
+    def _getStatus( self ):
         return self.__status
-    status = property( getStatus, setStatus )
+    status = property( _getStatus, _setStatus )
 
     def setControls( self, status ):
         raise NotImplementedError()

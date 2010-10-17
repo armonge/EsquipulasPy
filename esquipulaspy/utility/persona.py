@@ -18,14 +18,11 @@ from utility.base import Base
 
 TIPO, ID, NOMBRE, DIRECCION, TELEFONO, CORREO, RUC, ACTIVO = range( 8 )
 
-class frmPersona( Ui_frmPersona, QMainWindow, Base ):
-    def __init__( self, tipo, rol, parent = None ):
-        print "here"
-        super( frmPersona, self ).__init__( parent )
-        self.setupUi( self )
-        self.parentWindow = parent
+class FrmPersona( Ui_frmPersona, Base ):
+    def __init__( self, tipo, rol, parent ):
+        super( FrmPersona, self ).__init__( parent )
+
         self.tabledetails = None
-        Base.__init__( self )
         self.setWindowModality( Qt.WindowModal )
         self.setWindowFlags( Qt.Dialog )
         self.parentWindow.removeToolBar( self.toolBar )
@@ -205,7 +202,7 @@ class frmPersona( Ui_frmPersona, QMainWindow, Base ):
             self.actionEditar
         ] )
 
-        super( frmPersona, self ).addActionsToToolBar()
+        super( FrmPersona, self ).addActionsToToolBar()
 
 
     def setControls( self, status ):

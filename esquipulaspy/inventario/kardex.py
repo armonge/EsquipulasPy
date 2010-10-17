@@ -23,7 +23,7 @@ IDARTICULO, DESCRIPCION, UNIDADES, AJUSTE, IDDOCUMENTOT = range( 5 )
 #NAVIGATION
 IDDOCUMENTO, NDOCIMPRESO, NKARDEX, NOMBREBODEGA, FECHA, OBSERVACIONK , \
 OBSERVACION, BODEGA = range( 8 )
-class FrmKardex( QMainWindow, Ui_frmKardex, Base ):
+class FrmKardex( Ui_frmKardex, Base ):
     '''
     classdocs
     '''
@@ -32,9 +32,6 @@ class FrmKardex( QMainWindow, Ui_frmKardex, Base ):
         Constructor
         '''
         super( FrmKardex, self ).__init__( parent )
-        self.setupUi( self )
-        self.parentWindow = parent
-        Base.__init__( self )
         self.tiposdoc = ",".join( [str( item ) for item in tiposdoc] )
 
         self.edit = edit

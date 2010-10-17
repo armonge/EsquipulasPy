@@ -29,7 +29,7 @@ IDDOCUMENTO, NDOCIMPRESO, FACTURA, CLIENTE, OBSERVACION, FECHA, \
 SUBTOTAL, IMPUESTOS, COSTO, TOTAL, TASA, CONCEPTO, NOMBREBODEGA = range( 13 )
 #detailsmodel
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD, IDDOCUMENTOT = range( 6 )
-class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
+class FrmDevolucion( Ui_frmDevoluciones, Base ):
     """
     Formulario para crear nuevas devoluciones
     """
@@ -39,9 +39,6 @@ class FrmDevolucion( QMainWindow, Ui_frmDevoluciones, Base ):
         Constructor
         """
         super( FrmDevolucion, self ).__init__( parent )
-        self.setupUi( self )
-        self.parentWindow = parent
-        Base.__init__( self )
 
 
 

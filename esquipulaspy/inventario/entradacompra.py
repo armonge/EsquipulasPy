@@ -25,7 +25,7 @@ TOTALC, TOTALD, TIPOPAGO = range( 10 )
 #table
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIOC, PRECIOD, TOTALPRODC, \
 TOTALPRODD, IDDOCUMENTOT = range( 8 )
-class FrmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
+class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
     """
     Implementacion de la interfaz grafica para entrada compra
     """
@@ -35,9 +35,6 @@ class FrmEntradaCompra( QMainWindow, Ui_frmEntradaCompra, Base ):
         Constructor
         """
         super( FrmEntradaCompra, self ).__init__( parent )
-        self.setupUi( self )
-        self.parentWindow = parent
-        Base.__init__( self )
 
 
 
