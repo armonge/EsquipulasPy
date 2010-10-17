@@ -6,12 +6,21 @@ Created on 18/05/2010
 '''
 from PyQt4.QtSql import QSqlQuery
 from decimal import Decimal
+from utility.decorators import ifValid
 
 
-
-#FIXME: Para que se usa el parametro parent???
 class LineaFactura:
-    def __init__( self ):
+    def __init__( self, parent ):
+        """
+        @type parent: FacturaModel
+        @param parent: El FacturaModel al que pertenece esta factura
+        """
+
+        self.__parent = parent
+        """
+        @ivar: El FacturaModel al que pertenece esta factura
+        @type: FacturaModel
+        """
         self.quantity = 0
         """
         @ivar: La cantidad de articulos en esta linea
@@ -62,18 +71,20 @@ class LineaFactura:
 
 
     @property
+    @ifValid
     def total( self ):
         """
         el total de esta linea
         """
-        return Decimal( self.quantity * self.itemPrice ) if self.valid else Decimal( 0 )
+        return Decimal( self.quantity * self.itemPrice )
 
     @property
+    @ifValid
     def costototal( self ):
         """
         el costo total de esta linea
         """
-        return Decimal( self.quantity * self.costo ) if self.valid else Decimal( 0 )
+        return Decimal( self.quantity * self.costo )
 
 
     @property
@@ -81,7 +92,13 @@ class LineaFactura:
         """
         es esta linea valida
         """
-        if  int( self.itemId ) != 0   and Decimal( self.itemPrice ) > 0 and int( self.quantity ) > 0 :
+
+
+        if  self.itemId != 0 \
+            and  self.itemPrice > 0 \
+            and  0 < self.quantity <= self.existencia \
+            and self.idbodega == self.__parent.bodegaId \
+            and self.idbodega > 0:
             return True
         return False
 
@@ -105,14 +122,14 @@ class LineaFactura:
         query.bindValue( ":iddocumento", iddocumento )
         query.bindValue( ":idarticulo", self.itemId )
         query.bindValue( ":unidades", self.quantity * -1 )
-        query.bindValue( ":costo", self.costo.to_eng_string() )
-        query.bindValue( ":precio", self.itemPrice.to_eng_string() )
+        query.bindValue( ":costo", str( self.costo ) )
+        query.bindValue( ":precio", str( self.itemPrice ) )
         query.bindValue( ":linea", linea )
 
 
         if not query.exec_():
             print( query.lastError().text() )
-            raise Exception( "line %s" % self.itemId )
+            raise Exception( "line %d" % self.itemId )
 
 
 

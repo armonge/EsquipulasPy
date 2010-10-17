@@ -4,14 +4,15 @@ Created on 18/05/2010
 
 @author: Luis Carlos Mejia Garcia
 '''
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, QDate
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from decimal import Decimal
 from lineafactura import LineaFactura
 from utility import constantes
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movFacturaCredito
-import logging
+#Los datos de la existencia
+IDARTICULOEX, DESCRIPCIONEX, PRECIOEX, COSTOEX, EXISTENCIAEX, IDBODEGAEX = range( 6 )
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD = range( 5 )
 class FacturaModel( QAbstractTableModel ):
@@ -48,7 +49,7 @@ class FacturaModel( QAbstractTableModel ):
         @ivar: Las observaciones del documento
         @type: string
         """
-        self.ivaTasa = Decimal( 0 )
+        self._ivaTasa = Decimal( 0 )
         """
         @ivar: La tasa de IVA en la factura
         @type: Decimal
@@ -87,14 +88,14 @@ class FacturaModel( QAbstractTableModel ):
         @type: Decimal
         """
 
-    def setFechaTope( self, value ):
+    def _setFechaTope( self, value ):
         if value < self.datosSesion.fecha:
             raise ValueError( u"value debe ser mayor que la fecha de la sesión" )
 
         self.__fechaTope = value
-    def getFechaTope( self ):
+    def _getFechaTope( self ):
         return self.__fechaTope
-    fechaTope = property( getFechaTope, setFechaTope )
+    fechaTope = property( _getFechaTope, _setFechaTope )
 
 
     def removeRows( self, position, rows = 1, _index = QModelIndex() ):
@@ -144,7 +145,14 @@ class FacturaModel( QAbstractTableModel ):
         El IVA total del documento, se calcula en base a subtotal y rateIVA
         @rtype: Decimal
         """
-        return  self.subtotal * ( self.ivaTasa / Decimal( 100 ) ) if self.applyIva else Decimal( 0 )
+        return  self.subtotal * ( self.ivaTasa / Decimal( 100 ) )
+
+    def _setIvaTasa( self, value ):
+        self._ivaTasa = value
+    def _getIvaTasa( self ):
+        return self._ivaTasa if self.applyIva else Decimal( 0 )
+
+    ivaTasa = property( _getIvaTasa, _setIvaTasa )
 
     @property
     def applyIva( self ):
@@ -191,7 +199,7 @@ class FacturaModel( QAbstractTableModel ):
                 return moneyfmt( line.total , 4, "US$" ) if line.itemId != 0 else ""
         elif role == Qt.EditRole:
             if column == PRECIO:
-                return line.itemPrice
+                return float( line.itemPrice )
         elif role == Qt.TextAlignmentRole:
 #            if column==:
 #                return Qt.AlignHCenter | Qt.AlignVCenter
@@ -214,17 +222,17 @@ class FacturaModel( QAbstractTableModel ):
         if index.isValid() and 0 <= index.row() < len( self.lines ) :
             line = self.lines[index.row()]
             column = index.column()
-            if column == DESCRIPCION:
-                line.itemId = value[0]
-                line.itemDescription = value[1]
-                line.sugerido = Decimal( value[2] )
+            if column in ( IDARTICULO, DESCRIPCION ):
+                line.itemId = value[IDARTICULOEX]
+                line.itemDescription = value[DESCRIPCIONEX]
+                line.sugerido = Decimal( value[PRECIOEX] )
                 line.itemPrice = Decimal( line.sugerido )
-                line.costodolar = Decimal( value[3] )
-                line.costo = Decimal( value[4] )
-                line.existencia = value[5]
+                line.costo = Decimal( value[COSTOEX] )
+                line.existencia = value[EXISTENCIAEX]
                 if line.existencia < line.quantity :
                     line.quantity = line.existencia
-                line.idbodega = value[6]
+                line.idbodega = int( value[IDBODEGAEX] )
+
             elif column == CANTIDAD:
                 line.quantity = value.toInt()[0]
             elif column == PRECIO:
@@ -244,7 +252,7 @@ class FacturaModel( QAbstractTableModel ):
     def insertRows( self, position, rows = 1, _index = QModelIndex() ):
         self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
         for row in range( rows ):
-            self.lines.insert( position + row, LineaFactura() )
+            self.lines.insert( position + row, LineaFactura( self ) )
         self.endInsertRows()
         self.dirty = True
         return True
@@ -267,26 +275,32 @@ class FacturaModel( QAbstractTableModel ):
             elif section == CANTIDAD:
                 return "Cantidad"
         return int( section + 1 )
-    
+
     @property
     def valid( self ):
+        if not self.datosSesion.valid:
+            self.errorMessage = "Los datos de la sesión no son validos"
+            return False
         if not self.validLines > 0:
             self.errorMessage = "Existe una linea no valida"
             return False
-        if not self.ivaId > 0:
-            self.errorMessage = "Existe una linea no valida"
-            return False
         if not self.total > 0:
-            self.errorMessage = "Existe una linea no valida"
+            self.errorMessage = "El total no puede ser 0"
             return False
         if not self.bodegaId > 0:
-            self.errorMessage = "Existe una linea no valida"
+            self.errorMessage = "No se ha definido el ID de la bodega"
             return False
 
         if self.escontado == False:
             if not self.fechaTope > self.datosSesion.fecha:
                 self.errorMessage = "Fecha Tope Incorrecta"
                 return False
+
+        if self.applyIva:
+            if not self.ivaId > 0:
+                self.errorMessage = "No se ha definido el ID del IVA"
+                return False
+
 
         return True
     def save( self , otrosDatosModel ):
@@ -303,7 +317,7 @@ class FacturaModel( QAbstractTableModel ):
 
         if not self.valid:
             print self.errorMessage
-            raise Exception( u"Se intento guardar una factura no valida ")
+            raise Exception( u"Se intento guardar una factura no valida " )
 
         if not query.prepare( """
         INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,
@@ -313,7 +327,8 @@ class FacturaModel( QAbstractTableModel ):
         """ ):
             raise Exception( "No se pudo guardar el documento" )
         query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-        query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString( "hhmmss" ) )
+        query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' )
+                          + QDateTime.currentDateTime().toString( "hhmmss" ) )
         query.bindValue( ":idtipodoc", self.__documentType )
         query.bindValue( ":observacion", self.observaciones )
         query.bindValue( ":total", self.total.to_eng_string() )
@@ -356,14 +371,15 @@ class FacturaModel( QAbstractTableModel ):
         query.bindValue( ":vendedor", constantes.VENDEDOR )
 
         if not query.exec_():
-            raise Exception( "No se Inserto la relacion entre el documento y las personas" )
+            raise Exception( "No se Inserto la relacion entre "\
+                             + "el documento y las personas" )
 
         for i, linea in enumerate( [line for line in self.lines if line.valid] ):
             linea.save( insertedId, i )
 
 #VERIFICO SI el id del iva es cero. NO SERA CERO CUANDO LA BODEGA=1 PORQUE ESTA NO ES exonerada                     
 
-        if self.bodegaId == 1 :
+        if self.applyIva:
             query.prepare( """
             INSERT INTO costosxdocumento (iddocumento, idcostoagregado) 
             VALUES( :iddocumento, :idcostoagregado )

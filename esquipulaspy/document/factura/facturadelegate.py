@@ -4,24 +4,24 @@ Created on 18/05/2010
 
 @author: armonge
 '''
-from PyQt4.QtGui import QStyledItemDelegate, QSpinBox, QDoubleSpinBox, QSortFilterProxyModel #, QComboBox, QSortFilterProxyModel, QCompleter
 from PyQt4.QtCore import Qt, QSize
-from utility.widgets import SingleSelectionSearchPanelDelegate
-from utility.moneyfmt import moneyfmt
+from PyQt4.QtGui import  QSpinBox, QDoubleSpinBox, \
+    QSortFilterProxyModel
 from decimal import Decimal
+from utility.moneyfmt import moneyfmt
+from utility.widgets import SingleSelectionSearchPanelDelegate
+IDARTICULOEX, DESCRIPCIONEX, PRECIOEX, COSTOEX, EXISTENCIAEX, IDBODEGAEX = range( 6 )
+
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD = range( 5 )
-#FIXME: Por que no usar range???
-PRECIOSUGERIDO = 2
-COSTODOLAR = 3
-COSTOARTICULO = 4
-EXISTENCIA = 5
-BODEGA = 6
 class FacturaDelegate( SingleSelectionSearchPanelDelegate ):
+    """
+    El delegado para la tabla factura
+    """
     def __init__( self, model, showTable = True , parent = None ):
-        super(FacturaDelegate, self).__init__(showTable, parent)
+        super( FacturaDelegate, self ).__init__( showTable, parent )
         self.proxymodel.setSourceModel( model )
-        self.proxymodel.setFilterKeyColumn( IDARTICULO )
+        self.proxymodel.setFilterKeyColumn( IDARTICULOEX )
         self.articles = model
 
 
@@ -38,12 +38,13 @@ class FacturaDelegate( SingleSelectionSearchPanelDelegate ):
         elif index.column() == DESCRIPCION :
             if self.articles.rowCount() > 0:
                 self.proxymodel.setSourceModel( self.articles )
-                
-                current = index.model().data( index.model().index( index.row(), IDARTICULO ) )
-                self.proxymodel.setFilterRegExp( self.filter( index.model(), current ) )
+                model = index.model()
+
+                current = model.index( index.row(), IDARTICULOEX ).data()
+                self.proxymodel.setFilterRegExp( self.filter( model , current ) )
                 sp = super( FacturaDelegate, self ).createEditor( parent, option, index )
-                sp.setColumnHidden( BODEGA )
-                sp.setColumnHidden(IDARTICULO)
+                #sp.setColumnHidden( IDBODEGAEX )
+                #sp.setColumnHidden( IDARTICULOEX )
                 return sp
         elif index.column() == TOTALPROD:
             return None
@@ -64,12 +65,15 @@ class FacturaDelegate( SingleSelectionSearchPanelDelegate ):
         """
         text = index.data( Qt.DisplayRole ).toString()
         if index.column() == CANTIDAD:
-            editor.setValue( index.model().data( index, Qt.DisplayRole ) if index.model().data( index, Qt.DisplayRole ) != "" else 0 )
+            data = index.data( Qt.DisplayRole ).toInt()[0]
+            editor.setValue( data  if data != "" else 0 )
         elif index.column() == PRECIO:
-            editor.setValue( index.model().data( index, Qt.EditRole ) if index.model().data( index, Qt.EditRole ) != "" else 0 )
+            data = index.data( Qt.EditRole ).toDouble()[0]
+            editor.setValue( data )
         elif index.column() == DESCRIPCION:
-            current = index.model().data( index.model().index( index.row(), IDARTICULO ) )
-            self.proxymodel.setFilterRegExp( self.filter( index.model(), current ) )
+            model = index.model()
+            current = model.data( model.index( index.row(), IDARTICULOEX ) )
+            self.proxymodel.setFilterRegExp( self.filter( model, current ) )
 
             i = editor.findText( text )
             if i == -1:
@@ -78,13 +82,13 @@ class FacturaDelegate( SingleSelectionSearchPanelDelegate ):
             editor.setCurrentIndex( i )
             editor.lineEdit().selectAll()
         else:
-            super(FacturaDelegate,self).setEditorData( editor, index )
+            super( FacturaDelegate, self ).setEditorData( editor, index )
 
     def setModelData( self, editor, model, index ):
         """
         En este evento se toma el resultado del editor y se introduco en el modelo
         """
-        if index.column() in (IDARTICULO, DESCRIPCION):
+        if index.column() in ( IDARTICULO, DESCRIPCION ):
             if self.proxymodel.rowCount() > 0:
                 if editor.currentIndex() != -1:
                     proxyindex = self.proxymodel.index( editor.currentIndex() , 0 )
@@ -93,16 +97,15 @@ class FacturaDelegate( SingleSelectionSearchPanelDelegate ):
                     fila = sourceindex.row()
                     modelo = self.articles
                     model.setData( index, [
-                                           modelo.index( fila , IDARTICULO ).data( Qt.EditRole ).toInt()[0],
+                                           modelo.index( fila , IDARTICULOEX ).data( Qt.EditRole ).toInt()[0],
                                            modelo.index( fila, DESCRIPCION ).data( Qt.EditRole ).toString(),
-                                           modelo.index( fila, PRECIOSUGERIDO ).data( Qt.EditRole ).toString(),
-                                           modelo.index( fila , COSTODOLAR ).data( Qt.EditRole ).toString(),
-                                           modelo.index( fila, COSTOARTICULO ).data( Qt.EditRole ).toString(),
-                                           modelo.index( fila, EXISTENCIA ).data( Qt.EditRole ).toInt()[0],
-                                           modelo.index( fila, BODEGA ).data( Qt.EditRole ).toInt()[0]
+                                           modelo.index( fila, PRECIOEX ).data( Qt.EditRole ).toString(),
+                                           modelo.index( fila, COSTOEX ).data( Qt.EditRole ).toString(),
+                                           modelo.index( fila, EXISTENCIAEX ).data( Qt.EditRole ).toInt()[0],
+                                           modelo.index( fila, IDBODEGAEX ).data( Qt.EditRole ).toInt()[0]
                             ] )
         else:
-            super(FacturaDelegate, self).setModelData(  editor, model, index )
+            super( FacturaDelegate, self ).setModelData( editor, model, index )
 
     def sizeHint( self, option, index ):
         u"""
@@ -119,7 +122,7 @@ class FacturaDelegate( SingleSelectionSearchPanelDelegate ):
         elif index.column() == TOTALPROD:
             return QSize( 200, fm.height() )
 
-        return super(FacturaDelegate, self).sizeHint( option, index )
+        return super( FacturaDelegate, self ).sizeHint( option, index )
 
 
 class SingleSelectionModel( QSortFilterProxyModel ):
@@ -127,14 +130,12 @@ class SingleSelectionModel( QSortFilterProxyModel ):
         """
         darle formato a los campos de la tabla
         """
-        value = super(SingleSelectionModel, self).data(  index, role )
+        value = super( SingleSelectionModel, self ).data( index, role )
         if role == Qt.DisplayRole:
-            if index.column() == PRECIOSUGERIDO :
+            if index.column() == PRECIOEX :
                 return moneyfmt( Decimal( value.toString() ), 4, "US$" )
-            elif index.column() == COSTOARTICULO:
+            elif index.column() == COSTOEX:
                 return moneyfmt( Decimal( value.toString() ), 4, "C$" )
-            elif index.column() == COSTODOLAR:
-                return moneyfmt( Decimal( value.toString() ), 4, "US$" )
             else:
                 return value
         return value
@@ -150,16 +151,14 @@ class SingleSelectionModel( QSortFilterProxyModel ):
         if orientation == Qt.Horizontal:
             if  section == DESCRIPCION:
                 return u"Descripción"
-            elif section == PRECIOSUGERIDO:
+            elif section == PRECIOEX:
                 return "Precio Unit."
-            elif section == COSTOARTICULO:
+            elif section == COSTOEX:
                 return "Costo C$"
-            elif section == IDARTICULO:
+            elif section == IDARTICULOEX:
                 return "Id"
-            elif section == COSTODOLAR:
-                return "Costo US$"
-            elif section == EXISTENCIA:
+            elif section == EXISTENCIAEX:
                 return "Existencia"
-            elif section == BODEGA:
+            elif section == IDBODEGAEX:
                 return "Bodega"
         return int( section + 1 )

@@ -20,10 +20,12 @@ from utility.base import Base
 from utility.moneyfmt import moneyfmt
 import logging
 
-
+#el modelo de la existencia
+IDARTICULOEX, DESCRIPCIONEX, PRECIOEX, COSTOEX, EXISTENCIAEX, IDBODEGAEX = range( 6 )
 
 #controles
-IDDOCUMENTO, NDOCIMPRESO, CLIENTE, VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, FECHA, BODEGA, TASA, TASAIVA, ESTADO, ANULADO, ESCONTADO, TOTALFAC = range( 16 )
+IDDOCUMENTO, NDOCIMPRESO, CLIENTE, VENDEDOR, SUBTOTAL, IVA, TOTAL, OBSERVACION, \
+ FECHA, BODEGA, TASA, TASAIVA, ESTADO, ANULADO, ESCONTADO, TOTALFAC = range( 16 )
 
 #table
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD, IDDOCUMENTOT = range( 6 )
@@ -68,7 +70,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         self.lblanulado.setHidden( True )
         self.toolBar.removeAction( self.actionAnular )
         self.toolBar.addAction( self.actionAnular )
-        
+
         self.cargarRecibos()
 
         self.existenciaModel = QSqlQueryModel()
@@ -82,17 +84,18 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
 
         self.tabledetails.setOrder( 1, 3 )
+        self.recibo = None
 
 
         QTimer.singleShot( 0, self.loadModels )
 
-    def cargarRecibos(self):
+    def cargarRecibos( self ):
         self.recibo = FrmRecibo( self )  #dlgRecibo( self, True )
         self.recibo.setWindowModality( Qt.WindowModal )
         self.recibo.setWindowFlags( Qt.Dialog )
         self.recibo.parentWindow.removeToolBar( self.recibo.toolBar )
         self.recibo.addToolBar( self.recibo.toolBar )
-        self.recibo.actionNew.setVisible(False)
+        self.recibo.actionNew.setVisible( False )
 
     def cancel( self ):
         """
@@ -183,7 +186,6 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 idarticulo,
                 descripcion,
                 precio,
-                costodolar,
                 ROUND(costo,4) as costo,
                 Existencia,
                 idbodega
@@ -192,16 +194,16 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                     """ ) )
             self.proxyexistenciaModel = SingleSelectionModel()
             self.proxyexistenciaModel.setSourceModel( self.existenciaModel )
-            self.proxyexistenciaModel.setFilterKeyColumn( 6 )
+            self.proxyexistenciaModel.setFilterKeyColumn( IDBODEGAEX )
 
             if self.proxyexistenciaModel.rowCount() == 0:
                 QMessageBox.information( self  ,
                                           qApp.organizationName(),
                                           "No hay articulos en existencia" )
                 return
-            
+
             delegate = FacturaDelegate( self.proxyexistenciaModel )
-            
+
 
     #            Rellenar el combobox de las BODEGAS
 
@@ -294,7 +296,8 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
 
     @property
     def printIdentifier( self ):
-        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
+        return self.navmodel.record( self.mapper.currentIndex()
+                                     ).value( "iddocumento" ).toString()
 
     def addActionsToToolBar( self ):
         self.toolBar.addActions( [
@@ -394,7 +397,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
 
             self.editmodel = None
             self.readOnly = True
-            
+
             self.updateModels()
             self.cargarRecibos()
             self.navigate( 'last' )
@@ -438,7 +441,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
             doc = self.navmodel.record( currentIndex ).value( "iddocumento" ).toInt()[0]
             estado = self.navmodel.record( currentIndex ).value( "idestado" ).toInt()[0]
             total = self.navmodel.record( currentIndex ).value( "totalfac" ).toString()
-            if total !="":
+            if total != "":
                 total = Decimal( total )
 
             try:
@@ -527,7 +530,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
 
 
                                     if not self.database.commit():
-                                        raise Exception( "N se hizo el commit para la Anulacion" )
+                                        raise Exception( "No se hizo el commit para la Anulacion" )
 
                                     QMessageBox.information( self,
                                                              qApp.organizationName(),
@@ -561,10 +564,10 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
 #        else:
 #        self.recibo.updateModels()
         self.recibo.remoteProxyModel.setFilterRegExp( "(%s)" % record.value( "iddocumento" ).toString() )
-        if self.recibo.remoteProxyModel.rowCount()!=0: 
-            self.recibo.mapper.setCurrentIndex(0)
+        if self.recibo.remoteProxyModel.rowCount() != 0:
+            self.recibo.mapper.setCurrentIndex( 0 )
             self.recibo.show()
-        
+
 
     @pyqtSlot( int )
     def on_cboFiltro_currentIndexChanged( self, index ):
@@ -585,11 +588,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         """
         if not self.editmodel is None:
             if self.editmodel.rowCount() > 0 and self.editmodel.lines[0].itemDescription != "":
-                for line in self.editmodel.lines:
-                    if line.itemId > 0 :
-                        self.tabledetails.itemDelegate().filtrados = []
                 self.editmodel.removeRows( 0, self.editmodel.rowCount() )
-                self.editmodel.insertRow( 0 )
 
             self.editmodel.bodegaId = self.bodegasModel.record( index ).value( "idbodega" ).toInt()[0]
             self.proxyexistenciaModel.setFilterRegExp( '^%d$' % self.editmodel.bodegaId )
@@ -695,34 +694,31 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
 #            self.recibo.setHidden(True)
 
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        print record.value( "iddocumento" ).toString()
-        print self.detailsproxymodel.rowCount()
-        self.detailsproxymodel.setFilterRegExp(record.value( "iddocumento" ).toString())
-        print self.detailsproxymodel.rowCount()
+        self.detailsproxymodel.setFilterRegExp( record.value( "iddocumento" ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
     def updateLabels( self ):
         self.lblsubtotal.setText( moneyfmt( self.editmodel.subtotal, 4, "US$ " ) )
         self.lbliva.setText( moneyfmt( self.editmodel.IVA, 4, "US$ " ) )
         self.lbltotal.setText( moneyfmt( self.editmodel.total, 4, "US$ " ) )
-        self.lbltasaiva.setText( ( '0' if self.editmodel.bodegaId != 1 else str( self.editmodel.ivaTasa ) ) + '%' )
+        self.lbltasaiva.setText( str( self.editmodel.ivaTasa ) + '%' )
         self.tabledetails.resizeColumnsToContents()
 
     def updateModels( self ):
         """
         Recargar todos los modelos
         """
-        
+
         try:
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( u"No se pudo establecer la "\
                                        + "conexión con la base de datos" )
-            
+
             if self.readOnly:
-                
+
     #        El modelo principal
-    
+
                 query = """
                 SELECT
                 
@@ -755,12 +751,18 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                     GROUP BY d.iddocumento
                     ORDER BY CAST(IF(ndocimpreso='S/N',0,d.ndocimpreso) AS SIGNED)
                     ;
-                """ % ( constantes.CLIENTE, constantes.VENDEDOR, constantes.IDRECIBO, constantes.IDNC, constantes.CONFIRMADO, constantes.PENDIENTE, constantes.IDFACTURA )
+                """ % ( constantes.CLIENTE,
+                        constantes.VENDEDOR,
+                        constantes.IDRECIBO,
+                        constantes.IDNC,
+                        constantes.CONFIRMADO,
+                        constantes.PENDIENTE,
+                        constantes.IDFACTURA )
                 self.navmodel.setQuery( query )
     #>>>>>>> .r383
-    
-    
-    
+
+
+
         #        Este es el modelo con los datos de la tabla para navegar
                 self.detailsmodel.setQuery( u"""
                     SELECT
@@ -775,11 +777,11 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                     WHERE a.precioventa IS NOT NULL
                     ;
                 """ )
-    
+
         #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
-                
+
                 self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
-                
+
                 self.mapper.setModel( self.navproxymodel )
                 self.mapper.addMapping( self.lblnfac, NDOCIMPRESO , "text" )
                 self.mapper.addMapping( self.txtobservaciones, OBSERVACION )
@@ -790,17 +792,12 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.mapper.addMapping( self.lblsubtotal, SUBTOTAL, "text" )
                 self.mapper.addMapping( self.lbliva, IVA, "text" )
                 self.mapper.addMapping( self.dtPicker, FECHA )
-    
-    #
-    #                self.mapper.addMapping( self.recibo.lbltotal, TOTAL, "text" )
-    #                self.mapper.addMapping( self.recibo.txtcliente, CLIENTE, "text" )
-    #                self.mapper.addMapping( self.recibo.lblfecha, FECHA, "text" )
-    
+
         #        asignar los modelos a sus tablas
-    
+
                 self.tablenavigation.setModel( self.navproxymodel )
                 self.tabledetails.setModel( self.detailsproxymodel )
-    
+
                 self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
                 self.tablenavigation.setColumnHidden( OBSERVACION, True )
                 self.tablenavigation.setColumnHidden( SUBTOTAL, True )
@@ -810,26 +807,26 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.tablenavigation.setColumnHidden( ESCONTADO, True )
                 self.tablenavigation.setColumnHidden( ANULADO, True )
                 self.tablenavigation.setColumnHidden( TOTALFAC, True )
-                
-                
-    
+
+
+
             else:
-                    
+
                 self.editmodel = FacturaModel( self.parentWindow.datosSesion )
-                
-                
+
+
             #           Cargar el numero de la factura actual
                 query = QSqlQuery( "SELECT fnConsecutivo(5,NULL);" )
-                
+
                 if not query.exec_():
                     raise Exception( "No se pudo obtener el numero de la factura" )
-                
+
                 query.first()
                 n = query.value( 0 ).toString()
-    
-    
+
+
                 self.editmodel.printedDocumentNumber = n
-    
+
                 self.clientesModel.setQuery( """
                             SELECT idpersona , nombre AS cliente 
                             FROM personas
@@ -838,9 +835,9 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 if self.clientesModel.rowCount() == 0:
                     QMessageBox.information( None, "Factura", "No existen clientes en la base de datos" )
                     return
-    
+
         #            Rellenar el combobox de los vendedores
-    
+
                 self.vendedoresModel.setQuery( """
                     SELECT 
                     idpersona, 
@@ -848,19 +845,20 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                     FROM personas
                     WHERE tipopersona = %d
                 """ % constantes.VENDEDOR )
-    
+
         #Verificar si existen clientes            
                 if self.vendedoresModel.rowCount() == 0:
-                    QMessageBox.information( None, "Factura", "No existen vendedores en la base de datos" )
+                    QMessageBox.information( self,
+                                             qApp.organizationName(),
+                                             "No existen vendedores en la base de datos" )
                     return
-    
+
             #Crear el delegado con los articulo y verificar si existen articulos
                 self.existenciaModel.setQuery( QSqlQuery( """
-                            SELECT
+                    SELECT
                     idarticulo,
                     descripcion,
                     precio,
-                    costodolar,
                     ROUND(costo,4) as costo,
                     Existencia,
                     idbodega
@@ -869,17 +867,19 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                         """ ) )
                 self.proxyexistenciaModel = QSortFilterProxyModel()
                 self.proxyexistenciaModel.setSourceModel( self.existenciaModel )
-                self.proxyexistenciaModel.setFilterKeyColumn( 6 )
-    
-                
+                self.proxyexistenciaModel.setFilterKeyColumn( 5 )
+
+
                 delegate = FacturaDelegate( self.proxyexistenciaModel )
-                
+
                 if delegate.proxymodel.rowCount() == 0:
-                    QMessageBox.information( None, "Factura", "No hay articulos en existencia" )
+                    QMessageBox.information( self,
+                                              qApp.organizationName(),
+                                              "No hay articulos en existencia" )
                     return
-    
+
         #            Rellenar el combobox de las BODEGAS
-    
+
                 self.bodegasModel.setQuery( """
                          SELECT
                                 b.idbodega,
@@ -892,12 +892,14 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 GROUP BY b.idbodega
                 HAVING SUM(ad.unidades)>0    
                         """ )
-    
+
             #Verificar si existen bodegas            
                 if self.bodegasModel.rowCount() == 0:
-                            QMessageBox.information( None, "Factura", "No existe ninguna bodega en la base de datos" )
+                            QMessageBox.information( self,
+                                                      qApp.organizationName(),
+                                                      "No existe ninguna bodega en la base de datos" )
                             return
-    
+
         #Verificar IVA    
                 query = QSqlQuery( """
                         SELECT idcostoagregado, valorcosto 
@@ -905,22 +907,24 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                         WHERE idtipocosto = 1 AND activo = 1 
                         ORDER BY idtipocosto;
                         """ )
-                
+
                 query.exec_()
                 if not query.size() == 1:
-                    QMessageBox.information( None, "Factura", "No fue posible obtener el porcentaje del IVA" )
+                    QMessageBox.information( self,
+                                             qApp.organizationName(),
+                                             "No fue posible obtener el porcentaje del IVA" )
                     return
                 query.first()
-    
-    
+
+
                 self.editmodel.ivaId = query.value( 0 ).toInt()[0]
                 self.lbltasaiva.setText( ( '0' if self.editmodel.bodegaId <> 1 else str( self.editmodel.ivaTasa ) ) + '%' )
                 self.editmodel.ivaTasa = Decimal( query.value( 1 ).toString() )
-    
-    
+
+
                 self.tabledetails.setItemDelegate( delegate )
-    
-    
+
+
                 self.cbcliente.setModel( self.clientesModel )
                 self.cbcliente.setCurrentIndex( -1 )
                 self.cbcliente.setFocus()
@@ -930,8 +934,8 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.completer.setModel( self.clientesModel )
                 self.completer.setCompletionColumn( 1 )
                 self.cbcliente.setCompleter( self.completer )
-    
-    
+
+
                 self.cbbodega.setModel( self.bodegasModel )
                 self.cbbodega.setCurrentIndex( -1 )
                 self.cbbodega.setModelColumn( 1 )
@@ -940,7 +944,7 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.completerbodega.setModel( self.bodegasModel )
                 self.completerbodega.setCompletionColumn( 1 )
                 self.cbbodega.setCompleter( self.completerbodega )
-    
+
                 self.cbvendedor.setModel( self.vendedoresModel )
                 self.cbvendedor.setCurrentIndex( -1 )
                 self.cbvendedor.setModelColumn( 1 )
@@ -949,15 +953,15 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
                 self.completerVendedor.setModel( self.vendedoresModel )
                 self.completerVendedor.setCompletionColumn( 1 )
                 self.cbvendedor.setCompleter( self.completerVendedor )
-    
+
                 self.tabledetails.setModel( self.editmodel )
                 self.addLine()
                 self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
-    
+
                 self.rbcontado.setChecked( True )
                 self.txtobservaciones.setPlainText( "" )
-                
-    
+
+
             resultado = True
         except UserWarning as inst:
             logging.error( unicode( inst ) )
@@ -974,8 +978,8 @@ class FrmFactura( Ui_frmFactura, QMainWindow, Base ):
         finally:
             if self.database.isOpen():
                 self.database.close()
-                
-        
+
+
         return resultado
 
 
@@ -1037,8 +1041,8 @@ class DlgCredito( QDialog ):
 
         formLayout = QFormLayout()
 
-        self.dtFechaTope.setCalendarPopup(True)
-        self.sbTaxRate.setSuffix('%')
+        self.dtFechaTope.setCalendarPopup( True )
+        self.sbTaxRate.setSuffix( '%' )
 
         formLayout.addRow( u"<b>Fecha Tope</b>", self.dtFechaTope )
         formLayout.addRow( u"<b>Tasa de multa</b>", self.sbTaxRate )
