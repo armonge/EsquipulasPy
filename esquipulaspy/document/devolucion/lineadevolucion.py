@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#TODO: unittest
 '''
 Created on 19/05/2010
 
@@ -7,9 +6,15 @@ Created on 19/05/2010
 '''
 from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery
+from utility.docbase import LineaBase
+from utility.decorators import ifValid
 
-class LineaDevolucion:
+class LineaDevolucion( LineaBase ):
+    """
+    Este es un articulo de la DevolucionModel
+    """
     def __init__( self, parent ):
+        super( LineaDevolucion, self ).__init__()
         self.quantity = 0
         """
         @ivar: La cantidad de articulos en esta linea
@@ -32,12 +37,12 @@ class LineaDevolucion:
         """
         self.itemPrice = Decimal( 0 )
         """
-        @ivar:El precio de venta por unidad en esta linea
+        @ivar:El precio de venta por unidad en esta linea, en dolares
         @type:Decimal
         """
         self.itemCost = Decimal( 0 )
         """
-        @ivar: El costo unitario de este articulo
+        @ivar: El costo unitario de este articulo en dolares
         @type: Decimal
         """
         self.parent = parent
@@ -47,12 +52,13 @@ class LineaDevolucion:
         """
 
     @property
+    @ifValid
     def totalD( self ):
         """
         Esto es en base al precio de venta, en dolares
         @rtype: Decimal
         """
-        return self.quantity * self.itemPrice  if self.valid else Decimal( 0 )
+        return self.quantity * self.itemPrice
 
     @property
     def totalC( self ):
@@ -63,12 +69,13 @@ class LineaDevolucion:
         return self.totalD * self.parent.exchangeRate
 
     @property
+    @ifValid
     def costoD( self ):
         """
         Esto es en base al costo unitario, en dolares
         @rtype: Decimal
         """
-        return self.quantity * self.itemCost if self.valid else Decimal( 0 )
+        return self.quantity * self.itemCost
 
     @property
     def costoC( self ):
@@ -76,7 +83,7 @@ class LineaDevolucion:
         El costo en cordobas
         @rtype: Decimal
         """
-        return self.costoC * self.parent.exchangeRate
+        return self.costoD * self.parent.exchangeRate
 
     @property
     def valid( self ):
@@ -84,26 +91,32 @@ class LineaDevolucion:
         Si una linea es valido o no
         @rtype: bool
         """
-        if 0 < self.quantity <= self.maxquantity and self.itemId != 0 :
+        if 0 < self.quantity <= self.maxquantity \
+        and self.itemId != 0 :
             return True
         return False
 
-    def save( self, iddocumento ):
+    def save( self, iddocumento, nlinea ):
         if not self.valid:
             raise Exception( "Se intento guardar una linea no valida" )
 
         query = QSqlQuery()
         if not query.prepare( 
         """
-        INSERT INTO articulosxdocumento (iddocumento, idarticulo, unidades, costounit, precioventa ) 
-        VALUES( :iddocumento, :idarticulo, :unidades, :costounit, :preciounit )
+        INSERT INTO articulosxdocumento (iddocumento, idarticulo,
+         unidades, costounit, precioventa, nlinea ) 
+        VALUES( :iddocumento, :idarticulo, 
+        :unidades, :costounit, :preciounit, :nlinea )
         """ ):
-            raise Exception( u"No se pudo preparar la consulta para añadir una linea" )
+            raise Exception( u"No se pudo preparar la consulta para añadir"\
+                             + " una linea" )
         query.bindValue( ":iddocumento", iddocumento )
         query.bindValue( ":idarticulo", self.itemId )
         query.bindValue( ":unidades", self.quantity )
-        query.bindValue( ":costounit", self.itemCost.to_eng_string() )
-        query.bindValue( ":preciounit", self.itemPrice.to_eng_string() )
+        query.bindValue( ":costounit", str( self.itemCost ) )
+        query.bindValue( ":preciounit", str( self.itemPrice ) )
+        query.bindValue( ":nlinea", nlinea )
 
         if not query.exec_():
-            raise Exception( "No se pudo guardar la linea con el articulo " + str( self.itemId ) )
+            raise Exception( "No se pudo guardar la linea con el articulo %d" %
+                              self.itemId )

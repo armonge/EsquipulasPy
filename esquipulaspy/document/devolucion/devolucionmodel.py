@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
-#TODO: unittest
 '''
 Created on 19/05/2010
 
 @author: Andrés Reyes Monge
 '''
 import unittest
-if __name__ == "__main__":
-    import sip
-    sip.setapi( 'QString', 2 )
+from utility.docbase import DocumentBase
+from utility.decorators import return_decimal
 from decimal import Decimal
 import logging
 
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, QCoreApplication
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 
 
@@ -22,9 +20,10 @@ from utility.moneyfmt import moneyfmt
 from utility import constantes
 
 DESCRIPCION, PRECIO, CANTIDADMAX, CANTIDAD, TOTALPROD = range( 5 )
-class DevolucionModel( QAbstractTableModel ):
+class DevolucionModel( DocumentBase ):
     """
-    Esta clase es el modelo utilizado en la tabla en la que se editan los documentos
+    Esta clase es el modelo utilizado en la tabla en la que se editan
+     los documentos
     """
     __documentType = constantes.IDNC
     """
@@ -33,20 +32,11 @@ class DevolucionModel( QAbstractTableModel ):
     """
     def __init__( self ):
         super( DevolucionModel, self ).__init__()
-        self.observations = ""
-        """
-        @ivar:Las observaciones del documento
-        @type:string
-        """
+
         self.lines = []
         u"""
         @ivar:Las lineas en esta devolución
         @type: LineaDevolucion[]
-        """
-        self.printedDocumentNumber = ""
-        u"""
-        @ivar:El numero de esta devolución
-        @type:string
         """
         self.numnotacredito = ""
         u"""
@@ -69,11 +59,7 @@ class DevolucionModel( QAbstractTableModel ):
         @ivar:El numero impreso de la factura
         @type:string
         """
-        self.datetime = QDateTime.currentDateTime()
-        """
-        @ivar:La hora y fecha del documento
-        @type:string
-        """
+
         self.uid = 0
         """
         @ivar: El id del usuario que realiza esta devolución
@@ -137,28 +123,32 @@ class DevolucionModel( QAbstractTableModel ):
         @rtype: bool
         """
         if not int( self.clientId ) != 0:
-            self.validError = "No ha seleccionado un cliente"
+            self.__validError = "No ha seleccionado un cliente"
             return False
         elif not  int( self.validLines ) > 0:
-            self.validError = u"No existen lineas que guardar en la devolución"
+            self.__validError = u"No existen lineas que guardar en "\
+                + "la devolución"
             return False
         elif not int( self.uid ) != 0:
-            self.validError = "No se puede determinar el usuario que realiza el documento"
+            self.__validError = "No se puede determinar el usuario que "\
+            + "realiza el documento"
             return False
         elif not int( self.invoiceId ) != 0:
-            self.validError = "No se ha especificado el numero de factura"
+            self.__validError = "No se ha especificado el numero de factura"
             return False
         elif not self.printedDocumentNumber != "":
-            self.validError = u"No se ha especificado el numero de devolución"
+            self.__validError = u"No se ha especificado el numero de devolución"
             return False
         elif not int( self.exchangeRateId ) != 0 :
-            self.validError = "No hay un tipo de cambio para el documento"
+            self.__validError = "No hay un tipo de cambio para el documento"
             return False
         elif not int( self.conceptId ) > 0:
-            self.validError = u"No se ha especificado un concepto para la devolución"
+            self.__validError = u"No se ha especificado un concepto "\
+            + "para la devolución"
             return False
         elif not int( self.warehouseId ) > 0:
-            self.validError = u"No se ha especificado la bodega para la devolución"
+            self.__validError = u"No se ha especificado la bodega "\
+            + "para la devolución"
             return False
         return True
 
@@ -212,13 +202,13 @@ class DevolucionModel( QAbstractTableModel ):
         return self.ivaD * self.exchangeRate
 
     @property
+    @return_decimal
     def totalCostD( self ):
         """
         El costo total del documento, en dolares
         @rtype: Decimal
         """
-        foo = sum( [ line.costoD for line in self.lines if line.valid ] )
-        return foo if foo != 0 else Decimal( 0 )
+        return sum( [ line.costoD for line in self.lines if line.valid ] )
 
     @property
     def  totalCostC( self ):
@@ -227,13 +217,6 @@ class DevolucionModel( QAbstractTableModel ):
         """
         return self.totalCostD * self.exchangeRate
 
-    @property
-    def validLines( self ):
-        """
-        la cantidad de lineas validas que hay en el documento
-        @rtype: int
-        """
-        return len( [ line for line in self.lines if line.valid ] )
 
     #Clases especificas del modelo
     def rowCount( self, _index = QModelIndex() ):
@@ -281,7 +264,6 @@ class DevolucionModel( QAbstractTableModel ):
             if index.column() == CANTIDAD:
                 line.quantity = value.toInt()[0]
 
-            self.dirty = True
 
             self.dataChanged.emit( index, index )
 
@@ -293,7 +275,6 @@ class DevolucionModel( QAbstractTableModel ):
         for row in range( rows ):
             self.lines.insert( position + row, LineaDevolucion( self ) )
         self.endInsertRows()
-        self.dirty = True
         return True
 
     def removeRows( self, position, rows = 1, index = QModelIndex ):
@@ -387,101 +368,24 @@ class DevolucionModel( QAbstractTableModel ):
 
 
 #Insertar la revercion de los articulos
-            for linea in self.lines:
-                if linea.valid:
-                    linea.save( insertedId )
+            for i, linea in enumerate( [line for line in self.lines if line.valid] ):
+                linea.save( insertedId, i )
 
             #            Crear la relacion con su padre
             if not query.prepare( """
             INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (:idpadre, :idhijo)
             """ ):
-                raise Exception( u"No se pudo preparar la consulta para insertar la relación de la devolución con la factura" )
+                raise Exception( u"No se pudo preparar la consulta para "\
+                                 + "insertar la relación de la devolución"\
+                                 + " con la factura" )
 
             query.bindValue( ":idpadre", self.invoiceId )
             query.bindValue( ":idhijo", insertedId )
 
             if not query.exec_():
-                raise Exception( u"No se pudo crear la relacion de la devolución con la factura" )
+                raise Exception( u"No se pudo crear la relacion de la "\
+                                 + "devolución con la factura" )
 
-#            
-#            
-#            #Insertar el documento de Nota de Credito
-#            if not query.prepare( """
-#            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,anulado,total, idtipocambio, idconcepto, idbodega)
-#            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:anulado,:total, :idtipocambio, :idconcepto, :idbodega)
-#            """ ):
-#                raise Exception(u"No se pudo preparar la consulta para añadir el documentoNotaCredito")
-#
-#            query.bindValue( ":ndocimpreso", self.numnotacredito )
-#            query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
-#            query.bindValue( ":idtipodoc", constantes.IDNOTACREDITO )
-#            query.bindValue( ":idusuario", self.uid )
-#            query.bindValue( ":anulado", 0 )
-#            query.bindValue( ":idpersona", self.clientId )
-#            query.bindValue( ":total", self.totalD.to_eng_string() )
-#            query.bindValue( ":idtipocambio", self.exchangeRateId )
-#            query.bindValue(":idconcepto", self.conceptId)
-#            query.bindValue(":idbodega", self.warehouseId)
-#
-#            if not query.exec_():
-#                raise Exception( "No se pudo insertar el documento Nota Credito" )
-#            insertedIdNC=query.lastInsertId()
-#            
-#            # Crear la relacion con su padre Devolucion
-#            if not query.prepare( """
-#            INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (:idpadre, :idhijo)
-#            """ ):
-#                raise Exception(u"No se pudo preparar la consulta para insertar la relación de la deovulución con la NotaCredito")
-#            
-#            query.bindValue( ":idpadre", insertedId )
-#            query.bindValue( ":idhijo", insertedIdNC )
-#
-#            
-#            
-#            if not query.exec_():
-#                raise Exception(u"No se creo la relacion de la devolución con la factura" )
-
-
-#            query.prepare( """
-#                SELECT
-#                s.iddocumento,
-#                s.ndocimpreso,
-#                s.Saldo,
-#                IFNULL(ca.valorcosto,0) as tasaiva,
-#                s.idpersona
-#            FROM vw_saldofacturas s
-#            LEFT JOIN costosxdocumento cxd ON s.iddocumento= cxd.iddocumento
-#            LEFT JOIN costosagregados ca ON ca.idcostoagregado = cxd.idcostoagregado AND ca.idtipocosto=%d
-#            WHERE s.idpersona=%d
-#            ORDER BY CAST(s.ndocimpreso AS SIGNED)"""%(constantes.IVA,self.clientId) )
-#            if not query.exec_():
-#                query.lastError().text()
-#                raise Exception( "Ocurrio un error al ejecutar la consulta del saldo" )
-#            #FIXME
-#            query.first()
-#            saldo=Decimal(query.value(2).toString())
-#            if saldo<=self.totalD():
-#                movFacturaCredito( insertedIdNC, self.subtotalC * -1, self.ivaC * -1, self.totalCostC * -1 )
-#            else:
-#                subsaldo=saldo/1+(self.ivaRate/100)             
-#                subiva=saldo-subsaldo
-#                
-#                diferencia=(self.totalD()-saldo)/1+(self.ivaRate/100)
-#                ivad=diferencia-saldo 
-#                #FIXME               
-#                movFacturaCredito( insertedIdNC, subsaldo * -1, subiva * -1, self.totalCostC * -1 )
-##                movPagoRealizado( insertedIdNC, diferencia * -1, ivad * -1, self.totalCostC * -1 )
-#=======
-#            query.bindValue( ":ndocimpreso", self.numnotacredito )
-#            query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
-#            query.bindValue( ":idtipodoc", constantes.IDNOTACREDITO )
-#            query.bindValue( ":idusuario", self.uid )
-#            query.bindValue( ":idpersona", self.clientId )
-#            query.bindValue( ":total", self.totalD.to_eng_string() )
-#            query.bindValue( ":idtipocambio", self.exchangeRateId )
-#            query.bindValue(":idconcepto", self.conceptId)
-#            query.bindValue(":idbodega", self.warehouseId)
-#>>>>>>> .r246
 
             if not QSqlDatabase.database().commit():
                 raise Exception( "No se pudo hacer commit" )
@@ -496,33 +400,6 @@ class DevolucionModel( QAbstractTableModel ):
 
         return True
 
-class TestDevolucionModel( unittest.TestCase ):
-    def setUp( self ):
-        _app = QCoreApplication( [] )
-
-        self.devolucion = DevolucionModel()
-        self.devolucion.insertRow( 0 )
-
-    def test_total( self ):
-        self.assertEqual( self.devolucion.totalC, Decimal( '0' ) )
-        self.assertEqual( self.devolucion.totalD, Decimal( '0' ) )
-
-    def test_cost( self ):
-        self.assertEqual( self.devolucion.totalCostC, Decimal( '0' ) )
-        self.assertEqual( self.devolucion.totalCostD, Decimal( '0' ) )
-
-    def test_numrows( self ):
-        self.assertEqual( self.devolucion.rowCount(), 1 )
-
-    def test_validLines( self ):
-        self.assertEqual( self.devolucion.validLines, 0 )
-
-    def test_valid( self ):
-        self.assertFalse( self.devolucion.valid )
-
-    def test_subtotal( self ):
-        self.assertEqual( self.devolucion.subtotalD, Decimal( '0' ) )
-        self.assertEqual( self.devolucion.subtotalC, Decimal( '0' ) )
 
 if __name__ == "__main__":
     unittest.main()

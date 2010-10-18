@@ -6,7 +6,7 @@ Created on 21/05/2010
 '''
 
 
-from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex, Qt
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from decimal import Decimal, ROUND_CEILING, InvalidOperation
 from document.liquidacion.linealiquidacion import LineaLiquidacion
@@ -22,7 +22,7 @@ from utility.decorators import return_decimal
 
 
 IDARTICULO, ARTICULO, CANTIDAD, COSTOUNIT, FOB, FLETE, SEGURO, OTROS, CIF, IMPUESTOS, COMISION, AGENCIA, ALMACEN, PAPELERIA, TRANSPORTE, TCOSTOD, COSTOD, TCOSTOC, COSTOC = range( 19 )
-class LiquidacionModel( QAbstractTableModel, DocumentBase ):
+class LiquidacionModel( DocumentBase ):
     """
     Este modelo es el que se utiliza para realizar todos los calculos relacionados a una liquidacion,
     de costos
@@ -48,11 +48,8 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         @ivar:El id del usuario
         @type:int
         """
-        self.printedDocumentNumber = ""
-        """
-        @ivar:El numero de documento impreso del documento
-        @type:string
-        """
+
+
         self.providerId = 0
         """
         @ivar:El id del proveedor
@@ -62,18 +59,6 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         """
         @ivar:El id de la bodega
         @type:int
-        """
-
-
-        self.datetime = QDateTime.currentDateTime()
-        u"""
-        @ivar:La fecha de la liquidación
-        @type:string
-        """
-        self.origin = ""
-        u"""
-        @ivar:El país de origen de la liquidación
-        @type:string
         """
 
         self.exchangeRateId = 0
@@ -86,6 +71,16 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         @ivar:El tipo de cambio utilizado en la liquidación
         @type:Decimal
         """
+
+
+
+        self.origin = ""
+        u"""
+        @ivar:El país de origen de la liquidación
+        @type:string
+        """
+
+
 
 
         self.agencyTotalC = Decimal( 0 )
@@ -155,12 +150,12 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         @ivar:El id del IVA usado en la liquidación
         @type:int
         """
-        self.__ivaRate = Decimal( 0 )
+        self.__iva_rate = Decimal( 0 )
         """
         @ivar:El IVA usado en la liquidación cuando self.applyIVA = True
         @type:Decimal
         """
-        self.__applyIVA = True
+        self.__apply_iva = True
         """
         @ivar:Si a esta liquidación se le aplica IVA o no
         @type:bool
@@ -171,7 +166,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         @ivar:El id del ISO usado en la liquidación
         @type:int
         """
-        self.__isoRate = Decimal( 0 )
+        self.__iso_rate = Decimal( 0 )
         """
         @ivar:El ISO usado en la liquidación cuando self.applyISO = True
         @type:Decimal
@@ -202,11 +197,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         @ivar: El FOB total de esta liquidación
         @type:Decimal
         """
-        self.observations = ""
-        """
-        @ivar:Las observaciones de este documento
-        @type:string
-        """
+
 
 
         self.totalsModel = LiquidacionTotalsModel( self )
@@ -215,19 +206,11 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         @type:LiquidacionTotalsModel
         """
 
-        self.__validError = ""
-        """
-        @ivar:Si existe un error de validación aca se almacena
-        @type: string
-        """
 
     @property
     def lines( self ):
         return self.__lines
 
-    @property
-    def validError( self ):
-        return self.__validError
 
     @property
     def agencyTotal( self ):
@@ -238,21 +221,25 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         return self.storeTotalC / self.exchangeRate
 
 
-    def _setIvaRate( self, ivarate ):
-        self.__ivaRate = ivarate
-    def _getIvaRate( self ):
+    def _set_iva_rate( self, ivarate ):
+        self.__iva_rate = ivarate
+    def _get_iva_rate( self ):
         """
         El porcentaje IVA usado en esta liquidacion
         @rtype: Decimal
         """
-        return self.__ivaRate if self.applyIVA  else Decimal( 0 )
-    ivaRate = property( _getIvaRate, _setIvaRate )
+        return self.__iva_rate if self.applyIVA  else Decimal( 0 )
+    ivaRate = property( _get_iva_rate, _set_iva_rate )
 
-    def _setApplyIVA( self, applyIVA ):
-        self.__applyIVA = applyIVA
-    def _getApplyIVA( self ):
-        return self.__applyIVA if self.applyTaxes else False
-    applyIVA = property( _getApplyIVA, _setApplyIVA )
+    def _set_apply_iva( self, applyIVA ):
+        self.__apply_iva = applyIVA
+    def _get_apply_iva( self ):
+        """
+        Si se deberia o no aplicar iva en esta liquidación
+        @rtype: bool
+        """
+        return self.__apply_iva if self.applyTaxes else False
+    applyIVA = property( _get_apply_iva, _set_apply_iva )
 
     @property
     def valid( self ):
@@ -300,15 +287,15 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         return True
 
 
-    def getISORate( self ):
+    def _get_iso_rate( self ):
         """
         El porcentaje ISO usado en esta liquidacion
         @rtype: Decimal
         """
-        return self.__isoRate if self.applyISO and self.applyTaxes else Decimal( 0 )
-    def setISORate( self, iso ):
-        self.__isoRate = iso
-    isoRate = property( getISORate, setISORate )
+        return self.__iso_rate if self.applyISO and self.applyTaxes else Decimal( 0 )
+    def _set_iso_rate( self, iso ):
+        self.__iso_rate = iso
+    isoRate = property( _get_iso_rate, _set_iso_rate )
 
 
     def updateFob( self ):
@@ -372,7 +359,8 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         M{IMPUESTOSTOTAL = DAITOTAL + ISCTOTAL + IVATOTAL + TSIMTOTAL + SPETOTAL + ISOTOTAL}
         @rtype: Decimal
         """
-        return self.daiTotal + self.iscTotal + self.ivaTotal + self.tsimTotal + self.speTotal + self.isoTotal
+        return self.daiTotal + self.iscTotal + self.ivaTotal + \
+            self.tsimTotal + self.speTotal + self.isoTotal
 
     @property
     def taxesTotalC( self ):
@@ -473,6 +461,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         """
         if not self.valid:
             raise Exception ( "El documento a salvar no es valido" )
+
         query = QSqlQuery()
         try:
             if not QSqlDatabase.database().transaction():

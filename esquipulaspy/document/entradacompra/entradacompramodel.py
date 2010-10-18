@@ -4,20 +4,21 @@ Created on 18/05/2010
 
 @author: Andrés Reyes Monge
 '''
-from decimal import Decimal
-import logging
-
+from PyQt4.QtCore import QModelIndex, Qt, QDateTime, QAbstractTableModel
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime, QCoreApplication, QVariant
-
+from decimal import Decimal
 from lineaentradacompra import LineaEntradaCompra
+from utility import constantes
+from utility.decorators import return_decimal
+from utility.docbase import DocumentBase
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movEntradaCompra
-from utility import constantes
-from utility.docbase import DocumentBase
+import logging
+
+
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, PRECIOD, TOTALC, TOTALD = range( 7 )
-class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
+class EntradaCompraModel( DocumentBase ):
     """
     esta clase es el modelo utilizado en la tabla en la que se editan los documentos
     """
@@ -155,14 +156,14 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
         return True
 
     @property
+    @return_decimal
     def subtotalC( self ):
         """
         El subtotal del documento, esto es el total antes de aplicarse el IVA
         @rtype: Decimal
         """
-        subtotal = sum( [x.totalC for x in self.lines if x.valid ] )
+        return sum( [x.totalC for x in self.lines if x.valid ] )
 
-        return subtotal if subtotal > 0 else Decimal( 0 )
 
 
     @property
@@ -174,13 +175,13 @@ class EntradaCompraModel( QAbstractTableModel, DocumentBase ):
         return self.subtotalC + self.IVAC
 
     @property
+    @return_decimal
     def subtotalD( self ):
         """
         El subtotal del documento, esto es el total antes de aplicarse el IVA
         @rtype: Decimal
         """
-        subtotal = sum( [x.totalD for x in self.lines if x.valid ] )
-        return subtotal if subtotal > 0 else Decimal( 0 )
+        return sum( [x.totalD for x in self.lines if x.valid ] )
 
     @property
     def totalD( self ):

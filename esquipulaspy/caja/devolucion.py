@@ -286,30 +286,31 @@ class FrmDevolucion( Ui_frmDevoluciones, Base ):
             dlgbill = DlgSelectInvoice()
             if dlgbill.exec_() == QDialog.Accepted:
                 self.editmodel = DevolucionModel()
+                row = dlgbill.tblBills.selectionModel().currentIndex().row()
                 self.editmodel.invoiceId = dlgbill.filtermodel.index( 
-                                                 dlgbill.tblBills.selectionModel().currentIndex().row(), 0 ).data().toInt()[0]
+                                                 row, 0 ).data().toInt()[0]
                 self.editmodel.billPrinted = dlgbill.filtermodel.index( 
-                                               dlgbill.tblBills.selectionModel().currentIndex().row(), 1 ).data().toString()
+                                               row, 1 ).data().toString()
                 self.editmodel.clientName = dlgbill.filtermodel.index( 
-                                                  dlgbill.tblBills.selectionModel().currentIndex().row(), 3 ).data().toString()
+                                                  row, 3 ).data().toString()
 
                 self.editmodel.clientId = dlgbill.filtermodel.index( 
-                                            dlgbill.tblBills.selectionModel().currentIndex().row(), 5 ).data().toInt()[0]
+                                            row, 5 ).data().toInt()[0]
 
                 self.editmodel.ivaRate = Decimal( dlgbill.filtermodel.index( 
-                                             dlgbill.tblBills.selectionModel().currentIndex().row(), 6 ).data().toString() )
+                                             row, 6 ).data().toString() )
                 self.editmodel.ivaRateId = dlgbill.filtermodel.index( 
-                                             dlgbill.tblBills.selectionModel().currentIndex().row(), 7 ).data().toInt()[0]
+                                             row, 7 ).data().toInt()[0]
 
                 self.editmodel.exchangeRate = Decimal( dlgbill.filtermodel.index( 
-                                                 dlgbill.tblBills.selectionModel().currentIndex().row(), 8 ).data().toString() )
+                                                row, 8 ).data().toString() )
                 self.editmodel.exchangeRateId = dlgbill.filtermodel.index( 
-                                                  dlgbill.tblBills.selectionModel().currentIndex().row(), 9 ).data().toInt()[0]
+                                                  row, 9 ).data().toInt()[0]
 
                 self.editmodel.warehouseName = dlgbill.filtermodel.index( 
-                                                 dlgbill.tblBills.selectionModel().currentIndex().row(), 10 ).data().toString()
+                                                 row, 10 ).data().toString()
                 self.editmodel.warehouseId = dlgbill.filtermodel.index( 
-                                               dlgbill.tblBills.selectionModel().currentIndex().row(), 11 ).data().toInt()[0]
+                                               row, 11 ).data().toInt()[0]
 
 
                 self.editmodel.uid = self.user.uid
@@ -379,10 +380,15 @@ class FrmDevolucion( Ui_frmDevoluciones, Base ):
 
                 self.status = False
         except UserWarning as inst:
-            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                   unicode( inst ) )
+            logging.error( unicode( inst ) )
             self.status = True
         except Exception as inst:
-            print inst
+            QMessageBox.critical( self, qApp.organizationName(),
+                                  u"Hubo un error al intentar crear una "\
+                                  + "nueva devolución" )
+            logging.critical( unicode( inst ) )
             self.status = True
         finally:
             if self.database.isOpen():
@@ -394,11 +400,13 @@ class FrmDevolucion( Ui_frmDevoluciones, Base ):
         asignar proveedor al objeto self.editmodel
         """
         if not self.editmodel is None:
-            self.editmodel.conceptId = self.conceptsmodel.record( index ).value( "idconcepto" ).toInt()[0]
+            self.editmodel.conceptId = self.conceptsmodel.record( index
+                                          ).value( "idconcepto" ).toInt()[0]
 
     @property
     def printIdentifier( self ):
-        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
+        return self.navmodel.record( self.mapper.currentIndex()
+                                      ).value( "iddocumento" ).toString()
 
     def cancel( self ):
         self.editmodel = None
@@ -502,9 +510,9 @@ class DlgSelectInvoice( QDialog ):
         self.setLayout( layout )
 
         self.setMinimumWidth( 400 )
-        self.buttonbox.accepted.connect( self.accept )
-        self.buttonbox.rejected.connect( self.reject )
-        self.txtSearch.textChanged[unicode].connect( self.updateDetailFilter )
+        buttonbox.accepted.connect( self.accept )
+        buttonbox.rejected.connect( self.reject )
+        self.txtSearch.textChanged[unicode].connect( self.updateFilter )
 #FIXME: Que pasa cuando no hay facturas?
 #    def exec_( self ):
 #        if self.billsmodel.rowCount() == 0:

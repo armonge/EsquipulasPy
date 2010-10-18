@@ -6,7 +6,6 @@ Created on 18/05/2010
 '''
 from decimal import Decimal
 
-from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtSql import QSqlQuery
 
 from utility.docbase import LineaBase
@@ -18,32 +17,32 @@ class LineaEntradaCompra( LineaBase ):
         super( LineaEntradaCompra, self ).__init__()
         self.quantity = 0
         self.itemDescription = ""
-        self.__itemPriceD = Decimal( 0 )
-        self.__itemPriceC = Decimal( 0 )
+        self.__item_price_d = Decimal( 0 )
+        self.__item_price_c = Decimal( 0 )
         self.itemId = 0
         self.parent = parent
 
 
-    def getItemPriceC( self ):
+    def _get_item_price_c( self ):
         """
         El precio en cordobas de esta factura
         @rtype:  Decimal
         """
-        return self.__itemPriceC
-    def setItemPriceC( self, price ):
+        return self.__item_price_c
+    def _set_item_price_c( self, price ):
         try:
-            self.__itemPriceD = price / self.parent.exchangeRate
-            self.__itemPriceC = price
+            self.__item_price_d = price / self.parent.exchangeRate
+            self.__item_price_c = price
         except ZeroDivisionError:
             self.itemPriceD = Decimal( 0 )
-    itemPriceC = property( getItemPriceC, setItemPriceC )
+    itemPriceC = property( _get_item_price_c, _set_item_price_c )
 
-    def getItemPriceD( self ):
-        return self.__itemPriceD
-    def setItemPriceD( self, price ):
-        self.__itemPriceC = price * self.parent.exchangeRate
-        self.__itemPriceD = price
-    itemPriceD = property( getItemPriceD, setItemPriceD )
+    def _get_item_price_d( self ):
+        return self.__item_price_d
+    def _set_item_price_d( self, price ):
+        self.__item_price_c = price * self.parent.exchangeRate
+        self.__item_price_d = price
+    itemPriceD = property( _get_item_price_d, _set_item_price_d )
 
 
     @property
@@ -71,7 +70,10 @@ class LineaEntradaCompra( LineaBase ):
         Es esta linea valida
         @rtype: bool
         """
-        if  int( self.itemId ) != 0   and Decimal( self.itemPriceC ) > 0 and int( self.quantity ) > 0  and self.parent.exchangeRateId != 0:
+        if  int( self.itemId ) != 0  \
+        and Decimal( self.itemPriceC ) > 0 \
+        and int( self.quantity ) > 0  \
+        and self.parent.exchangeRateId != 0:
             return True
         return False
 

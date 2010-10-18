@@ -5,11 +5,11 @@ Created on 16/08/2010
 @author: Andrés Reyes Monge
 '''
 
+from PyQt4.QtCore import QAbstractTableModel, QDateTime
 
 
+class DocumentBase( QAbstractTableModel ):
 
-class DocumentBase( object ):
-    __documentType = NotImplementedError()
     """
     Esta se convertira en un futuro en la clase base para los nuevos documentos
     idealmente aca irian todas las propiedades que de todos modos todos los
@@ -17,7 +17,42 @@ class DocumentBase( object ):
 
     ademas de algunos metodos como validLines
     """
+    __documentType = NotImplementedError()
 
+    def __init__( self ):
+        super( DocumentBase, self ).__init__()
+
+
+
+        self.printedDocumentNumber = ""
+        """
+        @ivar:El numero de documento impreso del documento
+        @type:string
+        """
+
+        self.datetime = QDateTime.currentDateTime()
+        u"""
+        @ivar:La fecha de la liquidación
+        @type:QDateTime
+        """
+
+
+
+        self.observations = ""
+        """
+        @ivar:Las observaciones de este documento
+        @type:string
+        """
+
+        self.__validError = ""
+        """
+        @ivar: Si existe algún error de validación aca es que se muestra
+        @type:string
+        """
+
+    @property
+    def validError( self ):
+        return self.__validError
 
     @property
     def validLines( self ):

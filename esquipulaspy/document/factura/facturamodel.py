@@ -13,14 +13,16 @@ from utility.decorators import return_decimal
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movFacturaCredito
 import logging
+from utility.docbase import DocumentBase
 #Los datos de la existencia
 IDARTICULOEX, DESCRIPCIONEX, PRECIOEX, COSTOEX, EXISTENCIAEX, \
 IDBODEGAEX = range( 6 )
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD = range( 5 )
-class FacturaModel( QAbstractTableModel ):
+class FacturaModel( DocumentBase ):
     """
-    esta clase es el modelo utilizado en la tabla en la que se editan los documentos
+    esta clase es el modelo utilizado en la tabla en la que se editan 
+    los documentos de factura
     """
     __documentType = constantes.IDFACTURA
 
@@ -29,7 +31,6 @@ class FacturaModel( QAbstractTableModel ):
 
 
         self.dirty = False
-        self.errorMessage = ""
 
 
         self.clienteId = 0
@@ -52,7 +53,7 @@ class FacturaModel( QAbstractTableModel ):
         @ivar: Las observaciones del documento
         @type: string
         """
-        self._ivaTasa = Decimal( 0 )
+        self.__ivaTasa = Decimal( 0 )
         """
         @ivar: La tasa de IVA en la factura
         @type: Decimal
@@ -150,12 +151,12 @@ class FacturaModel( QAbstractTableModel ):
         """
         return  self.subtotal * ( self.ivaTasa / Decimal( 100 ) )
 
-    def _setIvaTasa( self, value ):
-        self._ivaTasa = value
-    def _getIvaTasa( self ):
-        return self._ivaTasa if self.applyIva else Decimal( 0 )
+    def _set_iva_tasa( self, value ):
+        self.__ivaTasa = value
+    def _get_iva_tasa( self ):
+        return self.__ivaTasa if self.applyIva else Decimal( 0 )
 
-    ivaTasa = property( _getIvaTasa, _setIvaTasa )
+    ivaTasa = property( _get_iva_tasa, _set_iva_tasa )
 
     @property
     def applyIva( self ):
@@ -165,13 +166,6 @@ class FacturaModel( QAbstractTableModel ):
         """
         return self.bodegaId == 1
 
-    @property
-    def validLines( self ):
-        """
-        la cantidad de lineas validas que hay en el documento
-        @rtype: int
-        """
-        return len( [line for line in self.lines if line.valid] )
 
     #Clases especificas del modelo
     def rowCount( self, _index = QModelIndex() ):
@@ -282,21 +276,21 @@ class FacturaModel( QAbstractTableModel ):
     @property
     def valid( self ):
         if not self.datosSesion.valid:
-            self.errorMessage = "Los datos de la sesión no son validos"
+            self.__validError = "Los datos de la sesión no son validos"
             return False
         if not self.validLines > 0:
-            self.errorMessage = "Existe una linea no valida"
+            self.__validError = "Existe una linea no valida"
             return False
         if not self.total > 0:
-            self.errorMessage = "El total no puede ser 0"
+            self.__validError = "El total no puede ser 0"
             return False
         if not self.bodegaId > 0:
-            self.errorMessage = "No se ha definido el ID de la bodega"
+            self.__validError = "No se ha definido el ID de la bodega"
             return False
 
         if self.escontado == False:
             if not self.fechaTope > self.datosSesion.fecha:
-                self.errorMessage = "Fecha Tope Incorrecta"
+                self.__validError = "Fecha Tope Incorrecta"
                 return False
 
         if self.applyIva:
@@ -310,16 +304,18 @@ class FacturaModel( QAbstractTableModel ):
         """
         Este metodo guarda la factura en la base de datos
         """
+
+        if not self.valid:
+                raise Exception( u"Se intento guardar una factura no valida " )
+
+
         query = QSqlQuery()
-
-
         try:
 
             if not self.database.transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
 
-            if not self.valid:
-                raise Exception( u"Se intento guardar una factura no valida " )
+
 
             if not query.prepare( """
             INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,
@@ -329,8 +325,9 @@ class FacturaModel( QAbstractTableModel ):
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-            query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' )
-                              + QDateTime.currentDateTime().toString( "hhmmss" ) )
+            query.bindValue( ":fechacreacion",
+                             self.datosSesion.fecha.toString( 'yyyyMMdd' )\
+                          + QDateTime.currentDateTime().toString( "hhmmss" ) )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":observacion", self.observaciones )
             query.bindValue( ":total", self.total.to_eng_string() )
@@ -344,7 +341,7 @@ class FacturaModel( QAbstractTableModel ):
                 raise Exception( "No se pudo insertar el documento" )
 
 
-            insertedId = query.lastInsertId().toString()
+            inserted_id = query.lastInsertId().toString()
     #INSERTAR LA RELACION CON LA SESION DE CAJA            
             query.prepare( """
                 INSERT INTO docpadrehijos (idpadre,idhijo)
@@ -352,17 +349,18 @@ class FacturaModel( QAbstractTableModel ):
                 """ )
 
             query.bindValue( ":idsesion", self.datosSesion.sesionId )
-            query.bindValue( ":idfac", insertedId )
+            query.bindValue( ":idfac", inserted_id )
 
             if not query.exec_():
-                raise Exception( "No se Inserto la relacion entre la sesion de caja y la factura" )
+                raise Exception( "No se Inserto la relacion entre la sesion"\
+                                 + " de caja y la factura" )
 
     #INSERTAR LA RELACION CON El USUARIO , EL CLIENTE Y EL PROVEEDOR            
             query.prepare( 
                 "INSERT INTO personasxdocumento (iddocumento,idpersona,idaccion) VALUES" +
-                "(" + insertedId + ",:iduser,:autor),"
-                "(" + insertedId + ",:idcliente,:cliente),"
-                "(" + insertedId + ",:idvendedor,:vendedor)"
+                "(" + inserted_id + ",:iduser,:autor),"
+                "(" + inserted_id + ",:idcliente,:cliente),"
+                "(" + inserted_id + ",:idvendedor,:vendedor)"
                 )
 
             query.bindValue( ":iduser", self.datosSesion.usuarioId )
@@ -377,7 +375,7 @@ class FacturaModel( QAbstractTableModel ):
                                  + "el documento y las personas" )
 
             for i, linea in enumerate( [line for line in self.lines if line.valid] ):
-                linea.save( insertedId, i )
+                linea.save( inserted_id, i )
 
     #VERIFICO SI el id del iva es cero. NO SERA CERO CUANDO LA BODEGA=1 PORQUE ESTA NO ES exonerada                     
 
@@ -386,7 +384,7 @@ class FacturaModel( QAbstractTableModel ):
                 INSERT INTO costosxdocumento (iddocumento, idcostoagregado) 
                 VALUES( :iddocumento, :idcostoagregado )
                 """ )
-                query.bindValue( ":iddocumento", insertedId )
+                query.bindValue( ":iddocumento", inserted_id )
                 query.bindValue( ":idcostoagregado", self.ivaId )
 
                 if not query.exec_():
@@ -396,20 +394,21 @@ class FacturaModel( QAbstractTableModel ):
             # el costo no se multiplica porque ya esta en cordobas                
 
             if self.escontado:
-                movFacturaCredito( insertedId,
-                                    self.subtotal * self.datosSesion.tipoCambioOficial ,
-                                    self.IVA * self.datosSesion.tipoCambioOficial,
-                                    self.costototal )
+                movFacturaCredito( inserted_id,
+                        self.subtotal * self.datosSesion.tipoCambioOficial ,
+                        self.IVA * self.datosSesion.tipoCambioOficial,
+                        self.costototal )
                 # Como es al contado el modelo otrosDatosModel guarda datos del recibo
-                otrosDatosModel.lineasAbonos[0].idFac = insertedId
+                otrosDatosModel.lineasAbonos[0].idFac = inserted_id
                 if not otrosDatosModel.save( False ):
-                    raise Exception( "No se pudo guardar el modelo de otros datos" )
+                    raise Exception( "No se pudo guardar el modelo de "\
+                                     + "otros datos" )
             else:
                 query.prepare( """
                 INSERT INTO creditos (iddocumento, fechatope,tasamulta) 
                 VALUES( :iddocumento, :fechatope, :multa )
                 """ )
-                query.bindValue( ":iddocumento", insertedId )
+                query.bindValue( ":iddocumento", inserted_id )
                 query.bindValue( ":fechatope", self.fechaTope )
                 query.bindValue( ":multa", self.multa )
 
