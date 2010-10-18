@@ -15,7 +15,7 @@ def ifValid( fn ):
      que usar "if valid else Decimal(0)" en todos lados
     """
     @functools.wraps( fn )
-    def wrapper( self = None ):
+    def wrapper( self ):
         return fn( self ) if self.valid else Decimal( 0 )
     return wrapper
 
@@ -25,8 +25,21 @@ def return_decimal( fn ):
     int(0)
     """
     @functools.wraps( fn )
-    def wrapper( self = None ):
+    def wrapper( self ):
         value = fn( self )
         return   value if type( value ) == Decimal else Decimal( value )
     return wrapper
+
+def if_edit_model( fn ):
+    u""""
+    Este decorador ejecuta la función si editmodel is not None
+    de otro modo pass
+    """
+    @functools.wraps( fn )
+    def wrapper( self, *args ):
+        if self.editmodel is not None:
+            return fn( self, *args )
+
+    return wrapper
+
 

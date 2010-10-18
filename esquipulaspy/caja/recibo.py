@@ -20,6 +20,7 @@ from utility.base import Base
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movAbonoDeCliente
 import logging
+from utility.decorators import if_edit_model
 
 #from document.recibo.abonodelegate import AbonoDelegate
 #from PyQt4.QtGui import QMainWindow
@@ -312,27 +313,27 @@ class FrmRecibo( Ui_frmRecibo, Base ):
 
 
     @pyqtSlot( int )
+    @if_edit_model
     def on_cbcliente_currentIndexChanged( self, index ):
         """
         asignar proveedor al objeto self.editmodel
         """
-        if not self.editmodel is None:
-            self.datosRecibo.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0] if index != -1 else - 1
-            self.tableabonos.setEnabled( index != -1 )
-            self.frbotones.setEnabled( index != -1 )
-            self.abonoeditmodel.removeRows( 0, self.tablefacturas,
-                                             self.abonoeditmodel.rowCount() )
-            self.abonoeditmodel.idcliente = self.datosRecibo.clienteId
-            self.updateFacturasFilter()
-            self.updateLabels()
+        self.datosRecibo.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0] if index != -1 else - 1
+        self.tableabonos.setEnabled( index != -1 )
+        self.frbotones.setEnabled( index != -1 )
+        self.abonoeditmodel.removeRows( 0, self.tablefacturas,
+                                         self.abonoeditmodel.rowCount() )
+        self.abonoeditmodel.idcliente = self.datosRecibo.clienteId
+        self.updateFacturasFilter()
+        self.updateLabels()
 
     @pyqtSlot( int )
+    @if_edit_model
     def on_cbconcepto_currentIndexChanged( self, index ):
         """
         asignar la concepto al objeto self.editmodel
         """
-        if not self.editmodel is None:
-            self.datosRecibo.conceptoId = self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
+        self.datosRecibo.conceptoId = self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
 
     @pyqtSlot( int )
     def on_cbtasaret_currentIndexChanged( self, index ):
@@ -345,13 +346,13 @@ class FrmRecibo( Ui_frmRecibo, Base ):
 
 # MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
     @pyqtSlot( bool )
+    @if_edit_model
     def on_ckretener_toggled( self, on ):
         """
         """
-        if self.editmodel != None:
-            self.datosRecibo.aplicarRet = on
-            self.cbtasaret.setEnabled( on )
-            self.cbtasaret.setCurrentIndex( -1 )
+        self.datosRecibo.aplicarRet = on
+        self.cbtasaret.setEnabled( on )
+        self.cbtasaret.setCurrentIndex( -1 )
 
     @pyqtSlot( QDateTime )
     def on_dtPicker_dateTimeChanged( self, datetime ):

@@ -17,6 +17,7 @@ from document.entradacompra import EntradaCompraModel, EntradaCompraDelegate
 from utility.moneyfmt import moneyfmt
 from utility.singleselectionmodel import SingleSelectionModel
 from utility import constantes
+from utility.decorators import if_edit_model
 
 
 #controles
@@ -62,17 +63,18 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
 
 
         #general events
-        self.rbCash.clicked[bool].connect( self.updatePay )
-        self.rbCheck.clicked[bool].connect( self.updatePay )
-        self.rbCredit.clicked[bool].connect( self.updatePay )
+        self.rbCash.clicked[bool].connect( self.__update_pay )
+        self.rbCheck.clicked[bool].connect( self.__update_pay )
+        self.rbCredit.clicked[bool].connect( self.__update_pay )
 
         self.tabledetails.setOrder( 1, 4 )
+        self.delegate = EntradaCompraDelegate()
 
         QTimer.singleShot( 0, self.loadModels )
 
 
 
-    def updatePay( self, _checked ):
+    def __update_pay( self, _checked ):
         if not self.editmodel is None:
             if self.sender() in ( self.rbCash, self.rbCheck ):
                 self.editmodel.paytipe = 1
@@ -215,18 +217,17 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
         prods.headers = ["idarticulo", "Articulo"]
         self.delegate.prods = prods
 
-
+    @if_edit_model
     def updateLabels( self ):
-        if not self.editmodel is None:
-            self.lblSubtotal.setText( 
-                              moneyfmt( self.editmodel.subtotalC, 4, "C$" ) )
+        self.lblSubtotal.setText( 
+                          moneyfmt( self.editmodel.subtotalC, 4, "C$" ) )
 
-            self.lblIVA.setText( moneyfmt( self.editmodel.IVAC, 4, "C$" ) )
+        self.lblIVA.setText( moneyfmt( self.editmodel.IVAC, 4, "C$" ) )
 
-            self.lblTotal.setText( moneyfmt( self.editmodel.totalC, 4, "C$" ) )
+        self.lblTotal.setText( moneyfmt( self.editmodel.totalC, 4, "C$" ) )
 
-            self.lblTotalD.setText( 
-                                moneyfmt( self.editmodel.totalD, 4, "US$" ) )
+        self.lblTotalD.setText( 
+                            moneyfmt( self.editmodel.totalD, 4, "US$" ) )
     @property
     def printIdentifier( self ):
         return self.navmodel.record( self.mapper.currentIndex()
@@ -248,7 +249,7 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
             self.editmodel = EntradaCompraModel()
             self.editmodel.uid = self.user.uid
             self.tabledetails.setModel( self.editmodel )
-            self.delegate = EntradaCompraDelegate()
+
             self.tabledetails.setItemDelegate( self.delegate )
 
             query = QSqlQuery( """
@@ -279,7 +280,8 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
                                            self.cbProvider.currentIndex()
                                             ).value( "idpersona" ).toInt()[0]
 
-            self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
+            self.editmodel.dataChanged[QModelIndex,
+                                       QModelIndex].connect( self.updateLabels )
             self.tabledetails.setColumnWidth( DESCRIPCION, 250 )
             self.status = False
         except UserWarning as inst:
@@ -290,7 +292,6 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
         except Exception as inst:
             QMessageBox.critical( self, qApp.organizationName(),
                               "No se pudo iniciar una nueva entrada compra" )
-            print inst
             logging.error( unicode( inst ) )
 #            self.status = True
 
@@ -316,10 +317,12 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.detailsproxymodel.setFilterRegExp( "^" + self.navmodel.record( index ).value( IDDOCUMENTO ).toString() + "$" )
+        record = self.navmodel.record( index )
+        self.detailsproxymodel.setFilterRegExp( "^%d$" %
+                                     record.value( IDDOCUMENTO ).toInt()[0] )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
-        paytype = self.navmodel.record( index ).value( "tipopago" ).toInt()[0]
+        paytype = record.value( TIPOPAGO ).toInt()[0]
         if paytype == 0:
             self.rbCredit.setChecked( True )
         elif paytype == 1:
@@ -383,23 +386,23 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
             self.tabledetails.setColumnHidden( IDARTICULO, True )
 
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( unicode )
+    @if_edit_model
     def on_txtDocumentNumber_textChanged( self, text ):
         """
         Asignar el contenido al objeto documeto
         """
-        if not self.editmodel is None:
-            self.editmodel.printedDocumentNumber = text
+        self.editmodel.printedDocumentNumber = text
 
 
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbProvider_currentIndexChanged( self, index ):
         """
         asignar proveedor al objeto self.editmodel
         """
-        if not self.editmodel is None:
-            self.editmodel.providerId = self.providersModel.record( index
+        self.editmodel.providerId = self.providersModel.record( index
                                             ).value( "idpersona" ).toInt()[0]
 
 

@@ -4,7 +4,7 @@
 Created on 25/05/2010
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtCore import pyqtSlot, Qt, QModelIndex, QTimer, QDate
+from PyQt4.QtCore import pyqtSlot, Qt, QModelIndex, QTimer, QDate, QDateTime
 from PyQt4.QtGui import QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, \
     QAbstractItemView, QCompleter, QDialog, qApp, QFormLayout, QVBoxLayout, \
     QDateEdit, QDoubleSpinBox, QLabel, QFrame, QDialogButtonBox, QPlainTextEdit, \
@@ -20,6 +20,7 @@ from utility import constantes
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
 import logging
+from utility.decorators import if_edit_model
 
 #el modelo de la existencia
 IDARTICULOEX, DESCRIPCIONEX, PRECIOEX, COSTOEX, EXISTENCIAEX, \
@@ -566,52 +567,50 @@ class FrmFactura( Base, Ui_frmFactura ):
             self.navproxymodel.setFilterRegExp( "^%d$" % index )
 
     @pyqtSlot( int )
+    @if_edit_model
     def on_cbbodega_currentIndexChanged( self, index ):
         """
         asignar la bodega al objeto self.editmodel
         """
-        if not self.editmodel is None:
-            if self.editmodel.rowCount() > 0 and self.editmodel.lines[0].itemDescription != "":
-                self.editmodel.removeRows( 0, self.editmodel.rowCount() )
+        if self.editmodel.rowCount() > 0 and self.editmodel.lines[0].itemDescription != "":
+            self.editmodel.removeRows( 0, self.editmodel.rowCount() )
 
-            self.editmodel.bodegaId = self.bodegasModel.record( index ).value( "idbodega" ).toInt()[0]
-            self.proxyexistenciaModel.setFilterRegExp( '^%d$' % self.editmodel.bodegaId )
-            self.tabledetails.setColumnHidden( IDARTICULO, True )
-            self.updateLabels()
+        self.editmodel.bodegaId = self.bodegasModel.record( index ).value( "idbodega" ).toInt()[0]
+        self.proxyexistenciaModel.setFilterRegExp( '^%d$' % self.editmodel.bodegaId )
+        self.tabledetails.setColumnHidden( IDARTICULO, True )
+        self.updateLabels()
 
 
 
     @pyqtSlot( int )
+    @if_edit_model
     def on_cbcliente_currentIndexChanged( self, index ):
         """
         asignar proveedor al objeto self.editmodel
         """
-        if not self.editmodel is None:
-            self.editmodel.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0]
+        self.editmodel.clienteId = self.clientesModel.record( index ).value( "idpersona" ).toInt()[0]
 
     @pyqtSlot( int )
+    @if_edit_model
     def on_cbvendedor_currentIndexChanged( self, index ):
         """
         asignar proveedor al objeto self.editmodel
         """
-        if not self.editmodel is None:
-            self.editmodel.vendedorId = self.vendedoresModel.record( index ).value( "idpersona" ).toInt()[0]
+        self.editmodel.vendedorId = self.vendedoresModel.record( index ).value( "idpersona" ).toInt()[0]
 
 
-    @pyqtSlot( "QDateTime" )
+    @pyqtSlot( QDateTime )
     def on_dtPicker_dateTimeChanged( self, datetime ):
         pass
 
 # MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
-    @pyqtSlot( "bool" )
+    @pyqtSlot( bool )
+    @if_edit_model
     def on_rbcontado_toggled( self, on ):
         """
         Asignar las observaciones al objeto editmodel
         """
-        if not self.editmodel is None:
-            self.editmodel.escontado = 1 if on else 0
-#        else:
-#            self.btnrecibo.setHidden(not on)
+        self.editmodel.escontado = 1 if on else 0
 
 
     def setControls( self, status ):

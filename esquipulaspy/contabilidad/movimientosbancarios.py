@@ -4,7 +4,7 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, QDate, Qt, QTimer
+from PyQt4.QtCore import  pyqtSlot, QDate, Qt, QTimer, QDateTime
 from PyQt4.QtGui import QDialog, QSortFilterProxyModel, QDataWidgetMapper, \
     QAbstractItemView, QMessageBox, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
@@ -16,6 +16,7 @@ from utility.base import Base
 from utility.moneyfmt import moneyfmt
 from utility.widgets.searchpanel import SearchPanel
 import logging
+from utility.decorators import if_edit_model
 
 
 
@@ -23,12 +24,13 @@ import logging
 
 IDDOCUMENTO, FECHA, CUENTA, TIPODOC, CONCEPTO, OBSERVACION, NCUENTA = range( 7 )
 class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
+    """
+    Implementacion del formulario para hacer movimientos bancarios
+    """
     def __init__( self, parent ):
         super( FrmMovimientosBancarios, self ).__init__( parent )
 
 
-
-        self.__status = True
 
         self.cbcuenta = SearchPanel( None, None, True )
         self.horizontalLayout_32.addWidget( self.cbcuenta )
@@ -98,21 +100,24 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
                 self.updateModels()
                 self.status = True
 
-    @pyqtSlot( "QDateTime" )
+    @pyqtSlot( QDateTime )
+    @if_edit_model
     def on_dtPicker_dateTimeChanged( self, datetime ):
         """
         Asignar la fecha al objeto __document
         """
-        if self.editmodel != None:
-            self.editmodel.datos.dateTime = datetime
+        self.editmodel.datos.dateTime = datetime
 
-    @pyqtSignature( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbconcepto_currentIndexChanged( self, index ):
         """
         asignar la concepto al objeto self.editmodel
         """
         self.editmodel.conceptoChanged( index )
 
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbcuenta_currentIndexChanged( self, index ):
         """
         asignar la concepto al objeto self.editmodel
@@ -122,7 +127,8 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
                      self.tabledetails, index, self.dtPicker,
                      self.cbconcepto, self.cbtipodoc )
 
-    @pyqtSignature( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbtipodoc_currentIndexChanged( self, index ):
         """
         asignar la concepto al objeto self.editmodel
@@ -168,11 +174,13 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTO )
         fecha = QDate.fromString( self.navmodel.record( 
-                                   self.mapper.currentIndex() ).value( "Fecha" ).toString(),
+                                   self.mapper.currentIndex()
+                                   ).value( "Fecha" ).toString(),
                                     "dd/MM/yyyy" )
         self.dtPicker.setDate( fecha )
         self.detailsproxymodel.setFilterRegExp( 
-                                   self.navmodel.record( index ).value( "iddocumento" ).toString() )
+                               self.navmodel.record( index )
+                               .value( "iddocumento" ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
     def updateModels( self ):
@@ -279,7 +287,10 @@ class dlgMovimientosBancarios( QDialog, Ui_dlgMovimientosBancarios ):
         self.dtPicker.setMinimumDate( QDate( fecha.year(), fecha.month(), 1 ) )
         self.dtPicker.setMaximumDate( fecha )
         self.dtPicker.setDate( fecha )
-        self.txtcuenta.setText( padre.txtbanco.text() + " " + padre.txtmoneda.text() + " [" + padre.txtcuentabanco.text() + "]" )
+        self.txtcuenta.setText( "%s %s [ %s ]" %
+                                padre.txtbanco.text(),
+                                padre.txtmoneda.text(),
+                                padre.txtcuentabanco.text() )
 
         lineaModel = self.editmodel.editmodel
         lineaModel.insertRows( 0 )
@@ -309,7 +320,7 @@ class dlgMovimientosBancarios( QDialog, Ui_dlgMovimientosBancarios ):
         if self.editmodel != None:
             self.editmodel.datos.dateTime = datetime
 
-    @pyqtSignature( "int" )
+    @pyqtSlot( "int" )
     def on_cbtipodoc_currentIndexChanged( self, index ):
         """
         asignar la concepto al objeto self.editmodel
@@ -326,7 +337,7 @@ class dlgMovimientosBancarios( QDialog, Ui_dlgMovimientosBancarios ):
                                               self.cbconcepto,
                                               self.cbtipodoc )
 
-    @pyqtSignature( "int" )
+    @pyqtSlot( "int" )
     def on_cbconcepto_currentIndexChanged( self, index ):
         """
         asignar el concepto al objeto self.editmodel

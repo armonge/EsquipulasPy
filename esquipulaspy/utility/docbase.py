@@ -44,7 +44,7 @@ class DocumentBase( QAbstractTableModel ):
         @type:string
         """
 
-        self.__validError = ""
+        self._validError = ""
         """
         @ivar: Si existe algún error de validación aca es que se muestra
         @type:string
@@ -52,7 +52,7 @@ class DocumentBase( QAbstractTableModel ):
 
     @property
     def validError( self ):
-        return self.__validError
+        return self._validError
 
     @property
     def validLines( self ):

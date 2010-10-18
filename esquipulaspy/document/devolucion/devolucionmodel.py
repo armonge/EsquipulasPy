@@ -122,33 +122,29 @@ class DevolucionModel( DocumentBase ):
         Un documento es valido cuando 
         @rtype: bool
         """
-        if not int( self.clientId ) != 0:
-            self.__validError = "No ha seleccionado un cliente"
-            return False
-        elif not  int( self.validLines ) > 0:
-            self.__validError = u"No existen lineas que guardar en "\
-                + "la devolución"
-            return False
-        elif not int( self.uid ) != 0:
-            self.__validError = "No se puede determinar el usuario que "\
-            + "realiza el documento"
-            return False
-        elif not int( self.invoiceId ) != 0:
-            self.__validError = "No se ha especificado el numero de factura"
-            return False
-        elif not self.printedDocumentNumber != "":
-            self.__validError = u"No se ha especificado el numero de devolución"
-            return False
-        elif not int( self.exchangeRateId ) != 0 :
-            self.__validError = "No hay un tipo de cambio para el documento"
-            return False
-        elif not int( self.conceptId ) > 0:
-            self.__validError = u"No se ha especificado un concepto "\
-            + "para la devolución"
-            return False
-        elif not int( self.warehouseId ) > 0:
-            self.__validError = u"No se ha especificado la bodega "\
-            + "para la devolución"
+        try:
+            if not int( self.clientId ) != 0:
+                raise UserWarning( "No ha seleccionado un cliente" )
+            elif not  int( self.validLines ) > 0:
+                raise UserWarning( u"No existen lineas que guardar en "\
+                    + u"la devolución" )
+            elif not int( self.uid ) != 0:
+                raise UserWarning( "No se puede determinar el usuario que "\
+                + "realiza el documento" )
+            elif not int( self.invoiceId ) != 0:
+                raise UserWarning( "No se ha especificado el numero de factura" )
+            elif not self.printedDocumentNumber != "":
+                raise UserWarning ( u"No se ha especificado el numero de devolución" )
+            elif not int( self.exchangeRateId ) != 0 :
+                raise UserWarning( "No hay un tipo de cambio para el documento" )
+            elif not int( self.conceptId ) > 0:
+                raise UserWarning( u"No se ha especificado un concepto "\
+                + "para la devolución" )
+            elif not int( self.warehouseId ) > 0:
+                raise UserWarning( u"No se ha especificado la bodega "\
+                + u"para la devolución" )
+        except UserWarning as inst:
+            self._validError = unicode( inst )
             return False
         return True
 

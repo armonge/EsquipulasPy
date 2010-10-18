@@ -6,20 +6,21 @@ Created on 25/05/2010
 '''
 
 
-import logging
-from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, \
-QSortFilterProxyModel, QMessageBox, QCompleter, qApp
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, Qt, QTimer, QDate
+from PyQt4.QtCore import  pyqtSlot, Qt, QTimer, QDate, QDateTime
+from PyQt4.QtGui import QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, \
+    QCompleter, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
-
 from decimal import Decimal
-from utility.base import Base
-from ui.Ui_pago import Ui_frmPago
 from document.pago.pagomodel import PagoModel
-
-
-from utility.moneyfmt import moneyfmt
+from ui.Ui_pago import Ui_frmPago
 from utility import constantes
+from utility.base import Base
+from utility.decorators import if_edit_model
+from utility.moneyfmt import moneyfmt
+import logging
+
+
+
 #from PyQt4.QtGui import QMainWindow
 
 #controles
@@ -65,7 +66,9 @@ class FrmPago( Ui_frmPago, Base ):
 
         self.sbtotalc.setValue( 0 )
         self.sbtotald.setValue( 0 )
-        self.__status = True
+
+        self.conceptosModel = QSqlQueryModel()
+
         QTimer.singleShot( 0, self.loadModels )
 
 #    def agregarFactura(self,i,n):
@@ -104,7 +107,7 @@ class FrmPago( Ui_frmPago, Base ):
         try:
 
 #            Rellenar el combobox de las CONCEPTOS
-            self.conceptosModel = QSqlQueryModel()
+
             self.conceptosModel.setQuery( """
                SELECT idconcepto, descripcion FROM conceptos c WHERE idtipodoc = %d;
             """ % constantes.IDPAGO )
@@ -287,74 +290,74 @@ class FrmPago( Ui_frmPago, Base ):
         QMessageBox.information( None, "Guardar Pago", mensaje )
         return False
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbbeneficiario_currentIndexChanged( self, index ):
         """
         asignar proveedor al objeto self.editmodel
         """
-        if not self.editmodel is None:
-            self.editmodel.beneficiarioId = self.beneficiariosModel.record( index ).value( "idpersona" ).toInt()[0] if index != -1 else - 1
+        self.editmodel.beneficiarioId = self.beneficiariosModel.record( index ).value( "idpersona" ).toInt()[0] if index != -1 else - 1
 #            self.tableabonos.setEnabled( index != -1 )
 #            self.frbotones.setEnabled( index != -1 )
 #            self.abonoeditmodel.removeRows( 0, self.tablefacturas, self.abonoeditmodel.rowCount() )
 #            self.abonoeditmodel.idbeneficiario = self.datosRecibo.beneficiarioId
 #            self.updateFacturasFilter()
-            self.updateLabels()
+        self.updateLabels()
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbconcepto_currentIndexChanged( self, index ):
         """
         asignar la concepto al objeto self.editmodel
         """
-        if not self.editmodel is None:
-            self.editmodel.conceptoId = self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
+        self.editmodel.conceptoId = self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbtasaret_currentIndexChanged( self, index ):
         """
         asignar la retencion al objeto self.editmodel
         """
-        if self.editmodel != None:
 
-            self.editmodel.retencionId = self.retencionModel.record( index ).value( "idcostoagregado" ).toInt()[0]
-            value = self.retencionModel.record( index ).value( "tasa" ).toString()
-            self.editmodel.retencionTasa = Decimal( value if value != "" else 0 )
-            self.updateLabels()
+        self.editmodel.retencionId = self.retencionModel.record( index ).value( "idcostoagregado" ).toInt()[0]
+        value = self.retencionModel.record( index ).value( "tasa" ).toString()
+        self.editmodel.retencionTasa = Decimal( value if value != "" else 0 )
+        self.updateLabels()
 
 # MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
-    @pyqtSignature( "bool" )
+    @pyqtSlot( bool )
+    @if_edit_model
     def on_ckretener_toggled( self, on ):
         """
         """
-        if self.editmodel != None:
-            self.editmodel.aplicarRet = on
-            self.cbtasaret.setEnabled( on )
-            self.cbtasaret.setCurrentIndex( -1 )
+        self.editmodel.aplicarRet = on
+        self.cbtasaret.setEnabled( on )
+        self.cbtasaret.setCurrentIndex( -1 )
 
-    @pyqtSignature( "bool" )
+    @pyqtSlot( bool )
+    @if_edit_model
     def on_ckiva_toggled( self, on ):
         """
         """
-        if self.editmodel != None:
-            self.editmodel.aplicarIva = on
-            self.updateLabels()
+        self.editmodel.aplicarIva = on
+        self.updateLabels()
 
 
-    @pyqtSlot( "QDateTime" )
+    @pyqtSlot( QDateTime )
     def on_dtPicker_dateTimeChanged( self, datetime ):
         pass
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_sbtotalc_valueChanged ( self, value ):
-        if self.editmodel != None:
-            self.editmodel.totalC = Decimal( str( value ) )
-            self.updateLabels()
+        self.editmodel.totalC = Decimal( str( value ) )
+        self.updateLabels()
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_sbtotald_valueChanged ( self, value ):
-        if self.editmodel != None:
-            self.editmodel.totalD = Decimal( str( value ) )
-            self.updateLabels()
+        self.editmodel.totalD = Decimal( str( value ) )
+        self.updateLabels()
 
     def setControls( self, status ):
         """
@@ -428,12 +431,16 @@ class FrmPago( Ui_frmPago, Base ):
 #    
 
     def updateDetailFilter( self, index ):
-        self.dtPicker.setDate( QDate.fromString( self.navmodel.record( index ).value( "Fecha" ).toString(), "dd/MM/yyyy" ) )
-        valor = Decimal( self.navmodel.record( index ).value( "totalc" ).toString() )
+        record = self.navmodel.record( index )
+        self.dtPicker.setDate( 
+                      QDate.fromString( 
+                               record.value( "Fecha" ).toString(),
+                               "dd/MM/yyyy" ) )
+        valor = Decimal( record.value( "totalc" ).toString() )
         self.sbtotalc.setMaximum( valor )
         self.sbtotalc.setValue( valor )
 
-        valor = Decimal( self.navmodel.record( index ).value( "totald" ).toString() )
+        valor = Decimal( record.value( "totald" ).toString() )
         self.sbtotald.setMaximum( valor )
         self.sbtotald.setValue( valor )
 
@@ -463,11 +470,12 @@ class FrmPago( Ui_frmPago, Base ):
         """
         try:
 
-            if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning( u"No se pudo conectar con la base de datos" )
 
             query = """
-SELECT
+            SELECT
                 pago.iddocumento,
                 pago.ndocimpreso  as 'No. Comprobante',
                pago.Fecha,
@@ -581,10 +589,15 @@ SELECT
             self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
             self.tablenavigation.setColumnHidden( TOTALRETENCION, True )
             self.tablenavigation.setColumnHidden( CONRETENCION, True )
-
+        except UserWarning as inst:
+            logging.error( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                   unicode( inst ) )
         except Exception as inst:
-            print inst
+            logging.critical( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                            u"Hubo un error al tratar de obtener los datos" )
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+            if self.database.isOpen():
+                self.database.close()
 

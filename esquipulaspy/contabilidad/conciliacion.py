@@ -22,10 +22,13 @@ from utility.constantes import IDND, IDCHEQUE, IDERROR
 
 from ui.Ui_conciliacion import Ui_frmConciliacion
 from movimientosbancarios import dlgMovimientosBancarios
+from utility.decorators import if_edit_model
 
 
-FECHA, CONCEPTO, DEBE, HABER, SALDO, CONCILIADO, DELBANCO, IDTIPODOC = range( 8 )
-FECHA, BANCO, CUENTABANCO, MONEDA, CUENTA, SALDOBANCO, SALDOLIBRO, IDCUENTABANCO, IDDOC = range( 9 )
+FECHA, CONCEPTO, DEBE, HABER, SALDO, CONCILIADO, DELBANCO, \
+IDTIPODOC = range( 8 )
+FECHA, BANCO, CUENTABANCO, MONEDA, CUENTA, SALDOBANCO, SALDOLIBRO, \
+IDCUENTABANCO, IDDOC = range( 9 )
 class FrmConciliacion( Ui_frmConciliacion, Base ):
     """
     Formulario para crear nuevas conciliaciones bancarias
@@ -55,14 +58,13 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
 
 #        Este es el modelo con los datos de la tabla para navegar
         self.detailsmodel = ReadOnlyTableModel( self )
+        self.proxymodel = QSortFilterProxyModel( self )
 #        CREAR TODOS LOS PROXY MODEL
         self.crearModelosFiltrados()
 
-        self.actionGoFirst.triggered.connect( functools.partial( self.navigate, 'first' ) )
-        self.actionGoPrevious.triggered.connect( functools.partial( self.navigate, 'previous' ) )
-        self.actionGoNext.triggered.connect( functools.partial( self.navigate, 'next' ) )
-        self.actionGoLast.triggered.connect( functools.partial( self.navigate, 'last' ) )
         self.detailsmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
+
+
 #        Cargar los modelos en un hilo aparte
         QTimer.singleShot( 0, self.loadModels )
 
@@ -70,7 +72,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
     def crearModelosFiltrados( self ):
         #CREAR PROXY MODEL         
 
-        self.proxymodel = QSortFilterProxyModel( self )
+
         self.proxymodel.setDynamicSortFilter( True )
         self.proxymodel.setFilterRole( Qt.EditRole )
         self.proxymodel.setFilterRegExp( "1" )
@@ -372,10 +374,13 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
 
         except UserWarning as inst:
             logging.error( unicode( inst ) )
-            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                   unicode( inst ) )
         except Exception as inst:
             logging.critical( unicode( inst ) )
-            QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al intentar iniciar una nueva conciliación" )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                   u"Hubo un error al intentar iniciar una"\
+                                   + " nueva conciliación" )
         finally:
             if self.database.isOpen():
                 self.database.close()
@@ -404,31 +409,34 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         if not self.valid:
             return None
 
-        if QMessageBox.question( None, self.trUtf8( "Conciliación Bancaria" ), self.trUtf8( """¿Desea guardar el documento?""" ), QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+        if QMessageBox.question( self,
+                                 qApp.organizationName(),
+                                  u"""¿Desea guardar el documento?""" ,
+                                   QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
             if self.editmodel.save():
-                QMessageBox.information( None,
-                    self.trUtf8( "Conciliación Bancaria" ),
-                    self.trUtf8( """El documento se ha guardado con éxito""" ) )
+                QMessageBox.information( self,
+                                         qApp.organizationName(),
+                     u"El documento se ha guardado con éxito" )
                 self.editmodel = None
                 self.updateModels()
                 self.navigate( 'last' )
                 self.status = True
             else:
-                QMessageBox.critical( None,
-                    self.trUtf8( "Movimientos Bancarios" ),
-                    self.trUtf8( """Ha ocurrido un error al guardar el documento""" ) )
+                QMessageBox.critical( self,
+                     qApp.organizationName(),
+                    """Ha ocurrido un error al guardar el documento""" )
 
     @property
     def valid( self ):
         modelo = self.editmodel
         if modelo.idCuentaContable == 0:
-            QMessageBox.warning( None,
-                    self.trUtf8( "Conciliación Bancaria" ),
-                    self.trUtf8( """Por favor elija la cuenta bancaria""" ) )
+            QMessageBox.warning( self,
+                     qApp.organizationName(),
+                     """Por favor elija la cuenta bancaria""" )
         elif modelo.diferencia != 0:
-            QMessageBox.warning( None,
-                    self.trUtf8( "Conciliación Bancaria" ),
-                    self.trUtf8( """Los saldos según Banco y según libro no están conciliados""" ) )
+            QMessageBox.warning( self,
+                     qApp.organizationName(),
+                     """Los saldos según Banco y según libro no están conciliados""" )
         else:
             return True
 
@@ -443,49 +451,49 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         self.ocultarCols()
         self.status = True
 
-    @pyqtSlot( "bool" )
+    @pyqtSlot( bool )
+    @if_edit_model
     def on_btnNotasCD_clicked( self, _checked ):
-        if self.editmodel != None:
-            notas = dlgMovimientosBancarios( self )
-            notas.setWindowModality( Qt.WindowModal )
-            if notas.exec_() == QDialog.Accepted:
-                row = self.editmodel.rowCount()
+        notas = dlgMovimientosBancarios( self )
+        notas.setWindowModality( Qt.WindowModal )
+        if notas.exec_() == QDialog.Accepted:
+            row = self.editmodel.rowCount()
 
-                datosDoc = notas.editmodel.datos
+            datosDoc = notas.editmodel.datos
 
-                linea = LineaConciliacion( self.editmodel )
-                linea.fecha = datosDoc.dateTime.toString( "dd/MM/yy" )
-                linea.monto = datosDoc.total
-                linea.idTipoDoc = datosDoc.idTipoDoc
+            linea = LineaConciliacion( self.editmodel )
+            linea.fecha = datosDoc.dateTime.toString( "dd/MM/yy" )
+            linea.monto = datosDoc.total
+            linea.idTipoDoc = datosDoc.idTipoDoc
 
-                linea.concepto = notas.editmodel.codigoDoc + " " + linea.fecha
-                linea.saldo = self.editmodel.lines[row - 1].saldo + linea.monto
-                linea.conciliado = 1
-                linea.delBanco = 1
-                linea.concepto2 = notas.editmodel.descripcionDoc + " " + linea.fecha
-                linea.idDoc = 0
-                linea.datos = datosDoc
-                self.editmodel.insertRows( row )
-                self.editmodel.lines[row] = linea
-                index = self.editmodel.index( row, CONCILIADO )
-                self.editmodel.dataChanged.emit( index, index )
+            linea.concepto = notas.editmodel.codigoDoc + " " + linea.fecha
+            linea.saldo = self.editmodel.lines[row - 1].saldo + linea.monto
+            linea.conciliado = 1
+            linea.delBanco = 1
+            linea.concepto2 = notas.editmodel.descripcionDoc + " " + linea.fecha
+            linea.idDoc = 0
+            linea.datos = datosDoc
+            self.editmodel.insertRows( row )
+            self.editmodel.lines[row] = linea
+            index = self.editmodel.index( row, CONCILIADO )
+            self.editmodel.dataChanged.emit( index, index )
 
-    @pyqtSlot( "bool" )
+    @pyqtSlot( bool )
+    @if_edit_model
     def on_btnremove_clicked( self, _checked ):
-        if self.editmodel != None:
-            filas = []
-            for index in self.tabledetails.selectedIndexes():
-                pos = index.row()
-                if pos > 0 and ( not ( pos in filas ) ):
-                    if self.editmodel.lines[pos].idDoc == 0:
-                        filas.append( pos )
+        filas = []
+        for index in self.tabledetails.selectedIndexes():
+            pos = index.row()
+            if pos > 0 and ( not ( pos in filas ) ):
+                if self.editmodel.lines[pos].idDoc == 0:
+                    filas.append( pos )
 
-            if len( filas ) > 0:
-                filas.sort( None, None, True )
-                for pos in filas:
-                    self.editmodel.removeRows( pos )
+        if len( filas ) > 0:
+            filas.sort( None, None, True )
+            for pos in filas:
+                self.editmodel.removeRows( pos )
 
-                self.updateLabels()
+            self.updateLabels()
 
 
 

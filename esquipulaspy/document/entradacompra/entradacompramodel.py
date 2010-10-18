@@ -4,7 +4,7 @@ Created on 18/05/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtCore import QModelIndex, Qt, QDateTime, QAbstractTableModel
+from PyQt4.QtCore import QModelIndex, Qt, QAbstractTableModel
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from decimal import Decimal
 from lineaentradacompra import LineaEntradaCompra
@@ -66,11 +66,6 @@ class EntradaCompraModel( DocumentBase ):
         @type: string
         """
 
-        self.datetime = QDateTime.currentDateTime()
-        """
-        @ivar: La fecha del documento
-        @type: QDateTime
-        """
 
         self.uid = 0
         """
@@ -84,11 +79,6 @@ class EntradaCompraModel( DocumentBase ):
         @type: string
         """
 
-        self.validError = ""
-        """
-        @ivar:Los errores al validar un documento 
-        @type:string
-        """
 
         self.exchangeRate = Decimal( 0 )
         """
@@ -134,26 +124,29 @@ class EntradaCompraModel( DocumentBase ):
         Es valido el documento
         @rtype: bool
         """
-        if not int( self.exchangeRateId ) > 0:
-            self.validError = "No se ha definido un tipo de cambio para el documento"
+        try:
+            if not int( self.exchangeRateId ) > 0:
+                raise UserWarning( "No se ha definido un tipo de cambio "\
+                                   + "para el documento" )
+            elif not self.printedDocumentNumber != "":
+                raise UserWarning( "No ha escrito el numero de documento" )
+            elif not int( self.providerId ) != 0:
+                raise  UserWarning( "No ha definido al proveedor" )
+            elif not int( self.validLines ) > 0:
+                raise UserWarning( "No hay ninguna linea valida en la entrada "\
+                                   + "de compra" )
+            elif not int( self.idIVA ) != 0:
+                raise UserWarning( u"No hay un IVA asociado a la entrada "\
+                                   + "de compra" )
+            elif not int( self.uid ) != 0:
+                raise UserWarning( "No se ha definido el usuario para la "\
+                                   + "entrada compra" )
+
+            return True
+        except UserWarning as inst:
+            self._validError = unicode( inst )
             return False
-        elif not self.printedDocumentNumber != "":
-            self.validError = "No ha escrito el numero de documento"
-            return False
-        elif not int( self.providerId ) != 0:
-            self.validError = "No ha definido al proveedor"
-            return False
-        elif not int( self.validLines ) > 0:
-            self.validError = "No hay ninguna linea valida en la entrada de compra"
-            return False
-        elif not int( self.idIVA ) != 0:
-            print self.idIVA
-            self.validError = u"No hay un IVA asociado a la entrada de compra"
-            return False
-        elif not int( self.uid ) != 0:
-            self.validError = "No se ha definido el usuario para la entrada compra"
-            return False
-        return True
+
 
     @property
     @return_decimal

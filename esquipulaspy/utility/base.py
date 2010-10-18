@@ -30,7 +30,7 @@ class Base( QMainWindow ):
         super( Base, self ).__init__( parent )
         self.parentWindow = parent
         self.user = user.LoggedUser
-        self.__status = True
+        self._status = True
 
 
 
@@ -264,13 +264,13 @@ class Base( QMainWindow ):
         @param stat:  False = editando, True = navegando
         @type stat: bool
         """
-        self.__status = stat
-        self.setControls( self.__status )
+        self._status = stat
+        self.setControls( self._status )
     def _getStatus( self ):
         """
         esta propiedad cambia entre navegar y editar
         """
-        return self.__status
+        return self._status
 
     status = property( _getStatus, _setStatus )
 

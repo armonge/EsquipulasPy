@@ -264,25 +264,25 @@ class LiquidacionModel( DocumentBase ):
         """
         try:
             if not self.printedDocumentNumber.strip() != "":
-                raise RuntimeWarning( "No ha introducido un numero de Poliza" )
+                raise UserWarning( "No ha introducido un numero de Poliza" )
             elif not int( self.providerId ) > 0:
-                raise RuntimeWarning( "No ha seleccionado un proveedor" )
+                raise UserWarning( "No ha seleccionado un proveedor" )
             elif not  int( self.warehouseId ) > 0:
-                raise RuntimeWarning( "No ha seleccionado una bodega" )
+                raise UserWarning( "No ha seleccionado una bodega" )
             elif not int( self.exchangeRateId ) > 0:
-                raise RuntimeWarning( "No existe un tipo de cambio "\
+                raise UserWarning( "No existe un tipo de cambio "\
                                       + "para esta fecha" )
             elif not  int( self.validLines ) > 0:
-                raise RuntimeWarning( u"No existe ninguna linea valida en "\
+                raise UserWarning( u"No existe ninguna linea valida en "\
                                       + "la liquidación" )
             elif not self.origin.strip() != "":
-                raise RuntimeWarning( "No ha escrito la procedencia" )
+                raise UserWarning( "No ha escrito la procedencia" )
             elif not int( self.tsimId ) > 0:
-                raise RuntimeWarning( "No existe un valor TSIM" )
+                raise UserWarning( "No existe un valor TSIM" )
             elif not int( self.speId ) > 0:
-                raise RuntimeWarning( "No existe un valor SPE" )
-        except RuntimeWarning as inst:
-            self.__validError = unicode( inst )
+                raise UserWarning( "No existe un valor SPE" )
+        except UserWarning as inst:
+            self._validError = unicode( inst )
             return False
         return True
 

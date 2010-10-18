@@ -15,6 +15,7 @@ from ui.Ui_kardex import Ui_frmKardex
 from utility import constantes
 from utility.base import Base
 import logging
+from utility.decorators import if_edit_model
 
 
 
@@ -139,9 +140,9 @@ class FrmKardex( Ui_frmKardex, Base ):
         self.status = True
 
     @pyqtSlot()
+    @if_edit_model
     def on_txtKardexObservation_textChanged( self ):
-        if not self.editmodel is None:
-            self.editmodel.observations = self.txtKardexObservation.toPlainText()
+        self.editmodel.observations = self.txtKardexObservation.toPlainText()
 
     def setControls( self, status ):
         self.tabnavigation.setEnabled( status )

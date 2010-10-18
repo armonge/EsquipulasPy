@@ -6,7 +6,7 @@ Created on 23/07/2010
 '''
 import logging
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, QAbstractItemView, qApp
+from PyQt4.QtGui import  QSortFilterProxyModel, QMessageBox, QAbstractItemView, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QTimer, pyqtSlot, QDateTime
 
@@ -17,6 +17,7 @@ from document.kardexother import KardexOtherModel, KardexOtherDelegate
 from utility.base import Base
 from utility import constantes, movimientos
 from utility.accountselector import AccountsSelectorDelegate, AccountsSelectorLine
+from utility.decorators import if_edit_model
 
 
 IDDOCUMENTO, NDOCIMPRESO, FECHA, OBSERVACIONES, BODEGA, TOTAL, ESTADO, \
@@ -400,12 +401,12 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
         self.tabledetails.setModel( self.detailsproxymodel )
         self.status = True
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbWarehouse_currentIndexChanged( self, index ):
-        if not self.editmodel is None:
-            self.editmodel.warehouseId = self.cbWarehouse.model().index( index, 0 ).data().toInt()[0]
+        self.editmodel.warehouseId = self.cbWarehouse.model().index( index, 0 ).data().toInt()[0]
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbConcept_currentIndexChanged( self, index ):
-        if not self.editmodel is None:
-            self.editmodel.conceptId = self.cbConcept.model().index( index, 0 ).data().toInt()[0]
+        self.editmodel.conceptId = self.cbConcept.model().index( index, 0 ).data().toInt()[0]

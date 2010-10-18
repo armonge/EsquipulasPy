@@ -7,10 +7,10 @@ import logging
 
 from PyQt4.QtCore import pyqtSlot, Qt, QTimer, \
      QDateTime, QModelIndex
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
+from PyQt4.QtGui import  QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
      QLineEdit, QMessageBox, qApp
-from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
+from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 
 from ui.Ui_devolucion import Ui_frmDevoluciones
 from utility.base import Base
@@ -21,6 +21,7 @@ from document.devolucion.lineadevolucion import LineaDevolucion
 
 from utility.moneyfmt import moneyfmt
 from utility import constantes
+from utility.decorators import if_edit_model
 
 
 
@@ -237,30 +238,30 @@ class FrmDevolucion( Ui_frmDevoluciones, Base ):
         self.tabledetails.setColumnHidden( IDARTICULO, status )
         self.tabledetails.setColumnHidden( IDDOCUMENTOT, status )
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( unicode )
+    @if_edit_model
     def on_txtDocumentNumber_textEdited( self, string ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.printedDocumentNumber = string
+        self.editmodel.printedDocumentNumber = string
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( unicode )
+    @if_edit_model
     def on_txtnotacredito_textEdited( self, string ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.numnotacredito = string
+        self.editmodel.numnotacredito = string
 
 
     @pyqtSlot()
+    @if_edit_model
     def on_txtObservations_textChanged( self ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.observations = self.txtObservations.toPlainText()
+        self.editmodel.observations = self.txtObservations.toPlainText()
 
     def newDocument( self ):
         """

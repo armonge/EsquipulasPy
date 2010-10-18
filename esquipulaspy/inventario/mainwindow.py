@@ -3,19 +3,18 @@
 """
 Module implementing MainWindow.
 """
-
 from PyQt4.QtCore import pyqtSlot
-from entradacompra import FrmEntradaCompra
+from articulos import FrmArticulos
 from catalogos import FrmCatMarcas, FrmCatConceptos
-from liquidacion import FrmLiquidacion
 from categorias import FrmCategorias
+from entradacompra import FrmEntradaCompra
 from kardex import FrmKardex
 from kardexother import FrmKardexOther
+from liquidacion import FrmLiquidacion
 from ui.Ui_mainwindowinventario import Ui_MainWindow
-from articulos import FrmArticulos
+from utility import constantes
 from utility.mainwindowbase import MainWindowBase
 from utility.persona import FrmPersona
-from utility import constantes
 
 class MainWindow( MainWindowBase, Ui_MainWindow ):
     """
@@ -54,8 +53,10 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
 
     def closeEvent( self, event ):
         u"""
-        Guardar el tamaño, la posición en la pantalla y la posición de la barra de tareas
-        Preguntar si realmente se desea cerrar la pestaña cuando se esta en modo edición
+        Guardar el tamaño, la posición en la pantalla y la posición de la barra
+        de tareas
+        Preguntar si realmente se desea cerrar la pestaña cuando
+        se esta en modo edición
         """
         for hijo in self.mdiArea.subWindowList():
             if not hijo.close():

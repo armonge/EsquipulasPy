@@ -23,6 +23,7 @@ AccountsSelectorLine
 
 from document.liquidacion import LiquidacionModel, LiquidacionAccountsModel, \
 LiquidacionDelegate
+from utility.decorators import if_edit_model
 #from document.liquidacion.liquidaciondelegate import LiquidacionDelegate
 
 
@@ -565,140 +566,139 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                 Decimal( query.value( 4 ).toString() ),
                                     ] )
 
-    @pyqtSlot( "QDateTime" )
+    @pyqtSlot( QDateTime )
+    @if_edit_model
     def on_dtPicker_dateTimeChanged( self, datetime ):
-        if not self.editmodel is None:
-            super( FrmLiquidacion, self ).on_dtPicker_dateTimeChanged( 
-                                                                   datetime )
-            self.txtExchangeRate.setText( 
-                                 self.editmodel.exchangeRate.to_eng_string() )
+        super( FrmLiquidacion, self ).on_dtPicker_dateTimeChanged( datetime )
+        self.txtExchangeRate.setText( 
+                             str( self.editmodel.exchangeRate ) )
 
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
     def on_tabWidget_currentChanged( self, _id ):
         self.xdockWidget.setVisible( True if  not _id else False )
 
 
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( unicode )
+    @if_edit_model
     def on_txtPolicy_textChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.printedDocumentNumber = p0
+        self.editmodel.printedDocumentNumber = p0
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( unicode )
+    @if_edit_model
     def on_txtSource_textChanged( self, p0 ):
-        if not self.editmodel is None:
-            self.editmodel.origin = p0
+        self.editmodel.origin = p0
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_sbStore_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.storeTotalC = Decimal( str( p0 ) )
-            self.editmodel.reset()
+        self.editmodel.storeTotalC = Decimal( str( p0 ) )
+        self.editmodel.reset()
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_sbAgency_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.agencyTotalC = Decimal( str( p0 ) )
-            self.editmodel.reset()
+        self.editmodel.agencyTotalC = Decimal( str( p0 ) )
+        self.editmodel.reset()
 
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_sbPaperWork_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.paperworkRate = Decimal( str( p0 ) )
-            self.editmodel.reset()
+        self.editmodel.paperworkRate = Decimal( str( p0 ) )
+        self.editmodel.reset()
 
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_sbTransportation_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.transportRate = Decimal( str( p0 ) )
-            self.editmodel.reset()
+        self.editmodel.transportRate = Decimal( str( p0 ) )
+        self.editmodel.reset()
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_sbWeight_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.weight = Decimal( str( p0 ) )
-            self.editmodel.reset()
+        self.editmodel.weight = Decimal( str( p0 ) )
+        self.editmodel.reset()
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_sbFreight_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.freightTotal = Decimal( str( p0 ) )
-            self.editmodel.reset()
+        self.editmodel.freightTotal = Decimal( str( p0 ) )
+        self.editmodel.reset()
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_sbInsurance_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.insuranceTotal = Decimal( str( p0 ) )
-            self.editmodel.reset()
+        self.editmodel.insuranceTotal = Decimal( str( p0 ) )
+        self.editmodel.reset()
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_sbOther_valueChanged( self, p0 ):
         """
         Slot documentation goes here.
         """
-        if not self.editmodel is None:
-            self.editmodel.otherTotal = Decimal( str( p0 ) )
-            self.editmodel.reset()
+        self.editmodel.otherTotal = Decimal( str( p0 ) )
+        self.editmodel.reset()
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbWarehouse_currentIndexChanged( self, index ):
-        if not self.editmodel is None:
-            self.editmodel.warehouseId = self.cbWarehouse.model().index( index, 0 ).data().toInt()[0]
-            #el iva solo se aplica cuando la bodega es 1
-            self.editmodel.applyIVA = True if self.editmodel.warehouseId == 1 else False
-            self.editmodel.reset()
+        self.editmodel.warehouseId = self.cbWarehouse.model().index( index, 0 ).data().toInt()[0]
+        #el iva solo se aplica cuando la bodega es 1
+        self.editmodel.applyIVA = True if self.editmodel.warehouseId == 1 else False
+        self.editmodel.reset()
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbProvider_currentIndexChanged( self, index ):
-        if not self.editmodel is None:
-            self.editmodel.providerId = self.cbProvider.model().index( index, 0 ).data().toInt()[0]
+        self.editmodel.providerId = self.cbProvider.model().index( index, 0 ).data().toInt()[0]
 
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_ckISO_stateChanged( self, status ):
-        if not self.editmodel is None:
-            self.editmodel.applyISO = True if status == Qt.Checked else False
-            self.editmodel.setData( self.editmodel.index( 0, 0 ),
-                                    self.editmodel.lines[0].itemId )
+        self.editmodel.applyISO = True if status == Qt.Checked else False
+        self.editmodel.setData( self.editmodel.index( 0, 0 ),
+                                self.editmodel.lines[0].itemId )
 
-            if status == Qt.Checked:
-                self.ckTaxes.setChecked( False )
+        if status == Qt.Checked:
+            self.ckTaxes.setChecked( False )
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_ckTaxes_stateChanged( self, status ):
-        if not self.editmodel is None:
-            self.editmodel.applyTaxes = True if status == Qt.Unchecked else False
-            self.editmodel.reset()
+        self.editmodel.applyTaxes = True if status == Qt.Unchecked else False
+        self.editmodel.reset()
 
-            if status == Qt.Checked:
-                self.ckISO.setChecked( False )
+        if status == Qt.Checked:
+            self.ckISO.setChecked( False )
 
 
     def loadModels( self ):
@@ -713,7 +713,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
     def closeEvent( self, event ):
         u"""
-        reimplementando por que sel.status no sigue el formato True,. False
+        reimplementando por que self.status no sigue el formato True,. False
         """
         if self.status != 1:
             if not QMessageBox.question( self,
@@ -950,13 +950,13 @@ class ArticlesModel( QAbstractTableModel ):
         line = self.items[index.row()]
         if role == Qt.DisplayRole:
             if index.column() in ( 2, 3 ):
-                return line[index.column()].to_eng_string() + "%"
+                return str( line[index.column()] ) + "%"
             elif index.column() == 4:
                 return moneyfmt( line[index.column()], 4, "US$" )
             return line[index.column()]
 # 0 = id articulo, 1 = descripcion articulo, 2 = dai, 3 = isc, 4 = comision
         elif role == Qt.EditRole:
-                return line[index.column()]
+            return line[index.column()]
 
 
 

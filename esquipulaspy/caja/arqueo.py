@@ -21,6 +21,7 @@ from utility.singleselectionmodel import  SingleSelectionModel
 from utility.user import dlgSmallUserLogin
 
 from document.arqueo import ArqueoModel, ArqueoProxyModel, ArqueoDelegate
+from utility.decorators import if_edit_model
 
 
 #navmodel
@@ -505,41 +506,41 @@ class FrmArqueo( Ui_frmArqueo, Base ):
 
 
     @pyqtSlot( float )
+    @if_edit_model
     def on_sbCkD_valueChanged( self, value ):
-        if not self.editmodel is None:
-            self.editmodel.totalCkD = Decimal( str( value ) )
+        self.editmodel.totalCkD = Decimal( str( value ) )
 
     @pyqtSlot( float )
+    @if_edit_model
     def on_sbCkC_valueChanged( self, value ):
-        if not self.editmodel is None:
-            self.editmodel.totalCkC = Decimal( str( value ) )
+        self.editmodel.totalCkC = Decimal( str( value ) )
 
     @pyqtSlot( float )
+    @if_edit_model
     def on_sbCardD_valueChanged( self, value ):
-        if not self.editmodel is None:
-            self.editmodel.totalCardD = Decimal( str( value ) )
+        self.editmodel.totalCardD = Decimal( str( value ) )
 
     @pyqtSlot( float )
+    @if_edit_model
     def on_sbCardC_valueChanged( self, value ):
-        if not self.editmodel is None:
-            self.editmodel.totalCardC = Decimal( str( value ) )
+        self.editmodel.totalCardC = Decimal( str( value ) )
 
     @pyqtSlot( float )
+    @if_edit_model
     def on_sbDepositD_valueChanged( self, value ):
-        if not self.editmodel is None:
-            self.editmodel.totalDepositD = Decimal( str( value ) )
+        self.editmodel.totalDepositD = Decimal( str( value ) )
 
     @pyqtSlot( float )
+    @if_edit_model
     def on_sbDepositC_valueChanged( self, value ):
-        if not self.editmodel is None:
-            self.editmodel.totalDepositC = Decimal( str( value ) )
+        self.editmodel.totalDepositC = Decimal( str( value ) )
 
     @pyqtSlot( float )
+    @if_edit_model
     def on_sbTransferD_valueChanged( self, value ):
-        if not self.editmodel is None:
-                self.editmodel.totalTransferD = Decimal( str( value ) )
+        self.editmodel.totalTransferD = Decimal( str( value ) )
 
     @pyqtSlot( float )
+    @if_edit_model
     def on_sbTransferC_valueChanged( self, value ):
-        if not self.editmodel is None:
-            self.editmodel.totalTransferC = Decimal( str( value ) )
+        self.editmodel.totalTransferC = Decimal( str( value ) )

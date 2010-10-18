@@ -275,29 +275,27 @@ class FacturaModel( DocumentBase ):
 
     @property
     def valid( self ):
-        if not self.datosSesion.valid:
-            self.__validError = "Los datos de la sesión no son validos"
-            return False
-        if not self.validLines > 0:
-            self.__validError = "Existe una linea no valida"
-            return False
-        if not self.total > 0:
-            self.__validError = "El total no puede ser 0"
-            return False
-        if not self.bodegaId > 0:
-            self.__validError = "No se ha definido el ID de la bodega"
-            return False
+        try:
+            if not self.datosSesion.valid:
+                raise UserWarning( "Los datos de la sesión no son validos" )
+            if not self.validLines > 0:
+                raise UserWarning( "Existe una linea no valida" )
+            if not self.total > 0:
+                raise UserWarning( "El total no puede ser 0" )
+            if not self.bodegaId > 0:
+                raise UserWarning( "No se ha definido el ID de la bodega" )
 
-        if self.escontado == False:
-            if not self.fechaTope > self.datosSesion.fecha:
-                self.__validError = "Fecha Tope Incorrecta"
-                return False
+            if self.escontado == False:
+                if not self.fechaTope > self.datosSesion.fecha:
+                    raise UserWarning( "Fecha Tope Incorrecta" )
 
-        if self.applyIva:
-            if not self.ivaId > 0:
-                self.errorMessage = "No se ha definido el ID del IVA"
-                return False
-
+            if self.applyIva:
+                if not self.ivaId > 0:
+                    raise UserWarning( "No se ha definido el ID del IVA" )
+            return True
+        except UserWarning as inst:
+            self._validError = unicode( inst )
+            return False
 
         return True
     def save( self , otrosDatosModel ):
