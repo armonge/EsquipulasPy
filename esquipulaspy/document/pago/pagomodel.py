@@ -6,18 +6,23 @@ Created on 18/05/2010
 
 
 
-from decimal import  Decimal
-from utility import constantes
-from utility.movimientos import redondear
-from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from PyQt4.QtCore import QDateTime
+from PyQt4.QtSql import QSqlQuery, QSqlDatabase
+from decimal import Decimal
+from utility import constantes
+from utility.decorators import return_decimal
+from utility.movimientos import redondear
+import logging
 
 class PagoModel( object ):
+    """
+    El modelo que implementa los pagos
+    """
+    __documentType = constantes.IDPAGO
+
     def __init__( self , datosSesion ):
 
         object.__init__( self )
-
-        self.__documentType = constantes.IDPAGO
         self.maxCordoba = Decimal( 0 )
         self.maxDolar = Decimal( 0 )
         self.docImpreso = ""
@@ -37,27 +42,21 @@ class PagoModel( object ):
         self.aplicarIva = True
         self.errorMessage = ""
 
-    def getIvaTasa( self ):
+    def __getIvaTasa( self ):
         return self.__ivaTasa if self.aplicarIva else Decimal( 0 )
-
-    def setIvaTasa( self, value ):
+    def __setIvaTasa( self, value ):
         self.__ivaTasa = value
+    ivaTasa = property( __getIvaTasa, __setIvaTasa )
 
 
-    def getRetencionTasa( self ):
+    def __getRetencionTasa( self ):
         return self.__retencionTasa if self.aplicarRet else Decimal( 0 )
-
-    def setRetencionTasa( self, value ):
+    def __setRetencionTasa( self, value ):
         self.__retencionTasa = value
-
-    ivaTasa = property( getIvaTasa, setIvaTasa )
-    retencionTasa = property( getRetencionTasa, setRetencionTasa )
+    retencionTasa = property( __getRetencionTasa, __setRetencionTasa )
 
     def save( self ):
-
-
         try:
-
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
 
@@ -140,7 +139,8 @@ class PagoModel( object ):
 #VERIFICO SI el id del iva es cero. NO SERA CERO CUANDO LA BODEGA=1 PORQUE ESTA NO ES exonerada                                 
             if self.aplicarIva:
                 query.prepare( """
-                INSERT INTO costosxdocumento (iddocumento, idcostoagregado) VALUES( :iddocumento, :idcostoagregado )
+                INSERT INTO costosxdocumento (iddocumento, idcostoagregado) 
+                VALUES( :iddocumento, :idcostoagregado )
                 """ )
                 query.bindValue( ":iddocumento", insertedId )
                 query.bindValue( ":idcostoagregado", self.ivaId )
@@ -152,7 +152,8 @@ class PagoModel( object ):
 
             if self.aplicarRet:
                 query.prepare( """
-                INSERT INTO costosxdocumento (iddocumento, idcostoagregado) VALUES( :iddocumento, :idcostoagregado )
+                INSERT INTO costosxdocumento (iddocumento, idcostoagregado) 
+                VALUES( :iddocumento, :idcostoagregado )
                 """ )
                 query.bindValue( ":iddocumento", insertedId )
                 query.bindValue( ":idcostoagregado", self.retencionId )
@@ -168,34 +169,32 @@ class PagoModel( object ):
                 raise Exception( "No se pudo guardar el pago" )
 
         except Exception as inst:
-
-            print  query.lastError().databaseText()
-            print query.lastError().driverText()
-            print inst.args
+            logging.error( query.lastError().text() )
+            logging.error( unicode( inst ) )
             QSqlDatabase.database().rollback()
             return False
 
         return True
 
     @property
+    @return_decimal
     def totalDolar( self ):
-        total = self.totalD + redondear( self.totalC / self.datosSesion.tipoCambioBanco )
-        return total if total != 0 else Decimal( 0 )
+        return self.totalD + redondear( self.totalC / self.datosSesion.tipoCambioBanco )
 
     @property
+    @return_decimal
     def totalCordoba( self ):
-        total = self.totalC + redondear( self.totalD * self.datosSesion.tipoCambioBanco )
-        return total if total != 0 else Decimal( 0 )
+        return self.totalC + redondear( self.totalD * self.datosSesion.tipoCambioBanco )
 
     @property
+    @return_decimal
     def subTotalDolar( self ):
-        sub = redondear( self.totalDolar / ( 1 + ( self.ivaTasa / 100 ) ) )
-        return sub if sub != 0 else Decimal( 0 )
+        return redondear( self.totalDolar / ( 1 + ( self.ivaTasa / 100 ) ) )
 
     @property
+    @return_decimal
     def subTotalCordoba( self ):
-        sub = redondear( self.totalCordoba / ( 1 + ( self.ivaTasa / 100 ) ) )
-        return sub if sub != 0 else Decimal( 0 )
+        return redondear( self.totalCordoba / ( 1 + ( self.ivaTasa / 100 ) ) )
 
     @property
     def tieneRetencion( self ):

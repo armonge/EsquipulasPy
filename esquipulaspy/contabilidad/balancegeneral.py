@@ -15,8 +15,11 @@ from ui.Ui_balancegeneral import Ui_frmBalanceGeneral
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
 
-CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, IDCUENTA, ACUMULADO = range( 8 )
-headers = [ u"Código", u"Descripción", "Es Debe", "hijos", "Saldo", "Padre", "Id", "Total"]
+CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, \
+IDCUENTA, ACUMULADO = range( 8 )
+headers = [ u"Código", u"Descripción", "Es Debe", "hijos", "Saldo", "Padre",
+"Id", "Total"]
+
 class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
     """
     Formulario para crear nuevas conciliaciones bancarias
@@ -32,6 +35,10 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
         self.dtPicker.setDate( QDate.currentDate() )
 
         self.user = user
+        self.pasivofiltermodel = QSortFilterProxyModel()
+        self.model = CuentasModel( self.dtPicker.date() )
+        self.activofiltermodel = QSortFilterProxyModel()
+        self.capitalfiltermodel = QSortFilterProxyModel()
 
     def updateModel( self ):
         try:
@@ -40,8 +47,8 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
                 if not QSqlDatabase.database().open():
                     raise UserWarning( "No se pudo abrir la base de datos" )
 
-            self.model = CuentasModel( self.dtPicker.date() )
-            self.activofiltermodel = QSortFilterProxyModel()
+
+
             self.activofiltermodel.setSourceModel( self.model )
             self.activofiltermodel.setFilterKeyColumn( ESDEBE )
             self.activofiltermodel.setFilterRegExp( "1" )
@@ -58,10 +65,11 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
             total = Decimal( 0 )
             for i in range( self.activofiltermodel.rowCount() ):
                 total += Decimal( self.activofiltermodel.index( i, ACUMULADO ).data( Qt.EditRole ).toString() )
+
             self.txtactivo.setText( moneyfmt( total, 4, 'C$' ) )
 
     #        self.pasivoModel = CuentasModel()
-            self.pasivofiltermodel = QSortFilterProxyModel()
+
             self.pasivofiltermodel.setSourceModel( self.model )
             self.pasivofiltermodel.setFilterKeyColumn( ESDEBE )
             self.pasivofiltermodel.setFilterRegExp( "0" )
@@ -80,7 +88,7 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
                 total1 += Decimal( self.pasivofiltermodel.index( i, ACUMULADO ).data( Qt.EditRole ).toString() )
             self.txtpasivo.setText( moneyfmt( total1, 4, 'C$' ) )
 
-            self.capitalfiltermodel = QSortFilterProxyModel()
+
             self.capitalfiltermodel.setSourceModel( self.model )
             self.capitalfiltermodel.setFilterKeyColumn( ESDEBE )
             self.capitalfiltermodel.setFilterRegExp( "2" )
@@ -205,13 +213,13 @@ class CuentasModel( QAbstractItemModel ):
         if not index.isValid():
             return QModelIndex()
 
-        childItem = index.internalPointer()
-        parentItem = childItem.parent()
+        child_item = index.internalPointer()
+        parent_item = child_item.parent()
 
-        if parentItem == self.rootItem:
+        if parent_item == self.rootItem:
             return QModelIndex()
 
-        return self.createIndex( parentItem.row(), 0, parentItem )
+        return self.createIndex( parent_item.row(), 0, parent_item )
 
     def rowCount( self, parent ):
         if parent.column() > 0:

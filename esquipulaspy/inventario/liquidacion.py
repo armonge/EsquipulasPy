@@ -6,7 +6,7 @@ Module implementing frmLiquidacion.
 from decimal import Decimal
 import logging
 
-from PyQt4.QtGui import QMainWindow, QAbstractItemView, \
+from PyQt4.QtGui import  QAbstractItemView, \
 QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, \
 QPrinter, qApp
 from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer, QSettings, \

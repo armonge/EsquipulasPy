@@ -8,9 +8,9 @@ import logging
 
 from PyQt4.QtCore import pyqtSlot, QModelIndex, Qt, QTimer, \
     QDate, QVariant
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QDataWidgetMapper, \
+from PyQt4.QtGui import  QSortFilterProxyModel, QDataWidgetMapper, \
     QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
-     QLineEdit, QDateTimeEdit, QMessageBox
+     QLineEdit, QDateTimeEdit, QMessageBox, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 
 
@@ -209,17 +209,17 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         self.lblfecha.setText( fecha.toString( "MMMM yyyy" ).upper() )
         ctaBanco = self.navmodel.record( index ).value( "idcuentacontable" ).toString()
         try:
-            if not QSqlDatabase.database().isOpen():
-                if not QSqlDatabase.database().open():
+            if not self.database.isOpen():
+                if not self.database.open():
                     raise Exception( "No se pudo abrir la base" )
             self.detailsmodel.setQuery( "CALL spMovimientoCuenta(" + ctaBanco + "," + fecha.toString( "yyyyMMdd" ) + ");" )
             self.proxymodel.setSourceModel( self.detailsmodel )
             index = self.detailsmodel.index( self.detailsmodel.rowCount() - 1, CONCILIADO )
         except Exception as inst:
-            print inst
+            logging.error( unicode( inst ) )
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+            if self.database.isOpen():
+                self.database.close()
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
 
@@ -307,10 +307,11 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
                 if dlgCuenta.exec_() == QDialog.Accepted:
                     fila = dlgCuenta.tblCuenta.selectionModel().currentIndex().row()
                     if fila == -1:
-                        QMessageBox.information( self, "Cuentas Bancarias ", "Por favor seleccione una cuenta" )
+                        QMessageBox.information( self, qApp.organizationName(),
+                                              "Por favor seleccione una cuenta" )
                 else:
     #SALIR
-                    return None
+                    return
 
     # SI SELECCIONO UNA FILA SIGUE
             self.editmodel = ConciliacionModel()

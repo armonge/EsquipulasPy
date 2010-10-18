@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/liquidacion.ui'
 #
-# Created: Fri Oct 15 02:05:25 2010
+# Created: Sun Oct 17 22:52:58 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -371,7 +371,7 @@ class Ui_FrmLiquidacion(object):
         self.tabWidget.setCurrentIndex(1)
         self.swProvider.setCurrentIndex(0)
         self.swWarehouse.setCurrentIndex(1)
-        self.tabTotalsAccounts.setCurrentIndex(0)
+        self.tabTotalsAccounts.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(FrmLiquidacion)
         FrmLiquidacion.setTabOrder(self.txtPolicy, self.cbProvider)
         FrmLiquidacion.setTabOrder(self.cbProvider, self.dtPicker)

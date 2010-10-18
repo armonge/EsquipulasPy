@@ -171,7 +171,7 @@
            </property>
            <property name="icon">
             <iconset resource="res.qrc">
-             <normaloff>:/images/res/simbolo-dolar-300x245.jpg</normaloff>:/images/res/simbolo-dolar-300x245.jpg</iconset>
+             <normaloff>:/images/res/view-financial-categories.png</normaloff>:/images/res/view-financial-categories.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -210,10 +210,14 @@
            <property name="text">
             <string>Recibos</string>
            </property>
+           <property name="icon">
+            <iconset resource="res.qrc">
+             <normaloff>:/images/res/view-documents-finances.png</normaloff>:/images/res/view-documents-finances.png</iconset>
+           </property>
            <property name="iconSize">
             <size>
-             <width>32</width>
-             <height>32</height>
+             <width>64</width>
+             <height>64</height>
             </size>
            </property>
            <property name="flat">
@@ -245,16 +249,17 @@
             </font>
            </property>
            <property name="text">
-            <string>Pagos en Efectivo</string>
+            <string>Pagos en
+Efectivo</string>
            </property>
            <property name="icon">
             <iconset resource="res.qrc">
-             <normaloff>:/icons/res/view-bank-account.png</normaloff>:/icons/res/view-bank-account.png</iconset>
+             <normaloff>:/icons/res/pays.png</normaloff>:/icons/res/pays.png</iconset>
            </property>
            <property name="iconSize">
             <size>
-             <width>32</width>
-             <height>32</height>
+             <width>64</width>
+             <height>64</height>
             </size>
            </property>
            <property name="flat">
@@ -324,10 +329,6 @@
            </property>
            <property name="text">
             <string>Arqueo</string>
-           </property>
-           <property name="icon">
-            <iconset resource="res.qrc">
-             <normaloff>:/images/res/simbolo-dolar-300x245.jpg</normaloff>:/images/res/simbolo-dolar-300x245.jpg</iconset>
            </property>
            <property name="iconSize">
             <size>

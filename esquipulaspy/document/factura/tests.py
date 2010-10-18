@@ -7,7 +7,7 @@ Pruebas para el modulo document.factura
 '''
 import sip
 sip.setapi( 'QString', 2 )
-from document.factura.facturamodel import FacturaModel, DESCRIPCION, CANTIDAD
+from facturamodel import FacturaModel, DESCRIPCION, CANTIDAD
 from caja.mainwindow import DatosSesion
 
 from decimal import Decimal

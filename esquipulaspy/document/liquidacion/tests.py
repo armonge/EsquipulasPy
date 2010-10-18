@@ -10,16 +10,8 @@ sip.setapi( 'QString', 2 )
 
 from PyQt4.QtCore import QCoreApplication, QVariant
 from decimal import Decimal
-from document.liquidacion.linealiquidacion import LineaLiquidacion
-from document.liquidacion.liquidaciondelegate import COSTOUNIT, ARTICULO
-from document.liquidacion.liquidacionmodel import LiquidacionModel, CANTIDAD
-
-
-
-
-
-
-
+from linealiquidacion import LineaLiquidacion
+from liquidacionmodel import LiquidacionModel, CANTIDAD, COSTOUNIT, ARTICULO
 
 
 
@@ -94,7 +86,7 @@ class TestLineaLiquidacion( unittest.TestCase ):
     verifica los resultados del modelo con los esperados
     """
     def setUp( self ):
-        unused_app = QCoreApplication( [] )
+        _app = QCoreApplication( [] )
 
         self.line = LineaLiquidacion( self )
         self.line.quantity = 1
@@ -120,19 +112,35 @@ class TestLineaLiquidacion( unittest.TestCase ):
 
     def test_valid( self ):
         self.assertTrue( self.line.valid )
+        self.line.quantity = 0
+        self.assertFalse( self.line.valid )
 
     def test_comision( self ):
         self.assertEqual( self.line.comisionParcial, Decimal( '0' ) )
 
+        self.line.comisionValue = 10
+        self.assertEqual( self.line.comisionParcial, 10 )
+
     def test_isc( self ):
         self.assertEqual( self.line.iscParcial, Decimal( '0.7980' ) )
+        self.applyTaxes = False
+
+        self.assertEqual( self.line.iscParcial, 0 )
 
     def test_dai( self ):
         self.assertEqual( self.line.daiParcial, Decimal( '0.05' ) )
+        self.applyTaxes = False
+        self.assertEqual( self.line.daiParcial, 0 )
 
     def test_costo( self ):
         self.assertEqual( self.line.costoDolarT, Decimal( '7.4752' ) )
-        self.assertNotAlmostEqual( self.line.costoCordobaT, Decimal( '161.2535' ) )
+        self.assertEqual( self.line.costoCordobaT, Decimal( '161.25351936' ) )
+
+    def test_iva( self ):
+        self.assertEqual( self.line.ivaParcial, Decimal( '0.2772' ) )
+
+        self.applyTaxes = False
+        self.assertEqual( self.line.ivaParcial, Decimal( '0.15' ) )
 
 
 if __name__ == "__main__":

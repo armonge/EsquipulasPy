@@ -4,21 +4,22 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
-from decimal import Decimal
-import functools
-
-from PyQt4.QtGui import QMainWindow, QDialog, QSortFilterProxyModel, QDataWidgetMapper, QAbstractItemView
-from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
 from PyQt4.QtCore import pyqtSignature, pyqtSlot, QDate, Qt, QTimer
-
+from PyQt4.QtGui import QDialog, QSortFilterProxyModel, QDataWidgetMapper, \
+    QAbstractItemView, QMessageBox, qApp
+from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
+from decimal import Decimal
+from document.movimientosbancarios import MovimientosBancariosModel
+from ui.Ui_dlgmovimientosbancarios import Ui_dlgMovimientosBancarios
+from ui.Ui_frmmovimientosbancarios import Ui_frmMovimientosBancarios
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
 from utility.widgets.searchpanel import SearchPanel
+import logging
 
-from ui.Ui_dlgmovimientosbancarios import Ui_dlgMovimientosBancarios
-from ui.Ui_frmmovimientosbancarios import Ui_frmMovimientosBancarios
 
-from document.movimientosbancarios import MovimientosBancariosModel
+
+
 
 IDDOCUMENTO, FECHA, CUENTA, TIPODOC, CONCEPTO, OBSERVACION, NCUENTA = range( 7 )
 class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
@@ -48,10 +49,6 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         self.editmodel = None
 
         #general events
-        self.actionGoFirst.triggered.connect( functools.partial( self.navigate, 'first' ) )
-        self.actionGoPrevious.triggered.connect( functools.partial( self.navigate, 'previous' ) )
-        self.actionGoNext.triggered.connect( functools.partial( self.navigate, 'next' ) )
-        self.actionGoLast.triggered.connect( functools.partial( self.navigate, 'last' ) )
 
         QTimer.singleShot( 0, self.loadModels )
 
@@ -61,25 +58,36 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         activar todos los controles, llenar los modelos necesarios, 
         crear el modelo EntradaCompraModel, aniadir una linea a la tabla
         """
-        if not QSqlDatabase.database().open():
-            raise Exception( u"No se pudo establecer una conexión con la base de datos" )
+        try:
+            if not self.database.open():
+                raise UserWarning( u"No se pudo establecer una conexión con"\
+                                   + " la base de datos" )
 
-        self.editmodel = MovimientosBancariosModel( self.user.uid )
-        self.editmodel.datos.dateTime = self.dtPicker.dateTime()
-        self.editmodel.setConceptos( self.cbconcepto, self.swconcepto )
+            self.editmodel = MovimientosBancariosModel( self.user.uid )
+            self.editmodel.datos.dateTime = self.dtPicker.dateTime()
+            self.editmodel.setConceptos( self.cbconcepto, self.swconcepto )
 
 
-        self.editmodel.setCuentasBancarias( self.cbcuenta, self.swcuenta )
-        self.cbcuenta.currentIndexChanged[int].connect( self.on_cbcuenta_currentIndexChanged )
+            self.editmodel.setCuentasBancarias( self.cbcuenta, self.swcuenta )
+            self.cbcuenta.currentIndexChanged[int].connect( self.on_cbcuenta_currentIndexChanged )
 
-        self.editmodel.setTiposDoc( self.cbtipodoc, self.swtipodoc )
-#        self.tabledetails.setModel(None)
-#        self.tabledetails.setModel(self.detailsmodel)
-        self.editmodel.setAccountTable( self.tabledetails )
-        self.status = False
-
-        if QSqlDatabase.database().isOpen():
-            QSqlDatabase.database().close()
+            self.editmodel.setTiposDoc( self.cbtipodoc, self.swtipodoc )
+    #        self.tabledetails.setModel(None)
+    #        self.tabledetails.setModel(self.detailsmodel)
+            self.editmodel.setAccountTable( self.tabledetails )
+            self.status = False
+        except UserWarning as inst:
+            logging.error( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                 unicode( inst ) )
+        except Exception as inst:
+            logging.critical( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                 u"Hubo un error al tratar de crear un"\
+                                 + " nuevo documento" )
+        finally:
+            if self.database.isOpen():
+                self.database.close()
 
     def save( self ):
         if self.editmodel != None:
@@ -155,9 +163,7 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             self.swconcepto.setCurrentIndex( 0 )
             self.swtipodoc.setCurrentIndex( 0 )
             self.tabledetails.setEditTriggers( 
-                          QAbstractItemView.EditKeyPressed |
-                          QAbstractItemView.AnyKeyPressed |
-                          QAbstractItemView.DoubleClicked )
+                          QAbstractItemView.AllEditTriggers )
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTO )
@@ -174,8 +180,10 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         Recargar todos los modelos
         """
         try:
-            if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning( u"Hubo un error al tratar de conectarse"\
+                                      + " con la base de datos" )
 
             self.navmodel.setQuery( """
             SELECT
@@ -240,11 +248,17 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             self.tablenavigation.resizeColumnsToContents()
             self.navigate( 'last' )
 
+        except UserWarning as inst:
+            QMessageBox.critical( self, qApp.organizationName(),
+                                 unicode( inst ) )
+            logging.error( unicode( inst ) )
         except Exception as inst:
-            print inst
+            QMessageBox.critical( self, qApp.organizationName(),
+                             u"Hubo un error al tratar de obtener los datos" )
+            logging.critical( unicode( inst ) )
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close
+            if self.database.isOpen():
+                self.database.close
 
 class dlgMovimientosBancarios( QDialog, Ui_dlgMovimientosBancarios ):
 
@@ -253,7 +267,8 @@ class dlgMovimientosBancarios( QDialog, Ui_dlgMovimientosBancarios ):
 
         self.setupUi( self )
         if not QSqlDatabase.database().open():
-            raise Exception( u"No se pudo establecer una conexión con la base de datos" )
+            raise Exception( u"No se pudo establecer una conexión "\
+                             + "con la base de datos" )
 
 
         self.editmodel = MovimientosBancariosModel( padre.user.uid )
@@ -305,13 +320,16 @@ class dlgMovimientosBancarios( QDialog, Ui_dlgMovimientosBancarios ):
         """
         asignar la concepto al objeto self.editmodel
         """
-#        self.btnguardar.setEnabled(True)
-        self.editmodel.cuentaBancariaChanged( self.tabledetails, index, self.dtPicker, self.cbconcepto, self.cbtipodoc )
+        self.editmodel.cuentaBancariaChanged( self.tabledetails,
+                                              index,
+                                              self.dtPicker,
+                                              self.cbconcepto,
+                                              self.cbtipodoc )
 
     @pyqtSignature( "int" )
     def on_cbconcepto_currentIndexChanged( self, index ):
         """
-        asignar la concepto al objeto self.editmodel
+        asignar el concepto al objeto self.editmodel
         """
         self.editmodel.conceptoChanged( index )
 
@@ -329,7 +347,8 @@ class RODetailsModel( QSortFilterProxyModel ):
     """
     def data( self, index, role = Qt.DisplayRole ):
         """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
+        Esta funcion redefine data en la clase base, es el metodo que 
+        se utiliza para mostrar los datos del modelo
         """
         value = QSortFilterProxyModel.data( self, index, role )
 

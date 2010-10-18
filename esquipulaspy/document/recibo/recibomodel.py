@@ -28,8 +28,8 @@ class ReciboModel( AccountsSelectorModel ):
             self.removeRows( 0, nfilas )
             self.insertRow( 0 )
         elif nfilas > 0:
-                valor = self.lines[nfilas - 1].monto
-                self.setData( self.index( nfilas - 1, MONTO ), valor )
+            valor = self.lines[nfilas - 1].monto
+            self.setData( self.index( nfilas - 1, MONTO ), valor )
 
     def columnCount( self, _index = QModelIndex() ):
         return 6

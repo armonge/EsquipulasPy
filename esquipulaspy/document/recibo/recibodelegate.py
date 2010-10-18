@@ -79,11 +79,13 @@ class ReciboDelegate( QStyledItemDelegate ):
             textbox.setAlignment( Qt.AlignHCenter )
             return textbox
 
+#FIXME: Se deberia de especificar siempre el tipo de excepción que se esta atrapando
     def removeFromFilter( self, value ):
         try:
             self.filtrados.remove( value )
             return True
         except:
+            #FIXME: Se deberia de especificar siempre el tipo de excepción que se esta atrapando
             return False
 
     def filter( self ):

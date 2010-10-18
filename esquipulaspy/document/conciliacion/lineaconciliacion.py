@@ -20,7 +20,7 @@ class LineaConciliacion:
         self.concepto2 = ""
         self.datos = None
 
-
+#TODO: Esto estamos seguros que es asi???
     @property
     def valid( self ):
         """
@@ -53,4 +53,5 @@ class LineaConciliacion:
         print str( iddocumento ) + "-" + str( self.idDoc )
 
         if not query.exec_():
-            raise Exception( "No se pudo guardar la linea con el articulo " + str( self.idDoc ) )
+            raise Exception( "No se pudo guardar la linea con el articulo %d" %
+                              self.idDoc )

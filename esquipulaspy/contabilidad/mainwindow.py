@@ -7,7 +7,6 @@ Created on 28/06/2010
 El formulario principal de contabilidad
 '''
 from PyQt4.QtCore import pyqtSlot
-from PyQt4.QtGui import QMainWindow
 
 from operations import FrmOperations
 from estadoresultado import FrmEstadoResultado
@@ -16,7 +15,6 @@ from balancegeneral import FrmBalanceGeneral
 from cheques import FrmCheques
 from cierrecontable import FrmCierreContable
 from conciliacion import FrmConciliacion
-from creditodebito import FrmCreditoDebito
 from movimientosbancarios import FrmMovimientosBancarios
 
 from ui.Ui_mainwindowcontabilidad import Ui_MainWindow
@@ -129,8 +127,3 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         mov = FrmMovimientosBancarios( self )
         self.mdiArea.addSubWindow( mov )
         mov.show()
-    @pyqtSlot()
-    def on_btnCreditoDebito_clicked( self ):
-        ncd = FrmCreditoDebito( self )
-        self.mdiArea.addSubWindow( ncd )
-        ncd.show()

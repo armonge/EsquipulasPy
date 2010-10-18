@@ -33,6 +33,8 @@ class MainWindowBase( QMainWindow ):
         """
         @type: User
         """
+        self.__status = False
+
     def startUi( self ):
         self.setupUi( self )
         dockaction = self.dockWidget.toggleViewAction()
@@ -40,48 +42,54 @@ class MainWindowBase( QMainWindow ):
         self.toolBar.addAction( dockaction )
 
 
-        self.woptions = QWidget()
+        woptions = QWidget()
 
-        self.btnPasswd = QPushButton( QIcon( ":/images/res/dialog-password.png" ), u"Cambiar\nContraseña" )
-        self.btnPasswd.setMinimumSize( QSize( 0, 70 ) )
-        self.btnPasswd.setIconSize( QSize( 64, 64 ) )
+        btn_passwd = QPushButton( QIcon( 
+                                        ":/images/res/dialog-password.png" ),
+                                       u"Cambiar\nContraseña" )
+        btn_passwd.setMinimumSize( QSize( 0, 70 ) )
+        btn_passwd.setIconSize( QSize( 64, 64 ) )
 
-        self.btnHelp = QPushButton( QIcon( ":/images/res/system-help.png" ), u"Ayuda" )
-        self.btnHelp.setMinimumSize( QSize( 0, 70 ) )
-        self.btnHelp.setIconSize( QSize( 64, 64 ) )
+        btn_help = QPushButton( QIcon( ":/images/res/system-help.png" ),
+                                    u"Ayuda" )
+        btn_help.setMinimumSize( QSize( 0, 70 ) )
+        btn_help.setIconSize( QSize( 64, 64 ) )
 
-        self.btnAbout = QPushButton( QIcon( ":/images/res/help-about.png" ), "Acerca de" )
-        self.btnAbout.setMinimumSize( QSize( 0, 70 ) )
-        self.btnAbout.setIconSize( QSize( 64, 64 ) )
+        btn_about = QPushButton( QIcon( ":/images/res/help-about.png" ),
+                                     "Acerca de" )
+        btn_about.setMinimumSize( QSize( 0, 70 ) )
+        btn_about.setIconSize( QSize( 64, 64 ) )
 
-        self.btnLogOut = QPushButton( u"Cerrar Sesión" )
-        self.btnLogOut.setMinimumSize( QSize( 0, 70 ) )
-        self.btnLogOut.setIconSize( QSize( 64, 64 ) )
+        btn_logout = QPushButton( u"Cerrar Sesión" )
+        btn_logout.setMinimumSize( QSize( 0, 70 ) )
+        btn_logout.setIconSize( QSize( 64, 64 ) )
 
 
         layout = QVBoxLayout()
-        layout.addWidget( self.btnPasswd )
-        layout.addWidget( self.btnHelp )
-        layout.addWidget( self.btnAbout )
-        layout.addWidget( self.btnLogOut )
+        layout.addWidget( btn_passwd )
+        layout.addWidget( btn_help )
+        layout.addWidget( btn_about )
+        layout.addWidget( btn_logout )
 
-        self.woptions.setLayout( layout )
-        self.toolBox.addItem( self.woptions, "Opciones" )
+        woptions.setLayout( layout )
+        self.toolBox.addItem( woptions, "Opciones" )
 
 
         settings = QSettings()
-        self.restoreGeometry( settings.value( "MainWindow/Geometry" ).toByteArray() )
-        #self.mdiArea.subWindowActivated[QMdiSubWindow].connect(self.showtoolbar)
-        self.connect( self.mdiArea, SIGNAL( "subWindowActivated(QMdiSubWindow *)" )\
-                      , self.showtoolbar )
+        self.restoreGeometry( 
+                     settings.value( "MainWindow/Geometry" ).toByteArray() )
+        self.connect( self.mdiArea,
+                      SIGNAL( "subWindowActivated(QMdiSubWindow *)" ),
+                       self.showtoolbar )
 
-        self.btnLogOut.clicked.connect( self.logOut )
-        self.btnAbout.clicked.connect( self.about )
-        self.btnHelp.clicked.connect( self.help )
-        self.btnPasswd.clicked.connect( self.changePassword )
+        btn_logout.clicked.connect( self.logOut )
+        btn_about.clicked.connect( self.about )
+        btn_help.clicked.connect( self.help )
+        btn_passwd.clicked.connect( self.changePassword )
 
 
-        self.setWindowTitle( u"%s %s: Usuario %s conectado a %s@%s" % ( qApp.organizationName(), \
+        self.setWindowTitle( u"%s %s: Usuario %s conectado a %s@%s" % ( 
+            qApp.organizationName(), \
             qApp.applicationName(), \
             self.user.user, \
             QSqlDatabase.database().databaseName() , \
@@ -103,10 +111,12 @@ class MainWindowBase( QMainWindow ):
             if user.valid:
                 if user.hasRole( self.module ):
                     self.user = user
-                    self.setWindowTitle( u"%s %s: Usuario %s conectado a %s@%s" % ( qApp.organizationName(), \
-                            qApp.applicationName(), \
-                            self.user.user, \
-                            QSqlDatabase.database().databaseName() , \
+                    self.setWindowTitle( 
+                            u"%s %s: Usuario %s conectado a %s@%s" %
+                            ( qApp.organizationName(),
+                            qApp.applicationName(),
+                            self.user.user,
+                            QSqlDatabase.database().databaseName() ,
                             QSqlDatabase.database().hostName() )
                         )
                     self.init()
@@ -130,10 +140,11 @@ class MainWindowBase( QMainWindow ):
 
     def about( self ):
         QMessageBox.about( self, qApp.organizationName(),
-        "<b>%s: %s</b><br />" % ( qApp.organizationName(), qApp.applicationName() ) + \
-        "Este programa ha sido desarrollado por Cusuco Software y se distribuye bajo" \
-        "una licencia GPL, usted deberia de haber recibido una copia de esta licencia " + \
-        "junto con el programa." )
+        "<b>%s: %s</b><br />" % ( qApp.organizationName(),
+                                  qApp.applicationName() ) + \
+        "Este programa ha sido desarrollado por Cusuco Software y se "\
+        + "distribuye bajo una licencia GPL, usted deberia de haber"\
+        + " recibido una copia de esta licencia junto con el programa." )
 
     def help( self ):
         if sys.platform == "linux2":
@@ -147,7 +158,8 @@ class MainWindowBase( QMainWindow ):
     def changePassword( self ):
         dlg = utility.user.dlgPasswordChange( self.user )
         if dlg.exec_() == QDialog.Accepted:
-            QMessageBox.information( self, qApp.organizationName(), u"La contraseña se ha cambiado exitorsamente" )
+            QMessageBox.information( self, qApp.organizationName(),
+                              u"La contraseña se ha cambiado exitorsamente" )
 
 
     def showtoolbar( self, *args ):
@@ -181,9 +193,12 @@ class MainWindowBase( QMainWindow ):
 
     @pyqtSlot()
     def on_actionUnlockSession_triggered( self ):
+        """
+        Intentar desbloquear la sesión
+        """
         dlg = utility.user.dlgSmallUserLogin( self )
         if dlg.exec_() == QDialog.Accepted:
-            tmpuser = utility.user.User( dlg.txtUser.text(), dlg.txtPassword.text() )
+            tmpuser = dlg.user
             if tmpuser.valid:
                 if tmpuser.uid == self.user.uid or tmpuser.hasRole( 'root' ):
                     self.status = True

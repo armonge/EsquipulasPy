@@ -4,8 +4,9 @@ Created on 14/07/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from PyQt4.QtCore import Qt, QModelIndex, QAbstractItemModel
+from PyQt4.QtSql import QSqlQuery, QSqlDatabase
+import logging
 
 class CategoryItem( object ):
     def __init__( self, data, parent = None ):
@@ -29,8 +30,6 @@ class CategoryItem( object ):
         return len( self.itemData )
 
     def data( self, column ):
-        if column == 1:
-            print self.itemData[column]
         return self.itemData[column]
 
     def insertChildren( self, position, count, columns ):
@@ -47,20 +46,23 @@ class CategoryItem( object ):
                 try:
                     if not QSqlDatabase.database().isOpen():
                         if not QSqlDatabase.database().open():
-                            raise Exception( "No se pudo conectar con la base de datos" )
+                            raise Exception( "No se pudo conectar con la base"\
+                                             + " de datos" )
                     if self.parentItem is None:
                         if not query.prepare( """
                         INSERT INTO categorias (nombre) 
                         VALUES ( :nombre)
                         """ ):
-                            raise Exception( "No se pudo preparar la consulta para insertar la categoria" )
+                            raise Exception( "No se pudo preparar la consulta"\
+                                             + " para insertar la categoria" )
 
                     else:
                         if not query.prepare( """
                         INSERT INTO categorias (nombre, padre) 
                         VALUES ( :nombre, %d)
                         """ % self.data( 1 ) ):
-                            raise Exception( "No se pudo preparar la consulta para insertar la categoria" )
+                            raise Exception( "No se pudo preparar la consulta"\
+                                             + " para insertar la categoria" )
 
                     query.bindValue( ":nombre", "tmp" )
                     if not query.exec_():
@@ -68,7 +70,7 @@ class CategoryItem( object ):
 
                     data = ["tmp", query.lastInsertId().toInt()[0]]
                 except Exception as inst:
-                    print inst
+                    logging.error( unicode( inst ) )
                     return False
             elif data[0] == 0:
                 query = QSqlQuery()
@@ -78,18 +80,20 @@ class CategoryItem( object ):
                         INSERT INTO categorias (padre, nombre)
                         VALUES (%d, :nombre)
                         """ % self.itemData[0] ):
-                            raise Exception( "No se pudo preparar la consulta para insertar la categoria" )
+                            raise Exception( "No se pudo preparar la consulta"\
+                                             + " para insertar la categoria" )
                     else:
                         if not query.prepare( """
                         INSERT INTO categorias (nombre) 
                         VALUES ( :nombre)
                         """ ):
-                            raise Exception( "No se pudo preparar la consulta para insertar la categoria" )
+                            raise Exception( "No se pudo preparar la consulta"\
+                                             + " para insertar la categoria" )
                     query.bindValue( ":nombre", data[1].strip() )
                     if not query.exec_():
                         raise Exception( "No se pudo insertar la categoria" )
                 except Exception as inst:
-                    print inst
+                    logging.error( unicode( inst ) )
                     return False
 
 
@@ -111,16 +115,27 @@ class CategoryItem( object ):
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
-                    raise Exception( "No se pudo conectar con la base de datos" )
+                    raise Exception( "No se pudo conectar con la"\
+                                     + " base de datos" )
+
             if not database.transaction():
                 raise Exception( "No se pudo iniciar la transacción para borrar las categorias" )
+
             for _row in range( count ):
-                if not query.exec_( "DELETE FROM categorias WHERE padre = %d" % self.childItems[position].itemData[1] ):
+                if not query.exec_( """"
+                DELETE FROM categorias 
+                WHERE padre = %d
+                """ % self.childItems[position].itemData[1] ):
                     raise Exception( "No se pudieron borrar los hijos de la categoria: %s con id: %d" % ( self.childItems[position].itemData[1], self.childItems[position].itemData[1] ) )
-                    print query.executedQuery()
-                if not query.exec_( "DELETE FROM categorias WHERE idcategoria = %d" % self.childItems[position].itemData[1] ):
+
+
+                if not query.exec_( """
+                DELETE FROM categorias 
+                WHERE idcategoria = %d
+                """ % self.childItems[position].itemData[1] ):
                     raise Exception( "No se pudo borrar la categoria: %s con id: %d" % ( self.childItems[position].itemData[1], self.childItems[position].itemData[1] ) )
-                    print query.executedQuery()
+
+
                 self.childItems.pop( position )
 
             if not database.commit():
@@ -129,8 +144,8 @@ class CategoryItem( object ):
             return True
 
         except Exception as inst:
-            print inst
-            print query.lastError().text()
+            logging.error( unicode( inst ) )
+            logging.error( query.lastError().text() )
             database.rollback()
             return False
 
@@ -156,7 +171,7 @@ class CategoryItem( object ):
                     raise Exception( "No se pudo actualizar la categoria" )
 
             except Exception as inst:
-                print inst
+                logging.error( unicode( inst ) )
                 return False
             self.itemData[column] = value[column]
         return True
@@ -218,7 +233,8 @@ class CategoriesModel( QAbstractItemModel ):
     def insertRows( self, position, rows, parent = QModelIndex() ):
         parentItem = self.getItem( parent )
         self.beginInsertRows( parent, position, position + rows - 1 )
-        success = parentItem.insertChildren( position, rows, self.rootItem.columnCount() )
+        success = parentItem.insertChildren( position, rows,
+                                             self.rootItem.columnCount() )
         self.endInsertRows()
 
         return success
@@ -267,7 +283,8 @@ class CategoriesModel( QAbstractItemModel ):
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open():
-                    raise Exception( "No se pudo conectar con la base de datos" )
+                    raise Exception( "No se pudo conectar con la base"\
+                                     + " de datos" )
             parents = [parent]
             query = """
              SELECT
@@ -286,12 +303,14 @@ class CategoriesModel( QAbstractItemModel ):
             x = 0
             while query.next():
                 parent = parents[-1]
-                parent.insertChildren( x, 1, [query.value( 0 ).toString(), query.value( 1 ).toInt()[0]] )
+                parent.insertChildren( x, 1, [query.value( 0 ).toString(),
+                                               query.value( 1 ).toInt()[0]] )
 
 
                 if query.value( 2 ) > 0:
                     y = 0
-                    childquery = """SELECT
+                    childquery = """
+                    SELECT
                         p.nombre ,
                         p.idcategoria 
                     FROM categorias p
@@ -300,12 +319,14 @@ class CategoriesModel( QAbstractItemModel ):
                     childquery = QSqlQuery( childquery )
                     childquery.exec_()
                     while childquery.next():
-                        parent.child( x ).insertChildren( y, 1, [childquery.value( 0 ).toString(), childquery.value( 1 ).toInt()[0]] )
+                        parent.child( x ).insertChildren( y, 1, [
+                                          childquery.value( 0 ).toString(),
+                                          childquery.value( 1 ).toInt()[0]] )
 
                         y += 1
                 x += 1
             return True
         except Exception as inst:
-            print inst
+            logging.error( unicode( inst ) )
             return False
 

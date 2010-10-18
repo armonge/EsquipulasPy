@@ -197,7 +197,11 @@ class FrmPersona( Ui_frmPersona, Base ):
         self.navigate( 'last' )
 
     def addActionsToToolBar( self ):
-        self.actionEditar = self.createAction( text = "Editar", tip = u"Editar la persona", icon = ":/icons/res/document-edit.png", slot = functools.partial( self.setStatus, 2 ) )
+        self.actionEditar = self.createAction( 
+                                  text = "Editar",
+                                  tip = u"Editar la persona",
+                                  icon = ":/icons/res/document-edit.png",
+                                  slot = functools.partial( self._setStatus, 2 ) )
         self.toolBar.addActions( [
             self.actionEditar
         ] )

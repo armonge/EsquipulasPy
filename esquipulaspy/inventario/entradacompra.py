@@ -5,7 +5,7 @@ Module implementing FrmEntradaCompra.
 from decimal import Decimal
 import logging
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, \
+from PyQt4.QtGui import  QSortFilterProxyModel, QMessageBox, \
 QAbstractItemView, QCompleter, qApp
 from PyQt4.QtCore import pyqtSlot, Qt, QTimer, QDateTime, QModelIndex
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
@@ -88,7 +88,8 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( "No se pudo conectar con la base de datos para obtener los documentos" )
+                    raise UserWarning( "No se pudo conectar con la base de"\
+                                    + " datos para obtener los documentos" )
 
 
 #        El modelo principal
@@ -146,7 +147,8 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
             self.detailsproxymodel.setSourceModel( self.detailsmodel )
 
 
-    #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
+    #        Este objeto mapea una fila del modelo self.navproxymodel a 
+    #los controles
 
             self.mapper.setModel( self.navproxymodel )
             self.mapper.addMapping( self.txtDocumentNumber, NDOCIMPRESO )
@@ -165,10 +167,12 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
 
 
         except UserWarning as inst:
-            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                  unicode( inst ) )
             logging.error( unicode( inst ) )
         except Exception as inst:
-            QMessageBox.critical( self, qApp.organizationName(), "No se pudo cargar la lista de entradas locales" )
+            QMessageBox.critical( self, qApp.organizationName(),
+                          "No se pudo cargar la lista de entradas locales" )
             logging.critical( unicode( inst ) )
         finally:
             if self.database.isOpen():
@@ -191,9 +195,12 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
         completer.setModel( self.providersModel )
         completer.setCompletionColumn( 1 )
 
-        self.editmodel.providerId = self.providersModel.record( self.cbProvider.currentIndex() ).value( "idpersona" ).toInt()[0]
+        self.editmodel.providerId = self.providersModel.record( 
+                                        self.cbProvider.currentIndex()
+                                        ).value( "idpersona" ).toInt()[0]
         query = QSqlQuery( """
-        SELECT idarticulo, Descripcion as descripcion FROM vw_articulosdescritos
+        SELECT idarticulo, Descripcion as descripcion 
+        FROM vw_articulosdescritos
         """ )
         if not query.size() > 0:
             raise UserWarning( "No existen productos en la base de datos" )
@@ -211,24 +218,32 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
 
     def updateLabels( self ):
         if not self.editmodel is None:
-            self.lblSubtotal.setText( moneyfmt( self.editmodel.subtotalC, 4, "C$" ) )
+            self.lblSubtotal.setText( 
+                              moneyfmt( self.editmodel.subtotalC, 4, "C$" ) )
+
             self.lblIVA.setText( moneyfmt( self.editmodel.IVAC, 4, "C$" ) )
+
             self.lblTotal.setText( moneyfmt( self.editmodel.totalC, 4, "C$" ) )
-            self.lblTotalD.setText( moneyfmt( self.editmodel.totalD, 4, "US$" ) )
+
+            self.lblTotalD.setText( 
+                                moneyfmt( self.editmodel.totalD, 4, "US$" ) )
     @property
     def printIdentifier( self ):
-        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
+        return self.navmodel.record( self.mapper.currentIndex()
+                                      ).value( "iddocumento" ).toString()
 
 
 
     def newDocument( self ):
         """
-        activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
+        activar todos los controles, llenar los modelos necesarios,
+        crear el modelo EntradaCompraModel, aniadir una linea a la tabla
         """
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
+                    raise UserWarning( u"No se pudo establecer la conexión "\
+                                       + "con la base de datos" )
 
             self.editmodel = EntradaCompraModel()
             self.editmodel.uid = self.user.uid
@@ -243,9 +258,11 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
             LIMIT 1
             """ % constantes.IVA )
             if not query.exec_():
-                raise UserWarning( "No se pudo obtener el valor del IVA para iniciar la entrada compra" )
+                raise UserWarning( "No se pudo obtener el valor del IVA "\
+                                   + "para iniciar la entrada compra" )
             if not query.size() == 1:
-                raise UserWarning( "No se pudo obtener el valor del IVA para iniciar la entrada compra" )
+                raise UserWarning( "No se pudo obtener el valor del IVA "\
+                                   + "para iniciar la entrada compra" )
             query.first()
             self.editmodel.idIVA = query.value( 0 ).toInt()[0]
             self.editmodel.rateIVA = Decimal( query.value( 1 ).toString() )
@@ -258,17 +275,21 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
 
             self.addLine()
             self.dtPicker.setDateTime( QDateTime.currentDateTime() )
-            self.editmodel.providerId = self.providersModel.record( self.cbProvider.currentIndex() ).value( "idpersona" ).toInt()[0]
+            self.editmodel.providerId = self.providersModel.record( 
+                                           self.cbProvider.currentIndex()
+                                            ).value( "idpersona" ).toInt()[0]
 
             self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
             self.tabledetails.setColumnWidth( DESCRIPCION, 250 )
             self.status = False
         except UserWarning as inst:
-            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                   unicode( inst ) )
             logging.error( unicode( inst ) )
 #            self.status = True
         except Exception as inst:
-            QMessageBox.critical( self, qApp.organizationName(), "No se pudo iniciar una nueva entrada compra" )
+            QMessageBox.critical( self, qApp.organizationName(),
+                              "No se pudo iniciar una nueva entrada compra" )
             print inst
             logging.error( unicode( inst ) )
 #            self.status = True
@@ -281,7 +302,9 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
         """
         Aca se cancela la edicion del documento
         """
-        if QMessageBox.question( self, qApp.organizationName(), u"¿Desea realmente cancelar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+        if QMessageBox.question( self, qApp.organizationName(),
+                              u"¿Desea realmente cancelar?",
+                               QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
             self.editmodel = None
 
             self.tablenavigation.setModel( self.navproxymodel )
@@ -293,7 +316,7 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.detailsproxymodel.setFilterRegExp( "^" + self.navmodel.record( index ).value( "iddocumento" ).toString() + "$" )
+        self.detailsproxymodel.setFilterRegExp( "^" + self.navmodel.record( index ).value( IDDOCUMENTO ).toString() + "$" )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
         paytype = self.navmodel.record( index ).value( "tipopago" ).toInt()[0]
@@ -333,7 +356,8 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
             self.navigate( 'last' )
             self.swProvider.setCurrentIndex( 1 )
             self.tabledetails.removeAction( self.actionDeleteRow )
-            self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
+            self.tabledetails.setEditTriggers( 
+                                          QAbstractItemView.NoEditTriggers )
 
             #ocultar columnas en tabledetails
             self.tabledetails.setColumnHidden( IDARTICULO, True )
@@ -354,7 +378,8 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
             self.lblSubtotal.setText( "C$0.00" )
             self.lblIVA.setText( "C$0.00" )
             self.lblTotal.setText( "C$0.00" )
-            self.tabledetails.setEditTriggers( QAbstractItemView.AllEditTriggers )
+            self.tabledetails.setEditTriggers( 
+                                          QAbstractItemView.AllEditTriggers )
             self.tabledetails.setColumnHidden( IDARTICULO, True )
 
 
@@ -374,7 +399,8 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
         asignar proveedor al objeto self.editmodel
         """
         if not self.editmodel is None:
-            self.editmodel.providerId = self.providersModel.record( index ).value( "idpersona" ).toInt()[0]
+            self.editmodel.providerId = self.providersModel.record( index
+                                            ).value( "idpersona" ).toInt()[0]
 
 
 
@@ -384,7 +410,8 @@ class RONavigationModel( QSortFilterProxyModel ):
     """
     def data( self, index, role = Qt.DisplayRole ):
         """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
+        Esta funcion redefine data en la clase base, es el metodo 
+        que se utiliza para mostrar los datos del modelo
         """
         value = QSortFilterProxyModel.data( self, index, role )
         if value.isValid() and role in ( Qt.EditRole, Qt.DisplayRole ):

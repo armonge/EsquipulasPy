@@ -5,12 +5,13 @@ Created on 03/07/2010
 @author: Luis Carlos Mejia
 '''
 from PyQt4.QtCore import QAbstractTableModel, QVariant, QModelIndex, Qt
-from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
-from utility.moneyfmt import moneyfmt
-from utility import constantes
-#from utility.constantes import IDCONCILIACION, IDDEPOSITO, IDNC, IDND, IDCHEQUE, IDERROR
+from decimal import Decimal
 from document.conciliacion.lineaconciliacion import LineaConciliacion
+from utility import constantes
+from utility.moneyfmt import moneyfmt
+import logging
+#from utility.constantes import IDCONCILIACION, IDDEPOSITO, IDNC, IDND, IDCHEQUE, IDERROR
 #CAMBIAR columncount()
 FECHA, CONCEPTO, DEBE, HABER, SALDO, CONCILIADO, DELBANCO, IDTIPODOC = range( 8 )
 FECHA, BANCO, CUENTABANCO, MONEDA, CUENTACONTABLE, SALDOBANCO, IDDOC = range( 7 )
@@ -280,17 +281,24 @@ class ConciliacionModel( QAbstractTableModel ):
         """
         Este metodo guarda el documento actual en la base de datos
         """
-        if not self.valid:
-            raise Exception( "El documento a salvar no es valido" )
+
+        query = QSqlQuery()
         try:
-            query = QSqlQuery()
+            if not self.valid:
+                raise Exception( "El documento a salvar no es valido" )
+
 
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se puedo comenzar la transacción" )
 #OBTENER NUMERO DE DOCUMENTO
+#FIXME: Usar el procedimiento almacenado
             query.prepare( """
                 SELECT
-                      IF(MAX(CAST(ndocimpreso AS SIGNED)) IS NULL,0,MAX(CAST(ndocimpreso AS SIGNED)) )+1
+                      IF( 
+                          MAX(CAST(ndocimpreso AS SIGNED)) IS NULL,
+                          0,
+                          MAX(CAST(ndocimpreso AS SIGNED))
+                     )+1
                 FROM documentos d
                 WHERE idtipodoc=:tipodoc
                 ;
@@ -324,23 +332,24 @@ class ConciliacionModel( QAbstractTableModel ):
             query.bindValue( ":idusuario", self.uid )
 
             if not query.exec_():
-                raise Exception( "No se pudo insertar la relacion con el usuario" )
+                raise Exception( "No se pudo insertar la relacion"\
+                                 + " con el usuario" )
 #INSERTAR DATOS CONCILIACION
             query.prepare( """
-            INSERT INTO conciliaciones(iddocumento,saldobanco,saldolibro,fecha,idcuentacontable)
+            INSERT INTO conciliaciones(iddocumento,saldobanco,saldolibro,fecha,
+            idcuentacontable)
             VALUES (:iddoc,:saldobanco,:saldolibro,LAST_DAY(:fecha),:idcuenta);
             """ )
             query.bindValue( ":iddoc", insertedId )
             print self.saldoInicialBanco.to_eng_string()
-            query.bindValue( ":saldobanco", self.saldoInicialBanco.to_eng_string() )
-            query.bindValue( ":saldolibro", self.saldoInicialLibro.to_eng_string() )
-            query.bindValue( ":fecha", self.fechaConciliacion.toString( "yyyyMMdd" ) )
+            query.bindValue( ":saldobanco", str( self.saldoInicialBanco ) )
+            query.bindValue( ":saldolibro", str( self.saldoInicialLibro ) )
+            query.bindValue( ":fecha",
+                             self.fechaConciliacion.toString( "yyyyMMdd" ) )
             query.bindValue( ":idcuenta", self.idCuentaContable )
 
             if not query.exec_():
-                print query.lastError().databaseText()
                 raise Exception( "No se pudo insertar la conciliacion" )
-            print "Guardo"
 #INSERTAR LAS LINEAS                        
             for linea in self.lines:
 #                if linea.valid and linea.conciliado:
@@ -352,9 +361,9 @@ class ConciliacionModel( QAbstractTableModel ):
                 raise Exception( "No se pudo hacer commit" )
 
 
-        except Exception, e:
-            print QSqlDatabase.database().lastError().text()
-            print e
+        except Exception as inst:
+            logging.error( unicode( inst ) )
+            logging.error( query.lastError().text() )
             QSqlDatabase.database().rollback()
 
             return False

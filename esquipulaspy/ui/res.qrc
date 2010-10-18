@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>res/pays.png</file>
+    <file>res/taxes-finances.png</file>
     <file>res/okteta.png</file>
     <file>res/view-bank-account.png</file>
     <file>res/utilities-desktop-extra.png</file>
@@ -38,10 +40,12 @@
     <file>res/checkbox.png</file>
   </qresource>
   <qresource prefix="images">
+    <file>res/hi48-actions-lemon-money.png</file>
     <file>res/logo-big.png</file>
     <file>res/tires.png</file>
     <file>res/help-about.png</file>
     <file>res/system-help.png</file>
+    <file>res/view-financial-categories.png</file>
     <file>res/passwd-bg.png</file>
     <file>res/reconcile.png</file>
     <file>res/account-types-checking.png</file>
@@ -49,11 +53,12 @@
     <file>res/view-pim-tasks.png</file>
     <file>res/marca.png</file>
     <file>res/llanta.png</file>
-    <file>res/simbolo-dolar-300x245.jpg</file>
     <file>res/resource-group.png</file>
     <file>res/skrooge_merge_import.png</file>
+    <file>res/view-documents-finances.png</file>
     <file>res/skrooge_merge_import2.png</file>
     <file>res/preferences-desktop-personal.png</file>
+    <file>res/transaction-edit.png</file>
     <file>res/estante.jpg</file>
     <file>res/view-bank-account-checking.png</file>
     <file>res/hi48-actions-lemon-box.png</file>

@@ -8,8 +8,6 @@ Created on 07/10/2010
 from PyQt4.QtGui import QTableView, QItemSelectionModel, QAbstractItemDelegate
 class OrderedEditTable( QTableView ):
     '''
-    TODO:Deberia de poder hacerla más generica
-    
     Esta vista esta diseñada para trabajar con el modelo de liquidación
     su función es manejar el evento closeEditor para que cuando el usuario
     termine de editar el Costo de Compra de un articulo y presione Tab 

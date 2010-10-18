@@ -398,8 +398,8 @@ class LineaLiquidacion( LineaBase ):
         query.bindValue( ":iddocumento", iddocumento )
         query.bindValue( ":idarticulo", self.itemId )
         query.bindValue( ":unidades", self.quantity )
-        query.bindValue( ":costounit", str(self.costoDolar))
-        query.bindValue( ":costocompra", str(self.itemCost) )
+        query.bindValue( ":costounit", str( self.costoDolar ) )
+        query.bindValue( ":costocompra", str( self.itemCost ) )
         query.bindValue( ":linea", nlinea )
 
 
@@ -416,9 +416,9 @@ class LineaLiquidacion( LineaBase ):
             raise Exception( "Error al preparar la consulta para insertar una de las lineas del documento" )
 
         query.bindValue( ":idarticuloxdocumento", idarticuloxdocumento )
-        query.bindValue( ":dai", str(self.daiParcial) )
-        query.bindValue( ":isc", str(self.iscParcial) )
-        query.bindValue( ":comision", str(self.comisionParcial) )
+        query.bindValue( ":dai", str( self.daiParcial ) )
+        query.bindValue( ":isc", str( self.iscParcial ) )
+        query.bindValue( ":comision", str( self.comisionParcial ) )
 
         if not query.exec_():
             logging.error( query.lastError().text() )

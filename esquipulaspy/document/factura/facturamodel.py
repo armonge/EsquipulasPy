@@ -9,10 +9,13 @@ from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from decimal import Decimal
 from lineafactura import LineaFactura
 from utility import constantes
+from utility.decorators import return_decimal
 from utility.moneyfmt import moneyfmt
 from utility.movimientos import movFacturaCredito
+import logging
 #Los datos de la existencia
-IDARTICULOEX, DESCRIPCIONEX, PRECIOEX, COSTOEX, EXISTENCIAEX, IDBODEGAEX = range( 6 )
+IDARTICULOEX, DESCRIPCIONEX, PRECIOEX, COSTOEX, EXISTENCIAEX, \
+IDBODEGAEX = range( 6 )
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD = range( 5 )
 class FacturaModel( QAbstractTableModel ):
@@ -118,18 +121,18 @@ class FacturaModel( QAbstractTableModel ):
             return False
 
     @property
+    @return_decimal
     def subtotal( self ):
         """
         El subtotal del documento, esto es el total antes de aplicarse el IVA
         @rtype: Decimal
         """
-        tmpsubtotal = sum( [linea.total for linea in self.lines if linea.valid] )
-        return tmpsubtotal if tmpsubtotal != 0 else Decimal( 0 )
+        return sum( [linea.total for linea in self.lines if linea.valid] )
 
     @property
+    @return_decimal
     def costototal( self ):
-        tmpcostototal = sum( [linea.costototal for linea in self.lines if linea.valid] )
-        return tmpcostototal if tmpcostototal != 0 else Decimal( 0 )
+        return sum( [linea.costototal for linea in self.lines if linea.valid] )
 
     @property
     def total( self ):

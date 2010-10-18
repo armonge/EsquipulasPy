@@ -7,7 +7,7 @@ Created on 07/06/2010
 from decimal import  Decimal
 import logging
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, \
+from PyQt4.QtGui import  QSortFilterProxyModel, QTableView, \
 QMessageBox, QDataWidgetMapper, QMdiArea, \
 qApp, QDialog
 from PyQt4.QtCore import pyqtSlot, QTime, QTimer, QModelIndex, Qt, QDateTime

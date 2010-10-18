@@ -15,6 +15,7 @@ from utility.accountselector import AccountsSelectorModel
 from utility.docbase import DocumentBase
 from utility.moneyfmt import moneyfmt
 import logging
+from utility.decorators import return_decimal
 
 
 
@@ -312,7 +313,8 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
 
     def updateFob( self ):
         """
-        Esta función se ejecuta cuando se cambia el costo o la cantidad de un articulo
+        Esta función se ejecuta cuando se cambia el costo o
+         la cantidad de un articulo
         """
         fob = sum( [linea.fobParcial for linea in self.__lines if linea.valid ] )
         self.fobTotal = fob if fob > 0 else Decimal( 0 )
@@ -342,6 +344,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         return self.fobTotal + self.freightTotal + self.insuranceTotal + self.otherTotal
 
     @property
+    @return_decimal
     def iscTotal( self ):
         """
         El ISC total del documento
@@ -349,8 +352,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         M{ISCTOTAL = S{sum}ISCPARCIAL}
         @rtype: Decimal
         """
-        isc = sum( [ linea.iscParcial for linea in self.__lines if linea.valid ] )
-        return isc if isc > 0 else Decimal( 0 )
+        return sum( [ linea.iscParcial for linea in self.__lines if linea.valid ] )
 
     @property
     def isoTotal( self ):
@@ -390,6 +392,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         return ( self.daiTotal + self.iscTotal + self.cifTotal + self.tsimTotal ) * ( self.ivaRate / 100 ) if self.applyIVA else Decimal( 0 )
 
     @property
+    @return_decimal
     def daiTotal( self ):
         """
         La sumatoria de los dai parcial
@@ -397,8 +400,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         M{DAITOTAL = S{sum}DAIPARCIAL }
         @rtype: Decimal
         """
-        dai = sum( [ line.daiParcial for line in self.__lines if line.valid] )
-        return dai if dai != 0 else Decimal( 0 )
+        return sum( [ line.daiParcial for line in self.__lines if line.valid] )
 
     @property
     def tsimTotal( self ):
@@ -416,6 +418,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
 
 
     @property
+    @return_decimal
     def totalD( self ):
         """
         La sumatoria de todos los totales parciales
@@ -423,8 +426,7 @@ class LiquidacionModel( QAbstractTableModel, DocumentBase ):
         M{TOTALDOLARES = S{sum}COSTODOLARPARCIAL}
         @rtype: Decimal
         """
-        totalD = sum( [ line.costoDolarT for line in self.__lines if line.valid ] )
-        return totalD if totalD > 0 else Decimal( 0 )
+        return sum( [ line.costoDolarT for line in self.__lines if line.valid ] )
 
     @property
     def totalC( self ):
@@ -969,6 +971,9 @@ class LiquidacionTotalsModel( QAbstractTableModel ):
                 )
 
 class LiquidacionAccountsModel( AccountsSelectorModel ):
+    """
+    Esta clase trabaja en las cuentas contables de liquidación
+    """
     def __init__( self, docid, user ):
         super( LiquidacionAccountsModel, self ).__init__()
         self.docid = docid
@@ -983,10 +988,10 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
             return Qt.ItemIsEnabled
 
     def save( self ):
-        if not self.valid:
-            raise Exception ( "Existe un error con las cuentas contables" )
         query = QSqlQuery()
         try:
+            if not self.valid:
+                raise Exception ( "Existe un error con las cuentas contables" )
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se pudo comenzar la transacción" )
 

@@ -10,7 +10,7 @@ import logging
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, QTimer, QDate
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, QCompleter, QDataWidgetMapper, QStyledItemDelegate, QDoubleSpinBox, qApp, QDialog
+from PyQt4.QtGui import  QSortFilterProxyModel, QMessageBox, QCompleter, QDataWidgetMapper, QStyledItemDelegate, QDoubleSpinBox, qApp, QDialog
 
 from ui.Ui_cheques import Ui_frmCheques
 
@@ -27,7 +27,7 @@ IDDOCUMENTO, NCHEQUE, CUENTABANCARIA, NOMBRE, FECHA, CONCEPTO, TOTAL, SUBTOTAL, 
 IDDOC, IDCUENTA, CODIGO, DESCRIPCION, MONTO = range( 5 )
 class FrmCheques( Ui_frmCheques, Base ):
     """
-    Implementacion de la interfaz grafica para entrada compra
+    Implementacion de la interfaz grafica para Cheques
     """
     web = "cheques.php?doc="
     def __init__( self, parent ):
