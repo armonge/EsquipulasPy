@@ -21,7 +21,7 @@ from utility.moneyfmt import moneyfmt
 from utility.constantes import IDND, IDCHEQUE, IDERROR
 
 from ui.Ui_conciliacion import Ui_frmConciliacion
-from movimientosbancarios import dlgMovimientosBancarios
+#from movimientosbancarios import dlgMovimientosBancarios
 from utility.decorators import if_edit_model
 
 

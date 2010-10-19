@@ -68,6 +68,7 @@ class FrmFactura( Base, Ui_frmFactura ):
         self.lblanulado.setHidden( True )
         self.toolBar.removeAction( self.actionAnular )
         self.toolBar.addAction( self.actionAnular )
+        self.recibo = None
 
         self.cargarRecibos()
 
@@ -82,8 +83,6 @@ class FrmFactura( Base, Ui_frmFactura ):
         """
 
         self.tabledetails.setOrder( 1, 3 )
-
-
 
         self.completer = QCompleter()
         self.completerVendedor = QCompleter()
@@ -547,14 +546,11 @@ class FrmFactura( Base, Ui_frmFactura ):
 
     @pyqtSlot()
     def on_actionRecibo_activated( self ):
-        record = self.navmodel.record( self.mapper.currentIndex() )
-#        if record.value( ESCONTADO ).toInt()[0] == 0:
-#        if self.rbcredito.isChecked():
-#            credito = DlgCredito(self)
-#            credito.show()
-#        else:
-#        self.recibo.updateModels()
+        index = self.mapper.currentIndex()
+        record = self.navmodel.record(index)
         self.recibo.remoteProxyModel.setFilterRegExp( "(%s)" % record.value( "iddocumento" ).toString() )
+        if self.recibo.remoteProxyModel.rowCount() >     0:
+            self.recibo.mapper.setCurrentIndex(1)
         if self.recibo.remoteProxyModel.rowCount() != 0:
             self.recibo.mapper.setCurrentIndex( 0 )
             self.recibo.show()
@@ -637,6 +633,9 @@ class FrmFactura( Base, Ui_frmFactura ):
         self.actionGoNext.setVisible( status )
         self.actionGoLast.setVisible( status )
         self.actionPreview.setVisible( status )
+        self.actionAnular.setVisible(status)
+        self.actionRecibo.setVisible(status)
+        
         if status:
             self.navigate( 'last' )
             self.swcliente.setCurrentIndex( 1 )
