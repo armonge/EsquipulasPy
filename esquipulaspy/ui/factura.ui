@@ -589,7 +589,7 @@ color: rgb(255, 0, 0);</string>
               <string>Todas</string>
              </property>
              <property name="icon">
-              <iconset resource="res.qrc">
+              <iconset>
                <normaloff>:/images/res/simbolo-dolar-300x245.jpg</normaloff>:/images/res/simbolo-dolar-300x245.jpg</iconset>
              </property>
             </item>
@@ -670,14 +670,14 @@ color: rgb(255, 0, 0);</string>
   </action>
   <action name="actionRecibo">
    <property name="icon">
-    <iconset>
+    <iconset resource="res.qrc">
      <normaloff>:/icons/res/okteta.png</normaloff>:/icons/res/okteta.png</iconset>
    </property>
    <property name="text">
     <string>Recibo</string>
    </property>
    <property name="toolTip">
-    <string>Recibo de factura al contado</string>
+    <string>Recibos</string>
    </property>
   </action>
  </widget>

@@ -38,14 +38,12 @@ class FrmArqueo( Ui_frmArqueo, Base ):
         '''
         Constructor
         '''
-        super( FrmArqueo, self ).__init__( parent )
+        super( FrmArqueo, self ).__init__()
+        self.parentWindow = parent
         self.setWindowModality( Qt.WindowModal )
         self.setWindowFlags( Qt.Dialog )
-        self.parentWindow.removeToolBar( self.toolBar )
-        self.addToolBar( self.toolBar )
 
         self.editmodel = None
-        self.parent = parent
 
 #        El modelo principal
         self.navmodel = QSqlQueryModel( self )
@@ -69,6 +67,8 @@ class FrmArqueo( Ui_frmArqueo, Base ):
         self.detailsproxymodelC.setFilterKeyColumn( MONEDA )
         self.detailsproxymodelC.setFilterRegExp( "^%d$" % constantes.IDCORDOBAS )
 
+        self.dolarproxy = ArqueoProxyModel()
+        self.cordobaproxy = ArqueoProxyModel()
 
         self.status = True
         QTimer.singleShot( 0, self.loadModels )
@@ -103,6 +103,7 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             WHERE d.idtipodoc =  %d
             GROUP BY d.iddocumento
             """ % ( constantes.IDARQUEO )
+            print query
             self.navmodel.setQuery( query )
 
             self.detailsModel.setQuery( u"""
@@ -240,9 +241,11 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
-            for window in self.parent.findChild( QMdiArea ).subWindowList():
+            for window in self.parentWindow.findChild( QMdiArea ).subWindowList():
                 if window.widget():
-                    raise UserWarning( u"Por favor cierre las otras pestañas de la aplicación antes de continuar con el arqueo" )
+                    raise UserWarning( u"Por favor cierre las otras pestañas"\
+                                       + " de la aplicación antes de continuar"\
+                                       + " con el arqueo" )
 
 
             self.editmodel = ArqueoModel( self.parentWindow.datosSesion )
@@ -250,13 +253,13 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             self.editmodel.datetime.setDate( self.parentWindow.datosSesion.fecha )
             self.editmodel.datetime.setTime( QTime.currentTime() )
 
-            self.dolarproxy = ArqueoProxyModel()
+
             self.dolarproxy.setSourceModel( self.editmodel )
             self.dolarproxy.setFilterKeyColumn( MONEDA )
             self.dolarproxy.setFilterRegExp( r"^%d$" % constantes.IDDOLARES )
             self.dolarproxy.setDynamicSortFilter( True )
 
-            self.cordobaproxy = ArqueoProxyModel()
+
             self.cordobaproxy.setSourceModel( self.editmodel )
             self.cordobaproxy.setFilterKeyColumn( MONEDA )
             self.cordobaproxy.setFilterRegExp( r"^%d$" % constantes.IDCORDOBAS )
@@ -279,11 +282,14 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             JOIN tiposdoc td ON td.idtipodoc = d.idtipodoc
             WHERE d.idestado NOT IN ( %d,%d)
             """ % ( constantes.CONFIRMADO, constantes.ANULADO )
-
+            print q
             if not query.exec_( q ):
-                raise Exception( u"No se pudo ejecutar la consulta para determinar si existen documentos pendientes de aprobación" )
+                raise Exception( u"No se pudo ejecutar la consulta para "\
+                                 + "determinar si existen documentos "
+                                 + "pendientes de aprobación" )
             if not query.size() == 0:
-                raise UserWarning( u"Existen documentos pendientes de aprobación en la sesión" )
+                raise UserWarning( u"Existen documentos pendientes de "\
+                                   + "aprobación en la sesión" )
 
 
             #Obtener los datos de la sesión
@@ -293,23 +299,26 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             #query.prepare( q )
 
             if not query.exec_( q ):
-                raise Exception( u"No se pudo ejecutar la consulta para obtener el numero del arqueo" )
+                raise Exception( u"No se pudo ejecutar la consulta para "\
+                                 + "obtener el numero del arqueo" )
             if not query.size() > 0:
-                raise Exception( u"La consulta para obtener el numero del arqueo no devolvio ningún valor" )
+                raise Exception( u"La consulta para obtener el numero del "\
+                                 + "arqueo no devolvio ningún valor" )
             query.first()
 
             self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
-            self.editmodel.exchangeRateId = self.parent.datosSesion.tipoCambioId
-            self.editmodel.exchangeRate = self.parent.datosSesion.tipoCambioOficial
+            self.editmodel.exchangeRateId = self.parentWindow.datosSesion.tipoCambioId
+            self.editmodel.exchangeRate = self.parentWindow.datosSesion.tipoCambioOficial
 
-            self.editmodel.datetime.setDate( self.parent.datosSesion.fecha )
+            self.editmodel.datetime.setDate( self.parentWindow.datosSesion.fecha )
 
             q = """
             CALL spTotalesSesion(%d);
-            """ % self.parent.datosSesion.sesionId
+            """ % self.parentWindow.datosSesion.sesionId
 
             if not query.exec_( q ):
-                raise UserWarning( u"No se pudieron calcular los totales de la sesión" )
+                raise UserWarning( u"No se pudieron calcular los totales"\
+                                   + " de la sesión" )
             while query.next():
                 if query.value( 0 ).toInt()[0] == constantes.IDPAGOEFECTIVO and query.value( 2 ).toInt()[0] == constantes.IDDOLARES:
                     self.editmodel.expectedCashD = Decimal( query.value( 5 ).toString() )
@@ -345,9 +354,14 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             ORDER BY d.idtipomoneda, d.valor
             """
             if not query.exec_( q ):
-                raise UserWarning( "No se pudo recuperar la lista de denominaciones" )
+                raise UserWarning( "No se pudo recuperar la lista de "\
+                                   + "denominaciones" )
             denominationsmodelC = SingleSelectionModel()
-            denominationsmodelC.headers = ["Id", u"Denominación", "Valor", "Id Moneda", "Simbolo"]
+            denominationsmodelC.headers = ["Id",
+                                            u"Denominación",
+                                            "Valor",
+                                            "Id Moneda",
+                                            "Simbolo"]
             denominationsmodelD = SingleSelectionModel()
             denominationsmodelD.headers = denominationsmodelC.headers
 

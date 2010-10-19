@@ -86,7 +86,7 @@ class AccountsSelectorModel( QAbstractTableModel ):
                 return moneyfmt( line.amount, 4, "C$" ) if line.amount != 0 else ""
         if role == Qt.EditRole:
             if column == MONTO:
-                return float(line.amount)
+                return float( line.amount )
 
     def setData( self, index, value, _role = Qt.EditRole ):
         if index.isValid() and 0 <= index.row() < len( self.lines ):
@@ -218,9 +218,28 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
 class AccountsSelectorLine( object ):
     def __init__( self ):
         self.itemId = 0
+        """
+        @ivar: El id de la cuenta contable
+        @type: int
+        """
+
         self.amount = Decimal( 0 )
+        """
+        @ivar: El total del ajuste en esta cuenta
+        @type: Decimal
+        """
+
         self.code = ""
+        """
+        @ivar:  El codigo contable de esta cuenta
+        @type: string
+        """
+
         self.name = ""
+        """
+        @ivar: El nombre de esta cuenta
+        @type: string
+        """
 
     @property
     def valid( self ):

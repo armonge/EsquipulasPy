@@ -78,7 +78,7 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
 
     @pyqtSlot()
     def on_actionClients_activated( self ):
-        clientes = FrmPersona( constantes.CLIENTE, "Cliente", self )
+        clientes = FrmPersona( constantes.CLIENTE, "Cliente" )
         clientes.show()
 
     @pyqtSlot()
@@ -204,7 +204,7 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
         """
         Slot documentation goes here.
         """
-        pago = FrmPago( self )
+        pago = FrmPago()
         pago.show()
 
     @pyqtSlot()

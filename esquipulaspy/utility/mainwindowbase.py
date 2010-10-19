@@ -6,9 +6,9 @@ Created on 11/06/2010
 '''
 
 import sys
-from PyQt4.QtCore import SIGNAL, QSettings, pyqtSlot, QSize, QProcess
+from PyQt4.QtCore import  QSettings, pyqtSlot, QSize, QProcess
 from PyQt4.QtGui import QDialog, QMessageBox, QIcon, QWidget, QVBoxLayout, \
-QPushButton, qApp, QMainWindow
+QPushButton, qApp, QMainWindow, QMdiSubWindow
 from PyQt4.QtSql import QSqlDatabase
 
 import utility.user
@@ -78,9 +78,8 @@ class MainWindowBase( QMainWindow ):
         settings = QSettings()
         self.restoreGeometry( 
                      settings.value( "MainWindow/Geometry" ).toByteArray() )
-        self.connect( self.mdiArea,
-                      SIGNAL( "subWindowActivated(QMdiSubWindow *)" ),
-                       self.showtoolbar )
+
+        self.mdiArea.subWindowActivated[ QMdiSubWindow  ].connect( self.showtoolbar )
 
         btn_logout.clicked.connect( self.logOut )
         btn_about.clicked.connect( self.about )
@@ -95,7 +94,6 @@ class MainWindowBase( QMainWindow ):
             QSqlDatabase.database().databaseName() , \
             QSqlDatabase.database().hostName() )
         )
-
 
     def logOut( self ):
         self.setVisible( False )
@@ -162,15 +160,15 @@ class MainWindowBase( QMainWindow ):
                               u"La contraseña se ha cambiado exitorsamente" )
 
 
-    def showtoolbar( self, *args ):
+    def showtoolbar( self, new_window ):
         """
         mostrar la toolbar de la ventana que se acaba de mostrar
         """
         for window in self.mdiArea.subWindowList():
             window.widget().toolBar.setVisible( False )
-        for window in args:
-            if not window is None:
-                window.widget().toolBar.setVisible( True )
+
+        if not new_window is None:
+            new_window.widget().toolBar.setVisible( True )
 
 
     def _setStatus( self, status ):

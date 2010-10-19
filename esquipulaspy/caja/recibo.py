@@ -44,7 +44,7 @@ class FrmRecibo( Ui_frmRecibo, Base ):
     """
     web = "recibos.php?doc="
 
-    def __init__( self, parent ):
+    def __init__( self, parent = None ):
         '''
         Constructor
         '''

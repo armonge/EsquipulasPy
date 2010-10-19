@@ -32,19 +32,18 @@ class FrmPago( Ui_frmPago, Base ):
     """
     web = "recibos.php?doc="
 
-    def __init__( self, parent ):
+    def __init__( self, parent = None ):
         '''
         Constructor
         '''
         super( FrmPago, self ).__init__( parent )
-
-        self.tabledetails = None
         self.setWindowModality( Qt.WindowModal )
         self.setWindowFlags( Qt.Dialog )
-        self.parentWindow.removeToolBar( self.toolBar )
-        self.addToolBar( self.toolBar )
+
+        self.tabledetails = None
+
+
         self.editmodel = None
-        self.parent = parent
 
         self.groupcuentas.setVisible( False )
 
@@ -71,23 +70,6 @@ class FrmPago( Ui_frmPago, Base ):
 
         QTimer.singleShot( 0, self.loadModels )
 
-#    def agregarFactura(self,i,n):
-##        modelo = cindex.model()
-#        modelo = self.facturasproxymodel
-#        self.abonoeditmodel.insertRows( i )
-#        self.abonoeditmodel.lines[i].idFac = modelo.index(n, 0 ).data()
-#        self.abonoeditmodel.lines[i].nFac = modelo.index( n, 1 ).data()
-#        monto = Decimal( modelo.data( modelo.index( n, 2 ), Qt.EditRole ).toString() )
-#        
-#        self.abonoeditmodel.lines[i].tasaIva = Decimal( modelo.data( modelo.index( n, 3 ), Qt.EditRole ).toString())
-#        self.abonoeditmodel.lines[i].monto = monto
-##        self.abonoeditmodel.lines[i].setMonto( monto)
-#        
-#        
-#        self.abonoeditmodel.lines[i].nlinea = n
-#        
-#        self.abonoeditmodel.lines[i].totalFac = monto
-##        self.tablefacturas.setRowHidden( n, True )
 
     def cancel( self ):
         """
@@ -98,11 +80,13 @@ class FrmPago( Ui_frmPago, Base ):
 
     def newDocument( self ):
         """
-        activar todos los controles, llenar los modelos necesarios, crear el modelo EntradaCompraModel, aniadir una linea a la tabla
+        activar todos los controles, llenar los modelos necesarios, 
+        crear el modelo Pago, aniadir una linea a la tabla
         """
         if not self.database.isOpen():
             if not self.database.open():
-                raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
+                raise UserWarning( u"No se pudo establecer la conexión con "\
+                                   + "la base de datos" )
         query = QSqlQuery()
         try:
 
@@ -113,7 +97,8 @@ class FrmPago( Ui_frmPago, Base ):
             """ % constantes.IDPAGO )
 
             if self.conceptosModel.rowCount() == 0:
-                raise UserWarning( u"No existen conceptos en la base de datos para los pagos" )
+                raise UserWarning( u"No existen conceptos en la base de "\
+                                   + "datos para los pagos" )
 
             self.beneficiariosModel = QSqlQueryModel()
             self.beneficiariosModel.setQuery( """
@@ -139,9 +124,11 @@ class FrmPago( Ui_frmPago, Base ):
                     idtipocosto IN (%d,%d) AND 
                     activo=1 
                     ORDER BY valorcosto desc; 
-                    """ % ( constantes.RETENCIONPROFESIONALES, constantes.RETENCIONFUENTE ) )
+                    """ % ( constantes.RETENCIONPROFESIONALES,
+                            constantes.RETENCIONFUENTE ) )
             if self.retencionModel.rowCount() == 0:
-                raise UserWarning( u"No existe ninguna tasa de retención en la base de datos" )
+                raise UserWarning( u"No existe ninguna tasa de retención en "\
+                                   + "la base de datos" )
 
             query = QSqlQuery( 
             """
@@ -153,7 +140,10 @@ class FrmPago( Ui_frmPago, Base ):
             JOIN documentos d ON d.iddocumento = m.iddocumento
             WHERE d.idcaja = %d AND m.idtipomovimiento=%d
             ;
-            """ % ( constantes.IDCORDOBAS, constantes.IDDOLARES, self.parentWindow.datosSesion.cajaId, constantes.IDPAGOEFECTIVO ) )
+            """ % ( constantes.IDCORDOBAS,
+                    constantes.IDDOLARES,
+                    self.parentWindow.datosSesion.cajaId,
+                    constantes.IDPAGOEFECTIVO ) )
             if not query.exec_():
                 raise UserWarning( u"No pudo obtenerse el número del comprobante" )
             query.first()
@@ -232,7 +222,8 @@ class FrmPago( Ui_frmPago, Base ):
         except Exception as inst:
             print inst
             QMessageBox.critical( self, qApp.organizationName(),
-                                   "Hubo un problema al tratar de crear el nuevo pago" )
+                                   "Hubo un problema al tratar de crear"\
+                                   + " el nuevo pago" )
             logging.critical( unicode( inst ) )
             logging.error( query.lastError().text() )
         finally:

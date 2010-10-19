@@ -159,21 +159,24 @@ class ArticlesModel( QSqlQueryModel ):
                     self.queries.append( self.__set_ganancia( value.toString(),
                                                             primarykey ) )
                 elif index.column() == ACTIVO:
-                    self.queries.append( self.set_activo( value.toBool(),
+                    self.queries.append( self.__set_activo( value.toBool(),
                                                           primarykey ) )
                 self.refresh()
                 self.dirty = True
                 self.dataChanged.emit( index, index )
                 return True
             except UserWarning as inst:
-                QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+                QMessageBox.critical( self,
+                                      qApp.organizationName(),
+                                      unicode( inst ) )
                 logging.error( unicode( inst ) )
             except Exception as inst:
                 logging.critical( unicode( inst ) )
-                QMessageBox.critical( self, qApp.organizationName(), "Hubo un error al guardar su cambio" )
+                QMessageBox.critical( self, qApp.organizationName(),
+                                      "Hubo un error al guardar su cambio" )
         return False
 
-    def set_activo( self, value, _id ):
+    def __set_activo( self, value, _id ):
         """
         Actualiza el estado de un articulo
         @param id: EL index del record del tableview 

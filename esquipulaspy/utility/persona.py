@@ -8,7 +8,7 @@ import logging
 import functools
 
 from PyQt4.QtCore import pyqtSlot, Qt
-from PyQt4.QtGui import QMainWindow, QDataWidgetMapper, QMessageBox, \
+from PyQt4.QtGui import  QDataWidgetMapper, QMessageBox, \
 QSortFilterProxyModel, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
 
@@ -19,14 +19,12 @@ from utility.base import Base
 TIPO, ID, NOMBRE, DIRECCION, TELEFONO, CORREO, RUC, ACTIVO = range( 8 )
 
 class FrmPersona( Ui_frmPersona, Base ):
-    def __init__( self, tipo, rol, parent ):
+    def __init__( self, tipo, rol, parent = None ):
         super( FrmPersona, self ).__init__( parent )
 
         self.tabledetails = None
         self.setWindowModality( Qt.WindowModal )
         self.setWindowFlags( Qt.Dialog )
-        self.parentWindow.removeToolBar( self.toolBar )
-        self.addToolBar( self.toolBar )
 
         self.tipo = tipo
         self.rol = rol

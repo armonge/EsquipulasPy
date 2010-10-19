@@ -104,8 +104,6 @@ class KardexOtherModel( QAbstractTableModel ):
 
     @property
     def totalCostC( self ):
-        print "totalCostC: ", self.totalCost * self.exchangeRate, "totalCost: ", self.totalCost, "exchangeRate: ", self.exchangeRate
-
         return self.totalCost * self.exchangeRate
 
     @property
@@ -193,7 +191,6 @@ class KardexOtherModel( QAbstractTableModel ):
                 line.itemId = value[0]
                 line.description = value[1]
                 line.itemCost = value[2]
-                print "itemCost: ", line.itemCost
             elif index.column() == CANTIDAD:
                 line.quantity = value.toInt()[0]
             self.dirty = True
@@ -310,11 +307,11 @@ class KardexOtherModel( QAbstractTableModel ):
 
             #Guardar las cuentas contables
             for i, line in enumerate( [line for line in self.accountsmodel.lines if line.valid] ):
-                    line.save( insertedId, i )
+                line.save( insertedId, i )
 
             #Guardar las lineas
             for i, line in enumerate( [line for line in self.lines if line.valid] ):
-                    line.save( insertedId, i )
+                line.save( insertedId, i )
 
 
             if not QSqlDatabase.database().commit():
@@ -339,3 +336,7 @@ class KardexOtherAccountsModel( AccountsSelectorModel ):
             return Qt.ItemIsEnabled | Qt.ItemIsEditable
         else:
             return Qt.ItemIsEnabled
+
+    @property
+    def valid( self ):
+        return super( KardexOtherAccountsModel, self ).valid and self.lines[0].valid

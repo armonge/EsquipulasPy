@@ -91,11 +91,9 @@ class FrmFactura( Base, Ui_frmFactura ):
         QTimer.singleShot( 0, self.loadModels )
 
     def cargarRecibos( self ):
-        self.recibo = FrmRecibo( self )  #dlgRecibo( self, True )
+        self.recibo = FrmRecibo()  #dlgRecibo( self, True )
         self.recibo.setWindowModality( Qt.WindowModal )
         self.recibo.setWindowFlags( Qt.Dialog )
-        self.recibo.parentWindow.removeToolBar( self.recibo.toolBar )
-        self.recibo.addToolBar( self.recibo.toolBar )
         self.recibo.actionNew.setVisible( False )
 
     def cancel( self ):

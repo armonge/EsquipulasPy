@@ -28,9 +28,9 @@ class Base( QMainWindow ):
 
     def __init__( self , parent = None ):
         super( Base, self ).__init__( parent )
-        self.parentWindow = parent
         self.user = user.LoggedUser
         self._status = True
+        self.parentWindow = parent
 
 
 
@@ -71,17 +71,15 @@ class Base( QMainWindow ):
         Iniciar todos los elementos graficos
         """
         self.setupUi( self )
-
-
-
+        if not self.parent() is None:
+            self.parent().addToolBar( self.toolBar )
 
         settings = QSettings()
-        self.restoreGeometry( settings.value( self.windowTitle()
-                                              + "/Geometry" ).toByteArray() )
         self.restoreState( settings.value( self.windowTitle()
                                             + "/State" ).toByteArray() )
 
-        self.parentWindow.addToolBar( self.toolBar )
+
+
         """
         @ivar: El MainWindow al que pertenece este widget
         """
@@ -125,23 +123,11 @@ class Base( QMainWindow ):
         #Guardar el tamaño y la posición
         settings = QSettings()
         settings.setValue( self.windowTitle() + "/Geometry", self.saveGeometry() )
-        settings.setValue( self.windowTitle() + "/State", self.saveState() )
 
-        #quitar la toolbar
-        self.parentWindow.removeToolBar( self.toolBar )
-
+        if not self.parent() is None:
+            self.parent().mdiArea().parent().parent().removeToolBar( self.toolBar )
 
 
-    def hideEvent( self, event ):
-        """
-        Ocultar la barra de tareas cuando se oculta el widget
-        """
-        if not event.spontaneous():
-            self.toolBar.setVisible( False )
-
-    def showEvent( self, event ):
-        if not event.spontaneous():
-            self.toolBar.setVisible( True )
 
     def editCell( self ):
         """
