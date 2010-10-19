@@ -26,11 +26,11 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
 
     """
     ROL = constantes.ACCESOCONTABILIDAD
-    def __init__( self, parent = None ):
+    def __init__( self, module, parent = None ):
         """
         Constructor
         """
-        super( MainWindow, self ).__init__( parent )
+        super( MainWindow, self ).__init__( module, parent )
         self.startUi()
         self.init()
 
@@ -69,7 +69,7 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         """
         Catalogo de conceptos de modulo de contabilidad
         """
-        cierre = FrmCierreContable( self,"Mensual" )
+        cierre = FrmCierreContable( self, "Mensual" )
         self.mdiArea.addSubWindow( cierre )
         cierre.show()
 
@@ -79,7 +79,7 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         """
         Catalogo de conceptos de modulo de contabilidad
         """
-        cierre = FrmCierreContable( self,"Anual" )
+        cierre = FrmCierreContable( self, "Anual" )
         self.mdiArea.addSubWindow( cierre )
         cierre.show()
 

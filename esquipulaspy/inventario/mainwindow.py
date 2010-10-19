@@ -21,11 +21,11 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
     Class documentation goes here.
     """
     ROL = constantes.ACCESOINVENTARIO
-    def __init__( self, parent = None ):
+    def __init__( self, module, parent = None ):
         """
         Constructor
         """
-        super( MainWindow, self ).__init__( parent )
+        super( MainWindow, self ).__init__( module, parent )
         self.startUi()
         self.init()
 

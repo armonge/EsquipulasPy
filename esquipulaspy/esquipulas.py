@@ -118,7 +118,7 @@ if dlguser.exec_() == QtGui.QDialog.Accepted:
         if  utility.user.LoggedUser.hasAnyRole( module ):
 
 
-            mainwindow = MainWindow()
+            mainwindow = MainWindow( module )
             mainwindow.showMaximized()
             sys.exit( app.exec_() )
 

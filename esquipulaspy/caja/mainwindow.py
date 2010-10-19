@@ -26,11 +26,11 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
     Esta clase implementa el MainWindow de Caja
     """
     ROL = constantes.ACCESOCAJA
-    def __init__( self, parent = None ):
+    def __init__( self, module, parent = None ):
         """
         Constructor
         """
-        super( MainWindow, self ).__init__( parent )
+        super( MainWindow, self ).__init__( module, parent )
         self.startUi()
 #        MainWindowBase.__init__( self )
         self.init()

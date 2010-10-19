@@ -18,7 +18,7 @@ class MainWindowBase( QMainWindow ):
     Esta clase implementa la funcionalidad que es común a todas las ventanas
     principales del sistema.
     '''
-    def __init__( self , parent ):
+    def __init__( self , module, parent = None ):
         '''
         Constructor
         '''
@@ -34,6 +34,8 @@ class MainWindowBase( QMainWindow ):
         @type: User
         """
         self.__status = False
+
+        self.module = module
 
     def startUi( self ):
         self.setupUi( self )
