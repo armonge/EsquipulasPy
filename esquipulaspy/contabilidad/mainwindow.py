@@ -69,7 +69,17 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         """
         Catalogo de conceptos de modulo de contabilidad
         """
-        cierre = FrmCierreContable( self )
+        cierre = FrmCierreContable( self,"Mensual" )
+        self.mdiArea.addSubWindow( cierre )
+        cierre.show()
+
+
+    @pyqtSlot()
+    def on_btnCierreAnual_clicked( self ):
+        """
+        Catalogo de conceptos de modulo de contabilidad
+        """
+        cierre = FrmCierreContable( self,"Anual" )
         self.mdiArea.addSubWindow( cierre )
         cierre.show()
 

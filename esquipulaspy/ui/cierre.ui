@@ -24,7 +24,7 @@
        <enum>QFrame::NoFrame</enum>
       </property>
       <property name="text">
-       <string>&lt;h2&gt;&lt;b&gt;Documentos pertenecientes a cierre contable Mensual</string>
+       <string>&lt;h2&gt;&lt;b&gt;Documentos pertenecientes a cierre contable</string>
       </property>
       <property name="scaledContents">
        <bool>false</bool>
@@ -38,6 +38,9 @@
      <widget class="QDateTimeEdit" name="dtPicker">
       <property name="alignment">
        <set>Qt::AlignCenter</set>
+      </property>
+      <property name="currentSection">
+       <enum>QDateTimeEdit::MonthSection</enum>
       </property>
       <property name="displayFormat">
        <string>MMMM yyyy</string>
@@ -73,7 +76,7 @@
          </size>
         </property>
         <property name="title">
-         <string>Estado de Resultado</string>
+         <string>Cierre Contable</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
