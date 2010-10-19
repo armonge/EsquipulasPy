@@ -4,72 +4,70 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
-from decimal import Decimal
-import functools
-from PyQt4.QtCore import pyqtSignature, pyqtSlot, QDate, Qt, QTimer
+from PyQt4.QtCore import  Qt, QTimer
+from PyQt4.QtGui import  QSortFilterProxyModel, QAbstractItemView, \
+    QDataWidgetMapper, QMessageBox, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QAbstractItemView, QDataWidgetMapper, QMessageBox, qApp
-
+from document.movimientosbancarios import MovimientosBancariosModel
+from ui.Ui_frmmovimientosbancarios import Ui_frmMovimientosBancarios
+from utility import constantes
 from utility.base import Base
-from utility.moneyfmt import moneyfmt
 from utility.widgets.searchpanel import SearchPanel
 import logging
 
-from ui.Ui_frmmovimientosbancarios import Ui_frmMovimientosBancarios
-from document.movimientosbancarios import MovimientosBancariosModel
-from utility import constantes
+
 
 
 IDDOCUMENTO, FECHA, CUENTA, TIPODOC, CONCEPTO, OBSERVACION, NCUENTA = range( 7 )
-class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
-    
+class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
+
     def __init__( self, parent ):
-        
-        self.iniciarClase(parent)
+
+        self.iniciarClase( parent )
         self.iniciarInterfaz()
-        
+
         #Carga los modelos de forma paralela a la ejecucion del sistema
         QTimer.singleShot( 0, self.loadModels )
-           
-    def iniciarClase(self,parent):
+
+    def iniciarClase( self, parent ):
         """
         Ejecuta constructores de las clases e inicializa variables
         """
-        super( FrmMovimientosBancarios, self ).__init__( parent )    
+        super( FrmMovimientosBancarios, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
         Base.__init__( self )
-        
-        
+
+
         self.navmodel = None
         """
         @ivar: Modelo de navegacion que se asignara a la tabla principal de navegacion
         @type: QSqlQueryModel
         """
-        
+
         self.navproxymodel = None
         """
         @ivar: = Proxy del modelo de navegacion que filtra al momento de una busqueda
         @type: QSortFilterProxyModel  
         """
-         
-        self.detailsmodel = None         
+
+        self.detailsmodel = None
         """
         @ivar: Modelo detalle, carga las lineas del documento
         @type: QSqlQueryModel
         """
-        
+
         #Proxy para el modelo detalle, que filtra al navegar para solo mostrar las lineas relacionadas al documento actual
         self.detailsproxymodel = QSortFilterProxyModel( self )
         self.detailsproxymodel.setSourceModel( self.detailsmodel )
-        
+
         #Modelo de Edicion
         self.editmodel = None
-        
+
         # Establece el estado actual en Modo Lectura(True)
         self.__status = True
-        
-    def iniciarInterfaz(self):
+
+    def iniciarInterfaz( self ):
         """
         Realiza Cambios iniciales al formulario
         """
@@ -77,8 +75,8 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
         self.horizontalLayout_32.addWidget( self.cbcuenta )
         self.actionSave.setVisible( False )
         self.actionCancel.setVisible( False )
-    
-    
+
+
     def newDocument( self ):
         """
         activar todos los controles, llena los modelos necesarios, 
@@ -89,11 +87,11 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
                 if not self.database.open():
                     raise UserWarning( u"No se pudo establecer la "\
                                        + "conexi�n con la base de datos" )
-            
+
             self.editmodel = MovimientosBancariosModel()
-            self.editmodel.autorDoc = self.user.uid 
+            self.editmodel.autorDoc = self.user.uid
             self.status = False
-            
+
         except UserWarning as inst:
             logging.error( unicode( inst ) )
             QMessageBox.critical( self, qApp.organizationName(),
@@ -105,12 +103,12 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
             QMessageBox.critical( self, qApp.organizationName(),
                                   u"Hubo un error al actualizar los datos" )
             self.status = True
-            
+
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
 
-        
+
     def setControls( self, status ):
         """
         Cambia el formulario entre modos de edicion y navegacion
@@ -153,8 +151,8 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
         try:
             if not QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().open()
-               
-            self.navmodel= QSqlQueryModel()
+
+            self.navmodel = QSqlQueryModel()
             self.navmodel.setQuery( """
             SELECT
                     d.iddocumento,
@@ -171,14 +169,14 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
             LEFT JOIN conceptos con ON con.idconcepto = d.idconcepto
             WHERE td.modulo=%d
             ORDER BY d.iddocumento,d.fechacreacion DESC
-                ; """%constantes.IDCONTABILIDAD )
+                ; """ % constantes.IDCONTABILIDAD )
 
     #        El modelo que filtra a self.navmodel
             self.navproxymodel = QSortFilterProxyModel()
             self.navproxymodel.setSourceModel( self.navmodel )
             self.navproxymodel.setFilterKeyColumn( -1 )
             self.navproxymodel.setFilterCaseSensitivity ( Qt.CaseInsensitive )
-    
+
     #        Este es el modelo con los datos de la tabla para navegar
             self.detailsmodel = QSqlQueryModel()
             self.detailsmodel.setQuery( """
@@ -193,7 +191,7 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
             JOIN tiposdoc td ON td.idtipodoc = d.idtipodoc AND td.modulo =3
             ORDER BY c.iddocumento,nlinea
             ;""" )
-            
+
     #        Este es el filtro del modelo anterior
             self.detailsproxymodel = QSortFilterProxyModel()
             self.detailsproxymodel.setSourceModel( self.detailsmodel )
@@ -205,12 +203,12 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, QMainWindow, Base ):
             self.mapper.addMapping( self.txtcuenta, CUENTA )
             self.mapper.addMapping( self.txttipodoc, TIPODOC )
             self.mapper.addMapping( self.dtPicker, FECHA )
-            
+
 
 #        asignar los modelos a sus tablas
             self.tablenavigation.setModel( self.navproxymodel )
             self.tabledetails.setModel( self.detailsproxymodel )
-            
+
             self.tabledetails.setColumnHidden( IDDOCUMENTO, True )
             self.tablenavigation.setColumnHidden( IDDOCUMENTO, True )
             self.tablenavigation.setColumnHidden( NCUENTA, True )
