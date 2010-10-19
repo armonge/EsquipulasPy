@@ -58,7 +58,7 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
             JOIN estadosdocumento estados ON estados.idestado=d.idestado
             JOIN tiposdoc td ON d.idtipodoc=td.idtipodoc
             WHERE MONTH(d.fechacreacion)= %s  AND d.idtipodoc!=%d and d.idtipodoc!= %d
-            """ % ( "%d/%m/%Y", self.fecha.toString( "MM" ), +constantes.IDAPERTURA , constantes.IDCIERREMENSUAL )
+            """ % ( "%d/%m/%Y", self.fecha.toString( "MM" ), constantes.IDAPERTURA , constantes.IDCIERREMENSUAL )
             self.navmodel.setQuery( q )
 
             query = QSqlQuery()

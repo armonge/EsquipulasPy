@@ -202,8 +202,8 @@ class ReciboModel( AccountsSelectorModel ):
             self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
             n = position + rows - 1
             while n >= position:
-                    del self.lines[n]
-                    n = n - 1
+                del self.lines[n]
+                n = n - 1
 
             self.endRemoveRows()
             self.dirty = True

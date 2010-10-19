@@ -390,10 +390,12 @@ class LineaLiquidacion( LineaBase ):
 
         query = QSqlQuery()
         if not query.prepare( """
-        INSERT INTO articulosxdocumento (iddocumento, idarticulo, unidades, costounit, costocompra,nlinea)
+        INSERT INTO articulosxdocumento (iddocumento, idarticulo, unidades, 
+        costounit, costocompra,nlinea)
         VALUES( :iddocumento,:idarticulo,  :unidades, :costounit, :costocompra,:linea)
         """ ):
-            raise Exception( "No se pudo preparar la consulta para insertar una de las lineas del documento" )
+            raise Exception( "No se pudo preparar la consulta para "\
+                             + "insertar una de las lineas del documento" )
 
         query.bindValue( ":iddocumento", iddocumento )
         query.bindValue( ":idarticulo", self.itemId )
@@ -402,18 +404,26 @@ class LineaLiquidacion( LineaBase ):
         query.bindValue( ":costocompra", str( self.itemCost ) )
         query.bindValue( ":linea", nlinea )
 
+        print iddocumento
+        print self.itemId
+        print self.quantity
+        print str( self.costoDolar )
+        print str( self.itemCost )
+        print nlinea
 
         if not query.exec_():
-            logging.critical( query.lastError().text() )
+            print query.lastError().text()
             raise Exception( "Error al insertar una de las lineas del documento" )
 
         idarticuloxdocumento = query.lastInsertId()
 
         if not query.prepare( """
-        INSERT INTO costosxarticuloliquidacion ( idarticuloxdocumento, dai, isc, comision ) 
+        INSERT INTO costosxarticuloliquidacion ( idarticuloxdocumento, 
+        dai, isc, comision ) 
         VALUES (:idarticuloxdocumento, :dai, :isc, :comision)
         """ ):
-            raise Exception( "Error al preparar la consulta para insertar una de las lineas del documento" )
+            raise Exception( "Error al preparar la consulta para insertar"\
+                             + " una de las lineas del documento" )
 
         query.bindValue( ":idarticuloxdocumento", idarticuloxdocumento )
         query.bindValue( ":dai", str( self.daiParcial ) )
@@ -422,4 +432,5 @@ class LineaLiquidacion( LineaBase ):
 
         if not query.exec_():
             logging.error( query.lastError().text() )
-            raise Exception( "Error al insertar los costos de una de las lineas de la factura " )
+            raise Exception( "Error al insertar los costos de una de las"\
+                             + " lineas de la factura " )

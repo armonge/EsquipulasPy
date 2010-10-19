@@ -15,11 +15,13 @@ from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from document.kardex.lineakardex import LineaKardex
 from utility import constantes
 from utility.movimientos import movKardex
+from utility.decorators import return_decimal
 
 IDARTICULO, DESCRIPCION, NUMDOC, NUMAJUSTE, NUMTOTAL = range( 5 )
 class KardexModel( QAbstractTableModel ):
     """
-    Esta clase es el modelo utilizado en la tabla en la que se editan los documentos kardex
+    Esta clase es el modelo utilizado en la tabla en la que se editan
+     los documentos kardex
     """
     __documentType = constantes.IDKARDEX
     """
@@ -92,9 +94,9 @@ class KardexModel( QAbstractTableModel ):
 
 
     @property
+    @return_decimal
     def ajusteTotalD( self ):
-        ajuste = sum( [ line.ajusteMonetario for line in self.lines if line.dirty ] )
-        return ajuste if ajuste != 0 else Decimal( 0 )
+        return sum( [ line.ajusteMonetario for line in self.lines if line.dirty ] )
 
     @property
     def ajusteTotalC( self ):
@@ -110,10 +112,12 @@ class KardexModel( QAbstractTableModel ):
             self.validError = "No existen lineas en el kardex"
             return False
         elif not self.exchangeRateId > 0:
-            self.validError = "No se ha definido el tipo de cambio del documento"
+            self.validError = "No se ha definido el tipo de "\
+            + "cambio del documento"
             return False
         elif not self.uid != 0:
-            self.validError = "No se ha especificado el usuario que realiza este kardex"
+            self.validError = "No se ha especificado el usuario"\
+            + " que realiza este kardex"
             return False
 
         return True
@@ -153,7 +157,8 @@ class KardexModel( QAbstractTableModel ):
         if not index.isValid():
             return Qt.ItemIsEnabled
         if index.column() == NUMAJUSTE:
-            return Qt.ItemFlags( QAbstractTableModel.flags( self, index ) | Qt.ItemIsEditable )
+            return Qt.ItemFlags( QAbstractTableModel.flags( self, index ) |
+                                 Qt.ItemIsEditable )
         else:
             return Qt.ItemIsEnabled
 
@@ -219,16 +224,20 @@ class KardexModel( QAbstractTableModel ):
                 raise Exception( u"No se puedo comenzar la transacción" )
 
             if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc, observacion,total, idtipocambio, idbodega)
-            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,:total, :idtipocambio, :idbodega)
+            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc, 
+            observacion,total, idtipocambio, idbodega)
+            VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,
+            :total, :idtipocambio, :idbodega)
             """ ):
-                raise Exception( "No se pudo preparar la consulta para insertar el kardex" )
+                raise Exception( "No se pudo preparar la consulta para "\
+                                 + "insertar el kardex" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-            query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
+            query.bindValue( ":fechacreacion",
+                             self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
 
             query.bindValue( ":observacion", self.observations )
-            query.bindValue( ":total", self.ajusteTotalC.to_eng_string() )
+            query.bindValue( ":total", str( self.ajusteTotalC ) )
             query.bindValue( ":idtipocambio", self.exchangeRateId )
             query.bindValue( ":idbodega", self.warehouseId )
 
@@ -241,7 +250,8 @@ class KardexModel( QAbstractTableModel ):
             INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion) 
             VALUE (:idusuario, :iddocumento,:accion)
             """ ):
-                raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
+                raise Exception( "No se pudo preparar la consulta para "\
+                                 + "ingresar el usuario" )
             query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":iddocumento", insertedId )
             query.bindValue( ":accion", constantes.AUTOR )
@@ -253,13 +263,16 @@ class KardexModel( QAbstractTableModel ):
                 if line.dirty:
                     line.save( insertedId )
             if not query.prepare( """
-            INSERT INTO docpadrehijos (idpadre, idhijo) VALUES (:padre, :hijo)
+            INSERT INTO docpadrehijos (idpadre, idhijo) 
+            VALUES (:padre, :hijo)
             """ ):
-                raise Exception( "No se pudo preparar la relacion entre el documento kardex y el documento padre" )
+                raise Exception( "No se pudo preparar la relacion entre "\
+                                 + "el documento kardex y el documento padre" )
             query.bindValue( ":padre", self.parentId )
             query.bindValue( ":hijo", insertedId )
             if not query.exec_():
-                raise Exception( "No se pudo insertar la relacion entre el documento kardex y el documento padre" )
+                raise Exception( "No se pudo insertar la relacion entre "\
+                                 + "el documento kardex y el documento padre" )
 
             if self.ajusteTotalC != 0:
                 movKardex( insertedId, self.ajusteTotalC )

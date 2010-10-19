@@ -122,23 +122,27 @@ class KardexOtherModel( QAbstractTableModel ):
 
     @property
     def valid( self ):
-        if not  self.validLines > 0:
-            self.validError = "No hay lineas validas en la tabla"
+        try:
+            if not  self.validLines > 0:
+                raise UserWarning( "No hay lineas validas en la tabla" )
+            elif not  self.exchangeRateId != 0:
+                raise UserWarning( "No hay un tipo de cambio para "\
+                                   + "el documento" )
+            elif not self.warehouseId > 0:
+                raise UserWarning( "No ha seleccionado una bodega para "\
+                                   + "el documento" )
+            elif not self.conceptId > 0:
+                raise UserWarning( "No ha seleccionado un concepto para"\
+                                   " el documento" )
+            elif not self.accountsmodel.valid:
+                raise UserWarning( "Tiene un error con sus cuentas contables" )
+            elif not self.uid > 0:
+                raise UserWarning( "No se ha especificado el usuario de "\
+                                   "este documento" )
+        except UserWarning as inst:
+            self.validError = unicode( inst )
             return False
-        elif not  self.exchangeRateId != 0:
-            self.validError = "No hay un tipo de cambio para el documento"
-            return False
-        elif not self.warehouseId > 0:
-            self.validError = "No ha seleccionado una bodega para el documento"
-            return False
-        elif not self.conceptId > 0:
-            self.validError = "No ha seleccionado un concepto para el documento"
-            return False
-        elif not self.accountsmodel.valid:
-            self.validError = "Tiene un error con sus cuentas contables"
-            return False
-        elif not self.uid > 0:
-            self.validError = "No se ha especificado el usuario de este documento"
+
         return True
 
     def data( self, index, role = Qt.DisplayRole ):

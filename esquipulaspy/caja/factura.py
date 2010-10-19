@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #TODO: REFACTOR!!!
+#FIXME: Se tiene que insertar el id de la bodega en la anulación
 '''
 Created on 25/05/2010
 @author: Luis Carlos Mejia
@@ -29,7 +30,7 @@ IDARTICULOEX, DESCRIPCIONEX, PRECIOEX, COSTOEX, EXISTENCIAEX, \
 #controles
 IDDOCUMENTO, NDOCIMPRESO, CLIENTE, VENDEDOR, SUBTOTAL, IVA, TOTAL, \
 OBSERVACION, FECHA, BODEGA, TASA, TASAIVA, ESTADO, ANULADO, \
-ESCONTADO, TOTALFAC = range( 16 )
+ESCONTADO, TOTALFAC, ANULABLE, IDBODEGA = range( 18 )
 
 #table
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, TOTALPROD, IDDOCUMENTOT = range( 6 )
@@ -44,6 +45,7 @@ class FrmFactura( Base, Ui_frmFactura ):
         '''
         super( FrmFactura, self ).__init__( parent )
         self.readOnly = True
+        self.recibo = None
 
         self.clientesModel = QSqlQueryModel()
 
@@ -80,7 +82,7 @@ class FrmFactura( Base, Ui_frmFactura ):
         """
 
         self.tabledetails.setOrder( 1, 3 )
-        self.recibo = None
+
 
 
         self.completer = QCompleter()
@@ -423,12 +425,15 @@ class FrmFactura( Base, Ui_frmFactura ):
                                   + " devoluciones" )
         elif self.anulable == 1:
             currentIndex = self.mapper.currentIndex()
-            doc = self.navmodel.record( currentIndex ).value( "iddocumento" ).toInt()[0]
-            estado = self.navmodel.record( currentIndex ).value( "idestado" ).toInt()[0]
-            total = self.navmodel.record( currentIndex ).value( "totalfac" ).toString()
+            record = self.navmodel.record( currentIndex )
+            doc = record.value( "iddocumento" ).toInt()[0]
+            estado = record.value( "idestado" ).toInt()[0]
+            total = record.value( "totalfac" ).toString()
+            bodega = record.value( IDBODEGA ).toInt()[0]
             if total != "":
                 total = Decimal( total )
 
+            query = QSqlQuery()
             try:
                 if not self.database.isOpen():
                     if not self.database.open():
@@ -465,7 +470,7 @@ class FrmFactura( Base, Ui_frmFactura ):
                                     QMessageBox.critical( self, qApp.organizationName(), "No ingreso los datos correctos", QMessageBox.Ok )
                                 else:
 
-                                    query = QSqlQuery()
+
                                     if not self.database.transaction():
                                         raise Exception( "No se pudo comenzar la transacción" )
 
@@ -476,15 +481,16 @@ class FrmFactura( Base, Ui_frmFactura ):
 
                                     #Insertar documento anulacion
                                     if not query.prepare( """
-                                    INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
-                                    VALUES(:ndocimpreso,:total,NOW(),:idtipodoc,:observacion,:idestado)""" ):
+                                    INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado, idbodega)
+                                    VALUES(:ndocimpreso,:total,NOW(),:idtipodoc,:observacion,:idestado, :idbodega)""" ):
                                         raise Exception( query.lastError().text() )
                                     query.bindValue( ":ndocimpreso", nfac )
-                                    query.bindValue( ":total", total.to_eng_string() )
+                                    query.bindValue( ":total", str( total ) )
 #                                    query.bindValue( ":fechacreacion", QDateTime.currentDateTime().toString('yyyyMMddhhmmss') )
                                     query.bindValue( ":idtipodoc", constantes.IDANULACION )
                                     query.bindValue( ":observacion", anulardialog.txtObservaciones.toPlainText() )
                                     query.bindValue( ":idestado", constantes.PENDIENTE )
+                                    query.bindValue( ":idbodega", bodega )
 
                                     if not query.exec_():
                                         raise Exception( "No se pudo insertar el documento Anulacion" )
@@ -526,14 +532,16 @@ class FrmFactura( Base, Ui_frmFactura ):
             except Exception as inst:
                 logging.error( unicode( inst ) )
                 logging.error( query.lastError().text() )
-                QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+                QMessageBox.critical( self, qApp.organizationName(),
+                                      unicode( inst ) )
                 self.database.rollback()
             except Exception as inst:
                 logging.critical( unicode( inst ) )
                 logging.critical( query.lastError().text() )
                 QMessageBox.critical( self,
                                       qApp.organizationName(),
-                                       "Hubo un error al intentar anular la factura" )
+                                       "Hubo un error al intentar anular "\
+                                       + "la factura" )
                 self.database.rollback()
             finally:
                 if self.database.isOpen():
@@ -603,7 +611,6 @@ class FrmFactura( Base, Ui_frmFactura ):
     def on_dtPicker_dateTimeChanged( self, datetime ):
         pass
 
-# MANEJO EL EVENTO  DE SELECCION EN EL RADIOBUTTON
     @pyqtSlot( bool )
     @if_edit_model
     def on_rbcontado_toggled( self, on ):
@@ -677,7 +684,7 @@ class FrmFactura( Base, Ui_frmFactura ):
         record = self.navmodel.record( index )
         self.lbltasaiva.setText( record.value( "tasaiva" ).toString() + '%' )
         self.lblanulado.setHidden( record.value( "idestado" ).toInt()[0] != constantes.ANULADO )
-        self.anulable = record.value( "anulable" ).toInt()[0]
+        self.anulable = record.value( ANULABLE ).toInt()[0]
 #        self.actionAnular.setEnabled()
         escontado = record.value( "escontado" ).toBool()
         if escontado:
@@ -731,7 +738,8 @@ class FrmFactura( Base, Ui_frmFactura ):
                     d.idestado,
                     d.escontado,
                     d.total as totalfac,
-                    fnFacturaAnulable(d.iddocumento,d.idtipodoc,%d,%d,%d,%d) as anulable
+                    fnFacturaAnulable(d.iddocumento,d.idtipodoc,%d,%d,%d,%d) as anulable,
+                    b.idbodega
                 FROM documentos d
                 JOIN estadosdocumento ed ON ed.idestado = d.idestado
                 JOIN bodegas b ON b.idbodega=d.idbodega
@@ -931,11 +939,11 @@ class DlgAnular( QDialog ):
         lblnfactura.setObjectName( "lblnfactura" )
         lblnfactura.setText( "# Factura" )
         gridLayout.addWidget( lblnfactura, 0, 0, 1, 1 )
-        lblnfactura2 = QLabel( self )
-        lblnfactura2.setFrameShape( QFrame.Box )
-        lblnfactura2.setText( "" )
-        lblnfactura2.setObjectName( "lblnfactura2" )
-        gridLayout.addWidget( lblnfactura2, 0, 1, 1, 1 )
+        self.lblnfactura2 = QLabel( self )
+        self.lblnfactura2.setFrameShape( QFrame.Box )
+        self.lblnfactura2.setText( "" )
+        self.lblnfactura2.setObjectName( "lblnfactura2" )
+        gridLayout.addWidget( self.lblnfactura2, 0, 1, 1, 1 )
         lblconcepto = QLabel( self )
         lblconcepto.setObjectName( "lblconcepto" )
         lblconcepto.setText( "Concepto" )
@@ -955,7 +963,7 @@ class DlgAnular( QDialog ):
         buttonBox.setStandardButtons( QDialogButtonBox.Cancel |
                                       QDialogButtonBox.Ok )
         buttonBox.setObjectName( "buttonBox" )
-        gridLayout.addWidget( self.buttonBox, 4, 0, 1, 2 )
+        gridLayout.addWidget( buttonBox, 4, 0, 1, 2 )
 
         buttonBox.accepted.connect( self.accept )
         buttonBox.rejected.connect( self.reject )

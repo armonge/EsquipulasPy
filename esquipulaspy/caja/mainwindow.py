@@ -3,23 +3,23 @@
 """
     Module implementing MainWindow.
 """
-import logging
-from decimal import Decimal
-
-from PyQt4.QtGui import QMainWindow, QDialog, QMessageBox
 from PyQt4.QtCore import pyqtSlot, Qt
+from PyQt4.QtGui import  QDialog, QMessageBox, qApp
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from factura import FrmFactura
-from recibo import FrmRecibo
-from pago import FrmPago
-from ui.Ui_mainwindowcaja import Ui_MainWindow
 from apertura import DlgApertura
-from utility.mainwindowbase import MainWindowBase
-from inventario.catalogos import FrmCatConceptos
 from arqueo import FrmArqueo
+from decimal import Decimal
 from devolucion import FrmDevolucion
-from utility.persona import FrmPersona
+from factura import FrmFactura
+from inventario.catalogos import FrmCatConceptos
+from pago import FrmPago
+from recibo import FrmRecibo
+from ui.Ui_mainwindowcaja import Ui_MainWindow
 from utility import constantes
+from utility.mainwindowbase import MainWindowBase
+from utility.persona import FrmPersona
+import logging
+
 
 class MainWindow( MainWindowBase, Ui_MainWindow, ):
     """
@@ -117,7 +117,8 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
 #            try:
             if not database.isOpen():
                 if not database.open():
-                    raise UserWarning( u"No se pudo abrir la conexión con la base de datos" )
+                    raise UserWarning( u"No se pudo abrir la conexión con la"\
+                                       + " base de datos" )
 
             q = """
                 SELECT
@@ -137,13 +138,19 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
                 HAVING SUM(IFNULL(cierre.idtipodoc,0)) = 0;
                """ % ( constantes.AUTOR, constantes.IDARQUEO, constantes.IDAPERTURA, self.datosSesion.usuarioId )
             if not query.prepare( q ):
-                raise Exception( u"No se pudo preparar la consulta para recuperar la información de la sesión" )
+                raise Exception( u"No se pudo preparar la consulta para "\
+                                 + "recuperar la información de la sesión" )
             if not query.exec_():
-                raise Exception( u"No se pudo ejecutar la consulta para recuperar la información de la sesión" )
+                raise Exception( u"No se pudo ejecutar la consulta para"\
+                                 + " recuperar la información de la sesión" )
 
             # Si existe al menos una sesion abierta no muestra el dialogo de iniciar caja
             if query.size() > 0:
-                reply = QMessageBox.question( None, 'Abrir Caja', u"Usted tiene una sesión de caja abierta. Desea continuar?", QMessageBox.Yes, QMessageBox.No )
+                reply = QMessageBox.question( self,
+                                              qApp.organizationName(),
+                                              u"Usted tiene una sesión de caja"\
+                                              + " abierta. Desea continuar?",
+                                              QMessageBox.Yes, QMessageBox.No )
                 if reply == QMessageBox.Yes:
 
                     query.first()
@@ -160,8 +167,14 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
                         self.status = estado
                         logging.info( u"El usuario %s ha continuado una sesión de caja" % self.user.user )
                     else:
-                        QMessageBox.critical( None, u"La sesión no fue abierta", u"No fue posible abrir la sesión anterior. Por favor contacte al administrador del sistema" )
-                        logging.error( u"No se pudo continuar con la sesión de caja del usuario %s " )
+                        QMessageBox.critical( self,
+                                               qApp.organizationName(),
+                                                u"No fue posible abrir la "\
+                                                + "sesión anterior. Por favor"\
+                                                + " contacte al administrador"\
+                                                + " del sistema" )
+                        logging.error( u"No se pudo continuar con la sesión"\
+                                       + " de caja del usuario" )
             else:
                 apertura = DlgApertura( self )
                 if apertura.exec_() == QDialog.Accepted:

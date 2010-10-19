@@ -2,11 +2,12 @@
 u"""
 Modulo utilizado para manejar la configuración de la base de datos
 """
+from PyQt4.QtCore import QSettings
+from PyQt4.QtGui import QDialog, QFormLayout, QVBoxLayout, QLineEdit, \
+    QDialogButtonBox
 from PyQt4.QtSql import QSqlDatabase
-from PyQt4.QtGui import QDialog, QFormLayout, QVBoxLayout, QLineEdit, QDialogButtonBox
-from PyQt4.QtCore import  QSettings
-
 import reports
+
 
 class dlgDatabaseConfig( QDialog ):
     u"""

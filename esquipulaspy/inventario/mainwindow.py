@@ -157,7 +157,10 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         """
         Slot documentation goes here.
         """
-        kardex = FrmKardex( [7, 10, 21], self )
+        kardex = FrmKardex( [constantes.IDLIQUIDACION,
+                             constantes.IDNC,
+                             constantes.IDANULACION,
+                              constantes.IDENTRADALOCAL], self )
         self.mdiArea.addSubWindow( kardex )
         kardex.show()
 

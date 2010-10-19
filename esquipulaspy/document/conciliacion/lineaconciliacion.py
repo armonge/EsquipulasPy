@@ -7,7 +7,7 @@ Created on 04/07/2010
 from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery
 #FIXME: para que sirve parent aca???
-class LineaConciliacion:
+class LineaConciliacion( object ):
     def __init__( self, parent ):
         self.idDoc = 0
         self.fecha = ""
@@ -20,13 +20,12 @@ class LineaConciliacion:
         self.concepto2 = ""
         self.datos = None
 
-#TODO: Esto estamos seguros que es asi???
     @property
     def valid( self ):
         """
         @rtype: bool
         """
-        if self.idDoc != 0 or self.datos != None:
+        if self.idDoc != 0 or self.datos is not None:
             return True
         return False
 

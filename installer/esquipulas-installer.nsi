@@ -7,7 +7,7 @@ Name Esquipulas
 !define REGKEY "SOFTWARE\$(^Name)"
 !define VERSION 1.0
 !define COMPANY "Cusuco Soft"
-!define URL ""
+!define URL "http://misesquipulas.sourceforge.net/"
 
 # MultiUser Symbol Definitions
 !define MULTIUSER_EXECUTIONLEVEL Highest
