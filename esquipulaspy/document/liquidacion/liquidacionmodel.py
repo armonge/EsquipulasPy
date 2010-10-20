@@ -231,15 +231,13 @@ class LiquidacionModel( DocumentBase ):
         return self.__iva_rate if self.applyIVA  else Decimal( 0 )
     ivaRate = property( _get_iva_rate, _set_iva_rate )
 
-    def _set_apply_iva( self, applyIVA ):
-        self.__apply_iva = applyIVA
-    def _get_apply_iva( self ):
+    @property
+    def applyIVA( self ):
         """
         Si se deberia o no aplicar iva en esta liquidación
         @rtype: bool
         """
-        return self.__apply_iva if self.applyTaxes else False
-    applyIVA = property( _get_apply_iva, _set_apply_iva )
+        return self.warehouseId == 1 and self.applyTaxes
 
     @property
     def valid( self ):

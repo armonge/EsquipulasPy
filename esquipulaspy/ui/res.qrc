@@ -1,8 +1,9 @@
 <RCC>
   <qresource prefix="icons">
+    <file>res/view-list-details.png</file>
     <file>res/pays.png</file>
-    <file>res/taxes-finances.png</file>
     <file>res/okteta.png</file>
+    <file>res/taxes-finances.png</file>
     <file>res/view-bank-account.png</file>
     <file>res/utilities-desktop-extra.png</file>
     <file>res/arrow-left.png</file>

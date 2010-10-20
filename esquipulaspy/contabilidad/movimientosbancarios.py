@@ -23,20 +23,19 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
 
     def __init__( self, parent ):
 
-        self.iniciarClase( parent )
-        self.iniciarInterfaz()
+        self._iniciarClase( parent )
+        self._iniciarInterfaz()
 
         #Carga los modelos de forma paralela a la ejecucion del sistema
         QTimer.singleShot( 0, self.loadModels )
 
-    def iniciarClase( self, parent ):
+    def _iniciarClase( self, parent ):
         """
         Ejecuta constructores de las clases e inicializa variables
         """
         super( FrmMovimientosBancarios, self ).__init__( parent )
         self.setupUi( self )
         self.parentWindow = parent
-        Base.__init__( self )
 
 
         self.navmodel = None
@@ -67,7 +66,7 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         # Establece el estado actual en Modo Lectura(True)
         self.__status = True
 
-    def iniciarInterfaz( self ):
+    def _iniciarInterfaz( self ):
         """
         Realiza Cambios iniciales al formulario
         """

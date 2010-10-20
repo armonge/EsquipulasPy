@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/mainwindowinventario.ui'
 #
-# Created: Sun Oct 17 22:55:53 2010
-#      by: PyQt4 UI code generator 4.7.7
+# Created by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -73,7 +72,7 @@ class Ui_MainWindow(object):
         font.setBold(True)
         self.btnLiquidations.setFont(font)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/images/res/simbolo-dolar-300x245.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/res/taxes-finances.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnLiquidations.setIcon(icon1)
         self.btnLiquidations.setIconSize(QtCore.QSize(64, 64))
         self.btnLiquidations.setFlat(False)
@@ -99,7 +98,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.btnEntries)
         self.toolBox.addItem(self.page_2, _fromUtf8(""))
         self.widget = QtGui.QWidget()
-        self.widget.setGeometry(QtCore.QRect(0, 0, 135, 226))
+        self.widget.setGeometry(QtCore.QRect(0, 0, 214, 532))
         self.widget.setObjectName(_fromUtf8("widget"))
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.widget)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
@@ -150,7 +149,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.addWidget(self.btnKOther)
         self.toolBox.addItem(self.widget, _fromUtf8(""))
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 177, 300))
+        self.page.setGeometry(QtCore.QRect(0, 0, 214, 532))
         self.page.setObjectName(_fromUtf8("page"))
         self.gridLayout_2 = QtGui.QGridLayout(self.page)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))

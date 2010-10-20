@@ -3,27 +3,25 @@
 """
 Module implementing frmLiquidacion.
 """
+from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer, QSettings, \
+    QAbstractTableModel, QModelIndex
+from PyQt4.QtGui import QAbstractItemView, QSortFilterProxyModel, \
+    QDataWidgetMapper, QTableView, QMessageBox, QPrinter, qApp, QIcon
+from PyQt4.QtSql import QSqlQuery, QSqlQueryModel
 from decimal import Decimal
+from document.liquidacion import LiquidacionModel, LiquidacionAccountsModel, \
+    LiquidacionDelegate
+from ui.Ui_liquidacion import Ui_FrmLiquidacion
+from utility import constantes, movimientos
+from utility.accountselector import AccountsSelectorDelegate, \
+    AccountsSelectorLine
+from utility.base import Base
+from utility.decorators import if_edit_model
+from utility.moneyfmt import moneyfmt
 import logging
 
-from PyQt4.QtGui import  QAbstractItemView, \
-QSortFilterProxyModel, QDataWidgetMapper, QTableView, QMessageBox, \
-QPrinter, qApp
-from PyQt4.QtCore import pyqtSlot, QDateTime, Qt, QTimer, QSettings, \
-QAbstractTableModel, QModelIndex
-from PyQt4.QtSql import  QSqlQuery, QSqlQueryModel
-from ui.Ui_liquidacion import Ui_FrmLiquidacion
 
-from utility.moneyfmt import moneyfmt
-from utility import constantes
-from utility import movimientos
-from utility.base import Base
-from utility.accountselector import  AccountsSelectorDelegate, \
-AccountsSelectorLine
 
-from document.liquidacion import LiquidacionModel, LiquidacionAccountsModel, \
-LiquidacionDelegate
-from utility.decorators import if_edit_model
 #from document.liquidacion.liquidaciondelegate import LiquidacionDelegate
 
 
@@ -61,11 +59,10 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
 
 
-        self.xdockWidget.setCollapsed( True )
         self.status = 1
 
-
-        self.xdockWidget.setVisible( False )
+        if self.tabWidget.currentIndex() == 1:
+            self.xdockWidget.setVisible( False )
 
 #        El modelo principal
         self.navmodel = LiquidacionNavModel( self )
@@ -92,6 +89,22 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
         #inicializando el documento
         self.editmodel = None
+        """
+        @ivar: El modelo de edición
+        @type: LiquidacionModel
+        """
+
+        self.editdelegate = None
+        """
+        @ivar: El delegado usado en la tabla de detalles
+        @type: LiquidacionDelegate
+        """
+
+        self.accountseditdelegate = None
+        """
+        @ivar: El delegado para la edición de las cuentas contables
+        @type: AccountsSelectorDelegate
+        """
 
 
         self.tabledetails.setOrder( 1, 3 )
@@ -99,6 +112,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         QTimer.singleShot( 0, self.loadModels )
 
     def updateDetailFilter( self, index ):
+
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
         self.detailsproxymodel.setFilterRegExp( "^%d$" % self.navmodel.record( 
                                         index ).value( IDDOCUMENTO ).toInt()[0] )
@@ -119,13 +133,15 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         self.ckTaxes.setChecked( True if self.navmodel.record( 
                                          index ).value( EXONERADO ).toDouble()[0] != 0 else False )
 
-        estado = self.navmodel.record( index ).value( "estado" ).toInt()[0]
-        if estado == constantes.INCOMPLETO:
-            if self.user.hasRole( 'contabilidad' ):
-                self.actionEditAccounts.setVisible( True )
-        else:
-            self.actionEditAccounts.setVisible( False )
 
+
+
+        if self.user.hasRole( 'contabilidad' ):
+            estado = self.navmodel.record( index ).value( ESTADO ).toInt()[0]
+            if estado == constantes.INCOMPLETO:
+                self.actionEditAccounts.setVisible( True )
+            else:
+                self.actionEditAccounts.setVisible( False )
 
 
     def setControls( self, status ):
@@ -151,8 +167,8 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         self.tablenavigation.setEnabled( status == 1 )
 
 
-        self.swProvider.setCurrentIndex( 0 if status == 1 or status == 3 else 1 )
-        self.swWarehouse.setCurrentIndex( 1 if status == 1 or status == 3 else 0 )
+        self.swProvider.setCurrentIndex( 0 if status in ( 1, 3 ) else 1 )
+        self.swWarehouse.setCurrentIndex( 1 if status in ( 1, 3 ) else 0 )
 
 
         self.dtPicker.setReadOnly( status != 2 )
@@ -255,7 +271,10 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
             for x in range( self.tabletotals.model().columnCount() ):
                 self.tabletotals.setColumnHidden( x, False )
-            self.actionEditAccounts.setVisible( False )
+
+            if self.user.hasRole( "contabilidad" ):
+                self.actionEditAccounts.setVisible( False )
+
         elif status == 3:
             self.tabTotalsAccounts.setCurrentIndex( 0 )
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
@@ -404,7 +423,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
     @property
     def printIdentifier( self ):
-        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
+        return self.navmodel.record( self.mapper.currentIndex() ).value( IDDOCUMENTO ).toString()
 
 
     def newDocument( self ):
@@ -415,12 +434,14 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
+                    raise UserWarning( u"No se pudo establecer una conexión "\
+                                       + "con la base de datos" )
 
             query.prepare( "SELECT idtc FROM tiposcambio LIMIT 1" )
             query.exec_()
             if not query.first():
-                raise UserWarning( u"No existen tipos de cambio en la base de datos" )
+                raise UserWarning( u"No existen tipos de cambio en "\
+                                   + "la base de datos" )
 
             self.editmodel = LiquidacionModel( self.user.uid )
             self.editmodel.applyISO = self.ckISO.isChecked()
@@ -435,11 +456,16 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             LEFT JOIN tsim t on c.idcostoagregado=t.idtsim 
             WHERE activo=1 AND idtipocosto IN (%d,%d,%d,%d)
             LIMIT 4
-            """ % ( constantes.IVA, constantes.SPE, constantes.TSIM, constantes.ISO ) )
+            """ % ( constantes.IVA,
+                    constantes.SPE,
+                    constantes.TSIM,
+                    constantes.ISO ) )
             if not query.exec_():
-                raise UserWarning( "No se pudo ejecutar la consulta para obtener los valores de los impuestos" )
+                raise UserWarning( "No se pudo ejecutar la consulta para "\
+                                   + "obtener los valores de los impuestos" )
             elif not query.size() == 4:
-                raise UserWarning( "No se pudieron obtener los valores de los impuestos" )
+                raise UserWarning( "No se pudieron obtener los valores "\
+                                   + "de los impuestos" )
 #TODO: Deberian acaso los valores de iva, spe, tsim, iso cambiar cuando cambie la fecha???            
             while query.next():
                 if query.value( 3 ).toInt()[0] == 1: #IVA
@@ -482,8 +508,9 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             self.updateArticleList( query )
             if self.editdelegate.prods.rowCount() == 0:
                 raise UserWarning( u"El sistema no tiene registrado ningún "\
-                                   + "tipo de articulo, por favor añada "\
-                                   + "articulos antes de hacer una liquidación" )
+                                   + u"tipo de articulo, por favor añada "\
+                                   + "articulos antes de hacer una "\
+                                   + u"liquidación" )
 
 
 
@@ -500,11 +527,12 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
 
 
-            self.accountseditdelegate = AccountsSelectorDelegate( QSqlQuery( """
-            SELECT c.idcuenta, c.codigo, c.descripcion 
-            FROM cuentascontables c 
-            JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
-            WHERE c.padre != 1 AND c.idcuenta != %s
+            self.accountseditdelegate = AccountsSelectorDelegate( 
+            QSqlQuery( """
+                SELECT c.idcuenta, c.codigo, c.descripcion 
+                FROM cuentascontables c 
+                JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
+                WHERE c.padre != 1 AND c.idcuenta != %s
             """ % movimientos.INVENTARIO ), True )
 
             self.dtPicker.setDateTime( QDateTime.currentDateTime() )
@@ -529,7 +557,8 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             logging.error( inst )
         except Exception as inst:
             QMessageBox.critical( self, qApp.organizationName(),
-                                  u"Hubo un error al intentar iniciar una nueva liquidación" )
+                                  u"Hubo un error al intentar iniciar "\
+                                  + u"una nueva liquidación" )
             self.status = 1
             logging.critical( inst )
         finally:
@@ -671,8 +700,6 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
     @if_edit_model
     def on_cbWarehouse_currentIndexChanged( self, index ):
         self.editmodel.warehouseId = self.cbWarehouse.model().index( index, 0 ).data().toInt()[0]
-        #el iva solo se aplica cuando la bodega es 1
-        self.editmodel.applyIVA = True if self.editmodel.warehouseId == 1 else False
         self.editmodel.reset()
 
     @pyqtSlot( int )
@@ -841,6 +868,9 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         Editar las cuentas contables
         """
         try:
+            if not self.user.hasRole( "contabilidad" ):
+                raise UserWarning( "Usted no tiene permisos para editar "\
+                                  + "cuentas contables" )
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( u"No se pudo abrir la conexión con la base de datos" )
@@ -892,10 +922,6 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             self.status = 1
 
     def addActionsToToolBar( self ):
-        self.actionEditAccounts = self.createAction( 
-                 text = "Editar cuentas contables",
-                 icon = ":/icons/res/view-bank-account.png",
-                 slot = self.editAccounts )
         self.actionUpdateArticles = self.createAction( 
                 text = "Actualizar lista de articulos",
                 icon = ":/icons/res/view-refresh.png",
@@ -903,7 +929,6 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
         self.toolBar.addActions( [
             self.actionNew,
-            self.actionEditAccounts,
             self.actionPreview,
             self.actionPrint,
             self.actionSave,
@@ -918,6 +943,21 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             self.actionGoNext,
             self.actionGoLast
         ] )
+        self.toolBar.addSeparator()
+
+        if self.user.hasRole( "contabilidad" ):
+            self.action_edit_accounts = self.createAction( 
+                 text = "Editar cuentas contables",
+                 icon = ":/icons/res/view-bank-account.png",
+                 slot = self.editAccounts )
+
+
+            self.toolBar.addActions( [
+                self.action_edit_accounts
+                                     ] )
+        action_toggle_details = self.xdockWidget.toggleViewAction()
+        action_toggle_details.setIcon( QIcon( ":/icons/res/view-list-details.png" ) )
+        self.toolBar.addAction( action_toggle_details )
 
 
 class LiquidacionNavModel( QSqlQueryModel ):

@@ -32,6 +32,7 @@ class TestLiquidacionSimple( unittest.TestCase ):
         self.liquidacion.ivaRate = Decimal( '15' )
         self.liquidacion.tsimRate = Decimal( '0.5' )
         self.liquidacion.weightFactor = 1000
+        self.liquidacion.warehouseId = 1
 
         self.liquidacion.insertRow( 0 )
 
@@ -59,9 +60,13 @@ class TestLiquidacionSimple( unittest.TestCase ):
 
     def test_iva( self ):
         self.assertEqual( self.liquidacion.ivaTotal, Decimal( '0.2772' ) )
+        self.liquidacion.warehouseId = 2
+        self.assertEqual( self.liquidacion.ivaTotal, Decimal( 0 ) )
 
     def test_taxes( self ):
         self.assertEqual( self.liquidacion.taxesTotal, Decimal( '6.4752' ) )
+        self.liquidacion.warehouseId = 2
+        self.assertEqual( self.liquidacion.taxesTotal, Decimal( ' 6.1980' ) )
 
     def test_speTotal( self ):
         self.assertEqual( self.liquidacion.speTotal, Decimal( '5' ) )

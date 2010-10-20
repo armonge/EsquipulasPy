@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/liquidacion.ui'
 #
-# Created: Sun Oct 17 22:52:58 2010
-#      by: PyQt4 UI code generator 4.7.7
+# Created by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -319,7 +318,7 @@ class Ui_FrmLiquidacion(object):
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.xdockWidget.sizePolicy().hasHeightForWidth())
         self.xdockWidget.setSizePolicy(sizePolicy)
-        self.xdockWidget.setFeatures(QtGui.QDockWidget.DockWidgetFloatable|QtGui.QDockWidget.DockWidgetMovable)
+        self.xdockWidget.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.xdockWidget.setAllowedAreas(QtCore.Qt.BottomDockWidgetArea|QtCore.Qt.TopDockWidgetArea)
         self.xdockWidget.setObjectName(_fromUtf8("xdockWidget"))
         self.dockWidgetContents = QtGui.QWidget()
