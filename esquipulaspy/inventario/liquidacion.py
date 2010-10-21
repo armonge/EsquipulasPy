@@ -139,9 +139,9 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         if self.user.hasRole( 'contabilidad' ):
             estado = self.navmodel.record( index ).value( ESTADO ).toInt()[0]
             if estado == constantes.INCOMPLETO:
-                self.actionEditAccounts.setVisible( True )
+                self.action_edit_accounts.setVisible( True )
             else:
-                self.actionEditAccounts.setVisible( False )
+                self.action_edit_accounts.setVisible( False )
 
 
     def setControls( self, status ):
@@ -273,12 +273,13 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                 self.tabletotals.setColumnHidden( x, False )
 
             if self.user.hasRole( "contabilidad" ):
-                self.actionEditAccounts.setVisible( False )
+                self.action_edit_accounts.setVisible( False )
 
         elif status == 3:
             self.tabTotalsAccounts.setCurrentIndex( 0 )
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
-            self.actionEditAccounts.setVisible( False )
+            if self.user.hasRole( "contabilidad" ):
+                self.action_edit_accounts.setVisible( False )
 
 
 

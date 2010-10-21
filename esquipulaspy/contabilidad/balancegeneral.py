@@ -4,16 +4,17 @@ Created on 15/07/2010
 
 @author: Luis Carlos Mejia
 '''
-from decimal import Decimal
-
+from PyQt4.QtCore import QDate, pyqtSlot, QAbstractItemModel, QModelIndex, Qt, \
+    QDateTime
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QPrinter
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel
-from PyQt4.QtCore import QDate, pyqtSlot, QAbstractItemModel, QModelIndex, Qt
-
+from decimal import Decimal
 from ui.Ui_balancegeneral import Ui_frmBalanceGeneral
-
 from utility.moneyfmt import moneyfmt
 from utility.reports import frmReportes
+
+
+
 
 CODIGO, DESCRIPCION, ESDEBE, HIJOS, MONTO, PADRE, \
 IDCUENTA, ACUMULADO = range( 8 )
@@ -30,15 +31,16 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
         """
         super( FrmBalanceGeneral, self ).__init__( parent )
         self.setupUi( self )
-#        self.dtPicker.setCalendarPopup(True)
-        self.dtPicker.setMaximumDate( QDate.currentDate() )
-        self.dtPicker.setDate( QDate.currentDate() )
+
 
         self.user = user
         self.pasivofiltermodel = QSortFilterProxyModel()
         self.model = CuentasModel( self.dtPicker.date() )
         self.activofiltermodel = QSortFilterProxyModel()
         self.capitalfiltermodel = QSortFilterProxyModel()
+
+        self.dtPicker.setMaximumDate( QDate.currentDate() )
+        self.dtPicker.setDate( QDate.currentDate() )
 
     def updateModel( self ):
         try:
@@ -118,7 +120,7 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
 
-    @pyqtSlot( "QDateTime" )
+    @pyqtSlot( QDateTime )
     def on_dtPicker_dateTimeChanged( self, _datetime ):
         """
         Asignar la fecha al objeto __document
@@ -129,7 +131,9 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
     def on_actionPreview_activated( self ):
         printer = QPrinter()
         printer.setPageSize( QPrinter.Letter )
-        web = "balancegeneral.php?date=%d+%d" % ( self.dtPicker.date().month() , self.dtPicker.date().year() )
+        web = "balancegeneral.php?date=%d+%d" % ( 
+                                                 self.dtPicker.date().month() ,
+                                                 self.dtPicker.date().year() )
         report = frmReportes( web , printer, self )
         report.exec_()
 

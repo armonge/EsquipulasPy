@@ -4,25 +4,30 @@ Created on 03/07/2010
 
 @author: MARCOS
 '''
-from decimal import Decimal, InvalidOperation
-import logging
-
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import pyqtSlot, pyqtSignature, Qt, QDateTime, QTimer, QDate
-from PyQt4.QtGui import  QSortFilterProxyModel, QMessageBox, QCompleter, QDataWidgetMapper, QStyledItemDelegate, QDoubleSpinBox, qApp, QDialog
-
+from PyQt4.QtCore import pyqtSlot, Qt, QDateTime, QTimer, QDate
+from PyQt4.QtGui import QSortFilterProxyModel, QMessageBox, QCompleter, \
+    QDataWidgetMapper, QStyledItemDelegate, QDoubleSpinBox, qApp, QDialog
+from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
+from decimal import Decimal, InvalidOperation
+from document.cheque.chequemodel import ChequeModel
 from ui.Ui_cheques import Ui_frmCheques
-
+from utility import constantes
+from utility.accountselector import AccountsSelectorDelegate, \
+    AccountsSelectorLine
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
-from utility.accountselector import  AccountsSelectorDelegate, AccountsSelectorLine
-from utility import constantes
 from utility.widgets.searchpanel import SearchPanel
+import logging
+from utility.decorators import if_edit_model
 
-from document.cheque.chequemodel import ChequeModel
 
-IDDOCUMENTO, NCHEQUE, CUENTABANCARIA, NOMBRE, FECHA, CONCEPTO, TOTAL, SUBTOTAL, IVA, TOTALRET, TIPOCAMBIO, TASARETENCION, ESTADO, IDESTADO, TOTALCHEQUE = range( 15 )
+
+
+
+IDDOCUMENTO, NCHEQUE, CUENTABANCARIA, NOMBRE, FECHA, CONCEPTO, \
+TOTAL, SUBTOTAL, IVA, TOTALRET, TIPOCAMBIO, TASARETENCION, \
+ESTADO, IDESTADO, TOTALCHEQUE = range( 15 )
 #accounts model
 IDDOC, IDCUENTA, CODIGO, DESCRIPCION, MONTO = range( 5 )
 class FrmCheques( Ui_frmCheques, Base ):
@@ -61,16 +66,20 @@ class FrmCheques( Ui_frmCheques, Base ):
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     def updateDetailFilter( self, index ):
+        record = self.navmodel.record( index )
         self.accountsProxyModel.setFilterKeyColumn( IDDOCUMENTO )
-        self.accountsProxyModel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
+        self.accountsProxyModel.setFilterRegExp( record.value( "iddocumento" ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
-        self.actionAnular.setEnabled( self.navmodel.record( index ).value( "idestado" ).toInt()[0] == constantes.CONFIRMADO )
+        self.actionAnular.setEnabled( record.value( "idestado" ).toInt()[0] == constantes.CONFIRMADO )
+
     def updateModels( self ):
     #inicializando el documento
     #El modelo principal
     #FIXME Revisar escape del %
+    #TODO:REVISAR BIEN
 
-        self.navmodel.setQuery( u"""SELECT padre.iddocumento,
+        self.navmodel.setQuery( u"""
+        SELECT padre.iddocumento,
             padre.ndocimpreso as 'No. Cheque',
             cb.descripcion as 'Cuenta Bancaria',
             p.nombre as Cliente,
@@ -112,7 +121,8 @@ class FrmCheques( Ui_frmCheques, Base ):
             ORDER BY CAST(IF(padre.ndocimpreso="S/N",0, padre.ndocimpreso )AS SIGNED)
 
 
-        """ % ( constantes.IDCHEQUE, constantes.PROVEEDOR ) )
+        """ % ( constantes.IDCHEQUE,
+                constantes.PROVEEDOR ) )
 #        El modelo que filtra a self.navmodel
 
 
@@ -168,7 +178,9 @@ class FrmCheques( Ui_frmCheques, Base ):
 
         self.tablenavigation.resizeColumnsToContents()
     def addActionsToToolBar( self ):
-        self.actionAnular = self.createAction( text = "Anular", icon = ":/icons/res/edit-delete.png", slot = self.anular )
+        self.actionAnular = self.createAction( text = "Anular",
+                                               icon = ":/icons/res/edit-delete.png",
+                                               slot = self.anular )
 
         self.toolBar.addActions( [
             self.actionNew,
@@ -220,81 +232,83 @@ class FrmCheques( Ui_frmCheques, Base ):
             self.txtobservaciones.setPlainText( "" )
             self.editmodel.uid = self.user.uid
 
-    @pyqtSignature( "bool" )
+    @pyqtSlot( bool )
+    @if_edit_model
     def on_ckretencion_toggled( self, on ):
         """
         """
-        if not self.editmodel is None:
 
-            if on :
-                self.retencionwidget.setCurrentIndex( 1 )
-                self.editmodel.hasretencion = True
-            else:
-                self.retencionwidget.setCurrentIndex( 0 )
-                self.cboretencion.setCurrentIndex( -1 )
-                self.editmodel.hasretencion = False
-            #self.cboretencion.    
+        if on :
+            self.retencionwidget.setCurrentIndex( 1 )
+            self.editmodel.hasretencion = True
+        else:
+            self.retencionwidget.setCurrentIndex( 0 )
+            self.cboretencion.setCurrentIndex( -1 )
+            self.editmodel.hasretencion = False
+        #self.cboretencion.    
 
-    @pyqtSignature( "bool" )
+    @pyqtSlot( bool )
+    @if_edit_model
     def on_ckIva_toggled( self, on ):
         """
         """
-        if not self.editmodel is None:
-            #Verificar IVA    
-            query = QSqlQuery( """
-                    SELECT idcostoagregado, valorcosto 
-                    FROM costosagregados c 
-                    WHERE idtipocosto = 1 AND activo = 1 
-                    ORDER BY idtipocosto;
-                    """ )
-            query.exec_()
-            if not query.size() == 1:
-                QMessageBox.information( None, "Cheques", "No fue posible obtener el porcentaje del IVA" )
-            if on :
-                self.editmodel.hasiva = True
-                query.first()
-                self.editmodel.ivaId = query.value( 0 ).toInt()[0]
+        #Verificar IVA    
+        query = QSqlQuery( """
+                SELECT idcostoagregado, valorcosto 
+                FROM costosagregados c 
+                WHERE idtipocosto = 1 AND activo = 1 
+                ORDER BY idtipocosto;
+                """ )
+        query.exec_()
+        if not query.size() == 1:
+            QMessageBox.information( self,
+                                     qApp.organizationName(),
+                                     "No fue posible obtener el porcentaje del IVA" )
+        if on :
+            self.editmodel.hasiva = True
+            query.first()
+            self.editmodel.ivaId = query.value( 0 ).toInt()[0]
 
-            else:
-                self.editmodel.hasiva = False
+        else:
+            self.editmodel.hasiva = False
 
-            self.updateTotals()
+        self.updateTotals()
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cboconcepto_currentIndexChanged( self, index ):
-        if not self.editmodel is None:
-            self.editmodel.conceptoId = self.conceptosmodel.record( index ).value( "idconcepto" ).toInt()[0]
+        self.editmodel.conceptoId = self.conceptosmodel.record( index ).value( "idconcepto" ).toInt()[0]
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbocuenta_currentIndexChanged( self, index ):
         try:
-            if not self.editmodel is None:
-                if not QSqlDatabase.database().isOpen():
-                    if not QSqlDatabase.database().open():
-                        raise UserWarning( "Hubo un error al conectarse con la base de datos" )
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning( "Hubo un error al conectarse con la base de datos" )
 
-                self.editmodel.setData( self.editmodel.index( 0, 2 ),
-                                [self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0],
-                                 self.cuentabancaria.record( index ).value( "codigo" ).toString(),
-                                 self.cuentabancaria.record( index ).value( "descripcion" ).toString()] )
-                self.accountseditdelegate.accounts.setFilterRegExp( "[^%d]" % self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0] )
+            self.editmodel.setData( self.editmodel.index( 0, 2 ),
+                            [self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0],
+                             self.cuentabancaria.record( index ).value( "codigo" ).toString(),
+                             self.cuentabancaria.record( index ).value( "descripcion" ).toString()] )
+            self.accountseditdelegate.accounts.setFilterRegExp( "[^%d]" % self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0] )
 
-                self.editmodel.moneda = self.cuentabancaria.record( index ).value( "IDMONEDA" ).toInt()[0]
-                self.editmodel.simbolo = self.cuentabancaria.record( index ).value( "simbolo" ).toString()
-                # Cargar el numero del cheque actual
-                if index > -1:
-                    query = QSqlQuery( """
-                    CALL spConsecutivo(12,""" + self.cuentabancaria.record( index ).value( "idcuentacontable" ).toString() + ")" )
-                    if not query.exec_():
-                        raise UserWarning( "No se pudo obtener el numero consecutivo del cheque" )
-                    query.first()
-                    n = query.value( 0 ).toString()
+            self.editmodel.moneda = self.cuentabancaria.record( index ).value( "IDMONEDA" ).toInt()[0]
+            self.editmodel.simbolo = self.cuentabancaria.record( index ).value( "simbolo" ).toString()
+            # Cargar el numero del cheque actual
+            if index > -1:
+                query = QSqlQuery( """
+                CALL spConsecutivo(12,""" + self.cuentabancaria.record( index ).value( "idcuentacontable" ).toString() + ")" )
+                if not query.exec_():
+                    raise UserWarning( "No se pudo obtener el numero consecutivo del cheque" )
+                query.first()
+                n = query.value( 0 ).toString()
 
-                    self.lblncheque.setText( n )
-                    self.editmodel.printedDocumentNumber = n
+                self.lblncheque.setText( n )
+                self.editmodel.printedDocumentNumber = n
 
-                    self.editmodel.setData( self.editmodel.index( 0, 3 ), self.editmodel.totalCordobas )
-                    self.updateTotals()
+                self.editmodel.setData( self.editmodel.index( 0, 3 ), self.editmodel.totalCordobas )
+                self.updateTotals()
 
         except UserWarning as inst:
             logging.error( inst )
@@ -302,22 +316,22 @@ class FrmCheques( Ui_frmCheques, Base ):
         except Exception as inst:
             logging.critical( inst )
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cboretencion_currentIndexChanged( self, index ):
-        if not self.editmodel is None:
-            self.editmodel.retencionId = self.retencionModel.record( index ).value( "idcostoagregado" ).toInt()[0]
-            self.editmodel.retencionPorcentaje = Decimal( self.cboretencion.currentText() ) if self.cboretencion.currentText() != "" else 0
-            self.updateTotals()
+        self.editmodel.retencionId = self.retencionModel.record( index ).value( "idcostoagregado" ).toInt()[0]
+        self.editmodel.retencionPorcentaje = Decimal( self.cboretencion.currentText() ) if self.cboretencion.currentText() != "" else 0
+        self.updateTotals()
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
+    @if_edit_model
     def on_cbobeneficiario_currentIndexChanged( self, index ):
-        if not self.editmodel is None:
-            self.editmodel.proveedorId = self.proveedoresmodel.record( index ).value( "idpersona" ).toInt()[0]
+        self.editmodel.proveedorId = self.proveedoresmodel.record( index ).value( "idpersona" ).toInt()[0]
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
+    @if_edit_model
     def on_subtotal_valueChanged( self, _index ):
-        if not self.editmodel is None:
-            self.updateTotals()
+        self.updateTotals()
 
 
     def updateTotals( self ):
@@ -372,8 +386,8 @@ class FrmCheques( Ui_frmCheques, Base ):
         self.tabWidget.setCurrentIndex( 0 )
         query = QSqlQuery()
         try:
-            if not QSqlDatabase.database().isOpen():
-                if not QSqlDatabase.database().open():
+            if not self.database.isOpen():
+                if not self.database.open():
                     raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
 
             #Crea modelo para edicion            
@@ -397,7 +411,8 @@ class FrmCheques( Ui_frmCheques, Base ):
 
 
     #        Crea un edit delegate para las cuentas
-            self.accountseditdelegate = ChequesFiltroDelegate( QSqlQuery( """SELECT c.idcuenta, c.codigo, c.descripcion 
+            self.accountseditdelegate = ChequesFiltroDelegate( QSqlQuery( """
+            SELECT c.idcuenta, c.codigo, c.descripcion 
             FROM cuentascontables c 
             JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
             WHERE c.padre != 1 AND c.idcuenta != 22
@@ -416,7 +431,8 @@ class FrmCheques( Ui_frmCheques, Base ):
                     WHERE idtipocosto IN (%d,%d) AND 
                     activo=1 
                     ORDER BY valorcosto desc; 
-                    """ % ( constantes.RETENCIONPROFESIONALES, constantes.RETENCIONFUENTE ) )
+                    """ % ( constantes.RETENCIONPROFESIONALES,
+                            constantes.RETENCIONFUENTE ) )
 
             self.cboretencion.setModel( self.retencionModel )
             self.cboretencion.setCurrentIndex( -1 )
@@ -453,7 +469,8 @@ class FrmCheques( Ui_frmCheques, Base ):
     #       Rellenar el combobox de los conceptos
             self.conceptosmodel = QSqlQueryModel()
             self.conceptosmodel.setQuery( """
-              SELECT idconcepto,descripcion FROM conceptos c;
+              SELECT idconcepto,descripcion 
+              FROM conceptos c;
             """ )
             self.cboconcepto.setModel( self.conceptosmodel )
             self.cboconcepto.setCurrentIndex( -1 )
@@ -508,19 +525,23 @@ class FrmCheques( Ui_frmCheques, Base ):
             self.status = False
         except UserWarning as inst:
             logging.error( unicode( inst ) )
-            QMessageBox.warning( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.warning( self,
+                                 qApp.organizationName(),
+                                 unicode( inst ) )
             self.status = True
         except Exception as inst:
-            QMessageBox.warning( self, qApp.organizationName(), u"No se pudo iniciar la creación del nuevo cheque" )
+            QMessageBox.warning( self,
+                                 qApp.organizationName(),
+                                 u"No se pudo iniciar la creación del nuevo cheque" )
             logging.critical( unicode( inst ) )
             self.status = True
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+            if self.database.isOpen():
+                self.database.close()
 
 
 
-    @pyqtSlot( "QDateTime" )
+    @pyqtSlot( QDateTime )
     def on_dtPicker_dateTimeChanged( self, datetime ):
         """
         Asignar la fecha al objeto __document
@@ -536,31 +557,44 @@ class FrmCheques( Ui_frmCheques, Base ):
         estado = self.navmodel.record( self.mapper.currentIndex() ).value( "idestado" ).toInt()[0]
         total = Decimal( self.navmodel.record( self.mapper.currentIndex() ).value( "TotalCheque" ).toString() )
         try:
-            if not QSqlDatabase.database().isOpen():
-                if not QSqlDatabase.database().open():
+            if not self.database.isOpen():
+                if not self.database.open():
                     raise Exception( "NO se pudo abrir la Base de datos" )
 
             if estado == 3:
-                if QMessageBox.question( self, "Anular Cheque", u"Este cheque no ha sido confirmado, ¿Desea eliminarlo?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+                if QMessageBox.question( self,
+                                         qApp.organizationName(),
+                                         u"Este cheque no ha sido confirmado, ¿Desea eliminarlo?",
+                                          QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
                     query = QSqlQuery()
-                    query.prepare( "CALL `esquipulasdb`.`spEliminarCheque`(:doc)" )
+                    query.prepare( "CALL spEliminarCheque(:doc)" )
                     query.bindValue( ":doc", doc )
                     if not query.exec_():
                         raise Exception( "No se pudo eliminar el Cheque" )
 
-                    QMessageBox.information( None, "Anular Cheque", "El cheque fue eliminado correctamente" )
+                    QMessageBox.information( self,
+                                             qApp.organizationName(),
+                                             "El cheque fue eliminado correctamente" )
                     self.updateModels()
             else:
 
-                if QMessageBox.question( self, qApp.organizationName(), u"¿Esta seguro que desea anular el cheque?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+                if QMessageBox.question( self,
+                                         qApp.organizationName(),
+                                         u"¿Esta seguro que desea anular el cheque?",
+                                         QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+
                     anulardialog = Anular( self.navmodel.record( self.mapper.currentIndex() ).value( "No. Cheque" ).toString() )
                     if anulardialog.conceptosmodel.rowCount() == 0:
-                        QMessageBox.warning( None, "Anular Cheque", u"No existen conceptos para la anulación" )
+                        QMessageBox.warning( self,
+                                             qApp.organizationName(),
+                                             u"No existen conceptos para la anulación" )
 
                     else:
                         if anulardialog.exec_() == QDialog.Accepted:
                             if anulardialog.cboConceptos.currentIndex() == -1 and anulardialog.txtObservaciones.toPlainText() == "":
-                                QMessageBox.critical( self, qApp.organizationName(), "No ingreso los datos correctos", QMessageBox.Ok )
+                                QMessageBox.critical( self,
+                                                      qApp.organizationName(),
+                                                      "No ingreso los datos correctos" )
                             else:
 
                                 query = QSqlQuery()
@@ -568,14 +602,18 @@ class FrmCheques( Ui_frmCheques, Base ):
                                     raise Exception( "No se pudo comenzar la transacción" )
 
                                 #Cambiar estado Anulado=1 para documento
-                                query.prepare( "UPDATE documentos d SET idestado=%d where iddocumento=%d LIMIT 1" % ( constantes.ANULACIONPENDIENTE, doc ) )
+                                query.prepare( "UPDATE documentos d SET idestado=%d WHERE iddocumento=%d LIMIT 1" % ( 
+                                                                                        constantes.ANULACIONPENDIENTE,
+                                                                                        doc ) )
                                 if not query.exec_():
                                     raise Exception( "No se logro cambiar el estado a el documento" )
 
                                 #Insertar documento anulacion
-                                if not query.prepare( """INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
+                                if not query.prepare( """
+                                INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
                                 VALUES(:ndocimpreso,:total,:fechacreacion,:idtipodoc,:observacion,:idestado)""" ):
                                     raise Exception( query.lastError().text() )
+
                                 query.bindValue( ":ndocimpreso", 'S/N' )
                                 query.bindValue( ":total", total.to_eng_string() )
                                 query.bindValue( ":fechacreacion", QDate.currentDate() )
@@ -613,7 +651,10 @@ class FrmCheques( Ui_frmCheques, Base ):
 
                                 if not self.database.commit():
                                     raise Exception( "NO se hizo el commit para la Anulacion" )
-                                QMessageBox.information( self, qApp.organizationName(), "Cheque anulada Correctamente", QMessageBox.Ok )
+                                QMessageBox.information( self,
+                                                         qApp.organizationName(),
+                                                         "Cheque anulada Correctamente",
+                                                         QMessageBox.Ok )
                                 self.updateModels()
 
         except Exception as inst:
@@ -622,8 +663,8 @@ class FrmCheques( Ui_frmCheques, Base ):
             logging.critical( query.lastError().text() )
             self.database.rollback()
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+            if self.database.isOpen():
+                self.database.close()
 
 
     def save( self ):
@@ -647,7 +688,11 @@ class FrmCheques( Ui_frmCheques, Base ):
         if Decimal( str( self.subtotal.value() ) ) > Decimal( totalcuenta ):
             QMessageBox.warning( self, qApp.organizationName(), "No existe suficiente saldo para crear el cheque" )
 
-        if QMessageBox.question( self, qApp.organizationName(), u"¿Esta seguro que desea guardar?", QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+        if QMessageBox.question( self,
+                                 qApp.organizationName(),
+                                 u"¿Esta seguro que desea guardar?",
+                                 QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+
             if self.editmodel.valid:
                 if self.editmodel.save():
                     QMessageBox.information( self,
@@ -664,9 +709,13 @@ class FrmCheques( Ui_frmCheques, Base ):
 
             else:
                 try:
-                    QMessageBox.warning( self, qApp.organizationName() , self.editmodel.validError )
+                    QMessageBox.warning( self,
+                                         qApp.organizationName() ,
+                                         self.editmodel.validError )
                 except AttributeError:
-                    QMessageBox.warning( self, qApp.organizationName() , u"El documento no puede guardarse ya que la información no esta completa" )
+                    QMessageBox.warning( self,
+                                         qApp.organizationName() ,
+                                         u"El documento no puede guardarse ya que la información no esta completa" )
 
 
 class ROAccountsModel( QSortFilterProxyModel ):
@@ -674,7 +723,8 @@ class ROAccountsModel( QSortFilterProxyModel ):
         super( QSortFilterProxyModel, self ).__init__()
     def data( self, index, role = Qt.DisplayRole ):
         """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
+        Esta funcion redefine data en la clase base, es
+        el metodo que se utiliza para mostrar los datos del modelo
         """
         value = QSortFilterProxyModel.data( self, index, role )
         if value.isValid() and role == Qt.DisplayRole:

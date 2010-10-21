@@ -13,6 +13,7 @@ import functools
 import logging
 import reports
 import user
+from utility.decorators import if_edit_model
 
 
 
@@ -136,60 +137,60 @@ class Base( QMainWindow ):
         self.tabledetails.edit( self.tabledetails.selectionModel().currentIndex() )
 
     @pyqtSlot( QDateTime )
+    @if_edit_model
     def on_dtPicker_dateTimeChanged( self, datetime ):
         """
         Cambiar el tipo de cambio del modelo de edición si cambia la fecha
         @param datetime: La fecha contenida en self.dtPicker
         @type datetime: QDateTime
         """
-        if not self.editmodel is None:
-            query = QSqlQuery()
-            try:
-                if not self.database.isOpen():
-                    if not self.database.open():
-                        raise Exception( "No se pudo conectar a la base de "\
-                                         + "datos para recuperar los tipos "\
-                                         + "de cambio" )
+        query = QSqlQuery()
+        try:
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise Exception( "No se pudo conectar a la base de "\
+                                     + "datos para recuperar los tipos "\
+                                     + "de cambio" )
 
-                q = """
-                    SELECT idtc, tasa
-                    FROM tiposcambio
-                    WHERE fecha = %s
-                    LIMIT 1
-                """ % datetime.toString( "yyyyMMdd" )
+            q = """
+                SELECT idtc, tasa
+                FROM tiposcambio
+                WHERE fecha = %s
+                LIMIT 1
+            """ % datetime.toString( "yyyyMMdd" )
 
 
-                if not query.exec_( q ):
+            if not query.exec_( q ):
 
-                    raise UserWarning( "No se pudieron recuperar los tipos de "\
-                                       + "cambio" )
-                if not query.size() == 1:
-                    logging.critical( u"La consulta para obtener tipos de "\
-                                      + "cambio no devolvio exactamente un valor" )
-                    raise UserWarning( u"Hubo un error al obtener los tipos "\
-                                       + "de cambio" )
+                raise UserWarning( "No se pudieron recuperar los tipos de "\
+                                   + "cambio" )
+            if not query.size() == 1:
+                logging.critical( u"La consulta para obtener tipos de "\
+                                  + "cambio no devolvio exactamente un valor" )
+                raise UserWarning( u"Hubo un error al obtener los tipos "\
+                                   + "de cambio" )
 
-                query.first()
-                self.editmodel.exchangeRateId = query.value( 0 ).toInt()[0]
-                self.editmodel.exchangeRate = Decimal( query.value( 1 ).toString() )
+            query.first()
+            self.editmodel.exchangeRateId = query.value( 0 ).toInt()[0]
+            self.editmodel.exchangeRate = Decimal( query.value( 1 ).toString() )
 
-                #self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.index( 0, 0 ).data() )
+            #self.editmodel.setData( self.editmodel.index( 0, 0 ), self.editmodel.index( 0, 0 ).data() )
 
-                self.editmodel.datetime = datetime
-            except UserWarning  as inst :
-                QMessageBox.critical( self,
-                                      qApp.organizationName(),
-                                      unicode( inst ) )
-                self.dtPicker.setDateTime( self.editmodel.datetime )
-                logging.error( inst )
-                logging.error( query.lastError().text() )
-            except Exception as inst:
-                QMessageBox.critical( self, qApp.organizationName(),
-                                      u"Hubo un error al obtener los tipos de"\
-                                      + " cambio" )
-                logging.critical( query.lastError().text() )
-                logging.critical( inst )
-                self.dtPicker.setDateTime( self.editmodel.datetime )
+            self.editmodel.datetime = datetime
+        except UserWarning  as inst :
+            QMessageBox.critical( self,
+                                  qApp.organizationName(),
+                                  unicode( inst ) )
+            self.dtPicker.setDateTime( self.editmodel.datetime )
+            logging.error( inst )
+            logging.error( query.lastError().text() )
+        except Exception as inst:
+            QMessageBox.critical( self, qApp.organizationName(),
+                                  u"Hubo un error al obtener los tipos de"\
+                                  + " cambio" )
+            logging.critical( query.lastError().text() )
+            logging.critical( inst )
+            self.dtPicker.setDateTime( self.editmodel.datetime )
 
 
 
@@ -618,10 +619,10 @@ class Base( QMainWindow ):
 
 
     @pyqtSlot()
+    @if_edit_model
     def on_txtObservations_textChanged( self ):
         """
         Asignar las observaciones al editmodel
         """
-        if not self.editmodel is None:
-            self.editmodel.observations = self.txtObservations.toPlainText().strip()
+        self.editmodel.observations = self.txtObservations.toPlainText().strip()
 

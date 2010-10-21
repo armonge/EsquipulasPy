@@ -4,10 +4,10 @@ Created on 25/05/2010
 
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtCore import  Qt, QTimer
-from PyQt4.QtGui import  QSortFilterProxyModel, QAbstractItemView, \
+from PyQt4.QtCore import Qt, QTimer
+from PyQt4.QtGui import QSortFilterProxyModel, QAbstractItemView, \
     QDataWidgetMapper, QMessageBox, qApp
-from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase
+from PyQt4.QtSql import QSqlQueryModel
 from document.movimientosbancarios import MovimientosBancariosModel
 from ui.Ui_frmmovimientosbancarios import Ui_frmMovimientosBancarios
 from utility import constantes
@@ -22,6 +22,7 @@ IDDOCUMENTO, FECHA, CUENTA, TIPODOC, CONCEPTO, OBSERVACION, NCUENTA = range( 7 )
 class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
 
     def __init__( self, parent ):
+        super( FrmMovimientosBancarios, self ).__init__( parent )
 
         self._iniciarClase( parent )
         self._iniciarInterfaz()
@@ -33,20 +34,21 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         """
         Ejecuta constructores de las clases e inicializa variables
         """
-        super( FrmMovimientosBancarios, self ).__init__( parent )
-        self.setupUi( self )
+
         self.parentWindow = parent
 
 
         self.navmodel = None
         """
-        @ivar: Modelo de navegacion que se asignara a la tabla principal de navegacion
+        @ivar: Modelo de navegacion que se asignara a la tabla 
+        principal de navegacion
         @type: QSqlQueryModel
         """
 
         self.navproxymodel = None
         """
-        @ivar: = Proxy del modelo de navegacion que filtra al momento de una busqueda
+        @ivar: = Proxy del modelo de navegacion que filtra al momento 
+        de una busqueda
         @type: QSortFilterProxyModel  
         """
 
@@ -63,14 +65,17 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         #Modelo de Edicion
         self.editmodel = None
 
-        # Establece el estado actual en Modo Lectura(True)
-        self.__status = True
 
     def _iniciarInterfaz( self ):
         """
         Realiza Cambios iniciales al formulario
         """
+        #FIXME: Porque esto no esta en el designer???
         self.cbcuenta = SearchPanel( None, None, True )
+        """
+        @ivar: El combo con en el que se cargan las cuentas
+        @type: SearcPanel
+        """
         self.horizontalLayout_32.addWidget( self.cbcuenta )
         self.actionSave.setVisible( False )
         self.actionCancel.setVisible( False )
@@ -85,7 +90,7 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( u"No se pudo establecer la "\
-                                       + "conexi�n con la base de datos" )
+                                       + "conexión con la base de datos" )
 
             self.editmodel = MovimientosBancariosModel()
             self.editmodel.autorDoc = self.user.uid
@@ -104,8 +109,8 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             self.status = True
 
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+            if self.database.isOpen():
+                self.database.close()
 
 
     def setControls( self, status ):
@@ -131,7 +136,8 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             self.swcuenta.setCurrentIndex( 1 )
             self.swconcepto.setCurrentIndex( 1 )
             self.swtipodoc.setCurrentIndex( 1 )
-            self.tabledetails.setEditTriggers( QAbstractItemView.NoEditTriggers )
+            self.tabledetails.setEditTriggers( 
+                                          QAbstractItemView.NoEditTriggers )
         else:
             self.tabWidget.setCurrentIndex( 0 )
             self.txtobservaciones.setPlainText( "" )
@@ -148,15 +154,15 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         Recargar todos los modelos
         """
         try:
-            if not QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().open()
+            if not self.database.isOpen():
+                self.database.open()
 
             self.navmodel = QSqlQueryModel()
             self.navmodel.setQuery( """
             SELECT
                     d.iddocumento,
                     d.fechacreacion as Fecha,
-                    CONCAT(cb.banco, ' ',cb.moneda,' [ ', cb.ncuenta,' ]') as 'Cuenta Bancaria',
+                    CONCAT(cb.banco, ' ',cb.moneda,' [ ', cb.ncuenta,' ]') AS 'Cuenta Bancaria',
                     td.descripcion as 'Tipo Doc',
                     con.descripcion as Concepto,
                     d.Observacion,
@@ -213,9 +219,15 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             self.tablenavigation.setColumnHidden( NCUENTA, True )
             self.tablenavigation.resizeColumnsToContents()
 #            self.navigate( 'last' )
-
+        except UserWarning as inst:
+            logging.error( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                  unicode( inst ) )
         except Exception as inst:
-            print inst
+            logging.critical( unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                  u"Hubo un error al tratar de cargar "\
+                                  + "los datos" )
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close
+            if self.database.isOpen():
+                self.database.close
