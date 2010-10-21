@@ -415,7 +415,11 @@ class FrmDevolucion( Ui_frmDevoluciones, Base ):
         self.tablenavigation.setModel( self.navproxymodel )
         self.tabledetails.setModel( self.detailsproxymodel )
 
-
+        self.txtBill.setText("")
+        self.txtClient.setText("")
+        self.txtDocumentNumber.setText("")
+        self.txtWarehouse.setText("")
+        self.tabWidget.setCurrentIndex(1)
         self.status = True
 
 class DlgSelectInvoice( QDialog ):

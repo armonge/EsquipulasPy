@@ -137,10 +137,9 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
         except Exception as inst:
             logging.critical( unicode( inst ) )
             self.toolBar.removeAction( self.actionSave )
-            QMessageBox.critical( self, qApp.organizationName(),
-                                   u"Hubo un error al Validar el cierre Anual" )
-            return False
-   
+            QMessageBox.warning( self,
+             qApp.organizationName(),unicode(inst))
+            return False   
     def validarCierreMensual(self):
         try:
             query=QSqlQuery()
@@ -190,37 +189,41 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
             hoy=QDate.currentDate()
             if self.fecha.toString( "MM" )==hoy.toString("MM"):
                 raise Exception( "No se puede cerrar el mes en proceso" )    
-        
+    
             return True
         
         except Exception as inst:
             logging.critical( unicode( inst ) )
             self.toolBar.removeAction( self.actionSave )
-            QMessageBox.critical( self, qApp.organizationName(),
-                                   u"No se ha cumplido con alguno de los requisitos para realizar el cierre" )
+            QMessageBox.warning( self,
+             qApp.organizationName(),unicode(inst))
             return False
                
     def save( self ):
         if QMessageBox.question( self, qApp.organizationName(),
-                                u"¿Esta seguro que desea hacer este cierre mensual?\n"\
-                                + u"Esta accion no se puede deshacer",
+                                u"¿Esta seguro que desea hacer este cierre "+self.tipocierre+"?\n"\
+                                + u"Esta accion no se puede deshacer",  
                                  QMessageBox.Ok | QMessageBox.No ) == QMessageBox.Ok:
-            docpendientes = False
+            docpendientes = True
             for i in range( self.navproxymodel.rowCount() ):
                 if self.navproxymodel.index( i, ESTADO ).data( Qt.EditRole ).toString() != "CONFIRMADO" and self.navproxymodel.index( i, ESTADO ).data( Qt.EditRole ).toString() != "ANULADO":
-                    docpendientes = True
-            if docpendientes == True and self.validarCierreAnual()==False and self.validarCierreMensual()==False:
-                QMessageBox.warning( self,
-                                     qApp.organizationName(),
-                                     "Existen documentos que aun no han "\
-                                     + "sido confirmados" )
-            else:
-                if self.tipocierre=="Mensual":
-                    self.saveMensual()
+                    docpendientes = False
+            if self.tipocierre=="Mensual":
+                if docpendientes == False or self.validarCierreMensual()==False:
+                    QMessageBox.warning( self,
+                        qApp.organizationName(),
+                         u"No se realizó el cierre contable Mensual ")
+                else:
+                    self.saveMensual()                                     
+            else: 
+                if docpendientes==False or self.validarCierreAnual()==False:
+                    QMessageBox.warning( self,
+                     qApp.organizationName(),
+                     u"No se realizó el cierre contable Anual ")
                 else:
                     self.saveAnual()
     def saveAnual(self):
-        print "ANUAL"
+        print "Anual"
                 
     def saveMensual(self):
         query = QSqlQuery()
@@ -263,8 +266,6 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
             if not query.exec_():
                 raise UserWarning( "No se pudo cerrar el mes contable" )
 
-            QMessageBox.information( self, qApp.organizationName(),
-                                      "Cierre mensual exitoso" )
             self.toolBar.removeAction( self.actionSave )
 #                self.toolBar.addActions( self.actionPrint )
 #                self.actionPrin.triggered.connect( self.printPreview )

@@ -32,14 +32,14 @@ class FrmPago( Ui_frmPago, Base ):
     """
     web = "recibos.php?doc="
 
-    def __init__( self, parent = None ):
+    def __init__( self ,sesion, parent = None ):
         '''
         Constructor
         '''
         super( FrmPago, self ).__init__( parent )
         self.setWindowModality( Qt.WindowModal )
         self.setWindowFlags( Qt.Dialog )
-
+        self.sesion=sesion
         self.tabledetails = None
 
 
@@ -129,7 +129,6 @@ class FrmPago( Ui_frmPago, Base ):
             if self.retencionModel.rowCount() == 0:
                 raise UserWarning( u"No existe ninguna tasa de retención en "\
                                    + "la base de datos" )
-
             query = QSqlQuery( 
             """
             SELECT
@@ -142,7 +141,7 @@ class FrmPago( Ui_frmPago, Base ):
             ;
             """ % ( constantes.IDCORDOBAS,
                     constantes.IDDOLARES,
-                    self.parentWindow.datosSesion.cajaId,
+                    self.sesion.cajaId,
                     constantes.IDPAGOEFECTIVO ) )
             if not query.exec_():
                 raise UserWarning( u"No pudo obtenerse el número del comprobante" )
@@ -161,7 +160,7 @@ class FrmPago( Ui_frmPago, Base ):
             ndoc = query.value( 0 ).toString()
             self.lblnpago.setText( ndoc )
 
-            self.txttipocambio.setText( moneyfmt( self.parentWindow.datosSesion.tipoCambioBanco, 4 ) )
+            self.txttipocambio.setText( moneyfmt( self.sesion.tipoCambioBanco, 4 ) )
 
             self.cbtasaret.setModel( self.retencionModel )
             self.cbtasaret.setModelColumn( 1 )
@@ -187,7 +186,7 @@ class FrmPago( Ui_frmPago, Base ):
             completerconcepto.setModel( self.conceptosModel )
             completerconcepto.setCompletionColumn( 1 )
 
-            self.editmodel = PagoModel( self.parentWindow.datosSesion )
+            self.editmodel = PagoModel( self.sesion )
             self.editmodel.docImpreso = ndoc
 
             self.editmodel.maxCordoba = maxCordoba
@@ -219,13 +218,13 @@ class FrmPago( Ui_frmPago, Base ):
             QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
             logging.error( unicode( inst ) )
             logging.error( query.lastError().text() )
-        except Exception as inst:
-            print inst
-            QMessageBox.critical( self, qApp.organizationName(),
-                                   "Hubo un problema al tratar de crear"\
-                                   + " el nuevo pago" )
-            logging.critical( unicode( inst ) )
-            logging.error( query.lastError().text() )
+#        except Exception as inst:
+#            print inst
+#            QMessageBox.critical( self, qApp.organizationName(),
+#                                   "Hubo un problema al tratar de crear"\
+#                                   + " el nuevo pago" )
+#            logging.critical( unicode( inst ) )
+#            logging.error( query.lastError().text() )
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
@@ -395,7 +394,7 @@ class FrmPago( Ui_frmPago, Base ):
 #            self.tableabonos.setEditTriggers( QAbstractItemView.NoEditTriggers )
         else:
             self.tabWidget.setCurrentIndex( 0 )
-            self.dtPicker.setDate( self.parentWindow.datosSesion.fecha )
+            self.dtPicker.setDate( self.sesion.fecha )
             self.cbbeneficiario.setCurrentIndex( -1 )
             self.swbeneficiario.setCurrentIndex( 0 )
             self.swconcepto.setCurrentIndex( 0 )

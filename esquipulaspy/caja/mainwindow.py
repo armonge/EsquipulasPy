@@ -204,7 +204,7 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
         """
         Slot documentation goes here.
         """
-        pago = FrmPago()
+        pago = FrmPago(self.datosSesion)
         pago.show()
 
     @pyqtSlot()
