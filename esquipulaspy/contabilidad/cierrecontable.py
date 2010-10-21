@@ -113,6 +113,7 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
 
     def validarCierreAnual(self):
         try:
+            query=QSqlQuery()
             q=u"""
             SELECT d.iddocumento 
             FROM documentos d 
@@ -142,6 +143,7 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
    
     def validarCierreMensual(self):
         try:
+            query=QSqlQuery()
             q=u"""
                 SELECT d.iddocumento 
                 FROM documentos d 
