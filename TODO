@@ -3,3 +3,9 @@
 -Reporte de estado de resultado
     jalar las cuentas del cierre
 -Credito en la factura
+
+- Busqueda en Kardex probar al parecer no filtra
+- Deshabilitar entrada de documento en kardex otros movimientos
+- Permitir modificar COSTO EN KARDEX otros movimientos.
+- Recibo no filtra bien los tipos de pago
+
