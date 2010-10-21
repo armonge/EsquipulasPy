@@ -13,7 +13,6 @@ QSortFilterProxyModel, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
 
 from ui.Ui_persona import Ui_frmPersona
-
 from utility.base import Base
 
 TIPO, ID, NOMBRE, DIRECCION, TELEFONO, CORREO, RUC, ACTIVO = range( 8 )
@@ -31,7 +30,7 @@ class FrmPersona( Ui_frmPersona, Base ):
         self.lbltitulo.setText( u"<B>Datos del %s</B>" % rol )
 
         self.editmodel = None
-        self.parent = parent
+#        self.parent = parent
 
         self.navmodel = QSqlQueryModel()
 

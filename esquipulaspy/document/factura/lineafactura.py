@@ -102,7 +102,7 @@ class LineaFactura:
             return True
         return False
 
-    def save( self, iddocumento, linea ):
+    def save( self, iddocumento, linea, tipoCambio ):
         """
         Este metodo guarda la linea en la base de datos
         @param iddocumento: el id del documento al que esta enlazada la linea
@@ -113,9 +113,8 @@ class LineaFactura:
         query = QSqlQuery()
         if not query.prepare( 
         """
-        INSERT INTO articulosxdocumento (iddocumento, idarticulo, 
-        unidades,costounit, precioventa,nlinea ) 
-        VALUES( :iddocumento, :idarticulo, :unidades,:costo, :precio,:linea )
+        INSERT INTO articulosxdocumento (iddocumento, idarticulo,unidades,costounit, precioventa,nlinea, tccosto ) 
+        VALUES( :iddocumento, :idarticulo, :unidades,:costo, :precio,:linea ,:tc)
         """ ):
             raise Exception( "no esta preparada" )
 
@@ -125,6 +124,7 @@ class LineaFactura:
         query.bindValue( ":costo", str( self.costo ) )
         query.bindValue( ":precio", str( self.itemPrice ) )
         query.bindValue( ":linea", linea )
+        query.bindValue( ":tc", tipoCambio )
 
 
         if not query.exec_():

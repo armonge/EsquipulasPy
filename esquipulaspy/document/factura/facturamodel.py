@@ -373,7 +373,7 @@ class FacturaModel( DocumentBase ):
                                  + "el documento y las personas" )
 
             for i, linea in enumerate( [line for line in self.lines if line.valid] ):
-                linea.save( inserted_id, i )
+                linea.save( inserted_id, i, self.datosSesion.tipoCambioId )
 
     #VERIFICO SI el id del iva es cero. NO SERA CERO CUANDO LA BODEGA=1 PORQUE ESTA NO ES exonerada                     
 
