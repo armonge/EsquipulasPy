@@ -33,12 +33,11 @@ data_files = [( '', [os.getcwd() + r'\..\doc\manual\doc.qch',
                     os.getcwd() + r'\..\doc\manual\esquipulashelpcollection.qhc',
                     os.getcwd() + r'\ui\res\logo.ico',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\assistant.exe',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\libgcc_s_dw2-1.dll',
+					'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\libeay32.dll',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\libmySQL.dll',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\mingwm10.dll',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\phonon4.dll',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\qt.conf',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtAssistantClient4.dll',
+					'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\ssleay32.dll',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtCLucene4.dll',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtHelp4.dll',
                     'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtXml4.dll',
@@ -122,6 +121,7 @@ setup(
                           "skip_archive": False,
                           "ascii": False,
                           "custom_boot_script": '',
+						   "dll_excludes": ["MSVCP90.dll"]
                          }
               },
 

@@ -17,7 +17,7 @@ elif os.name == 'nt':
 
 setup( 
     name = 'misesquipulas',
-    version = '1.0',
+    version = '1.1',
     description = 'Interfaz de Escritorio a Esquipulas',
     author = u'Andrés Reyes Monge, Luis Carlos Mejia Garcia,'\
     ' Marcos Antonio Moreno Gonzales',

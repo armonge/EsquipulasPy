@@ -5,7 +5,7 @@ Name Esquipulas
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 1.0
+!define VERSION 1.1
 !define COMPANY "Cusuco Soft"
 !define URL "http://misesquipulas.sourceforge.net/"
 
@@ -75,9 +75,9 @@ Section -Main SEC0000
     File ..\esquipulaspy\dist\_hashlib.pyd
     File ..\esquipulaspy\dist\bz2.pyd
     File ..\esquipulaspy\dist\esquipulas.exe
-    File ..\esquipulaspy\dist\libgcc_s_dw2-1.dll
     File ..\esquipulaspy\dist\libmySQL.dll
-    File ..\esquipulaspy\dist\mingwm10.dll
+	File ..\esquipulaspy\dist\ssleay32.dll
+	File ..\esquipulaspy\dist\libeay32.dll
     File ..\esquipulaspy\dist\phonon4.dll
     File ..\esquipulaspy\dist\PyQt4.QtCore.pyd
     File ..\esquipulaspy\dist\PyQt4.QtGui.pyd
@@ -126,7 +126,7 @@ Section Ayuda SEC0004
     File ..\esquipulaspy\dist\doc.qch
     File ..\esquipulaspy\dist\esquipulashelpcollection.qhc
     File ..\esquipulaspy\dist\qt.conf
-    File ..\esquipulaspy\dist\QtAssistantClient4.dll
+    #File ..\esquipulaspy\dist\QtAssistantClient4.dll
     File ..\esquipulaspy\dist\QtCLucene4.dll
     File ..\esquipulaspy\dist\QtXml4.dll
     File ..\esquipulaspy\dist\QtXmlPatterns4.dll
@@ -220,10 +220,8 @@ Section /o -un.Main UNSEC0000
     Delete /REBOOTOK $INSTDIR\PyQt4.QtGui.pyd
     Delete /REBOOTOK $INSTDIR\PyQt4.QtCore.pyd
     Delete /REBOOTOK $INSTDIR\phonon4.dll
-    Delete /REBOOTOK $INSTDIR\mingwm10.dll
     Delete /REBOOTOK $INSTDIR\library.zip
     Delete /REBOOTOK $INSTDIR\libmySQL.dll
-    Delete /REBOOTOK $INSTDIR\libgcc_s_dw2-1.dll
     Delete /REBOOTOK $INSTDIR\esquipulas.exe
     Delete /REBOOTOK $INSTDIR\bz2.pyd
     Delete /REBOOTOK $INSTDIR\_hashlib.pyd
