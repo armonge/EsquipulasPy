@@ -22,7 +22,7 @@ class ChequeModel( AccountsSelectorModel ):
 
     __documentType = constantes.IDCHEQUE
     """
-    @ivar:El tipo de documento
+    @cvar:El tipo de documento
     @type: int
     """
     def __init__( self ):

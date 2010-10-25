@@ -8,7 +8,7 @@ Created on 18/05/2010
 
 from PyQt4.QtCore import QDateTime
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
-from decimal import Decimal
+from decimal import Decimal, DivisionByZero
 from utility import constantes
 from utility.decorators import return_decimal
 from utility.movimientos import redondear
@@ -24,23 +24,88 @@ class PagoModel( object ):
 
         object.__init__( self )
         self.maxCordoba = Decimal( 0 )
+        """
+        @ivar: Almacena el maximo de Cordobas que se puede pagar
+        @type: Decimal
+        """        
         self.maxDolar = Decimal( 0 )
+        """
+        @ivar: Almacena el maximo de Dolares que se puede pagar
+        @type: Decimal
+        """
         self.docImpreso = ""
+        """
+        @ivar: Almacena el numero de pago impreso
+        @type: string
+        """
         self.observaciones = ""
+        """
+        @ivar: Almacena el las observaciones del pago
+        @type: string
+        """
         self.totalC = Decimal( 0 )
+        """
+        @ivar: Almacena el total de cordobas del pago
+        @type: Decimal
+        """
         self.totalD = Decimal( 0 )
+        """
+        @ivar: Almacena el total de dolares del pago
+        @type: Decimal
+        """
         self.datosSesion = datosSesion
+        """
+        @ivar: Almacena DatosSesion para manejar las documentos en sesion de caja correspondiente
+        @type: DatosSesion
+        """
         self.conceptoId = 0
+        """
+        @ivar: Almacena el ID del concepto del documento pago
+        @type: Integer
+        """
         self.beneficiarioId = 0
-
+        """
+        @ivar: Almacena el ID del concepto del documento pago
+        @type: Integer
+        """
         self.aplicarRet = False
-        self.retencionId = 0
-        self.ivaId = 0
+        """
+        @ivar: Almacena si se aplicara retencion
+        @type: Boolean
+        """
 
+        self.retencionId = 0
+        """
+        @ivar: Almacena el ID del tipo de retencion a aplicar
+        @type: Integer
+        """
+
+        self.ivaId = 0
+        """
+        @ivar: Almacena el ID del IVA ACTIVO
+        @type: Integer
+        """
         self.__retencionTasa = Decimal( 0 )
+        """
+        @ivar: Almacena la tasa de retencion a aplicar
+        @type: Decimal
+        """
         self.__ivaTasa = Decimal( 0 )
+        """
+        @ivar: Almacena tasa del iva a aplicar
+        @type: Integer
+        """
         self.aplicarIva = True
+        """
+        @ivar: Almacena si se aplicara IVA
+        @type: Boolean
+        """
         self.errorMessage = ""
+        """
+        @ivar: Almacena el mensaje de error
+        @type: String
+        """
+
 
     def __getIvaTasa( self ):
         return self.__ivaTasa if self.aplicarIva else Decimal( 0 )
@@ -179,13 +244,17 @@ class PagoModel( object ):
     @property
     @return_decimal
     def totalDolar( self ):
-        return self.totalD + redondear( self.totalC / self.datosSesion.tipoCambioBanco )
-
+        try:
+            return self.totalD + redondear( self.totalC / self.datosSesion.tipoCambioBanco )
+        except DivisionByZero:
+            return Decimal("0")
     @property
     @return_decimal
     def totalCordoba( self ):
-        return self.totalC + redondear( self.totalD * self.datosSesion.tipoCambioBanco )
-
+        try:
+            return self.totalC + redondear( self.totalD * self.datosSesion.tipoCambioBanco )
+        except DivisionByZero:
+            return Decimal("0")
     @property
     @return_decimal
     def subTotalDolar( self ):
