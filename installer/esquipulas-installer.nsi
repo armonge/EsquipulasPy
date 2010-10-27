@@ -7,7 +7,7 @@ Name Esquipulas
 !define REGKEY "SOFTWARE\$(^Name)"
 !define VERSION 1.1
 !define COMPANY "Cusuco Soft"
-!define URL ""
+!define URL "http://misesquipulas.sourceforge.net/"
 
 # MultiUser Symbol Definitions
 !define MULTIUSER_EXECUTIONLEVEL Highest
@@ -53,7 +53,7 @@ Var StartMenuGroup
 !insertmacro MUI_LANGUAGE SpanishInternational
 
 # Installer attributes
-OutFile setup.exe
+OutFile esquipulas-installer.exe
 InstallDir Esquipulas
 CRCCheck on
 XPStyle on
