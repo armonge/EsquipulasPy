@@ -13,7 +13,7 @@ class MovimientosBancariosModel( AccountsSelectorModel, DatosDocModel ):
     def __init__( self ):
         DatosDocModel.__init__(self)
         AccountsSelectorModel.__init__( self )
-        
+
 
     def flags( self, index ):
         if not index.isValid():
@@ -33,8 +33,7 @@ class MovimientosBancariosModel( AccountsSelectorModel, DatosDocModel ):
             if index.row() == 0:
                 return index.column() in ( 1, 2 )
             else:
-                return True
+                return False
         else:
             return index.column() in ( 1, 2 ) and index.row() == 0
-
 

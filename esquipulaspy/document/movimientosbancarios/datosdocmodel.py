@@ -6,6 +6,7 @@ Created on 13/07/2010
 '''
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
 from decimal import Decimal
+from utility import constantes
 
 class DatosDocModel( object ):
     def __init__( self ):
@@ -38,9 +39,9 @@ class DatosDocModel( object ):
         """
         @ivar: El id que representa que tipo de documento es
         @type: int
-        """
-
-        self.conceptoDoc = 0
+        """       
+        
+        self.conceptoId =0
         """
         @ivar: El id del concepto elegido para el documento
         @type: int
@@ -76,7 +77,7 @@ class DatosDocModel( object ):
         @type: string
         """
 
-        self.autorDoc = 0
+        self.autorId = 0
         """
         @ivar: El id del usuario que creo el documento
         @type: int
@@ -94,9 +95,9 @@ class DatosDocModel( object ):
             self.mensajeError = "El total del documento no puede ser 0"
         elif self.tipoDoc == 0 :
             self.mensajeError = "Por favor especifique el tipo de documento"
-        elif self.conceptoDoc == 0 :
+        elif self.conceptoId == 0 :
             self.mensajeError = "Por favor especifique el concepto del documento"
-        elif self.autorDoc == 0:
+        elif self.autorId == 0:
             self.mensajeError = "El id del usuario no puede ser 0"
         elif self.fechaDoc == None :
             self.mensajeError = "Por favor especifique la fecha del documento"
@@ -111,66 +112,85 @@ class DatosDocModel( object ):
         """
 
         query = QSqlQuery()
-        try:
-            if not QSqlDatabase.database() .isOpen():
-                raise Exception( "La conexion esta cerrada, no se pueden guardar los datos del documento" )
 
-#               Cargar el numero del asiento actual
-            query.prepare( """
-                SELECT fnConsecutivo(:tipodoc);
-            """ )
+#        try:
+        if not QSqlDatabase.database() .isOpen():
+            raise Exception( "La conexion esta cerrada, no se pueden guardar los datos del documento" )
+   
+        if not QSqlDatabase.database().transaction():
+            raise Exception( u"No se pudo comenzar la transacción" )
+   
+        query.prepare( """
+            SELECT fnConsecutivo(:tipodoc,:cuenta);
+        """)
+        
+        query.bindValue( ":tipodoc", self.tipoDoc )
+        query.bindValue( ":cuenta", self.cuentaBancaria )
+ 
 
-            query.bindValue( ":tipodoc", self.tipoDoc )
-            query.bindValue( ":cuenta", self.cuentaBancaria )
+        if not query.exec_():
+            raise Exception("No se pudo obtener el numero de deposito")
+        query.first()
+                    
+        self.numeroDoc = query.value( 0 ).toString()
 
-            query.exec_()
-            query.first()
+  
+        if not query.prepare( """
+        INSERT INTO documentos (ndocimpreso,total, fechacreacion, idconcepto, idtipodoc,observacion,delbanco) 
+        VALUES (:ndocimpreso,:total, :fechacreacion, :idconcepto,:idtipodoc,:observacion,:externo)
+        """ ):
+            raise Exception( "No se pudo preparar la consulta para guardar el documento" )
+        
+        query.bindValue( ":ndocimpreso", self.numeroDoc )
+        query.bindValue( ":total", self.totalDoc.to_eng_string() )
+        query.bindValue( ":fechacreacion", self.fechaDoc.toString("yyyyMMddhhmmss"))  
+        query.bindValue( ":idconcepto", self.conceptoId) 
+        query.bindValue( ":idtipodoc",self.tipoDoc)
+        query.bindValue( ":observacion",self.observacionesDoc)
+        query.bindValue( ":externo",self.bancoDoc)
 
-            self.numeroDoc = query.value( 0 ).toString()
-
-
-            if not query.prepare( """
-            INSERT INTO documentos (ndocimpreso,total, fechacreacion, idconcepto, idtipodoc,observacion,delbanco) 
-            VALUES (:ndocimpreso,:total, :fechacreacion, :idconcepto,:idtipodoc,:observacion,:externo)
-            """ ):
-                raise Exception( "No se pudo preparar la consulta para guardar el documento" )
-
-            query.bindValue( ":ndocimpreso", self.numeroDoc )
-            query.bindValue( ":total", self.totalDoc.to_eng_string() )
-            query.bindValue( ":fechacreacion", self.fechaDoc.toString( "yyyyMMddhhmmss" ) )
-            query.bindValue( ":idconcepto", self.conceptoDoc )
-            query.bindValue( ":idtipodoc", self.tipoDoc )
-            query.bindValue( ":observacion", self.observacionesDoc )
-            query.bindValue( ":externo", self.bancoDoc )
-
-            if not query.exec_():
-                raise Exception( "No se pudo ejecutar la consulta para guardar el documento" )
-
-            self.idDoc = query.lastInsertId().toInt()[0]
-
-
-            if not query.prepare( """
-            INSERT INTO personasxdocumento (idpersona, iddocumento) 
-            VALUES (:usuario, :documento)
-            """ ):
-                raise Exception( "No se pudo preparar la consulta para insertar el usuario" )
-
-            query.bindValue( ":usuario", self.autorDoc )
-            query.bindValue( ":documento", self.idDoc )
-
-            if not query.exec_():
-                raise Exception( u"No se pudo guardar la relacion con el usuario" )
-
-            for nLinea, linea in enumerate( self.lineas ):
-                if linea.valid:
-                    linea.save( self.idDoc, nLinea + 1 )
-                else:
-                    raise Exception ( "Linea Invalida" )
-
-            return True
-        except Exception as e:
-            print e
+        if not query.exec_():
             print query.lastError().text()
+            raise Exception( "No se pudo ejecutar la consulta para guardar el documento" )
 
+
+        self.idDoc = query.lastInsertId().toString()
+        
+        
+        if not query.prepare( """
+        INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion) 
+        VALUES (:usuario, :documento,:accion)
+        """ ):
+            print query.lastError().text()
+            raise Exception( "No se pudo preparar la consulta para insertar el usuario" )
+        
+        query.bindValue( ":usuario", self.autorId )
+        query.bindValue( ":documento", self.idDoc )
+        query.bindValue( ":accion", constantes.AUTOR )
+
+        if not query.exec_():
+            print query.lastError().text()
+            raise Exception( u"No se pudo guardar la relacion con el usuario" )
+
+
+        for nLinea, linea in enumerate( self.lineasDoc ):
+            if linea.valid:
+                linea.save( self.idDoc, nLinea + 1 )
+            else:
+                raise Exception ("Linea Invalida")
+
+        if not QSqlDatabase.database().commit():
+            raise Exception( "No se pudo hacer commit" )
+        return True
+
+#        except Exception as inst:
+#            logging.critical( query.lastError().text() )
+#            logging.critical( unicode( inst ) )
+#            QSqlDatabase.database().rollback()
+#            
+#        finally:
+#            if QSqlDatabase.database().isOpen():
+#                QSqlDatabase.database().close()
+#                
         return False
 

@@ -307,7 +307,7 @@ class FrmCheques( Ui_frmCheques, Base ):
                 if not self.database.open():
                     raise UserWarning( "Hubo un error al conectarse con la base de datos" )
 
-            self.editmodel.setData( self.editmodel.index( 0, 2 ),
+            self.editmodel.setData( self.editmodel.index(  0, 2 ),
                             [self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0],
                              self.cuentabancaria.record( index ).value( "codigo" ).toString(),
                              self.cuentabancaria.record( index ).value( "descripcion" ).toString()] )

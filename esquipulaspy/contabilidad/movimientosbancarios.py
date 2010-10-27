@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 '''
 Created on 25/05/2010
-
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtCore import Qt, QTimer
+from PyQt4.QtCore import Qt, QTimer,pyqtSlot, QDateTime
 from PyQt4.QtGui import QSortFilterProxyModel, QAbstractItemView, \
-    QDataWidgetMapper, QMessageBox, qApp
-from PyQt4.QtSql import QSqlQueryModel
+    QDataWidgetMapper, QMessageBox, qApp, QCompleter
+from PyQt4.QtSql import QSqlQueryModel,QSqlQuery
 from document.movimientosbancarios import MovimientosBancariosModel
 from ui.Ui_frmmovimientosbancarios import Ui_frmMovimientosBancarios
 from utility import constantes
 from utility.base import Base
 from utility.widgets.searchpanel import SearchPanel
 import logging
-
-
-
+from utility.accountselector import AccountsSelectorDelegate, \
+    AccountsSelectorLine
+    
+from utility.decorators import if_edit_model
 
 IDDOCUMENTO, FECHA, CUENTA, TIPODOC, CONCEPTO, OBSERVACION, NCUENTA = range( 7 )
 class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
@@ -26,6 +26,7 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
 
         self._iniciarClase( parent )
         self._iniciarInterfaz()
+        
 
         #Carga los modelos de forma paralela a la ejecucion del sistema
         QTimer.singleShot( 0, self.loadModels )
@@ -64,14 +65,16 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
 
         #Modelo de Edicion
         self.editmodel = None
+        
 
 
     def _iniciarInterfaz( self ):
         """
         Realiza Cambios iniciales al formulario
         """
-        #FIXME: Porque esto no esta en el designer???
         self.cbcuenta = SearchPanel( None, None, True )
+        self.cbcuenta.lineEdit().setAlignment(Qt.AlignHCenter)
+        self.cbcuenta.currentIndexChanged[int].connect(self.on_cbcuenta_currentIndexChanged)
         """
         @ivar: El combo con en el que se cargan las cuentas
         @type: SearcPanel
@@ -79,8 +82,42 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         self.horizontalLayout_32.addWidget( self.cbcuenta )
         self.actionSave.setVisible( False )
         self.actionCancel.setVisible( False )
+        self.cbconcepto.view().setMinimumHeight(60)
+        self.dtPicker.setDateTime(QDateTime.currentDateTime())
 
+    @pyqtSlot( QDateTime )
+    @if_edit_model
+    def on_dtPicker_dateTimeChanged( self, datetime ):
+        self.editmodel.fechaDoc = datetime
 
+    @pyqtSlot( int )
+    @if_edit_model
+    def on_cbcuenta_currentIndexChanged( self, index ):
+        self.editmodel.setData( self.editmodel.index(  0, 2 ),
+                            [self.cuentasModel.record( index ).value( "idcuentacontable" ).toInt()[0],
+                             self.cuentasModel.record( index ).value( "codigo" ).toString(),
+                             self.cuentasModel.record( index ).value( "descripcion" ).toString()] )
+#        self.accountseditdelegate.accounts.setFilterRegExp( "[^%d]" % self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0] )
+
+    def updateDetailFilter( self, _index ):
+        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTO )
+        iddoc = self.navmodel.record( _index ).value( "iddocumento" ).toString()
+        self.detailsproxymodel.setFilterRegExp( iddoc )
+        
+    def save(self):
+        self.editmodel.observacionesDoc = self.txtobservaciones.toPlainText()
+        self.editmodel.lineasDoc = self.editmodel.lines
+        self.editmodel.totalDoc = self.editmodel.lineasDoc[0].amount
+        Base.save(self, True)
+     
+    @pyqtSlot( int )
+    @if_edit_model
+    def on_cbconcepto_currentIndexChanged( self, index ):
+        """
+        asignar la concepto al objeto self.editmodel
+        """
+        self.editmodel.conceptoId = self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
+        
     def newDocument( self ):
         """
         activar todos los controles, llena los modelos necesarios, 
@@ -91,9 +128,71 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
                 if not self.database.open():
                     raise UserWarning( u"No se pudo establecer la "\
                                        + "conexión con la base de datos" )
-
             self.editmodel = MovimientosBancariosModel()
-            self.editmodel.autorDoc = self.user.uid
+            self.editmodel.tipoDoc = constantes.IDDEPOSITO
+            
+            self.cuentasModel = QSqlQueryModel()
+            self.cuentasModel.setQuery( """
+            SELECT
+                c.idcuentacontable,
+                cc.codigo,
+                cc.descripcion,
+                c.ctabancaria as Cuenta,
+                b.descripcion as Banco,
+                tm.moneda as Moneda
+            FROM cuentasbancarias c
+            JOIN bancos b ON b.idbanco = c.idbanco
+            JOIN tiposmoneda tm ON tm.idtipomoneda= c.idtipomoneda
+            JOIN cuentascontables cc ON cc.idcuenta = c.idcuentacontable
+            ;
+            """)
+            if self.cuentasModel.rowCount() == 0:
+                raise UserWarning( "No existen cuentas bancarias en la base de datos,"\
+                                        + " por favor cree una" )
+
+            
+            self.cbcuenta.setModel(self.cuentasModel)
+            self.cbcuenta.setCurrentIndex(-1)
+            self.cbcuenta.tabla.setColumnHidden(0,True)
+            self.cbcuenta.tabla.setColumnHidden(1,True)
+            self.cbcuenta.tabla.setColumnHidden(2,True)
+            
+            self.txttipodoc.setText("Deposito")
+            
+            #            Rellenar el combobox de las CONCEPTOS
+            self.conceptosModel = QSqlQueryModel()
+            self.conceptosModel.setQuery( """
+               SELECT idconcepto, descripcion 
+               FROM conceptos c 
+               WHERE idtipodoc = %d;
+            """ % constantes.IDDEPOSITO )
+            if self.conceptosModel.rowCount() == 0:
+                raise UserWarning( "No existen conceptos para los depositos, por favor cree uno" )
+
+            self.cbconcepto.setModel(self.conceptosModel)
+
+            self.cbconcepto.setModel( self.conceptosModel )
+            self.cbconcepto.setCurrentIndex( -1 )
+            self.cbconcepto.setModelColumn( 1 )
+            completerconcepto = QCompleter()
+            completerconcepto.setCaseSensitivity( Qt.CaseInsensitive )
+            completerconcepto.setModel( self.conceptosModel )
+            completerconcepto.setCompletionColumn( 1 )
+            
+            self.editmodel.insertRow(1)
+            self.editmodel.insertRow(1)
+            self.editmodel.fechaDoc = QDateTime.currentDateTime()
+            self.editmodel.autorId = self.user.uid
+                #        Crea un edit delegate para las cuentas
+            self.cuentasDelegate = AccountsSelectorDelegate( QSqlQuery( """
+            SELECT c.idcuenta, c.codigo, c.descripcion
+            FROM cuentascontables c
+            WHERE c.idcuenta in (4,5,6)
+            """ ) )
+            self.tabledetails.setItemDelegate( self.cuentasDelegate )
+            self.tabledetails.setModel( self.editmodel )
+
+            self.tabledetails.setModel(self.editmodel)
             self.status = False
 
         except UserWarning as inst:
@@ -143,7 +242,7 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             self.txtobservaciones.setPlainText( "" )
             self.swcuenta.setCurrentIndex( 0 )
             self.swconcepto.setCurrentIndex( 0 )
-            self.swtipodoc.setCurrentIndex( 0 )
+#            self.swtipodoc.setCurrentIndex( 0 )
             self.tabledetails.setEditTriggers( 
                           QAbstractItemView.EditKeyPressed |
                           QAbstractItemView.AnyKeyPressed |
@@ -200,6 +299,7 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
     #        Este es el filtro del modelo anterior
             self.detailsproxymodel = QSortFilterProxyModel()
             self.detailsproxymodel.setSourceModel( self.detailsmodel )
+            self.detailsproxymodel.setFilterKeyColumn(IDDOCUMENTO)
 
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
             self.mapper.setModel( self.navproxymodel )

@@ -433,13 +433,14 @@ class FrmRecibo( Ui_frmRecibo, Base ):
 
 
     def updateDetailFilter( self, index ):
-        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        iddoc = self.navmodel.record( index ).value( "iddocumento" ).toString()
-        self.detailsproxymodel.setFilterRegExp( iddoc )
-        self.tablenavigation.selectRow( self.mapper.currentIndex() )
-# FILTRO DE LOS ABONOS
-        self.abonosproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
-        self.abonosproxymodel.setFilterRegExp( iddoc )
+        pass
+#        self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
+#        iddoc = self.navmodel.record( index ).value( "iddocumento" ).toString()
+#        self.detailsproxymodel.setFilterRegExp( iddoc )
+#        self.tablenavigation.selectRow( self.mapper.currentIndex() )
+## FILTRO DE LOS ABONOS
+#        self.abonosproxymodel.setFilterKeyColumn( IDDOCUMENTOT )
+#        self.abonosproxymodel.setFilterRegExp( iddoc )
 
 
 

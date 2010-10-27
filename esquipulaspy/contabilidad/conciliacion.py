@@ -454,7 +454,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
     @pyqtSlot( bool )
     @if_edit_model
     def on_btnNotasCD_clicked( self, _checked ):
-        notas = dlgMovimientosBancarios( self )
+#        notas = dlgMovimientosBancarios( self )
         notas.setWindowModality( Qt.WindowModal )
         if notas.exec_() == QDialog.Accepted:
             row = self.editmodel.rowCount()
