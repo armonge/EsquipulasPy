@@ -1,4 +1,23 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+#       
+#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
 '''
 Created on 30/05/2010
 
@@ -57,13 +76,23 @@ class AccountsSelectorModel( QAbstractTableModel ):
         for row in range( rows ):
             self.lines.insert( position + row, AccountsSelectorLine() )
             self.lines[-1].amount = self.currentSum * -1
+
+            self.dataChanged.emit( self.index( MONTO, len( self.lines ) ) , self.index( MONTO, len( self.lines ) ) )
         self.endInsertRows()
         return True
 
-    def removeRows( self, position, rows = 1, _parent = QModelIndex ):
+    def removeRows( self, position, rows = 1, _parent = QModelIndex() ):
         self.beginRemoveRows( QModelIndex(), position, position + rows - 1 )
         self.lines = self.lines[:position] + self.lines[position + rows:]
         self.endRemoveRows()
+
+        if not self.currentSum == 0:
+            if not self.lines[-1].valid:
+                self.lines[-1].amount = self.currentSum
+                self.dataChanged.emit( self.index( MONTO, len( self.lines ) ) , self.index( MONTO, len( self.lines ) ) )
+            else:
+                self.insertRow(self.rowCount() )
+
         return True
 
 

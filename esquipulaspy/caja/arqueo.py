@@ -1,4 +1,23 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+#       
+#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
 '''
 Created on 07/06/2010
 
@@ -25,21 +44,24 @@ from utility.decorators import if_edit_model
 
 
 #navmodel
-IDDOCUMMENTO, FECHA, NOMBRE, EFECTIVOC, EFECTIVOD, CHEQUEC, CHEQUED, DEPOSITOC, \
- DEPOSITOD, TRANSFERENCIAC, TRANSFERENCIAD, TARJETAC, TARJETAD = range( 13 )
+IDDOCUMMENTO, FECHA, NOMBRE, EFECTIVOC, EFECTIVOD, CHEQUEC, CHEQUED, \
+DEPOSITOC, DEPOSITOD, TRANSFERENCIAC, TRANSFERENCIAD, \
+TARJETAC, TARJETAD = range( 13 )
 #detailsmodel
-CANTIDAD, DENOMINACION, TOTAL, MONEDA, IDDOCUMMENTOT, IDDENOMINACION = range( 6 )
+CANTIDAD, DENOMINACION, TOTAL, MONEDA, IDDOCUMMENTOT, \
+IDDENOMINACION = range( 6 )
 class FrmArqueo( Ui_frmArqueo, Base ):
     '''
     Esta clase implementa el formulario arqueo
     '''
     web = "arqueos.php?doc="
-    def __init__( self, parent = None ):
+    def __init__( self, datos_sesion, parent_window, parent = None ):
         '''
-        Constructor
+        @param datos_sesion: La información de la sesion de caja
         '''
-        super( FrmArqueo, self ).__init__()
-        self.parentWindow = parent
+        super( FrmArqueo, self ).__init__( parent )
+        self.sesion = datos_sesion
+        self.parent_window = parent_window
         self.setWindowModality( Qt.WindowModal )
         self.setWindowFlags( Qt.Dialog )
 
@@ -57,18 +79,18 @@ class FrmArqueo( Ui_frmArqueo, Base ):
         self.detailsproxymodel.setSourceModel( self.detailsModel )
 
         #filtrar en dolares y en cordobas
-        self.detailsproxymodelD = QSortFilterProxyModel( self )
-        self.detailsproxymodelD.setSourceModel( self.detailsproxymodel )
-        self.detailsproxymodelD.setFilterKeyColumn( MONEDA )
-        self.detailsproxymodelD.setFilterRegExp( "^%d$" % constantes.IDDOLARES )
+        self.__details_proxymodel_d = QSortFilterProxyModel( self )
+        self.__details_proxymodel_d.setSourceModel( self.detailsproxymodel )
+        self.__details_proxymodel_d.setFilterKeyColumn( MONEDA )
+        self.__details_proxymodel_d.setFilterRegExp( "^%d$" % constantes.IDDOLARES )
 
-        self.detailsproxymodelC = QSortFilterProxyModel( self )
-        self.detailsproxymodelC.setSourceModel( self.detailsproxymodel )
-        self.detailsproxymodelC.setFilterKeyColumn( MONEDA )
-        self.detailsproxymodelC.setFilterRegExp( "^%d$" % constantes.IDCORDOBAS )
+        self.__details_proxymodel_c = QSortFilterProxyModel( self )
+        self.__details_proxymodel_c.setSourceModel( self.detailsproxymodel )
+        self.__details_proxymodel_c.setFilterKeyColumn( MONEDA )
+        self.__details_proxymodel_c.setFilterRegExp( "^%d$" % constantes.IDCORDOBAS )
 
-        self.dolarproxy = ArqueoProxyModel()
-        self.cordobaproxy = ArqueoProxyModel()
+        self.__dolar_proxy = ArqueoProxyModel()
+        self.__cordoba_proxy = ArqueoProxyModel()
 
         self.status = True
         QTimer.singleShot( 0, self.loadModels )
@@ -103,7 +125,6 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             WHERE d.idtipodoc =  %d
             GROUP BY d.iddocumento
             """ % ( constantes.IDARQUEO )
-            print query
             self.navmodel.setQuery( query )
 
             self.detailsModel.setQuery( u"""
@@ -148,7 +169,6 @@ class FrmArqueo( Ui_frmArqueo, Base ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMMENTOT )
         self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
-        pass
 
     def setControls( self, status ):
         """
@@ -195,8 +215,8 @@ class FrmArqueo( Ui_frmArqueo, Base ):
 #            doublevalidator = QDoubleValidator(0, 99999999, 4, self)
 
         else:
-            self.tabledetailsC.setModel( self.detailsproxymodelC )
-            self.tabledetailsD.setModel( self.detailsproxymodelD )
+            self.tabledetailsC.setModel( self.__details_proxymodel_c )
+            self.tabledetailsD.setModel( self.__details_proxymodel_d )
 
 
             self.tablenavigation.setModel( self.navproxymodel )
@@ -217,20 +237,32 @@ class FrmArqueo( Ui_frmArqueo, Base ):
 
 
     def updateLabels( self ):
-        self.lblCashC.setText( moneyfmt( self.editmodel.totalCashC, 4, "C$" ) + " / " + moneyfmt( self.editmodel.expectedCashC, 4, "C$" ) )
-        self.lblCashD.setText( moneyfmt( self.editmodel.totalCashD, 4, "US$" ) + " / " + moneyfmt( self.editmodel.expectedCashD, 4, "US$" ) )
+        self.lblCashC.setText( "%s / %s" % ( 
+                        moneyfmt( self.editmodel.totalCashC, 4, "C$" ),
+                        moneyfmt( self.editmodel.expectedCashC, 4, "C$" ) )
+        )
+        self.lblCashD.setText( "%s / %s" % ( 
+                        moneyfmt( self.editmodel.totalCashD, 4, "US$" ),
+                        moneyfmt( self.editmodel.expectedCashD, 4, "US$" ) )
+        )
 
         self.lblCkC.setText( moneyfmt( self.editmodel.expectedCkC, 4, "C$" ) )
         self.lblCkD.setText( moneyfmt( self.editmodel.expectedCkD, 4, "US$" ) )
 
-        self.lblCardC.setText( moneyfmt( self.editmodel.expectedCardC, 4, "C$" ) )
-        self.lblCardD.setText( moneyfmt( self.editmodel.expectedCardD, 4, "US$" ) )
+        self.lblCardC.setText( 
+                        moneyfmt( self.editmodel.expectedCardC, 4, "C$" ) )
+        self.lblCardD.setText( 
+                        moneyfmt( self.editmodel.expectedCardD, 4, "US$" ) )
 
-        self.lblDepositC.setText( moneyfmt( self.editmodel.expectedDepositC, 4, "C$" ) )
-        self.lblDepositD.setText( moneyfmt( self.editmodel.expectedDepositD, 4, "US$" ) )
+        self.lblDepositC.setText( 
+                         moneyfmt( self.editmodel.expectedDepositC, 4, "C$" ) )
+        self.lblDepositD.setText( 
+                         moneyfmt( self.editmodel.expectedDepositD, 4, "US$" ) )
 
-        self.lblTransferC.setText( moneyfmt( self.editmodel.expectedDepositC, 4, "C$" ) )
-        self.lblTransferD.setText( moneyfmt( self.editmodel.expectedDepositD, 4, "US$" ) )
+        self.lblTransferC.setText( 
+                          moneyfmt( self.editmodel.expectedDepositC, 4, "C$" ) )
+        self.lblTransferD.setText( 
+                          moneyfmt( self.editmodel.expectedDepositD, 4, "US$" ) )
 
     def newDocument( self ):
         """
@@ -241,32 +273,32 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
-            for window in self.parentWindow.findChild( QMdiArea ).subWindowList():
+            for window in self.parent_window.findChild( QMdiArea ).subWindowList():
                 if window.widget():
                     raise UserWarning( u"Por favor cierre las otras pestañas"\
                                        + " de la aplicación antes de continuar"\
                                        + " con el arqueo" )
 
 
-            self.editmodel = ArqueoModel( self.parentWindow.datosSesion )
+            self.editmodel = ArqueoModel( self.sesion )
 
-            self.editmodel.datetime.setDate( self.parentWindow.datosSesion.fecha )
+            self.editmodel.datetime.setDate( self.sesion.fecha )
             self.editmodel.datetime.setTime( QTime.currentTime() )
 
 
-            self.dolarproxy.setSourceModel( self.editmodel )
-            self.dolarproxy.setFilterKeyColumn( MONEDA )
-            self.dolarproxy.setFilterRegExp( r"^%d$" % constantes.IDDOLARES )
-            self.dolarproxy.setDynamicSortFilter( True )
+            self.__dolar_proxy.setSourceModel( self.editmodel )
+            self.__dolar_proxy.setFilterKeyColumn( MONEDA )
+            self.__dolar_proxy.setFilterRegExp( r"^%d$" % constantes.IDDOLARES )
+            self.__dolar_proxy.setDynamicSortFilter( True )
 
 
-            self.cordobaproxy.setSourceModel( self.editmodel )
-            self.cordobaproxy.setFilterKeyColumn( MONEDA )
-            self.cordobaproxy.setFilterRegExp( r"^%d$" % constantes.IDCORDOBAS )
-            self.cordobaproxy.setDynamicSortFilter( True )
+            self.__cordoba_proxy.setSourceModel( self.editmodel )
+            self.__cordoba_proxy.setFilterKeyColumn( MONEDA )
+            self.__cordoba_proxy.setFilterRegExp( r"^%d$" % constantes.IDCORDOBAS )
+            self.__cordoba_proxy.setDynamicSortFilter( True )
 
-            self.tabledetailsC.setModel( self.cordobaproxy )
-            self.tabledetailsD.setModel( self.dolarproxy )
+            self.tabledetailsC.setModel( self.__cordoba_proxy )
+            self.tabledetailsD.setModel( self.__dolar_proxy )
 
             if not self.database.isOpen():
                 if not self.database.open():
@@ -281,8 +313,8 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             JOIN documentos d ON dpd.idhijo  = d.iddocumento
             JOIN tiposdoc td ON td.idtipodoc = d.idtipodoc
             WHERE d.idestado NOT IN ( %d,%d)
-            """ % ( constantes.CONFIRMADO, constantes.ANULADO )
-            print q
+            """ % ( constantes.CONFIRMADO,
+                    constantes.ANULADO )
             if not query.exec_( q ):
                 raise Exception( u"No se pudo ejecutar la consulta para "\
                                  + "determinar si existen documentos "
@@ -307,14 +339,14 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             query.first()
 
             self.editmodel.printedDocumentNumber = query.value( 0 ).toString()
-            self.editmodel.exchangeRateId = self.parentWindow.datosSesion.tipoCambioId
-            self.editmodel.exchangeRate = self.parentWindow.datosSesion.tipoCambioOficial
+            self.editmodel.exchangeRateId = self.sesion.tipoCambioId
+            self.editmodel.exchangeRate = self.sesion.tipoCambioOficial
 
-            self.editmodel.datetime.setDate( self.parentWindow.datosSesion.fecha )
+            self.editmodel.datetime.setDate( self.sesion.fecha )
 
             q = """
             CALL spTotalesSesion(%d);
-            """ % self.parentWindow.datosSesion.sesionId
+            """ % self.sesion.sesionId
 
             if not query.exec_( q ):
                 raise UserWarning( u"No se pudieron calcular los totales"\
@@ -408,12 +440,16 @@ class FrmArqueo( Ui_frmArqueo, Base ):
         except UserWarning as inst:
             logging.error( unicode( inst ) )
             logging.error( query.lastError().text() )
-            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.critical( self,
+                                  qApp.organizationName(),
+                                  unicode( inst ) )
             self.status = True
         except Exception  as inst:
             logging.critical( unicode( inst ) )
             logging.critical( query.lastError().text() )
-            QMessageBox.critical( self, qApp.organizationName(), "El sistema no pudo iniciar un nuevo arqueo" )
+            QMessageBox.critical( self,
+                                  qApp.organizationName(),
+                               "El sistema no pudo iniciar un nuevo arqueo" )
             self.status = True
         finally:
             if self.database.isOpen():
@@ -431,7 +467,8 @@ class FrmArqueo( Ui_frmArqueo, Base ):
 
     def save( self ):
         """
-        Redefiniendo el metodo save de Base para mostrar advertencias si el arqueo no concuerda
+        Redefiniendo el metodo save de Base para mostrar 
+        advertencias si el arqueo no concuerda
         """
         try:
             errors = []
@@ -479,9 +516,16 @@ class FrmArqueo( Ui_frmArqueo, Base ):
                             self.parentWindow.init()
                             self.close()
                         else:
-                            QMessageBox.warning( self, qApp.organizationName(), "No se pudo autorizar el arqueo" )
+                            QMessageBox.warning( self,
+                                                 qApp.organizationName(),
+                                                 "No se pudo autorizar "\
+                                                 + "el arqueo" )
             else:
-                QMessageBox.warning( self, qApp.organizationName(), unicode( inst ) + u"\n Por favor especifique el motivo de la diferencia" )
+                QMessageBox.warning( self,
+                                     qApp.organizationName(),
+                                     unicode( inst )\
+                                     + u"\n Por favor especifique el motivo"\
+                                     + " de la diferencia" )
 
     @property
     def printIdentifier( self ):

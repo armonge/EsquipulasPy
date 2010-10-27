@@ -20,14 +20,15 @@ class PagoModel( object ):
     """
     __documentType = constantes.IDPAGO
 
-    def __init__( self , datosSesion ):
+    def __init__( self , datos_sesion ):
 
-        object.__init__( self )
+        super( PagoModel, self ).__init__()
+
         self.maxCordoba = Decimal( 0 )
         """
         @ivar: Almacena el maximo de Cordobas que se puede pagar
         @type: Decimal
-        """        
+        """
         self.maxDolar = Decimal( 0 )
         """
         @ivar: Almacena el maximo de Dolares que se puede pagar
@@ -53,7 +54,7 @@ class PagoModel( object ):
         @ivar: Almacena el total de dolares del pago
         @type: Decimal
         """
-        self.datosSesion = datosSesion
+        self.datos_sesion = datos_sesion
         """
         @ivar: Almacena DatosSesion para manejar las documentos en sesion de caja correspondiente
         @type: DatosSesion
@@ -133,14 +134,14 @@ class PagoModel( object ):
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.docImpreso )
-            query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString( "hhmmss" ) )
+            query.bindValue( ":fechacreacion", self.datos_sesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString( "hhmmss" ) )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":observacion", self.observaciones )
-            total = self.totalDolar - ( self.retencionCordoba / self.datosSesion.tipoCambioBanco )
-            query.bindValue( ":total", total.to_eng_string() )
+            total = self.totalDolar - ( self.retencionCordoba / self.datos_sesion.tipoCambioBanco )
+            query.bindValue( ":total", str( total ) )
 #            query.bindValue( ":escontado", self.escontado )
-            query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
-            query.bindValue( ":caja", self.datosSesion.cajaId )
+            query.bindValue( ":idtc", self.datos_sesion.tipoCambioId )
+            query.bindValue( ":caja", self.datos_sesion.cajaId )
             query.bindValue( ":con", self.conceptoId )
 #            query.bindValue( ":estado",  constantes.INCOMPLETO)
 
@@ -156,7 +157,7 @@ class PagoModel( object ):
                 VALUES (:idsesion,:idpago)
                 """ )
 
-            query.bindValue( ":idsesion", self.datosSesion.sesionId )
+            query.bindValue( ":idsesion", self.datos_sesion.sesionId )
             query.bindValue( ":idpago", insertedId )
 
             if not query.exec_():
@@ -169,7 +170,7 @@ class PagoModel( object ):
                 "(" + insertedId + ",:idbeneficiario,:beneficiario)"
                 )
 
-            query.bindValue( ":iduser", self.datosSesion.usuarioId )
+            query.bindValue( ":iduser", self.datos_sesion.usuarioId )
             query.bindValue( ":autor", constantes.AUTOR )
             query.bindValue( ":idbeneficiario", self.beneficiarioId )
             query.bindValue( ":beneficiario", constantes.PROVEEDOR )
@@ -177,16 +178,17 @@ class PagoModel( object ):
 
             if not query.exec_():
                 print "iddocumento = " + insertedId
-                print "idusuario = " + str( self.datosSesion.usuarioId )
+                print "idusuario = " + str( self.datos_sesion.usuarioId )
                 print "idbeneficiario = " + str( self.beneficiarioId )
-                raise Exception( "No se Inserto la relacion entre el documento y las personas" )
+                raise Exception( "No se Inserto la relacion entre el documento"\
+                                 + " y las personas" )
 
 
             if self.totalC != 0:
                 if not query.prepare( "INSERT INTO movimientoscaja(iddocumento,idtipomovimiento,idtipomoneda,monto) VALUES " +
                 "(" + insertedId + ",1,1,-:totalCordoba)" ):
                     raise Exception( query.lastError().text() )
-                query.bindValue( ":totalCordoba", self.totalC.to_eng_string() )
+                query.bindValue( ":totalCordoba", str( self.totalC ) )
                 if not query.exec_():
                     raise Exception( "No se Inserto el movimiento caja en dolares" )
 
@@ -195,9 +197,10 @@ class PagoModel( object ):
                 if not query.prepare( "INSERT INTO movimientoscaja(iddocumento,idtipomovimiento,idtipomoneda,monto) VALUES " +
                 "(" + insertedId + ",1,2,-:totalDolar)" ):
                     raise Exception( query.lastError().text() )
-                query.bindValue ( ":totalDolar", self.totalD.to_eng_string() )
+                query.bindValue ( ":totalDolar", str( self.totalD ) )
                 if not query.exec_():
-                    raise Exception( "No se Inserto el movimiento caja en dolares" )
+                    raise Exception( "No se Inserto el movimiento "\
+                                     + "caja en dolares" )
 
 
 
@@ -245,16 +248,16 @@ class PagoModel( object ):
     @return_decimal
     def totalDolar( self ):
         try:
-            return self.totalD + redondear( self.totalC / self.datosSesion.tipoCambioBanco )
+            return self.totalD + redondear( self.totalC / self.datos_sesion.tipoCambioBanco )
         except DivisionByZero:
-            return Decimal("0")
+            return Decimal( "0" )
     @property
     @return_decimal
     def totalCordoba( self ):
         try:
-            return self.totalC + redondear( self.totalD * self.datosSesion.tipoCambioBanco )
+            return self.totalC + redondear( self.totalD * self.datos_sesion.tipoCambioBanco )
         except DivisionByZero:
-            return Decimal("0")
+            return Decimal( "0" )
     @property
     @return_decimal
     def subTotalDolar( self ):

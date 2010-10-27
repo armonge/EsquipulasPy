@@ -1,4 +1,23 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+#       
+#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
 '''
 Created on 23/07/2010
 
@@ -155,16 +174,20 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
             try:
                 if not self.database.isOpen():
                     if not self.database.open():
-                        raise UserWarning( u"No se pudo conectar con la base de datos" )
+                        raise UserWarning( u"No se pudo conectar con la"\
+                                           + " base de datos" )
 
                 if not self.database.transaction():
-                    raise Exception( u"No se pudo iniciar la transacción para confirmar el kardex" )
+                    raise Exception( u"No se pudo iniciar la transacción "\
+                                     + "para confirmar el kardex" )
 
                 q = """
-                UPDATE documentos d SET idestado = %d  WHERE d.iddocumento = %d LIMIT 1
+                UPDATE documentos d SET idestado = %d  
+                WHERE d.iddocumento = %d LIMIT 1
                 """ % ( constantes.CONFIRMADO, iddoc )
                 if not query.exec_( q ):
-                    raise Exception( u"No se pudo actualizar el estado del documento" )
+                    raise Exception( u"No se pudo actualizar el estado "\
+                                     + "del documento" )
 
                 if not query.exec_( """
                     INSERT INTO documentos (ndocimpreso, fechacreacion,
@@ -172,7 +195,9 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
                     SELECT fnConsecutivo(%d,NULL), NOW(), %d, total, 
                     idtipocambio, idbodega FROM documentos
                     WHERE iddocumento = %d;
-                """ % ( constantes.IDKARDEX, constantes.IDKARDEX, iddoc ) ):
+                """ % ( constantes.IDKARDEX,
+                        constantes.IDKARDEX,
+                        iddoc ) ):
                     raise Exception( u"No se pudo insertar el documento kardex" )
 
                 insertedId = query.lastInsertId().toInt()[0]
@@ -196,7 +221,8 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
                 logging.critical( unicode( inst ) )
                 self.database.rollback()
                 QMessageBox.critical( self, qApp.organizationName(),
-                                      u"No se pudo confirmar la entrada de este documento" )
+                                      u"No se pudo confirmar la entrada"\
+                                      + " de este documento" )
 
 
 
@@ -278,10 +304,15 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
 
 
         except UserWarning as inst:
-            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.critical( self,
+                                  qApp.organizationName(),
+                                  unicode( inst ) )
             logging.error( unicode( inst ) )
         except Exception as inst:
-            QMessageBox.critical( self, qApp.organizationName(), u"No se pudo iniciar un nuevo ajuste de kardex" )
+            QMessageBox.critical( self,
+                                  qApp.organizationName(),
+                                  u"No se pudo iniciar un nuevo ajuste de kardex" )
+
             logging.critical( unicode( inst ) )
 
 
@@ -302,7 +333,8 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.database().open:
-                    raise UserWarning( "No se pudo conectar con la base de datos" )
+                    raise UserWarning( "No se pudo conectar con la "\
+                                       + "base de datos" )
 
             self.editmodel = KardexOtherModel()
 
@@ -318,7 +350,8 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
             """ % constantes.IDAJUSTEBODEGA )
 
             if conceptosmodel.rowCount() == 0:
-                raise UserWarning( u"No existen conceptos para los ajustes de bodega" )
+                raise UserWarning( u"No existen conceptos para los "\
+                                   + "ajustes de bodega" )
 
             self.cbConcept.setModel( conceptosmodel )
             self.cbConcept.setModelColumn( 1 )
@@ -338,7 +371,8 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
             CALL spConsecutivo(%d,NULL);
             """ % constantes.IDAJUSTEBODEGA )
             if not query.exec_():
-                raise UserWarning( "No se pudo calcular el numero del kardex" )
+                raise UserWarning( "No se pudo calcular el numero "\
+                                   + "del kardex" )
 
             query.first()
             self.editmodel.printedDocumentNumber = query.value( 0 ).toString()

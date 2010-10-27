@@ -1,4 +1,24 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+#       ${file}
+#       
+#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
 '''
 Created on 07/06/2010
 
@@ -35,11 +55,13 @@ class ArqueoDelegate( SingleSelectionSearchPanelDelegate ):
             return spinbox
         elif index.column() == DENOMINACION:
 
+            model = index.model()
 
             self.proxymodel.setSourceModel( self.denominationsmodel )
 
-            current = index.model().data( index.model().index( index.row(), IDDENOMINACION ) ).toInt()[0]
-            self.proxymodel.setFilterRegExp( self.filter( index.model(), current ) )
+            current = model.index( index.row(), IDDENOMINACION ).data().toInt()[0]
+            self.proxymodel.setFilterRegExp( self.filter( model,
+                                                          current ) )
 
 
             sp = super( ArqueoDelegate, self ).createEditor( parent, option, index )
@@ -52,7 +74,9 @@ class ArqueoDelegate( SingleSelectionSearchPanelDelegate ):
 
 
         else:
-            return QStyledItemDelegate.createEditor( self, parent, option, index )
+            return super( ArqueoDelegate, self ).createEditor( parent,
+                                                               option,
+                                                               index )
 
     def setEditorData( self, editor, index ):
         if index.column() == CANTIDAD:
@@ -65,7 +89,7 @@ class ArqueoDelegate( SingleSelectionSearchPanelDelegate ):
             editor.setCurrentIndex( i )
             editor.lineEdit().selectAll()
         else:
-            QStyledItemDelegate.setEditorData( self, editor, index )
+            super( ArqueoDelegate, self ).setEditorData( editor, index )
 
     def setModelData( self, editor, model, index ):
         if index.column() == DENOMINACION:
@@ -76,6 +100,6 @@ class ArqueoDelegate( SingleSelectionSearchPanelDelegate ):
             except IndexError as inst:
                 logging.error( inst )
         else:
-            QStyledItemDelegate.setModelData( self, editor, model, index )
+            super( ArqueoDelegate, self ).setModelData( editor, model, index )
 
 

@@ -54,7 +54,8 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
             self.activofiltermodel.setSourceModel( self.model )
             self.activofiltermodel.setFilterKeyColumn( ESDEBE )
             self.activofiltermodel.setFilterRegExp( "1" )
-            self.activofiltermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
+            self.activofiltermodel.setFilterCaseSensitivity( 
+                                                        Qt.CaseInsensitive )
 
             self.activoTree.setModel( self.activofiltermodel )
             self.activoTree.setColumnHidden( IDCUENTA, True )
@@ -66,7 +67,10 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
 
             total = Decimal( 0 )
             for i in range( self.activofiltermodel.rowCount() ):
-                total += Decimal( self.activofiltermodel.index( i, ACUMULADO ).data( Qt.EditRole ).toString() )
+                total += Decimal( 
+                             self.activofiltermodel.index( i,
+                                            ACUMULADO ).data( Qt.EditRole
+                                                              ).toString() )
 
             self.txtactivo.setText( moneyfmt( total, 4, 'C$' ) )
 
@@ -87,7 +91,10 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
 
             total1 = Decimal( 0 )
             for i in range( self.pasivofiltermodel.rowCount() ):
-                total1 += Decimal( self.pasivofiltermodel.index( i, ACUMULADO ).data( Qt.EditRole ).toString() )
+                total1 += Decimal( 
+                                  self.pasivofiltermodel.index( i,
+                                                ACUMULADO ).data( Qt.EditRole
+                                                               ).toString() )
             self.txtpasivo.setText( moneyfmt( total1, 4, 'C$' ) )
 
 
@@ -105,10 +112,14 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
 
             total2 = Decimal( 0 )
             for i in range( self.capitalfiltermodel.rowCount() ):
-                total2 += Decimal( self.capitalfiltermodel.index( i, ACUMULADO ).data( Qt.EditRole ).toString() )
+                total2 += Decimal( 
+                                  self.capitalfiltermodel.index( i,
+                                             ACUMULADO ).data( Qt.EditRole
+                                                                ).toString() )
 
             self.txtcapital.setText( moneyfmt( total2, 4, 'C$' ) )
-            self.txtpasivocapital.setText( moneyfmt( total1 + total2, 4, 'C$' ) )
+            self.txtpasivocapital.setText( moneyfmt( total1 + total2,
+                                                      4, 'C$' ) )
 
 
     #        self.capitalTree.expandAll()
@@ -149,6 +160,7 @@ class CuentasModel( QAbstractItemModel ):
         if item:
             return item
         return self.rootItem
+
     def insertRows( self, position, rows, parent, code, description, esdebe ):
         parentItem = self.getItem( parent )
         self.beginInsertRows( parent, position, position + rows - 1 )
@@ -237,9 +249,11 @@ class CuentasModel( QAbstractItemModel ):
         return parentItem.childCount()
 
 class Cuenta( object ):
-    def __init__( self, parent, fecha, id = 0 , code = "", description = "", monto = Decimal( 0 ), esdebe = 0 ):
+    def __init__( self, parent, fecha, account_id = 0 ,
+                  code = "", description = "", monto = Decimal( 0 ),
+                  esdebe = 0 ):
         self.parentItem = parent
-        self.id = id
+        self.id = account_id
         self.code = code
         self.description = description
         self.monto = monto

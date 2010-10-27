@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/marcos/workspace/EsquipulasPy/src/ui/cheques.ui'
+# Form implementation generated from reading ui file 'ui/cheques.ui'
 #
 # Created by: PyQt4 UI code generator 4.7.3
 #
@@ -9,10 +9,10 @@
 from PyQt4 import QtCore, QtGui
 
 class Ui_frmCheques(object):
-    def setupUi(self, FrmCheques):
-        FrmCheques.setObjectName("frmCheques")
-        FrmCheques.resize(769, 665)
-        self.centralwidget = QtGui.QWidget(FrmCheques)
+    def setupUi(self, frmCheques):
+        frmCheques.setObjectName("frmCheques")
+        frmCheques.resize(769, 665)
+        self.centralwidget = QtGui.QWidget(frmCheques)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_3 = QtGui.QGridLayout(self.centralwidget)
         self.gridLayout_3.setObjectName("gridLayout_3")
@@ -256,6 +256,7 @@ class Ui_frmCheques(object):
         self.gridLayout = QtGui.QGridLayout(self.frame_2)
         self.gridLayout.setObjectName("gridLayout")
         self.tabledetails = QtGui.QTableView(self.frame_2)
+        self.tabledetails.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.tabledetails.setAlternatingRowColors(True)
         self.tabledetails.setObjectName("tabledetails")
         self.gridLayout.addWidget(self.tabledetails, 0, 0, 1, 3)
@@ -328,37 +329,37 @@ class Ui_frmCheques(object):
         icon1.addPixmap(QtGui.QPixmap(":/icons/res/table.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.tabnavigation, icon1, "")
         self.gridLayout_3.addWidget(self.tabWidget, 0, 0, 1, 1)
-        FrmCheques.setCentralWidget(self.centralwidget)
-        self.statusbar = QtGui.QStatusBar(FrmCheques)
+        frmCheques.setCentralWidget(self.centralwidget)
+        self.statusbar = QtGui.QStatusBar(frmCheques)
         self.statusbar.setObjectName("statusbar")
-        FrmCheques.setStatusBar(self.statusbar)
-        self.toolBar = QtGui.QToolBar(FrmCheques)
+        frmCheques.setStatusBar(self.statusbar)
+        self.toolBar = QtGui.QToolBar(frmCheques)
         self.toolBar.setObjectName("toolBar")
-        FrmCheques.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        frmCheques.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
         self.label_4.setBuddy(self.txtSearch)
 
-        self.retranslateUi(FrmCheques)
+        self.retranslateUi(frmCheques)
         self.tabWidget.setCurrentIndex(1)
         self.beneficiariowidget.setCurrentIndex(0)
         self.retencionwidget.setCurrentIndex(0)
         self.cboretencion.setCurrentIndex(-1)
         self.cuentawidget.setCurrentIndex(0)
         self.conceptowidget.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(FrmCheques)
-        FrmCheques.setTabOrder(self.dtPicker, self.cbobeneficiario)
-        FrmCheques.setTabOrder(self.cbobeneficiario, self.ckretencion)
-        FrmCheques.setTabOrder(self.ckretencion, self.cboretencion)
-        FrmCheques.setTabOrder(self.cboretencion, self.cbocuenta)
-        FrmCheques.setTabOrder(self.cbocuenta, self.cboconcepto)
-        FrmCheques.setTabOrder(self.cboconcepto, self.subtotal)
-        FrmCheques.setTabOrder(self.subtotal, self.txtobservaciones)
-        FrmCheques.setTabOrder(self.txtobservaciones, self.tabledetails)
-        FrmCheques.setTabOrder(self.tabledetails, self.tabWidget)
-        FrmCheques.setTabOrder(self.tabWidget, self.txtSearch)
-        FrmCheques.setTabOrder(self.txtSearch, self.tablenavigation)
+        QtCore.QMetaObject.connectSlotsByName(frmCheques)
+        frmCheques.setTabOrder(self.dtPicker, self.cbobeneficiario)
+        frmCheques.setTabOrder(self.cbobeneficiario, self.ckretencion)
+        frmCheques.setTabOrder(self.ckretencion, self.cboretencion)
+        frmCheques.setTabOrder(self.cboretencion, self.cbocuenta)
+        frmCheques.setTabOrder(self.cbocuenta, self.cboconcepto)
+        frmCheques.setTabOrder(self.cboconcepto, self.subtotal)
+        frmCheques.setTabOrder(self.subtotal, self.txtobservaciones)
+        frmCheques.setTabOrder(self.txtobservaciones, self.tabledetails)
+        frmCheques.setTabOrder(self.tabledetails, self.tabWidget)
+        frmCheques.setTabOrder(self.tabWidget, self.txtSearch)
+        frmCheques.setTabOrder(self.txtSearch, self.tablenavigation)
 
-    def retranslateUi(self, FrmCheques):
-        FrmCheques.setWindowTitle(QtGui.QApplication.translate("frmCheques", "Elaboración de Cheques", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, frmCheques):
+        frmCheques.setWindowTitle(QtGui.QApplication.translate("frmCheques", "Elaboración de Cheques", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("frmCheques", "Cheque No.", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("frmCheques", "Fecha:", None, QtGui.QApplication.UnicodeUTF8))
         self.label_11.setText(QtGui.QApplication.translate("frmCheques", "Beneficiario:", None, QtGui.QApplication.UnicodeUTF8))
@@ -387,9 +388,9 @@ import res_rc
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
-    FrmCheques = QtGui.QMainWindow()
+    frmCheques = QtGui.QMainWindow()
     ui = Ui_frmCheques()
-    ui.setupUi(FrmCheques)
-    FrmCheques.show()
+    ui.setupUi(frmCheques)
+    frmCheques.show()
     sys.exit(app.exec_())
 

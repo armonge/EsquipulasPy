@@ -1,4 +1,24 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+#       ${file}
+#       
+#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
 '''
 Created on 28/05/2010
 
@@ -38,7 +58,7 @@ class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
         self.filtermodel.setSourceModel( self.backmodel )
         self.filtermodel.setFilterCaseSensitivity( Qt.CaseInsensitive )
 
-        self.updateModels()
+        self.update_models()
 #        self.tableview.addActions( ( self.actionEdit, self.actionNew ) )
         self.tableview.setColumnHidden( 0, True )
         self.tableview.resizeColumnsToContents()
@@ -50,7 +70,7 @@ class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
 
         self.nuevoarticulo = None
 
-    def updateModels( self ):
+    def update_models( self ):
         """
         Actualizar los modelos, despues de toda operacion que cambie la base 
         de datos se tienen que actualizar los modelos
@@ -77,10 +97,14 @@ class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
             self.tableview.setModel( self.filtermodel )
         except UserWarning as inst:
             logging.error( unicode( inst ) )
-            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.critical( self, qApp.organizationName(),
+                                  unicode( inst ) )
         except Exception as inst:
             logging.critical( unicode( inst ) )
-            QMessageBox.critical( self, qApp.organizationName(), "Hubo un error al cargar la lista de articulos" )
+            QMessageBox.critical( self,
+                                  qApp.organizationName(),
+                                  "Hubo un error al cargar la lista de "\
+                                  + "articulos" )
         finally:
             if self.database.isOpen():
                 self.database.close()
@@ -95,13 +119,8 @@ class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
         self.tableview.setEditTriggers( QAbstractItemView.AllEditTriggers )
         self.tableview.edit( self.tableview.selectionModel().currentIndex() )
 
-    def on_buttonBox_accepted( self ):
-        """
-        Guardar los cambios
-        """
-        ###self.backmodel.setData(index, value)
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( unicode )
     def on_txtSearch_textChanged( self, text ):
         """
         @param text: El texto del filtro a buscar
@@ -115,12 +134,16 @@ class FrmArticulos ( QMainWindow, Ui_FrmCatGeneric ):
         """
         self.nuevoarticulo = FrmArticlesNew()
         if self.nuevoarticulo.exec_() == QDialog.Accepted:
-            self.updateModels()
+            self.update_models()
 
 
 
 
 class ArticlesModel( QSqlQueryModel ):
+    """
+    Este modelo se encarga de mostrar y editar los articulos de la tabla 
+    articulos
+    """
     def __init__( self, parent = None ):
         """
         Constructor de la clase para editar articulos en el tableview
@@ -128,8 +151,9 @@ class ArticlesModel( QSqlQueryModel ):
         super( ArticlesModel, self ).__init__( parent )
         self.queries = []
         self.dirty = False
-        if not QSqlDatabase.database().isOpen():
-            QSqlDatabase.open()
+        self.database = QSqlDatabase.database()
+        if not self.database.isOpen():
+            self.database.open()
 
     def setData( self, index, value, _role = Qt.EditRole ):
         """
@@ -142,162 +166,64 @@ class ArticlesModel( QSqlQueryModel ):
             keyindex = super( ArticlesModel, self ).index( index.row(), 0 )
             primarykey = self.data( keyindex ).toInt()[0]
             self.clear()
+            result = False
             try:
-                if not QSqlDatabase.database().isOpen():
-                    if not QSqlDatabase.open():
-                        raise UserWarning( "No se pudo abrir la base de datos" )
+                if not self.database.isOpen():
+                    if not self.database.open():
+                        raise UserWarning( "No se pudo abrir la base "\
+                                           + "de datos" )
+                if not self.database.transaction():
+                    raise Exception( self.database.lastError().text() )
+
                 if index.column() == DAI:
-                    self.queries.append( self.__set_dai( value.toString(),
+                    self.queries.append( set_dai( value.toString(),
                                                        primarykey ) )
                 elif index.column() == ISC:
-                    self.queries.append( self.__set_isc( value.toString(),
+                    self.queries.append( set_isc( value.toString(),
                                                        primarykey ) )
                 elif index.column() == COMISION:
-                    self.queries.append( self.__set_comision( value.toString(),
+                    self.queries.append( set_comision( value.toString(),
                                                             primarykey ) )
                 elif index.column() == GANANCIA:
-                    self.queries.append( self.__set_ganancia( value.toString(),
+                    self.queries.append( set_ganancia( value.toString(),
                                                             primarykey ) )
                 elif index.column() == ACTIVO:
-                    self.queries.append( self.__set_activo( value.toBool(),
+                    self.queries.append( set_activo( value.toBool(),
                                                           primarykey ) )
+                if not QSqlDatabase.database().commit():
+                    raise Exception( self.database.lastError().text() )
+
                 self.refresh()
                 self.dirty = True
                 self.dataChanged.emit( index, index )
-                return True
+                result = True
+
             except UserWarning as inst:
-                QMessageBox.critical( self,
+                QMessageBox.critical( None,
                                       qApp.organizationName(),
                                       unicode( inst ) )
                 logging.error( unicode( inst ) )
             except Exception as inst:
                 logging.critical( unicode( inst ) )
-                QMessageBox.critical( self, qApp.organizationName(),
+                QMessageBox.critical( None, qApp.organizationName(),
                                       "Hubo un error al guardar su cambio" )
-        return False
-
-    def __set_activo( self, value, _id ):
-        """
-        Actualiza el estado de un articulo
-        @param id: EL index del record del tableview 
-        @param value: El valor a guardar en el record del index 
-        """
-        query = QSqlQuery()
-        if not query.prepare( """
-        UPDATE articulos 
-        SET activo=:value 
-        WHERE idarticulo=:idarticulo"""
-         ):
-            raise Exception( "No se pudo preparar el update" )
-        query.bindValue( ":value", value )
-        query.bindValue( ":idarticulo", _id )
-        if not query.exec_():
-            raise Exception( "No se pudo ejecutar el update" )
-
-    def __set_dai( self, value, articleid ):
-        """
-        Actualiza el costo agregado DAI de un articulo
-        @param articleid: El Index del record del tableView
-        @param value: El Valor a guardar en el record del Index        
-        """
-        query = QSqlQuery()
-        if not query.prepare( """
-        UPDATE costosagregados 
-        SET activo=0
-        WHERE idarticulo=:idarticulo AND idtipocosto=%d
-        """ % constantes.DAI ):
-            raise Exception( "No se pudo preparar el update" )
-        query.bindValue( ":idarticulo", articleid )
-        if not query.exec_():
-            raise Exception( "No se pudo ejecutar el update" )
-
-        if not query.prepare( "INSERT INTO costosagregados"\
-                              + " (valorcosto,activo,idtipocosto,idarticulo)"\
-                              + " VALUES(:valor,1,3,:idarticulo)" ):
-            raise Exception( "No se pudo preparar el insert" )
-        query.bindValue( ":idarticulo", articleid )
-        query.bindValue( ":valor", value )
-        if not query.exec_():
-            raise Exception( "No se pudo insertar" )
-
-    def __set_isc( self, value, articleid ):
-        """
-        Actualiza el costo agregado ISC de un articulo
-        @param id: El Index del record del tableView
-        @param value: El Valor a guardar en el record del Index        
-        """
-        query = QSqlQuery()
-        if not query.prepare( """
-        UPDATE costosagregados SET activo=0"
-        WHERE idarticulo=:idarticulo AND idtipocosto=%d
-        """ % constantes.ISC ):
-            raise Exception( "No se pudo preparar el update" )
-        query.bindValue( ":idarticulo", articleid )
-        if not query.exec_():
-            raise Exception( "No se pudo ejecutar el update" )
-
-        if not query.prepare( """
-        INSERT INTO costosagregados
-        valorcosto,activo,idtipocosto,idarticulo)
-        VALUES(:valor,1,%d,:idarticulo)
-        """ % constantes.ISC ):
-            raise Exception( "No se pudo preparar el insert" )
-        query.bindValue( ":idarticulo", articleid )
-        query.bindValue( ":valor", value )
-        if not query.exec_():
-            raise Exception( "No se pudo insertar" )
-
-    def __set_comision( self, value, articleid ):
-        """
-        Actualiza el costo agregado COMISION de un articulo
-        @param id: El Index del record del tableView
-        @param value: El Valor a guardar en el record del Index        
-        """
-        query = QSqlQuery()
-        if not query.prepare( """
-        UPDATE costosagregados SET activo=0
-        WHERE idarticulo=:idarticulo AND idtipocosto=%d
-        """ % constantes.COMISION ):
-            raise Exception( "No se pudo preparar el update" )
-        query.bindValue( ":idarticulo", articleid )
-        if not query.exec_():
-            raise Exception( "No se pudo ejecutar el update" )
-
-        if not query.prepare( """
-        INSERT INTO costosagregados 
-        (valorcosto,activo,idtipocosto,idarticulo) 
-         VALUES (:valor,1,%d,:idarticulo) 
-         """ % constantes.COMISION ):
-            raise Exception( "No se pudo preparar el insert" )
-        query.bindValue( ":idarticulo", articleid )
-        query.bindValue( ":valor", value )
-        if not query.exec_():
-            raise Exception( "No se pudo insertar" )
+        return result
 
 
-    def __set_ganancia( self, value, articleid ):
-        """
-        Actualiza el costo agregado GANANCIA de un articulo
-        @param id: El Index del record del tableView
-        @param value: El Valor a guardar en el record del Index        
-        """
-        query = QSqlQuery()
-        if not query.prepare( """
-        UPDATE articulos SET ganancia= :value 
-        WHERE idarticulo= :idarticulo
-        """ ):
-            raise Exception( "No se pudo preparar el update" )
-        query.bindValue( ":value", value )
-        query.bindValue( ":idarticulo", articleid )
-        if not query.exec_():
-            raise Exception( "No se pudo ejecutar el update" )
 
     def refresh( self ):
         """
         Refresca los datos mostrados en el TableView
         """
         self.setQuery( """        
-            SELECT idarticulo, descripcion, dai, isc, comision, ganancia, activo
+            SELECT 
+                idarticulo, 
+                descripcion, 
+                dai, 
+                isc, 
+                comision, 
+                ganancia, 
+                activo
             FROM vw_articulosconcostosactuales v
         """ )
 
@@ -342,10 +268,10 @@ class FrmArticlesNew( QDialog, Ui_frmArticlesNew ):
 
 
         self.catvalid = False
-        self.catId = 0
-        self.brandId = 0
-        self.ISC = Decimal( 0 )
-        self.DAI = Decimal( 0 )
+        self.cat_id = 0
+        self.brand_id = 0
+        self.isc = Decimal( 0 )
+        self.dai = Decimal( 0 )
         self.comission = Decimal( 0 )
         self.profit = Decimal( 0 )
 
@@ -368,7 +294,7 @@ class FrmArticlesNew( QDialog, Ui_frmArticlesNew ):
 
 
         self.buttonBox.rejected.connect( self.reject )
-        self.categoriesview.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect( self.updateCategory )
+        self.categoriesview.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect( self.update_category )
         self.brandsview.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect( self.updateBrand )
 
     def cargarMarcas( self ):
@@ -387,22 +313,37 @@ class FrmArticlesNew( QDialog, Ui_frmArticlesNew ):
     @pyqtSlot()
     def on_buttonBox_accepted( self ):
         if self.valid:
-            if QMessageBox.question( self, qApp.organizationName(), u"¿Esta seguro que desea añadir el producto?", QMessageBox.Ok | QMessageBox.Cancel ) == QMessageBox.Ok:
+            if QMessageBox.question( self,
+                                     qApp.organizationName(),
+                                     u"¿Esta seguro que desea añadir el producto?",
+                                     QMessageBox.Ok |
+                                     QMessageBox.Cancel ) == QMessageBox.Ok:
                 if not self.save():
-                    QMessageBox.critical( self, qApp.organizationName(), "Lo sentimos pero no se ha podido guardar el articulo" )
+                    QMessageBox.critical( self,
+                                          qApp.organizationName(),
+                                          u"Lo sentimos pero no se ha"\
+                                          + " podido guardar el articulo" )
                 else:
                     super( FrmArticlesNew, self ).accept()
         else:
-            QMessageBox.warning( self, qApp.organizationName(), "Lo sentimos pero los datos no son validos, recuerde elegir una subcategoria y una marca" )
+            QMessageBox.warning( self,
+                                 qApp.organizationName(),
+                                 u"Lo sentimos pero los datos no son"\
+                                 + " validos, recuerde elegir una subcategoria"\
+                                 + " y una marca" )
 
 
     def save( self ):
+        """
+        Guardar el nuevo articulo en la base de datos
+        """
         query = QSqlQuery()
         result = False
         try:
             if not QSqlDatabase.database().isOpen():
                 if not QSqlDatabase.open():
-                    raise UserWarning( "No se pudo conectar con la base de datos" )
+                    raise UserWarning( u"No se pudo conectar con la"\
+                                       + " base de datos" )
 
 
             query.prepare( """
@@ -414,14 +355,15 @@ class FrmArticlesNew( QDialog, Ui_frmArticlesNew ):
                         :isc, 
                         :comision, 
                         :ganancia 
-                        )""" )
+                        )
+                        """ )
             query.bindValue( ":activo", 1 )
-            query.bindValue( ":marca", self.brandId )
-            query.bindValue( ":subcategoria", self.catId )
-            query.bindValue( ":dai", self.DAI.to_eng_string() )
-            query.bindValue( ":isc", self.ISC.to_eng_string() )
-            query.bindValue( ":comision", self.comission.to_eng_string() )
-            query.bindValue( ":ganancia", self.profit.to_eng_string() )
+            query.bindValue( ":marca", self.brand_id )
+            query.bindValue( ":subcategoria", self.cat_id )
+            query.bindValue( ":dai", str( self.dai ) )
+            query.bindValue( ":isc", str( self.isc ) )
+            query.bindValue( ":comision", str( self.comission ) )
+            query.bindValue( ":ganancia", str( self.profit ) )
 
             if not query.exec_():
                 raise Exception( "No se pudo ejecutar la consulta" )
@@ -437,43 +379,43 @@ class FrmArticlesNew( QDialog, Ui_frmArticlesNew ):
 
         return result
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( unicode )
     def on_txtCategorySearch_textChanged( self, text ):
         self.catproxymodel.setFilterFixedString( text )
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( unicode )
     def on_txtBrandSearch_textChanged( self, text ):
         self.brandsproxymodel.setFilterFixedString( text )
 
     @property
     def valid( self ):
-        return self.catvalid and self.brandId != 0
+        return self.catvalid and self.brand_id != 0
 
     @pyqtSlot()
     def on_btnAgregarMarca_pressed( self ):
         marca = ["", True]
-        marcaDescripcion = ""
-        while marcaDescripcion == "" and marca[1] == True:
+        marca_descripcion = ""
+        while marca_descripcion == "" and marca[1] == True:
             marca = QInputDialog.getText( self, "Agregar Marca",
                                           "Ingrese la Marca" )
-            marcaDescripcion = marca[0].strip()
-            if marcaDescripcion != "":
+            marca_descripcion = marca[0].strip()
+            if marca_descripcion != "":
                 proxy = self.brandsproxymodel
-                proxy.setFilterRegExp( "^" + marcaDescripcion + "$" )
+                proxy.setFilterRegExp( "^" + marca_descripcion + "$" )
 
                 if proxy.rowCount() > 0:
                     QMessageBox.information( None, "Crear Marca",
                                          "La marca %s ya existe" %
-                                          marcaDescripcion )
+                                          marca_descripcion )
                     marca = ["", True]
-                    marcaDescripcion = ""
+                    marca_descripcion = ""
 
         self.brandsproxymodel.setFilterRegExp( "" )
 
         if marca[1]:
-            if QMessageBox.question( None, "Crear Marca",
+            if QMessageBox.question( self, qApp.organizationName(),
                                       u"¿Está seguro que desea crear la marca %s ?" %
-                                      marcaDescripcion,
+                                      marca_descripcion,
                                       QMessageBox.Yes | QMessageBox.No
                                        ) == QMessageBox.Yes:
                 if not QSqlDatabase.database().isOpen():
@@ -482,7 +424,7 @@ class FrmArticlesNew( QDialog, Ui_frmArticlesNew ):
                         raise Exception( "No se pudo abrir la base de datos" )
                 query = QSqlQuery()
                 query.prepare( "INSERT INTO marcas(nombre) VALUES (:marca)" )
-                query.bindValue( ":marca", marcaDescripcion )
+                query.bindValue( ":marca", marca_descripcion )
                 if not query.exec_():
                     logging.error( query.lastError().text() )
                     QMessageBox.warning( None, "Error al crear la marca",
@@ -491,22 +433,22 @@ class FrmArticlesNew( QDialog, Ui_frmArticlesNew ):
                     self.cargarMarcas()
 
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
     def on_sbDAI_valueChanged( self, value ):
         try:
-            self.DAI = Decimal( str( value ) )
+            self.dai = Decimal( str( value ) )
         except ValueError:
-            self.DAI = 0
+            self.dai = 0
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
     def on_sbISC_valueChanged( self, value ):
         try:
-            self.ISC = Decimal( str( value ) )
+            self.isc = Decimal( str( value ) )
         except ValueError:
-            self.ISC = 0
+            self.isc = 0
 
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
     def on_sbComission_valueChanged( self, value ):
         try:
             self.comission = Decimal( str( value ) )
@@ -514,7 +456,7 @@ class FrmArticlesNew( QDialog, Ui_frmArticlesNew ):
         except ValueError:
             self.comission = 0
 
-    @pyqtSlot( "double" )
+    @pyqtSlot( float )
     def on_sbProfit_valueChanged( self, value ):
         try:
             self.profit = Decimal( str( value ) )
@@ -523,18 +465,142 @@ class FrmArticlesNew( QDialog, Ui_frmArticlesNew ):
 
     def updateBrand( self, selected, _deselected ):
         if self.brandsproxymodel.rowCount() >= 0:
-            self.brandId = self.brandsproxymodel.index( 
+            self.brand_id = self.brandsproxymodel.index( 
                                    selected.indexes()[0].row(),
                                     0 ).data().toInt()[0]
 
 
-    def updateCategory( self, selected, _deselected ):
+    def update_category( self, selected, _deselected ):
         try:
             row = selected.indexes()[0].row()
             parent = selected.indexes()[0].parent()
             self.catvalid = parent.data().toString() != ""
-            self.catId = self.catproxymodel.data( 
+            self.cat_id = self.catproxymodel.data( 
                               self.catproxymodel.index( row, 1,
                                          parent ), Qt.DisplayRole )
         except IndexError:
             pass
+
+
+def set_activo( value, _id ):
+    """
+    Actualiza el estado de un articulo
+    @param id: EL index del record del tableview 
+    @param value: El valor a guardar en el record del index 
+    """
+    query = QSqlQuery()
+    if not query.prepare( """
+    UPDATE articulos 
+    SET activo=:value 
+    WHERE idarticulo=:idarticulo"""
+     ):
+        raise Exception( query.lastError().text() )
+    query.bindValue( ":value", value )
+    query.bindValue( ":idarticulo", _id )
+    if not query.exec_():
+        raise Exception( query.lastError().text() )
+
+def set_dai( value, article_id ):
+    """
+    Actualiza el costo agregado dai de un articulo
+    @param articleid: El Index del record del tableView
+    @param value: El Valor a guardar en el record del Index        
+    """
+    query = QSqlQuery()
+    if not query.exec_( """
+    UPDATE costosagregados 
+    SET activo=0
+    WHERE idarticulo=%d AND idtipocosto=%d
+    """ % ( article_id,
+            constantes.DAI ) ):
+        raise Exception( query.lastError().text() )
+
+    if not query.prepare( """
+        INSERT INTO costosagregados
+        (valorcosto, activo, idtipocosto, idarticulo)
+        VALUES(:valor, 1, %d, %d)
+        """ % ( constantes.DAI,
+                article_id ) ):
+        raise Exception( query.lastError().text() )
+
+    query.bindValue( ":valor", value )
+
+    if not query.exec_():
+        raise Exception( query.lastError().text() )
+
+def set_isc( value, article_id ):
+    """
+    Actualiza el costo agregado isc de un articulo
+    @param article_id: El Index del record del tableView
+    @type article_id: int
+    @param value: El Valor a guardar en el record del Index
+    @type        
+    """
+    query = QSqlQuery()
+    if not query.exec_( """
+    UPDATE costosagregados 
+    SET activo=0
+    WHERE idarticulo = %d AND idtipocosto = %d
+    """ % ( article_id,
+            constantes.ISC ) ):
+        raise Exception( query.lastError().text() )
+
+    if not query.prepare( """
+    INSERT INTO costosagregados
+    (valorcosto, activo, idtipocosto,idarticulo)
+    VALUES(:valor, 1, %d, %d)
+    """ % ( constantes.ISC,
+           article_id ) ):
+        raise Exception( query.lastError().text() )
+
+    query.bindValue( ":valor", value )
+
+
+    if not query.exec_():
+        raise Exception( query.lastError().text() )
+
+def set_comision( value, article_id ):
+    """
+    Actualiza el costo agregado COMISION de un articulo
+    @param article_id: El Index del record del tableView
+    @param value: El Valor a guardar en el record del Index        
+    """
+    query = QSqlQuery()
+    if not query.exec_( """
+    UPDATE costosagregados 
+    SET activo=0
+    WHERE idarticulo=%d AND idtipocosto=%d
+    """ % ( article_id,
+           constantes.COMISION ) ):
+        raise Exception( query.lastError().text() )
+
+    if not query.prepare( """
+    INSERT INTO costosagregados 
+    (valorcosto,activo,idtipocosto,idarticulo) 
+     VALUES (:valor,1,%d,%d) 
+     """ % ( constantes.COMISION,
+            article_id ) ):
+        raise Exception( query.lastError().text() )
+    query.bindValue( ":valor", value )
+
+    if not query.exec_():
+        raise Exception( query.lastError().text() )
+
+
+def set_ganancia( value, article_id ):
+    """
+    Actualiza el costo agregado GANANCIA de un articulo
+    @param article_id: El Index del record del tableView
+    @param value: El Valor a guardar en el record del Index        
+    """
+    query = QSqlQuery()
+    if not query.prepare( """
+    UPDATE articulos 
+    SET ganancia= :value 
+    WHERE idarticulo= %d
+    """ % article_id ):
+        raise Exception( query.lastError().text() )
+    query.bindValue( ":value", value )
+
+    if not query.exec_():
+        raise Exception( query.lastError().text() )

@@ -235,10 +235,11 @@ class FrmPersona( Ui_frmPersona, Base ):
         self.actionCancel.setVisible( not status )
         self.actionSave.setVisible( not status )
         self.actionEditar.setVisible( status )
-        self.actionGoFirst.setEnabled( status )
-        self.actionGoLast.setEnabled( status )
-        self.actionGoNext.setEnabled( status )
-        self.actionGoPrevious.setEnabled( status )
+
+        self.actionGoFirst.setVisible( status )
+        self.actionGoLast.setVisible( status )
+        self.actionGoNext.setVisible( status )
+        self.actionGoPrevious.setVisible( status )
 
         self.txtcorreo.setReadOnly( status )
         self.txtdireccion.setReadOnly( status )

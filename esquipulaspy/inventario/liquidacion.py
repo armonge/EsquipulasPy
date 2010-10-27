@@ -1,5 +1,24 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#
+#       
+#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
+#FIXME: Al cambiar con el raton no se actualizan los totales
 """
 Module implementing frmLiquidacion.
 """
@@ -61,8 +80,6 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
         self.status = 1
 
-        if self.tabWidget.currentIndex() == 1:
-            self.xdockWidget.setVisible( False )
 
 #        El modelo principal
         self.navmodel = LiquidacionNavModel( self )
@@ -82,9 +99,9 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         self.detailsproxymodel.setFilterKeyColumn( -1 )
 
 #        Este es el modelo para las cuentas
-        self.accountsModel = QSqlQueryModel( self )
-        self.accountsProxyModel = QSortFilterProxyModel()
-        self.accountsProxyModel.setSourceModel( self.accountsModel )
+        self.__accounts_model = QSqlQueryModel( self )
+        self.__accounts_proxy_model = QSortFilterProxyModel()
+        self.__accounts_proxy_model.setSourceModel( self.__accounts_model )
 
 
         #inicializando el documento
@@ -117,21 +134,27 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         self.detailsproxymodel.setFilterRegExp( "^%d$" % self.navmodel.record( 
                                         index ).value( IDDOCUMENTO ).toInt()[0] )
 
-        self.accountsProxyModel.setFilterKeyColumn( IDDOCUMENTOC )
-        self.accountsProxyModel.setFilterRegExp( "^%d$" % self.navmodel.record( 
-                                        index ).value( IDDOCUMENTO ).toInt()[0] )
+        self.__accounts_proxy_model.setFilterKeyColumn( IDDOCUMENTOC )
+        self.__accounts_proxy_model.setFilterRegExp( "^%d$" %
+                                         self.navmodel.record( index
+                                                   ).value( IDDOCUMENTO
+                                                             ).toInt()[0] )
 
         self.navproxyproxymodel.setFilterKeyColumn( IDDOCUMENTO )
-        self.navproxyproxymodel.setFilterRegExp( "^%d$" % self.navmodel.record( 
-                                         index ).value( IDDOCUMENTO ).toInt()[0] )
+        self.navproxyproxymodel.setFilterRegExp( "^%d$" %
+                                         self.navmodel.record( index
+                                                    ).value( IDDOCUMENTO
+                                                         ).toInt()[0] )
 
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
         self.ckISO.setChecked( True if self.navmodel.record( 
-                                        index ).value( ISO ).toDouble()[0] != 0 else False )
+                                        index ).value( ISO
+                                            ).toDouble()[0] != 0 else False )
 
         self.ckTaxes.setChecked( True if self.navmodel.record( 
-                                         index ).value( EXONERADO ).toDouble()[0] != 0 else False )
+                                         index ).value( EXONERADO
+                                             ).toDouble()[0] != 0 else False )
 
 
 
@@ -146,8 +169,11 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
     def setControls( self, status ):
         """
-        En esta funcion cambio el estado enabled de todos los items en el formulario
-        @param status: 1 = navegando 2 = añadiendo productos 3 = añadiendo cuentas contables
+        En esta funcion cambio el estado enabled de todos los items 
+        en el formulario
+        @param status: 1 = navegando 
+            2 = añadiendo productos 
+            3 = añadiendo cuentas contables
         """
 
         self.txtPolicy.setReadOnly( status == 1 or status == 3 )
@@ -269,8 +295,8 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             for column in range( self.tabletotals.model().columnCount() ):
                 self.tabletotals.setColumnWidth( column, 170 )
 
-            for x in range( self.tabletotals.model().columnCount() ):
-                self.tabletotals.setColumnHidden( x, False )
+            for column in range( self.tabletotals.model().columnCount() ):
+                self.tabletotals.setColumnHidden( column, False )
 
             if self.user.hasRole( "contabilidad" ):
                 self.action_edit_accounts.setVisible( False )
@@ -291,7 +317,8 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( "No se pudo conectar con la base de datos " )
+                    raise UserWarning( "No se pudo conectar con la"\
+                                       + " base de datos " )
             query = u"""
                 SELECT
                     d.iddocumento,
@@ -356,7 +383,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             """
             self.detailsmodel.setQuery( query )
 
-            self.accountsModel.setQuery( """
+            self.__accounts_model.setQuery( """
             SELECT
                 c.idcuenta, 
                 cc.codigo, 
@@ -371,10 +398,11 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             ORDER BY nlinea
             """ )
 
-            self.tableaccounts.setModel( self.accountsProxyModel )
+            self.tableaccounts.setModel( self.__accounts_proxy_model )
 
 
-            #Este objeto mapea una fila del modelo self.navproxymodel a los controles
+            #Este objeto mapea una fila del modelo 
+            #self.navproxymodel a los controles
 
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
             self.mapper.setModel( self.navproxymodel )
@@ -417,7 +445,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         self.tabledetails.setModel( self.detailsproxymodel )
         self.tabletotals.setModel( self.navproxyproxymodel )
 
-        self.tableaccounts.setModel( self.accountsProxyModel )
+        self.tableaccounts.setModel( self.__accounts_proxy_model )
 
         self.status = 1
         self.navigate( 'last' )
@@ -467,7 +495,8 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             elif not query.size() == 4:
                 raise UserWarning( "No se pudieron obtener los valores "\
                                    + "de los impuestos" )
-#TODO: Deberian acaso los valores de iva, spe, tsim, iso cambiar cuando cambie la fecha???            
+#TODO: Deberian acaso los valores de iva, spe, tsim, iso cambiar 
+#cuando cambie la fecha???            
             while query.next():
                 if query.value( 3 ).toInt()[0] == 1: #IVA
                     self.editmodel.ivaId = query.value( 0 ).toInt()[0]
@@ -485,7 +514,9 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
             providersModel = QSqlQueryModel()
             providersModel.setQuery( """
-            SELECT idpersona, nombre
+            SELECT 
+                idpersona, 
+                nombre
             FROM personas p
             WHERE tipopersona = %d AND activo = 1
             """ % constantes.PROVEEDOR )
@@ -496,7 +527,9 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
             warehouseModel = QSqlQueryModel()
             warehouseModel.setQuery( """
-            SELECT idbodega, nombrebodega 
+            SELECT 
+                idbodega, 
+                nombrebodega 
             FROM bodegas b
             ORDER BY idbodega  
             """ )
@@ -530,7 +563,10 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
             self.accountseditdelegate = AccountsSelectorDelegate( 
             QSqlQuery( """
-                SELECT c.idcuenta, c.codigo, c.descripcion 
+                SELECT 
+                    c.idcuenta, 
+                    c.codigo, 
+                    c.descripcion 
                 FROM cuentascontables c 
                 JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
                 WHERE c.padre != 1 AND c.idcuenta != %s
@@ -604,9 +640,6 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                              str( self.editmodel.exchangeRate ) )
 
 
-    @pyqtSlot( int )
-    def on_tabWidget_currentChanged( self, _id ):
-        self.xdockWidget.setVisible( True if  not _id else False )
 
 
 
@@ -789,17 +822,20 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                                              self.editmodel.validError )
                     except AttributeError:
                         QMessageBox.warning( self, qApp.organizationName(),
-                            u"El documento no puede guardarse ya que la información no esta completa" )
+                            u"El documento no puede guardarse ya que la "\
+                            + "información no esta completa" )
             elif self.status == 3:
                 if self.accountsEditModel.valid:
                     if self.accountsEditModel.save():
                         QMessageBox.information( self, qApp.organizationName(),
-                            "Las cuentas contables se han guardado correctamente" )
+                            "Las cuentas contables se han guardado "\
+                            + "correctamente" )
                         self.updateModels()
                         self.status = 1
                         self.navigate( 'last' )
                     else:
-                        QMessageBox.critical( self, qApp.organizationName(),
+                        QMessageBox.critical( self,
+                                              qApp.organizationName(),
                             "Hubo un error al guardar las cuentas contables" )
                 else:
                     QMessageBox.critical( self, qApp.organizationName(),
@@ -815,7 +851,8 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( u"No se pudo conectar con la base de datos" )
+                    raise UserWarning( u"No se pudo conectar con la "\
+                                       + "base de datos" )
 
 
 
@@ -823,26 +860,26 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             self.editmodel.updateLines( query )
 
 
-            providersModel = QSqlQueryModel()
-            providersModel.setQuery( """
+            providers_model = QSqlQueryModel()
+            providers_model.setQuery( """
             SELECT idpersona, nombre 
             FROM personas p 
             WHERE tipopersona = 2 AND activo = 1
             """ )
-            if not providersModel.rowCount() > 0:
+            if not providers_model.rowCount() > 0:
                 raise UserWarning( "No existen proveedores en el sistema" )
-            self.cbProvider.setModel( providersModel )
+            self.cbProvider.setModel( providers_model )
             self.cbProvider.setModelColumn( 1 )
 
-            warehouseModel = QSqlQueryModel()
-            warehouseModel.setQuery( """
+            warehouse_model = QSqlQueryModel()
+            warehouse_model.setQuery( """
             SELECT idbodega, nombrebodega
             FROM bodegas b
             ORDER BY idbodega
             """ )
-            if not warehouseModel.rowCount() > 0:
+            if not warehouse_model.rowCount() > 0:
                 raise UserWarning( "No existen bodegas en el sistema" )
-            self.cbWarehouse.setModel( warehouseModel )
+            self.cbWarehouse.setModel( warehouse_model )
             self.cbWarehouse.setModelColumn( 1 )
 
             self.cbWarehouse.setCurrentIndex( -1 )
@@ -851,7 +888,8 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
 
         except UserWarning as inst:
-            QMessageBox.warning( self, qApp.organizationName(), unicode( inst ) )
+            QMessageBox.warning( self, qApp.organizationName(),
+                                  unicode( inst ) )
             logging.error( query.lastError().text() )
             logging.error( unicode( inst ) )
             self.cancel()
@@ -874,13 +912,17 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                                   + "cuentas contables" )
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( u"No se pudo abrir la conexión con la base de datos" )
+                    raise UserWarning( u"No se pudo abrir la conexión "\
+                                       + "con la base de datos" )
             docid = self.navmodel.record( self.mapper.currentIndex() ).value( 
                                                         IDDOCUMENTO ).toInt()[0]
             self.xdockWidget.setCollapsed( False )
             self.accountsEditModel = LiquidacionAccountsModel( docid, self.user )
             accountsdelegate = AccountsSelectorDelegate( QSqlQuery( """
-             SELECT c.idcuenta, c.codigo, c.descripcion
+             SELECT 
+                 c.idcuenta, 
+                 c.codigo, 
+                 c.descripcion
              FROM cuentascontables c
              JOIN cuentascontables p ON c.padre = p.idcuenta AND p.padre != 1
              WHERE c.padre != 1 AND c.idcuenta != 22
@@ -909,7 +951,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         except UserWarning as inst:
             QMessageBox.critical( self, qApp.organizationName(),
                                   unicode( inst ) )
-            self.tableaccounts.setModel( self.accountsProxyModel )
+            self.tableaccounts.setModel( self.__accounts_proxy_model )
             logging.error( unicode( inst ) )
             self.status = 1
 
@@ -919,7 +961,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                                   + " de las cuentas contables" )
 
             logging.critical( unicode( inst ) )
-            self.tableaccounts.setModel( self.accountsProxyModel )
+            self.tableaccounts.setModel( self.__accounts_proxy_model )
             self.status = 1
 
     def addActionsToToolBar( self ):

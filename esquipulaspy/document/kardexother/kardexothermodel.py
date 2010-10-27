@@ -1,4 +1,24 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+#       ${file}
+#       
+#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
 '''
 Created on 09/08/2010
 
@@ -20,7 +40,8 @@ IDCUENTA, CODCUENTA, NCUENTA, MONTO = range( 4 )
 class KardexOtherModel( QAbstractTableModel ):
     '''
     Esta clase es el modelo utilizado en la tabla en la que se editan documentos
-    de tipo kardex generados por entradas o salidas extraordinarias, son del tipo AJUSTEBODEGA
+    de tipo kardex generados por entradas o salidas extraordinarias, son del tipo 
+    AJUSTEBODEGA
     '''
     __documentType = constantes.IDAJUSTEBODEGA
     def __init__( self ):
@@ -76,6 +97,7 @@ class KardexOtherModel( QAbstractTableModel ):
         @ivar: El id del tipo  de cambio
         @type: int
         """
+
         self.exchangeRate = Decimal( 0 )
         """
         @ivar: El tipo de cambio
@@ -100,7 +122,8 @@ class KardexOtherModel( QAbstractTableModel ):
         """
         Actualizar el modelo de cuentas contables
         """
-        self.accountsmodel.setData( self.accountsmodel.index( 0, MONTO ), self.totalCostC )
+        self.accountsmodel.setData( self.accountsmodel.index( 0, MONTO ),
+                                    self.totalCostC )
 
     @property
     def totalCostC( self ):
@@ -269,13 +292,17 @@ class KardexOtherModel( QAbstractTableModel ):
 
             #insertar el documento
             if not query.prepare( """
-            INSERT INTO documentos(ndocimpreso, fechacreacion, idtipodoc, idestado, observacion, idtipocambio, total, idbodega, idconcepto)
-            VALUES( :ndocimpreso, :fechacreacion, :idtipodoc, :estado, :observacion, :tipocambio, :total, :idbodega, :idconcepto)
+            INSERT INTO documentos(ndocimpreso, fechacreacion, idtipodoc, 
+            idestado, observacion, idtipocambio, total, idbodega, idconcepto)
+            VALUES( :ndocimpreso, :fechacreacion, :idtipodoc, :estado, 
+            :observacion, :tipocambio, :total, :idbodega, :idconcepto)
             """ ):
-                raise Exception( "No se pudo preparar la consulta para ingresar el documento" )
+                raise Exception( "No se pudo preparar la consulta para "\
+                                 + "ingresar el documento" )
 
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-            query.bindValue( ":fechacreacion", self.datetime.toString( 'yyyyMMddhhmmss' ) )
+            query.bindValue( ":fechacreacion",
+                             self.datetime.toString( 'yyyyMMddhhmmss' ) )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":estado", constantes.CONFIRMADO )
             query.bindValue( ":observacion", self.observations )
@@ -295,7 +322,8 @@ class KardexOtherModel( QAbstractTableModel ):
             INSERT INTO personasxdocumento (idpersona, iddocumento, idaccion)
             VALUE (:idusuario, :iddocumento, :accion)
             """ ):
-                raise Exception( "No se pudo preparar la consulta para ingresar el usuario" )
+                raise Exception( "No se pudo preparar la consulta para "\
+                                 + "ingresar el usuario" )
             query.bindValue( ":idusuario", self.uid )
             query.bindValue( ":iddocumento", insertedId )
             query.bindValue( ":accion", constantes.AUTOR )

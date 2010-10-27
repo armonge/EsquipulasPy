@@ -2,13 +2,13 @@
 '''
 Created on 18/05/2010
 
-@author: armonge
+@author: Marcos Moreno
 '''
 import logging
 from decimal import Decimal, DivisionByZero
 
 from PyQt4.QtSql import QSqlDatabase, QSqlQuery
-from PyQt4.QtCore import Qt, QDateTime
+from PyQt4.QtCore import Qt, QDateTime, QModelIndex
 
 from utility.accountselector import AccountsSelectorModel
 from utility import constantes
@@ -71,10 +71,10 @@ class ChequeModel( AccountsSelectorModel ):
         @ivar: El id de la retención de este documento
         @type: int
         """
-        self.retencionPorcentaje = 0
+        self.retencionPorcentaje = Decimal(0)
         """
         @ivar: El porcentaje de retención de este documento
-        @type: int
+        @type: Decimal
         """
 
         self.ivaRate = Decimal( 0 )
@@ -152,7 +152,17 @@ class ChequeModel( AccountsSelectorModel ):
 
             return True
         return False
+        
+    def removeRows( self, position, rows = 1, _parent = QModelIndex() ):
+        """
+        En el modelo del cheque no se puede borrar la primera fila
+        """
+        if position > 0:
+            return super(ChequeModel, self).removeRows(position, rows, _parent)
 
+        return False
+
+        
     @property
     def valid( self ):
         """
@@ -164,32 +174,28 @@ class ChequeModel( AccountsSelectorModel ):
         self.uid != 0
         self.total>0 
         """
-        if  self.printedDocumentNumber == "":
-            self.validError = "No existe numero de doc impreso"
+        try:
+            if  self.printedDocumentNumber == "":
+                raise UserWarning("No existe numero de doc impreso")
+            elif int( self.proveedorId ) < 1:
+                raise UserWarning("No ha seleccionado ningun beneficiario")
+            elif Decimal( self.subtotal ) <= 0:
+                raise UserWarning("Escriba una cantidad para el documento")
+            elif int( self.uid ) == 0:
+                raise UserWarning("Existe un error con el Usario que esta "\
+                                    + "creando el documento")
+            elif int( self.conceptoId ) == 0:
+                raise UserWarning("No hay un concepto seleccionado")
+            elif self.exchangeRateId == 0:
+                raise UserWarning("No se ha seleccionado un tipo de cambio")
+            elif self.hasretencion == True and self.retencionPorcentaje == 0:
+                raise UserWarning( u"No se ha seleccionado un porcentaje de Retención")
+            elif not super( ChequeModel, self ).valid :
+                raise UserWarning("Hay un error en sus cuentas contables")
+        except UserWarning as inst:
+            self.validError = unicode(inst)
             return False
-        elif int( self.proveedorId ) < 1:
-            self.validError = "No ha seleccionado ningun cliente"
-            return False
-        elif Decimal( self.subtotal ) <= 0:
-            self.validError = "Escriba una cantidad para el documento"
-            return False
-        elif int( self.uid ) == 0:
-            self.validError = "Existe un error con el Usario que esta creando el documento"
-            return False
-        elif int( self.conceptoId ) == 0:
-            self.validError = "No hay un concepto seleccionado"
-            return False
-        elif self.exchangeRateId == 0:
-            self.validError = "No hay un tipo de cambio para la fecha " + self.datetime.toString()
-            return False
-        elif self.hasretencion == True and self.retencionPorcentaje == 0:
-            self.validError = "No existe un porcentaje de Retencion seleccionado"
-            return False
-        elif not super( ChequeModel, self ).valid :
-            self.validError = "Hay un error en sus cuentas contables"
-            return False
-        else:
-            return True
+        return True
 
 
 

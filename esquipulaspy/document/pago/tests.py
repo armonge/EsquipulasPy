@@ -3,19 +3,22 @@ Created on 21/10/2010
 
 @author: Administrador
 '''
+import sip
+sip.setapi( "QString", 2 )
+
 import unittest
-from decimal import Decimal 
+from decimal import Decimal
 from PyQt4.QtCore import QCoreApplication
 from pagomodel import PagoModel
 from caja.mainwindow import DatosSesion
-class TestPagoModel(unittest.TestCase):
+class TestPagoModel( unittest.TestCase ):
 
 
-    def setUp(self):
+    def setUp( self ):
         _app = QCoreApplication( [] )
-        self.sesion=DatosSesion()
-        self.sesion.tipoCambioBanco=Decimal("21.6")
-        self.model=PagoModel(self.sesion)
+        self.sesion = DatosSesion()
+        self.sesion.tipoCambioBanco = Decimal( "21.6" )
+        self.model = PagoModel( self.sesion )
         self.model.maxCordoba = Decimal( 100 )
         self.model.maxDolar = Decimal( 100 )
         self.model.docImpreso = "1212"
@@ -29,20 +32,21 @@ class TestPagoModel(unittest.TestCase):
         self.model.retencionId = 0
         self.model.ivaId = 0
         self.model.aplicarIva = True
-        self.retencionTasa=Decimal("2")
-    def test_totalDolar(self):
+        self.model.ivaTasa = Decimal( 15 )
+        self.retencionTasa = Decimal( "2" )
+
+    def test_total( self ):
         self.assertEqual( self.model.totalDolar, Decimal( "20.00" ) )
         self.assertEqual( self.model.totalCordoba, Decimal( "432.00" ) )
 
-    def test_subTotalDolar(self):
-        self.assertEqual( self.model.subTotalDolar, Decimal( "20.00" ) )
-        
-    def tearDown(self):
-        pass
+    def test_subtotal( self ):
+        self.assertEqual( self.model.subTotalDolar, Decimal( "17.3913" ) )
+
+    def test_iva( self ):
+        self.assertEqual( self.model.ivaTasa, Decimal( 15 ) )
 
 
-    def testName(self):
-        pass
+
 
 
 if __name__ == "__main__":

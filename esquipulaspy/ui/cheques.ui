@@ -386,6 +386,9 @@
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0" colspan="3">
             <widget class="QTableView" name="tabledetails">
+             <property name="contextMenuPolicy">
+              <enum>Qt::ActionsContextMenu</enum>
+             </property>
              <property name="alternatingRowColors">
               <bool>true</bool>
              </property>
@@ -509,12 +512,6 @@
           </attribute>
           <attribute name="verticalHeaderVisible">
            <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="horizontalHeaderStretchLastSection">
-           <bool>true</bool>
           </attribute>
          </widget>
         </item>

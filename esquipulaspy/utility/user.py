@@ -1,21 +1,40 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+#       
+#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
 u"""
 Modulo en el que se maneja la logica de usuarios
 
 @author: Andrés Reyes Monge
 """
 from __future__ import division
-import hashlib
+from PyQt4.QtCore import Qt, QTimer, QSize
+from PyQt4.QtGui import QDialog, QDesktopWidget, QPixmap, QDialogButtonBox, \
+    QFormLayout, QVBoxLayout, QLineEdit, QLabel, QProgressBar, QHBoxLayout, QFrame, \
+    QGridLayout, QSpacerItem, QSizePolicy, QFont, qApp
+from PyQt4.QtSql import QSqlQuery, QSqlDatabase
+import database
 import functools
+import hashlib
 import logging
 import re
 
-from PyQt4.QtSql import QSqlQuery, QSqlDatabase
-from PyQt4.QtCore import  Qt, QTimer, QSize
-from PyQt4.QtGui import QDialog, QDesktopWidget, QPixmap, QDialogButtonBox, \
-QFormLayout, QVBoxLayout, QLineEdit, QLabel, QProgressBar, QHBoxLayout, \
-QFrame, QGridLayout, QSpacerItem, QSizePolicy, QFont, qApp
-import database
 
 UID, FULLNAME, ROLE = range( 3 )
 
@@ -50,17 +69,21 @@ class dlgAbstractUserLogin( QDialog ):
             super( dlgAbstractUserLogin, self ).accept()
         else:
             self.txtPassword.setText( "" )
-            self.lblError.setText( u"Hay un error en su usuario o su contraseña" )
+            self.lblError.setText( u"Hay un error en su usuario o su"\
+                                   + " contraseña" )
             self.lblError.setVisible( True )
             self.attempts += 1
-            QTimer.singleShot( 3000, functools.partial( self.lblError.setVisible, False ) )
+            QTimer.singleShot( 3000,
+                               functools.partial( self.lblError.setVisible,
+                                                  False ) )
 
     def setupUi( self ):
         self.txtPassword = QLineEdit()
         self.txtPassword.setEchoMode( QLineEdit.Password )
         self.txtUser = QLineEdit()
 
-        self.buttonbox = QDialogButtonBox( QDialogButtonBox.Ok | QDialogButtonBox.Cancel )
+        self.buttonbox = QDialogButtonBox( QDialogButtonBox.Ok |
+                                           QDialogButtonBox.Cancel )
         self.lblError = QLabel()
         self.lblError.setProperty( "error", True )
         self.lblError.setText( u"El usuario o la contraseña son incorrectos" )
@@ -71,13 +94,17 @@ class dlgAbstractUserLogin( QDialog ):
         self.formLayout.addRow( u"&Contraseña", self.txtPassword )
 
         self.txtUser.setWhatsThis( "Escriba aca su usuario" )
-        self.txtPassword.setWhatsThis( u"Escriba aca su contraseña, tenga en cuenta que el sistema hace diferencia entre minusculas y mayusculas" )
+        self.txtPassword.setWhatsThis( u"Escriba aca su contraseña, "\
+                                       + "tenga en cuenta que el sistema hace "\
+                                       + "diferencia entre minusculas y"\
+                                       + " mayusculas" )
 
         self.txtApplication = QLabel()
 
 class dlgUserLogin( dlgAbstractUserLogin ):
     """
-    Dialogo utilizado para pedir valores de usuario, contraseña y base de datos al inicio de sesión
+    Dialogo utilizado para pedir valores de usuario, contraseña 
+    y base de datos al inicio de sesión
     """
     def accept( self ):
         database.getDatabase( self.txtBd.text(), "--dbconfig" in qApp.arguments() )
@@ -94,22 +121,24 @@ class dlgUserLogin( dlgAbstractUserLogin ):
         self.setMinimumSize( QSize( 519, 311 ) )
         self.setMaximumSize( QSize( 519, 311 ) )
 
-        self.horizontalLayout = QHBoxLayout( self )
-        self.horizontalLayout.setMargin( 0 )
+        horizontal_layout = QHBoxLayout( self )
+        horizontal_layout.setMargin( 0 )
 
-        self.frame = QFrame( self )
-        self.frame.setFrameShape( QFrame.NoFrame )
-        self.frame.setFrameShadow( QFrame.Plain )
+        frame = QFrame( self )
+        frame.setFrameShape( QFrame.NoFrame )
+        frame.setFrameShadow( QFrame.Plain )
 
-        self.gridLayout = QGridLayout( self.frame )
-        self.gridLayout.setMargin( 0 )
+        grid_layout = QGridLayout( frame )
+        grid_layout.setMargin( 0 )
 
-        spacerItem = QSpacerItem( 20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding )
-        self.gridLayout.addItem( spacerItem, 0, 0, 1, 6 )
+        spacerItem = QSpacerItem( 20, 40, QSizePolicy.Minimum,
+                                  QSizePolicy.Expanding )
+        grid_layout.addItem( spacerItem, 0, 0, 1, 6 )
 
 
 
-        sizePolicy = QSizePolicy( QSizePolicy.Preferred, QSizePolicy.Maximum )
+        sizePolicy = QSizePolicy( QSizePolicy.Preferred,
+                                  QSizePolicy.Maximum )
         sizePolicy.setHorizontalStretch( 0 )
         sizePolicy.setVerticalStretch( 0 )
         sizePolicy.setHeightForWidth( self.txtApplication.sizePolicy().hasHeightForWidth() )
@@ -123,17 +152,22 @@ class dlgUserLogin( dlgAbstractUserLogin ):
         self.txtApplication.setAutoFillBackground( False )
         self.txtApplication.setAlignment( Qt.AlignCenter )
 
-        self.gridLayout.addWidget( self.txtApplication, 1, 0, 1, 5 )
-        spacerItem1 = QSpacerItem( 20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding )
-        self.gridLayout.addItem( spacerItem1, 2, 0, 1, 6 )
-        spacerItem2 = QSpacerItem( 20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding )
-        self.gridLayout.addItem( spacerItem2, 3, 0, 1, 6 )
-        spacerItem3 = QSpacerItem( 60, 20, QSizePolicy.Expanding, QSizePolicy.Minimum )
-        self.gridLayout.addItem( spacerItem3, 5, 0, 1, 1 )
-        spacerItem4 = QSpacerItem( 40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum )
-        self.gridLayout.addItem( spacerItem4, 5, 1, 1, 1 )
-        spacerItem5 = QSpacerItem( 40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum )
-        self.gridLayout.addItem( spacerItem5, 5, 2, 1, 1 )
+        grid_layout.addWidget( self.txtApplication, 1, 0, 1, 5 )
+        spacer_item_1 = QSpacerItem( 20, 40, QSizePolicy.Minimum,
+                                   QSizePolicy.Expanding )
+        grid_layout.addItem( spacer_item_1, 2, 0, 1, 6 )
+        spacer_item_2 = QSpacerItem( 20, 40, QSizePolicy.Minimum,
+                                   QSizePolicy.Expanding )
+        grid_layout.addItem( spacer_item_2, 3, 0, 1, 6 )
+        spacer_item_3 = QSpacerItem( 60, 20, QSizePolicy.Expanding,
+                                   QSizePolicy.Minimum )
+        grid_layout.addItem( spacer_item_3, 5, 0, 1, 1 )
+        spacer_item_4 = QSpacerItem( 40, 20, QSizePolicy.Expanding,
+                                   QSizePolicy.Minimum )
+        grid_layout.addItem( spacer_item_4, 5, 1, 1, 1 )
+        spacer_item_6 = QSpacerItem( 40, 20, QSizePolicy.Expanding,
+                                   QSizePolicy.Minimum )
+        grid_layout.addItem( spacer_item_6, 5, 2, 1, 1 )
 
 
         self.label = QLabel()
@@ -143,36 +177,44 @@ class dlgUserLogin( dlgAbstractUserLogin ):
         self.formLayout.addRow( u"Base de datos", self.txtBd )
         self.formLayout.setFieldGrowthPolicy( QFormLayout.ExpandingFieldsGrow )
 
-        self.gridLayout.addLayout( self.formLayout, 5, 3, 1, 1 )
-        spacerItem6 = QSpacerItem( 40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum )
-        self.gridLayout.addItem( spacerItem6, 5, 4, 1, 1 )
-        spacerItem7 = QSpacerItem( 40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum )
-        self.gridLayout.addItem( spacerItem7, 5, 5, 1, 1 )
-        self.lblError = QLabel( self.frame )
+        grid_layout.addLayout( self.formLayout, 5, 3, 1, 1 )
+        spacer_item_6 = QSpacerItem( 40, 20, QSizePolicy.Expanding,
+                                   QSizePolicy.Minimum )
+        grid_layout.addItem( spacer_item_6, 5, 4, 1, 1 )
+        spacer_item_7 = QSpacerItem( 40, 20, QSizePolicy.Expanding,
+                                   QSizePolicy.Minimum )
+        grid_layout.addItem( spacer_item_7, 5, 5, 1, 1 )
+        self.lblError = QLabel( frame )
         self.lblError.setProperty( "error", True )
-        self.gridLayout.addWidget( self.lblError, 6, 3, 1, 2 )
-        spacerItem8 = QSpacerItem( 20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding )
-        self.gridLayout.addItem( spacerItem8, 7, 0, 1, 6 )
-        self.buttonbox = QDialogButtonBox( self.frame )
+        grid_layout.addWidget( self.lblError, 6, 3, 1, 2 )
+        spacer_item_8 = QSpacerItem( 20, 40, QSizePolicy.Minimum,
+                                   QSizePolicy.Expanding )
+        grid_layout.addItem( spacer_item_8, 7, 0, 1, 6 )
+        self.buttonbox = QDialogButtonBox( frame )
         self.buttonbox.setOrientation( Qt.Horizontal )
-        self.buttonbox.setStandardButtons( QDialogButtonBox.Cancel | QDialogButtonBox.Ok )
-        self.gridLayout.addWidget( self.buttonbox, 8, 0, 1, 5 )
-        spacerItem9 = QSpacerItem( 20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding )
-        self.gridLayout.addItem( spacerItem9, 9, 0, 1, 6 )
-        self.horizontalLayout.addWidget( self.frame )
+        self.buttonbox.setStandardButtons( QDialogButtonBox.Cancel |
+                                           QDialogButtonBox.Ok )
+        grid_layout.addWidget( self.buttonbox, 8, 0, 1, 5 )
+        spacer_item_9 = QSpacerItem( 20, 40, QSizePolicy.Minimum,
+                                   QSizePolicy.Expanding )
+        grid_layout.addItem( spacer_item_9, 9, 0, 1, 6 )
+        horizontal_layout.addWidget( frame )
 
 
-        self.txtApplication.setText( qApp.organizationName() + ": " + qApp.applicationName() )
+        self.txtApplication.setText( "%s : %s" % ( qApp.organizationName(),
+                                                qApp.applicationName() ) )
         self.lblError.setVisible( False )
 
         #Centrar el dialogo en la pantalla
-        dw = QDesktopWidget()
-        geometry = dw.screenGeometry()
-        self.setGeometry( ( geometry.width() - 519 ) / 2, ( geometry.height() - 311 ) / 2  , 519, 311 )
+        desktop_widget = QDesktopWidget()
+        geometry = desktop_widget.screenGeometry()
+        self.setGeometry( ( geometry.width() - 519 ) / 2,
+                           ( geometry.height() - 311 ) / 2  ,
+                            519, 311 )
 
         #mostrar redondeado el dialogo
-        pixmap = QPixmap( ":/images/res/passwd-bg.png" );
-        self.setMask( pixmap.mask() );
+        pixmap = QPixmap( ":/images/res/passwd-bg.png" )
+        self.setMask( pixmap.mask() )
 
 class dlgSmallUserLogin( dlgAbstractUserLogin ):
     """
@@ -205,7 +247,8 @@ class dlgPasswordChange( QDialog ):
 
     def update( self, passwd ):
         """
-        Actualizar el valor de la barra indicadora de la fuerza de la contraseña, tambien ocultar o mostrar el texto de error
+        Actualizar el valor de la barra indicadora de la fuerza de
+         la contraseña, tambien ocultar o mostrar el texto de error
         """
         self.bar.setValue( self.user.checkPassword( passwd ) )
         self.lblError.setText( "" if self.txtNewPassword.text() == self.txtRepeatPassword.text() else u"Las contraseñas no coinciden" )
@@ -226,13 +269,17 @@ class dlgPasswordChange( QDialog ):
             self.lblError.setText( unicode( inst ) )
             self.lblError.setVisible( True )
             logging.warning( unicode( inst ) )
-            QTimer.singleShot( 3000, functools.partial( self.lblError.setVisible, False ) )
+            QTimer.singleShot( 3000,
+                               functools.partial( 
+                                                 self.lblError.setVisible,
+                                                 False ) )
 
 
     def setupUi( self, _parent ):
 
 
-        self.setWindowTitle( qApp.organizationName() + ": " + qApp.applicationName() )
+        self.setWindowTitle( "%s : %s" % ( qApp.organizationName(),
+                                            qApp.applicationName() ) )
 
         self.txtOldPassword = QLineEdit()
         self.txtOldPassword.setEchoMode( QLineEdit.Password )
@@ -246,14 +293,16 @@ class dlgPasswordChange( QDialog ):
         self.form = QFormLayout()
         self.form.addRow( u"Contraseña anterior", self.txtOldPassword )
         self.form.addRow( u"Nueva contraseña", self.txtNewPassword )
-        self.form.addRow( u"Repita la nueva contraseña", self.txtRepeatPassword )
+        self.form.addRow( u"Repita la nueva contraseña",
+                          self.txtRepeatPassword )
 
         self.bar = QProgressBar()
         self.bar.setMinimum( 0 )
         self.bar.setMaximum( 5 )
 
         self.layout = QVBoxLayout()
-        self.buttonBox = QDialogButtonBox( QDialogButtonBox.Ok | QDialogButtonBox.Cancel )
+        self.buttonBox = QDialogButtonBox( QDialogButtonBox.Ok |
+                                           QDialogButtonBox.Cancel )
 
         self.lblError = QLabel()
         self.lblError.setAlignment( Qt.AlignHCenter )
@@ -312,10 +361,11 @@ class User:
         @ivar:Posibles errores
         @type:string
         """
-        self.db = QSqlDatabase.database()
+        self.database = QSqlDatabase.database()
         try:
-            if not self.db.open():
-                raise UserWarning( u'Existen problemas de conectividad con la base de datos' )
+            if not self.database.open():
+                raise UserWarning( u'Existen problemas de conectividad con '\
+                                   + 'la base de datos' )
             else:
                 query = QSqlQuery()
                 if not query.prepare( """
@@ -333,7 +383,8 @@ class User:
                 GROUP BY u.idusuario
                 LIMIT 1
                 """ ):
-                    raise UserWarning( "No se pudo preparar la consulta para validar el usuario" )
+                    raise UserWarning( "No se pudo preparar la consulta para "\
+                                       + "validar el usuario" )
                 query.bindValue( ":user", self.user )
                 query.bindValue( ":password", self.password + self.secret )
 
@@ -355,8 +406,8 @@ class User:
         except Exception as inst:
             logging.critical( unicode( inst ) )
         finally:
-            if self.db.isOpen():
-                self.db.close()
+            if self.database.isOpen():
+                self.database.close()
 
 
     @property
@@ -438,7 +489,7 @@ class User:
             else:
                 return any( [permission in rolelist for permission in self.roles ] )
         return False
-    def __createPassword( self, password ):
+    def __create_password( self, password ):
         u"""
         Esta función crea la contraseña nueva a ingresar al servidor de bases de datos
         @param password: La contraseña a partir de la cual se crea la nueva contraseña
@@ -468,8 +519,8 @@ class User:
             raise UserWarning( u"Las contraseñas no coinciden" )
         elif not self.checkPassword( new ) > 3:
             raise UserWarning( u"La contraseña es demasiado sencilla" )
-        if not self.db.isOpen():
-            if not self.db.open():
+        if not self.database.isOpen():
+            if not self.database.open():
                 raise UserWarning( u"No se pudo abrir la conexión con la base de datos" )
 
         query = QSqlQuery()
@@ -478,7 +529,7 @@ class User:
         """ ):
             raise Exception( u"No se pudo preparar la consulta para cambiar la contraseña" )
 
-        query.bindValue( ":password" , self.__createPassword( new ) )
+        query.bindValue( ":password" , self.__create_password( new ) )
         query.bindValue( ":id" , self.uid )
 
         if not query.exec_():
