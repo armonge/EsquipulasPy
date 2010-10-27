@@ -1,23 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-#       
-#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
-#       
-#       This program is free software; you can redistribute it and/or modify
-#       it under the terms of the GNU General Public License as published by
-#       the Free Software Foundation; either version 2 of the License, or
-#       (at your option) any later version.
-#       
-#       This program is distributed in the hope that it will be useful,
-#       but WITHOUT ANY WARRANTY; without even the implied warranty of
-#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#       GNU General Public License for more details.
-#       
-#       You should have received a copy of the GNU General Public License
-#       along with this program; if not, write to the Free Software
-#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#       MA 02110-1301, USA.
 """
 Module implementing FrmEntradaCompra.
 """
@@ -220,9 +201,7 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
                                         self.cbProvider.currentIndex()
                                         ).value( "idpersona" ).toInt()[0]
         query = QSqlQuery( """
-        SELECT 
-            idarticulo, 
-            Descripcion as descripcion 
+        SELECT idarticulo, Descripcion as descripcion 
         FROM vw_articulosdescritos
         """ )
         if not query.size() > 0:
@@ -239,7 +218,7 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
         self.delegate.prods = prods
 
     @if_edit_model
-    def updateLabels( self, _index1, _index2 ):
+    def updateLabels( self,index1=None,index2=None ):
         self.lblSubtotal.setText( 
                           moneyfmt( self.editmodel.subtotalC, 4, "C$" ) )
 
@@ -326,8 +305,7 @@ class FrmEntradaCompra( Ui_frmEntradaCompra, Base ):
         """
         if QMessageBox.question( self, qApp.organizationName(),
                               u"¿Desea realmente cancelar?",
-                               QMessageBox.Yes |
-                               QMessageBox.No ) == QMessageBox.Yes:
+                               QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
             self.editmodel = None
 
             self.tablenavigation.setModel( self.navproxymodel )

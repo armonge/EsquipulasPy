@@ -72,7 +72,10 @@ class FrmCheques( Ui_frmCheques, Base ):
                                 record.value( "iddocumento" ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
         self.actionAnular.setEnabled( record.value( "idestado" ).toInt()[0] == constantes.CONFIRMADO )
-
+        
+#        if record.value( "caret.valorcosto" )>Decimal(0.00):
+#            print "tiene retencion"
+#        
     def updateModels( self ):
     #inicializando el documento
     #El modelo principal
@@ -406,16 +409,25 @@ class FrmCheques( Ui_frmCheques, Base ):
         """
         self.editmodel = None
         self.tablenavigation.setModel( self.navproxymodel )
-
         self.tabledetails.setModel( self.accountsProxyModel )
         self.tabledetails.setColumnHidden( IDCUENTA, True )
 
-        self.subtotal.setValue( 0 )
-        self.total.setText( "0.0" )
-        self.iva.setText( "0.0" )
-        self.retencion.setText( "0.0" )
-
         self.status = True
+        try:
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
+
+            self.updateModels()
+            self.navigate( 'last' )
+        except UserWarning as inst:
+                QMessageBox.warning( self,
+                                     qApp.organizationName(),
+                                     inst )
+                logging.critical( unicode( inst ) )
+                self.status = True
+
+                    
 
 
 
@@ -614,116 +626,98 @@ class FrmCheques( Ui_frmCheques, Base ):
         """
         
         doc = record.value( "iddocumento" ).toInt()[0]
-        estado = record.value( "idestado" ).toInt()[0]
-
         total = Decimal( record.value( "TotalCheque" ).toString() )
+        
         try:
             if not self.database.isOpen():
                 if not self.database.open():
                     raise Exception( "NO se pudo abrir la Base de datos" )
+            
+            if QMessageBox.question( self,
+                 qApp.organizationName(),
+                 u"¿Esta seguro que desea anular el cheque?",
+                 QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
 
-            if estado == 3:
-                if QMessageBox.question( self,
+                anulardialog = Anular( self.navmodel.record( self.mapper.currentIndex() ).value( "No. Cheque" ).toString() )
+                if anulardialog.conceptosmodel.rowCount() == 0:
+                    QMessageBox.warning( self,
                                          qApp.organizationName(),
-                                         u"Este cheque no ha sido confirmado, ¿Desea eliminarlo?",
-                                          QMessageBox.Yes |
-                                          QMessageBox.No ) == QMessageBox.Yes:
-                    query = QSqlQuery()
-                    query.prepare( "CALL spEliminarCheque(:doc)" )
-                    query.bindValue( ":doc", doc )
-                    if not query.exec_():
-                        raise Exception( "No se pudo eliminar el Cheque" )
+                                         u"No existen conceptos para la anulación" )
+                else:
+                    if anulardialog.exec_() == QDialog.Accepted:
+                        if anulardialog.cboConceptos.currentIndex() == -1 and anulardialog.txtObservaciones.toPlainText() == "":
+                            QMessageBox.critical( self,
+                                                  qApp.organizationName(),
+                                                  "Por favor rellene todos los campos" )
+                        else:
+                            query = QSqlQuery()
+                            if not self.database.transaction():
+                                raise Exception( "No se pudo comenzar la transacción" )
+                            #
+                            query = QSqlQuery( """
+                                SELECT fnConsecutivo(%d,NULL);
+                                """ % constantes.IDANULACION)
+                            if not query.exec_():
+                                raise Exception( "No se pudo obtener el numero de la factura" )
+                            query.first()
+                            n = query.value( 0 ).toString()
+                            #Insertar documento anulacion
+                            if not query.prepare( """
+                            INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
+                            VALUES(:ndocimpreso,:total,:fechacreacion,:idtipodoc,:observacion,:idestado)""" ):
+                                raise Exception( query.lastError().text() )
+                            
+                            query.bindValue( ":ndocimpreso", n )
+                            query.bindValue( ":total", total.to_eng_string() )
+                            query.bindValue( ":fechacreacion", QDate.currentDate() )
+                            query.bindValue( ":idtipodoc", constantes.IDANULACION )
+                            query.bindValue( ":observacion", anulardialog.txtObservaciones.toPlainText() )
+                            query.bindValue( ":idestado", constantes.CONFIRMADO )
+            
+                            if not query.exec_():
+                                raise Exception( "No se pudo insertar el documento Anulacion" )
 
-                    QMessageBox.information( self,
-                                             qApp.organizationName(),
-                                             "El cheque fue eliminado "\
-                                             +"correctamente" )
-                    self.updateModels()
-            else:
-
-                if QMessageBox.question( self,
-                                         qApp.organizationName(),
-                                         u"¿Esta seguro que desea anular el cheque?",
-                                         QMessageBox.Yes |
-                                         QMessageBox.No ) == QMessageBox.Yes:
-
-                    anulardialog = Anular( record.value( "No. Cheque" ).toString() )
-                    if anulardialog.conceptosmodel.rowCount() == 0:
-                        QMessageBox.warning( self,
-                                             qApp.organizationName(),
-                                             u"No existen conceptos para la anulación" )
-
-                    else:
-                        if anulardialog.exec_() == QDialog.Accepted:
-                            if anulardialog.cboConceptos.currentIndex() == -1 and anulardialog.txtObservaciones.toPlainText() == "":
-                                QMessageBox.critical( self,
-                                                      qApp.organizationName(),
-                                                      "No ingreso los datos correctos" )
-                            else:
-
-                                query = QSqlQuery()
-                                if not self.database.transaction():
-                                    raise Exception( "No se pudo comenzar la transacción" )
-
-                                #Cambiar estado Anulado=1 para documento
-                                query.prepare( "UPDATE documentos d SET idestado=%d WHERE iddocumento=%d LIMIT 1" % ( 
-                                                                                        constantes.ANULACIONPENDIENTE,
-                                                                                        doc ) )
-                                if not query.exec_():
-                                    raise Exception( "No se logro cambiar el estado a el documento" )
-
-                                #Insertar documento anulacion
-                                if not query.prepare( """
-                                INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
-                                VALUES(:ndocimpreso,:total,:fechacreacion,:idtipodoc,:observacion,:idestado)""" ):
-                                    raise Exception( query.lastError().text() )
-
-                                query.bindValue( ":ndocimpreso", 'S/N' )
-                                query.bindValue( ":total", total.to_eng_string() )
-                                query.bindValue( ":fechacreacion", QDate.currentDate() )
-                                query.bindValue( ":idtipodoc", constantes.IDANULACION )
-                                query.bindValue( ":observacion", anulardialog.txtObservaciones.toPlainText() )
-                                query.bindValue( ":idestado", constantes.PENDIENTE )
-
-                                if not query.exec_():
-                                    raise Exception( "No se pudo insertar el documento Anulacion" )
-
-                                insertedId = query.lastInsertId().toString()
-
-                                if not query.prepare( "INSERT INTO docpadrehijos (idpadre,idhijo) VALUES" +
-                            "(:idcheque," + insertedId + ")" ):
-#                                "(:usuario," + insertedId + ",0),"
-#                                "(:supervisor," + insertedId + ",1)"):
-                                    raise Exception( query.lastError().text() + "No se preparo la relacion de la anulacion con el Cheque" )
-
-                                query.bindValue( ":idcheque", doc )
-
-                                if not query.exec_():
-                                    raise Exception( "No se pudo insertar la"\
-                                                     + " relacion de la"\
-                                                     + u" Anulación con la "\
-                                                     + "Cheque" )
-
-
-                                if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,idaccion) VALUES" +
-                                "(:usuario," + insertedId + ",:accion)" ):
-                                    raise Exception( query.lastError().text() + "No se inserto el usuario y autoriza" )
-
-                                query.bindValue( ":usuario", self.user.uid )
-                                query.bindValue ( ":accion", constantes.AUTOR )
-
-                                if not query.exec_():
-                                    raise Exception( u"No se pudo Insertar la"\
-                                                     + " relación de la anulacion con el usuario" )
-
-
-                                if not self.database.commit():
-                                    raise Exception( "NO se hizo el commit para la Anulacion" )
-                                QMessageBox.information( self,
-                                                         qApp.organizationName(),
-                                                         "Cheque anulada Correctamente",
-                                                         QMessageBox.Ok )
-                                self.updateModels()
+                            idanulacion = query.lastInsertId().toString()
+                            
+                            query.prepare( "CALL spEliminarCheque(:doc,:anulado,:idcheque,:idretencion)" )
+                            query.bindValue( ":doc", idanulacion )
+                            query.bindValue( ":idcheque", doc )
+                            query.bindValue( ":anulado", constantes.ANULADO)
+                            query.bindValue( ":idretencion", constantes.IDRETENCION)
+                            if not query.exec_():
+                                raise UserWarning( "No se pudo Anular el Cheque" )                         
+                            
+            
+                            if not query.prepare( "INSERT INTO docpadrehijos (idpadre,idhijo) VALUES" +
+                        "(:idcheque," + idanulacion + ")" ):
+            #                                "(:usuario," + insertedId + ",0),"
+            #                                "(:supervisor," + insertedId + ",1)"):
+                                raise Exception( query.lastError().text() + "No se preparo la relacion de la anulacion con el Cheque" )
+            
+                            query.bindValue( ":idcheque", doc )
+            
+                            if not query.exec_():
+                                raise Exception( "No se pudo insertar la relacion de la Anulacion con el Cheque" )
+            
+            
+                            if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,idaccion) VALUES" +
+                            "(:usuario," + idanulacion + ",:accion)" ):
+                                raise Exception( query.lastError().text() + "No se inserto el usuario y autoriza" )
+            
+                            query.bindValue( ":usuario", self.user.uid )
+                            query.bindValue ( ":accion", constantes.AUTOR )
+            
+                            if not query.exec_():
+                                raise Exception( "No se pudo Insertar la relacion de la anulacion con el usuario" )
+            
+            
+                            if not self.database.commit():
+                                raise Exception( "NO se hizo el commit para la Anulacion" )
+                            QMessageBox.information( self,
+                                                     qApp.organizationName(),
+                                                     "Cheque anulado Correctamente",
+                                                     QMessageBox.Ok )
+                            self.updateModels()
         except UserWarning as inst:
             logging.error(unicode(inst))
             logging.error(query.lastError().text())
@@ -735,10 +729,6 @@ class FrmCheques( Ui_frmCheques, Base ):
             logging.critical( unicode( inst ) )
             logging.critical( query.lastError().text() )
             self.database.rollback()
-            QMessageBox.critical(self,
-                                qApp.organizationName(),
-                                "Hubo un error al tratar de anular el cheque")
-            
         finally:
             if self.database.isOpen():
                 self.database.close()
