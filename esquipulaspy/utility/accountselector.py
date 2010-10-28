@@ -28,15 +28,15 @@ para cuentas contables, para utilizarlo es necesario asignar el modelo y el dele
 a un QTableView, el delegado necesita como parametro una consulta SQL que retorne una tabla del tipo
 IDCUENTA, CODIGO, DESCRIPCION
 '''
-from decimal import  Decimal
-import logging
-
-from PyQt4.QtGui import  QStyledItemDelegate, QDoubleSpinBox
 from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex, QVariant, QSize
+from PyQt4.QtGui import QStyledItemDelegate, QDoubleSpinBox
 from PyQt4.QtSql import QSqlQuery
-from utility.widgets.searchpanel import SearchPanel
+from decimal import Decimal
 from utility.moneyfmt import moneyfmt
 from utility.singleselectionmodel import SingleSelectionModel
+from utility.widgets.searchpanel import SearchPanel
+import logging
+
 
 
 IDCUENTA, CODCUENTA, NCUENTA, MONTO = range( 4 )
@@ -91,7 +91,7 @@ class AccountsSelectorModel( QAbstractTableModel ):
                 self.lines[-1].amount = self.currentSum
                 self.dataChanged.emit( self.index( MONTO, len( self.lines ) ) , self.index( MONTO, len( self.lines ) ) )
             else:
-                self.insertRow(self.rowCount() )
+                self.insertRow( self.rowCount() )
 
         return True
 

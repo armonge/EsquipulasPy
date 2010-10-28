@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       ${file}
 #       
 #       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
 #       
@@ -25,13 +24,20 @@ Created on 18/05/2010
 
 @author: Andrés Reyes Monge
 '''
-from PyQt4.QtGui import QStyledItemDelegate, QSpinBox, QDoubleSpinBox
 from PyQt4.QtCore import Qt, QSize
-from utility.widgets.searchpanel import SearchPanel
+from PyQt4.QtGui import QSpinBox, QDoubleSpinBox
+from utility.widgets.searchpanel import SingleSelectionSearchPanelDelegate
 
 IDARTICULO, DESCRIPCION, CANTIDAD, PRECIO, PRECIOD, TOTALPROD, TOTALD = range( 7 )
-class EntradaCompraDelegate( QStyledItemDelegate ):
+class EntradaCompraDelegate( SingleSelectionSearchPanelDelegate ):
+    def __init__( self, parent = None ):
+        super( EntradaCompraDelegate, self ).__init__( parent )
 
+        self.prods = None
+        """
+        @ivar:El modelo en el que se almacenan los articulos
+        @type:SingleSelectionModel
+        """
     def createEditor( self, parent, option, index ):
         """
         Aca se crean los widgets para edición
@@ -43,10 +49,16 @@ class EntradaCompraDelegate( QStyledItemDelegate ):
             spinbox.setAlignment( Qt.AlignRight | Qt.AlignVCenter )
             return spinbox
         elif index.column() == DESCRIPCION :
-            if index.data() != "":
-                self.prods.items.append( [ index.model().data( index.model().index( index.row(), 0 ) ) , index.data().toString()] )
+#            if index.data() != "":
+#                self.prods.items.append( [ index.model().data( index.model().index( index.row(), 0 ) ) , index.data().toString()] )
+            self.proxymodel.setSourceModel( self.prods )
+            model = index.model()
 
-            sp = SearchPanel( self.prods, parent )
+            current = model.index( index.row(), IDARTICULO ).data()
+
+            self.proxymodel.setFilterRegExp( self.filter( model, current ) )
+
+            sp = super( EntradaCompraDelegate, self ).createEditor( parent, option, index )
             return sp
 
         elif index.column() == TOTALPROD:
@@ -60,7 +72,7 @@ class EntradaCompraDelegate( QStyledItemDelegate ):
             spinbox.setAlignment( Qt.AlignRight | Qt.AlignVCenter )
             return spinbox
         else:
-            return QStyledItemDelegate.createEditor( self, parent, option, index )
+            return super( EntradaCompraDelegate, self ).createEditor( parent, option, index )
 
     def setEditorData( self, editor, index ):
         """
@@ -79,22 +91,28 @@ class EntradaCompraDelegate( QStyledItemDelegate ):
             editor.setCurrentIndex( i )
             editor.lineEdit().selectAll()
         else:
-            QStyledItemDelegate.setEditorData( self, editor, index )
+            super( EntradaCompraDelegate, self ).setEditorData( editor, index )
 
     def setModelData( self, editor, model, index ):
         """
-        En este evento se toma el resultado del editor y se introduco en el modelo
+        En este evento se toma el resultado del editor y se introduco 
+        en el modelo
         """
         if index.column() == DESCRIPCION:
-            try:
-                model.setData( index, [self.prods.items[editor.currentIndex()][0],
-                                       self.prods.items[editor.currentIndex()][1]
-                ] )
-                del self.prods.items[editor.currentIndex()]
-            except IndexError as inst:
-                print inst
+            proxy_index = self.proxymodel.index( editor.currentIndex(), 0 )
+            source_index = self.proxymodel.mapToSource( proxy_index )
+
+            fila = source_index.row()
+            modelo = self.prods
+
+            model.setData( index, [
+                                   modelo.items[fila][0],
+                                   modelo.items[fila][1]
+            ] )
         else:
-            QStyledItemDelegate.setModelData( self, editor, model, index )
+            super( EntradaCompraDelegate, self ).setModelData( editor,
+                                                               model,
+                                                               index )
 
     def sizeHint( self, option, index ):
         u"""
@@ -106,4 +124,4 @@ class EntradaCompraDelegate( QStyledItemDelegate ):
         if index.column() == DESCRIPCION:
             return QSize( 250, fm.height() )
 
-        return QStyledItemDelegate.sizeHint( self, option, index )
+        return super( EntradaCompraDelegate, self ).sizeHint( option, index )

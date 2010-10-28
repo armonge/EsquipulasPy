@@ -167,8 +167,8 @@ class Base( QMainWindow ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise Exception( "No se pudo conectar a la base de "\
-                                     + "datos para recuperar los tipos "\
+                    raise Exception( "No se pudo conectar a la base de "
+                                     + "datos para recuperar los tipos "
                                      + "de cambio" )
 
             q = """
@@ -181,10 +181,10 @@ class Base( QMainWindow ):
 
             if not query.exec_( q ):
 
-                raise UserWarning( "No se pudieron recuperar los tipos de "\
+                raise UserWarning( "No se pudieron recuperar los tipos de "
                                    + "cambio" )
             if not query.size() == 1:
-                logging.critical( u"La consulta para obtener tipos de "\
+                logging.critical( u"La consulta para obtener tipos de "
                                   + "cambio no devolvio exactamente un valor" )
                 raise UserWarning( u"Hubo un error al obtener los tipos "\
                                    + "de cambio" )
@@ -205,7 +205,7 @@ class Base( QMainWindow ):
             logging.error( query.lastError().text() )
         except Exception as inst:
             QMessageBox.critical( self, qApp.organizationName(),
-                                  u"Hubo un error al obtener los tipos de"\
+                                  u"Hubo un error al obtener los tipos de"
                                   + " cambio" )
             logging.critical( query.lastError().text() )
             logging.critical( inst )
@@ -252,7 +252,7 @@ class Base( QMainWindow ):
         @type index: int 
         """
         QMessageBox.information( self, qApp.organizationName(),
-                                  u"Esta parte del sistema no ha "\
+                                  u"Esta parte del sistema no ha "
                                   + "sido implementada" )
         raise NotImplementedError()
 
@@ -337,8 +337,8 @@ class Base( QMainWindow ):
                                          self.editmodel.validError )
                 except AttributeError:
                     QMessageBox.warning( self, qApp.organizationName() ,
-                                         u"El documento no puede guardarse"\
-                                         + " ya que la información no esta"\
+                                         u"El documento no puede guardarse"
+                                         + " ya que la información no esta"
                                          + " completa" )
 
     def setControls( self, unused_status ):
@@ -347,8 +347,9 @@ class Base( QMainWindow ):
         @param status: 
         @type status: bool
         """
-        QMessageBox.information( self, qApp.organizationName(),
-                             u"Esta parte del sistema no ha sido implementada" )
+        QMessageBox.information( self,
+                            qApp.organizationName(),
+                            u"Esta parte del sistema no ha sido implementada" )
         raise NotImplementedError()
 
     def addLine( self ):
@@ -424,7 +425,7 @@ class Base( QMainWindow ):
          normalmente sera el iddocumento o el ndocimpreso
         @rtype:string
         """
-        raise NotImplementedError( u"printIdentifier debe implementarse para "\
+        raise NotImplementedError( u"printIdentifier debe implementarse para "
                                    + "poder imprimir" )
 
     def preview( self ):
@@ -460,7 +461,7 @@ class Base( QMainWindow ):
             base = reports.Reports.url
 
             if base == "":
-                raise UserWarning( u"No existe una configuración para el "\
+                raise UserWarning( u"No existe una configuración para el "
                                    + "servidor de reportes" )
 
 
@@ -481,7 +482,7 @@ class Base( QMainWindow ):
         except NotImplementedError as inst:
             logging.error( unicode( inst ) )
             QMessageBox.information( self, qApp.organizationName(),
-                                 u"La función de impresión no se ha "\
+                                 u"La función de impresión no se ha "
                                  + "implementado para este modulo" )
         except UserWarning as inst:
             logging.error( unicode( inst ) )
@@ -490,7 +491,7 @@ class Base( QMainWindow ):
         except Exception as inst:
             logging.critical( unicode( inst ) )
             QMessageBox.critical( self, qApp.organizationName(),
-                                   "Hubo un problema al intentar imprimir"\
+                                   "Hubo un problema al intentar imprimir"
                                    + " su reporte" )
 
     def on_webview_loadProgress( self, progress ):

@@ -4,16 +4,16 @@ Created on 21/08/2010
 
 @author: Luis Carlos Mejia
 '''
-import logging
-import functools
-
 from PyQt4.QtCore import pyqtSlot, Qt
-from PyQt4.QtGui import  QDataWidgetMapper, QMessageBox, \
-QSortFilterProxyModel, qApp
-from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
-
+from PyQt4.QtGui import QDataWidgetMapper, QMessageBox, QSortFilterProxyModel, \
+    qApp
+from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 from ui.Ui_persona import Ui_frmPersona
 from utility.base import Base
+import functools
+import logging
+
+
 
 TIPO, ID, NOMBRE, DIRECCION, TELEFONO, CORREO, RUC, ACTIVO = range( 8 )
 
@@ -124,8 +124,8 @@ class FrmPersona( Ui_frmPersona, Base ):
             return False
 
         try:
-            if not QSqlDatabase.database().isOpen():
-                if not QSqlDatabase.database().open():
+            if not self.database.isOpen():
+                if not self.database.open():
                     raise UserWarning( u"No se pudo conectar con la base de datos" )
 
             query = QSqlQuery()
@@ -182,8 +182,8 @@ class FrmPersona( Ui_frmPersona, Base ):
             QMessageBox.critical( self, titulo, "El %s no pudo ser creado" % self.rol )
             result = False
         finally:
-            if QSqlDatabase.database().isOpen():
-                QSqlDatabase.database().close()
+            if self.database.isOpen():
+                self.database.close()
 
         return result
 
@@ -255,7 +255,7 @@ class FrmPersona( Ui_frmPersona, Base ):
 
 
 
-    @pyqtSlot( "int" )
+    @pyqtSlot( int )
     def on_cbnombre_currentIndexChanged( self, index ):
         """
         asignar proveedor al objeto self.editmodel
@@ -268,7 +268,7 @@ class FrmPersona( Ui_frmPersona, Base ):
         self.txtruc.setText( self.personasModel.record( index ).value( "ruc" ).toString() )
         self.txttelefono.setText( self.personasModel.record( index ).value( "telefono" ).toString() )
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( unicode )
     def on_txtSearch_textChanged( self, searchstring ):
         """
         Cambiar el filtro para el navigation model

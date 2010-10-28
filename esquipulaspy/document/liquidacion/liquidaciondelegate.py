@@ -25,7 +25,7 @@ Created on 21/05/2010
 @author: Andrés Reyes Monge
 '''
 from PyQt4.QtCore import Qt, QSize
-from PyQt4.QtGui import QStyledItemDelegate, QSpinBox, QDoubleSpinBox
+from PyQt4.QtGui import QSpinBox, QDoubleSpinBox
 from utility.widgets.searchpanel import SingleSelectionSearchPanelDelegate
 
 

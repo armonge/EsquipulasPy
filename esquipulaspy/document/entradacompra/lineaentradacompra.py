@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       ${file}
 #       
 #       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
 #       
