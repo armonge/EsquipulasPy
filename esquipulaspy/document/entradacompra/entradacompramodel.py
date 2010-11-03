@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #       
-#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       Copyright 2010 Andrés Reyes Monge <armonge@gmail.com>
 #       
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -163,7 +163,7 @@ class EntradaCompraModel( DocumentBase ):
 
             return True
         except UserWarning as inst:
-            self._validError = unicode( inst )
+            self._valid_error = unicode( inst )
             return False
 
 

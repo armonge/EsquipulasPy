@@ -3,7 +3,7 @@
 #
 #       ${file}
 #       
-#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       Copyright 2010 Andrés Reyes Monge <armonge@gmail.com>
 #       
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -164,7 +164,7 @@ class DevolucionModel( DocumentBase ):
                 raise UserWarning( u"No se ha especificado la bodega "\
                 + u"para la devolución" )
         except UserWarning as inst:
-            self._validError = unicode( inst )
+            self._valid_error = unicode( inst )
             return False
         return True
 

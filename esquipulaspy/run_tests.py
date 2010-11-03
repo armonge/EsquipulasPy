@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       ${file}
 #       
 #       Copyright 2010 Andrés Reyes Monge <armonge@gmail.com>
 #       
@@ -20,28 +19,24 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 '''
-Created on 16/07/2010
+Created on 02/11/2010
 
-@author: Andrés Reyes Monge
+Este modulo corre todas las pruebas en el sistema, asumiendo que se llamen
+tests.py
+@author: armonge
 '''
-from PyQt4.QtGui import QStyledItemDelegate, QSpinBox
-from PyQt4.QtCore import Qt
-IDARTICULO, DESCRIPCION, NUMDOC, NUMAJUSTE, NUMTOTAL = range( 5 )
-class KardexDelegate( QStyledItemDelegate ):
 
-    def createEditor( self, parent, option, index ):
-        if index.column() == NUMAJUSTE:
-            spinbox = QSpinBox( parent )
-            spinbox.setRange( -1000, 1000 )
-            spinbox.setSingleStep( 1 )
-            return spinbox
-        else:
-            QStyledItemDelegate.createEditor( self, parent, option, index )
+import os, subprocess
+import fnmatch
 
-    def setEditorData( self, editor, index ):
-        if index.column() == NUMAJUSTE:
-            editor.setValue( index.data( Qt.EditRole ).toInt()[0] )
-        else:
-            QStyledItemDelegate.setEditorData( self, editor, index )
+ROOT = os.path.dirname( __file__ )
+PATTERN = "tests.py"
 
+filepaths = []
+for dirpath, dirnames, filenames in os.walk ( ROOT ):
+    filepaths.extend ( 
+      os.path.join ( dirpath, f ) for f in fnmatch.filter ( filenames, PATTERN )
+    )
 
+for file in filepaths:
+    subprocess.call( ['/usr/bin/env', 'python', file ] )

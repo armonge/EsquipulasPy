@@ -294,7 +294,7 @@ class FacturaModel( DocumentBase ):
                     raise UserWarning( "No se ha definido el ID del IVA" )
             return True
         except UserWarning as inst:
-            self._validError = unicode( inst )
+            self._valid_error = unicode( inst )
             return False
 
         return True

@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       ${file}
 #       
-#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       Copyright 2010 Andrés Reyes Monge <armonge@gmail.com>
 #       
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -20,25 +19,27 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 #TODO: unittest
+from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
+from PyQt4.QtSql import QSqlQuery, QSqlDatabase
+from decimal import Decimal
+from document.kardex.lineakardex import LineaKardex
+from utility import constantes
+from utility.decorators import return_decimal
+from utility.docbase import DocumentBase
+from utility.movimientos import movKardex
+import logging
+
 '''
 Created on 19/05/2010
 
 @author: Andrés Reyes Monge
 '''
-from decimal import Decimal
-import logging
-
-from PyQt4.QtCore import QAbstractTableModel, QModelIndex, Qt, QDateTime
-from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 
 
-from document.kardex.lineakardex import LineaKardex
-from utility import constantes
-from utility.movimientos import movKardex
-from utility.decorators import return_decimal
+
 
 IDARTICULO, DESCRIPCION, NUMDOC, NUMAJUSTE, NUMTOTAL = range( 5 )
-class KardexModel( QAbstractTableModel ):
+class KardexModel( DocumentBase ):
     """
     Esta clase es el modelo utilizado en la tabla en la que se editan
      los documentos kardex
@@ -128,23 +129,22 @@ class KardexModel( QAbstractTableModel ):
         Un documento es valido cuando 
         @rtype: bool
         """
-        if not len( self.lines ) != 0:
-            self.validError = "No existen lineas en el kardex"
-            return False
-        elif not self.exchangeRateId > 0:
-            self.validError = "No se ha definido el tipo de "\
-            + "cambio del documento"
-            return False
-        elif not self.uid != 0:
-            self.validError = "No se ha especificado el usuario"\
-            + " que realiza este kardex"
+        try:
+            if not len( self.lines ) != 0:
+                raise UserWarning( "No existen lineas en el kardex" )
+            elif not self.exchangeRateId > 0:
+                raise UserWarning( "No se ha definido el tipo de "
+                + "cambio del documento" )
+            elif not self.uid != 0:
+                raise UserWarning( "No se ha especificado el usuario"
+                + " que realiza este kardex" )
+        except UserWarning as inst:
+            self._valid_error = unicode( inst )
             return False
 
         return True
 
-    #Clases especificas del modelo
-    def rowCount( self, _index = QModelIndex() ):
-        return len( self.lines )
+
 
     def columnCount( self, _index = QModelIndex() ):
         return 5
@@ -179,8 +179,7 @@ class KardexModel( QAbstractTableModel ):
         if index.column() == NUMAJUSTE:
             return Qt.ItemFlags( QAbstractTableModel.flags( self, index ) |
                                  Qt.ItemIsEditable )
-        else:
-            return Qt.ItemIsEnabled
+        return Qt.ItemIsEnabled
 
 
     def setData( self, index, value, _role = Qt.EditRole ):
@@ -208,7 +207,7 @@ class KardexModel( QAbstractTableModel ):
         return True
 
     def removeRows( self, position, rows = 1, index = QModelIndex ):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def headerData( self, section, orientation, role = Qt.DisplayRole ):
         if role == Qt.TextAlignmentRole:
@@ -249,7 +248,7 @@ class KardexModel( QAbstractTableModel ):
             VALUES ( :ndocimpreso,:fechacreacion,:idtipodoc,:observacion,
             :total, :idtipocambio, :idbodega)
             """ ):
-                raise Exception( "No se pudo preparar la consulta para "\
+                raise Exception( "No se pudo preparar la consulta para "
                                  + "insertar el kardex" )
             query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
             query.bindValue( ":fechacreacion",
@@ -264,38 +263,38 @@ class KardexModel( QAbstractTableModel ):
             if not query.exec_():
                 raise Exception( "No se pudo insertar el documento" )
 
-            insertedId = query.lastInsertId().toInt()[0]
+            inserted_id = query.lastInsertId().toInt()[0]
 
             if not query.prepare( """
             INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion) 
             VALUE (:idusuario, :iddocumento,:accion)
             """ ):
-                raise Exception( "No se pudo preparar la consulta para "\
+                raise Exception( "No se pudo preparar la consulta para "
                                  + "ingresar el usuario" )
             query.bindValue( ":idusuario", self.uid )
-            query.bindValue( ":iddocumento", insertedId )
+            query.bindValue( ":iddocumento", inserted_id )
             query.bindValue( ":accion", constantes.AUTOR )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar  el usuario" )
 
-            for line in  self.lines :
-                if line.dirty:
-                    line.save( insertedId )
+            for i, line in  enumerate( [ line for line in self.lines if line.dirty and line.valid ] ):
+                line.save( inserted_id , i )
+
             if not query.prepare( """
             INSERT INTO docpadrehijos (idpadre, idhijo) 
             VALUES (:padre, :hijo)
             """ ):
-                raise Exception( "No se pudo preparar la relacion entre "\
+                raise Exception( "No se pudo preparar la relacion entre "
                                  + "el documento kardex y el documento padre" )
             query.bindValue( ":padre", self.parentId )
-            query.bindValue( ":hijo", insertedId )
+            query.bindValue( ":hijo", inserted_id )
             if not query.exec_():
-                raise Exception( "No se pudo insertar la relacion entre "\
+                raise Exception( "No se pudo insertar la relacion entre "
                                  + "el documento kardex y el documento padre" )
 
             if self.ajusteTotalC != 0:
-                movKardex( insertedId, self.ajusteTotalC )
+                movKardex( inserted_id, self.ajusteTotalC )
 
             if not QSqlDatabase.database().transaction():
                 raise Exception( "No se pudo ejecutar la transaccion" )

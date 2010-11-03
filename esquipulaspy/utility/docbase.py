@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #       
-#       Copyright 2010 Andrés Reyes Monge <armonge@armonge-laptop.site>
+#       Copyright 2010 Andrés Reyes Monge <armonge@gmail.com>
 #       
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ Created on 16/08/2010
 @author: Andrés Reyes Monge
 '''
 
-from PyQt4.QtCore import QAbstractTableModel, QDateTime
+from PyQt4.QtCore import QAbstractTableModel, QDateTime, QModelIndex
 
 
 class DocumentBase( QAbstractTableModel ):
@@ -63,7 +63,7 @@ class DocumentBase( QAbstractTableModel ):
         @type:string
         """
 
-        self._validError = ""
+        self._valid_error = ""
         """
         @ivar: Si existe algún error de validación aca es que se muestra
         @type:string
@@ -71,7 +71,7 @@ class DocumentBase( QAbstractTableModel ):
 
     @property
     def validError( self ):
-        return self._validError
+        return self._valid_error
 
     @property
     def validLines( self ):
@@ -85,6 +85,10 @@ class DocumentBase( QAbstractTableModel ):
     def valid( self ):
         raise NotImplementedError( "El metodo valid deberia de ser"\
                                   + " implementado en todos los documentos" )
+
+
+    def rowCount( self, _index = QModelIndex() ):
+        return len( self.lines )
 
     def save( self ):
         raise NotImplementedError()
