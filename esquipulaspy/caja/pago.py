@@ -32,14 +32,14 @@ class FrmPago( Ui_frmPago, Base ):
     """
     web = "recibos.php?doc="
 
-    def __init__( self ,sesion, parent = None ):
+    def __init__( self , sesion, parent ):
         '''
         Constructor
         '''
-        super( FrmPago, self ).__init__( parent )
+        super( FrmPago, self ).__init__( parent, True )
         self.setWindowModality( Qt.WindowModal )
         self.setWindowFlags( Qt.Dialog )
-        self.sesion=sesion
+        self.sesion = sesion
         self.tabledetails = None
 
 

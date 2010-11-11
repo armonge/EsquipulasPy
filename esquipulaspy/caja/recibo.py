@@ -514,8 +514,7 @@ class FrmRecibo( Ui_frmRecibo, Base ):
         GROUP BY padre.iddocumento
         ORDER BY padre.iddocumento;
         """ % ( '%', constantes.IDFACTURA, constantes.IDRECIBO, constantes.CLIENTE )
-        
-        print query
+
         self.navmodel.setQuery( query )
 
 # Proxy model que se utilizara desde el formulario de facturacion SOLAMENTE

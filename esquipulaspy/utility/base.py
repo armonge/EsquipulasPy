@@ -46,11 +46,18 @@ class Base( QMainWindow ):
     pageSize = QPrinter.Letter
     web = ""
 
-    def __init__( self , parent = None ):
+    def __init__( self , parent , own_toolbar = False ):
+        """
+        @param parent: El widget padre de esta ventana
+        @param own_toolbar: Si este widget dibujara su toolbar en el padre o en el mismo
+        @type parent: QWidget
+        @type own_toolbar: bool
+        """
         super( Base, self ).__init__( parent )
         self.user = user.LoggedUser
         self._status = True
         self.parentWindow = parent
+        self.own_toolbar = own_toolbar
 
 
 
@@ -84,14 +91,14 @@ class Base( QMainWindow ):
         self.editmodel = None
         self.printer = QPrinter()
 
-
+        self._status = False
 
     def startUi( self ):
         """
         Iniciar todos los elementos graficos
         """
         self.setupUi( self )
-        if not self.parent() is None:
+        if  not self.own_toolbar:
             self.parent().addToolBar( self.toolBar )
 
         settings = QSettings()
@@ -144,7 +151,7 @@ class Base( QMainWindow ):
         settings = QSettings()
         settings.setValue( self.windowTitle() + "/Geometry", self.saveGeometry() )
 
-        if not self.parent() is None:
+        if not self.own_toolbar :
             self.parent().mdiArea().parent().parent().removeToolBar( self.toolBar )
 
 
@@ -533,7 +540,7 @@ class Base( QMainWindow ):
 
     def updateLabels():
         raise NotImplementedError()
-    
+
     def createActions( self ):
         """
         Crea las acciones predefinidas del sistema

@@ -55,13 +55,12 @@ class FrmArqueo( Ui_frmArqueo, Base ):
     Esta clase implementa el formulario arqueo
     '''
     web = "arqueos.php?doc="
-    def __init__( self, datos_sesion, parent_window, parent = None ):
-        '''
+    def __init__( self, datos_sesion, parent ):
+        u'''
         @param datos_sesion: La información de la sesion de caja
         '''
-        super( FrmArqueo, self ).__init__( parent )
+        super( FrmArqueo, self ).__init__( parent, True )
         self.sesion = datos_sesion
-        self.parent_window = parent_window
         self.setWindowModality( Qt.WindowModal )
         self.setWindowFlags( Qt.Dialog )
 
@@ -102,7 +101,7 @@ class FrmArqueo( Ui_frmArqueo, Base ):
                     raise UserWarning( "No se pudo abrir la base de datos" )
 
             #TODO: Esta consulta tiene que mejorar para definir realmente quien es el que realiza el arqueo
-            query = """
+            query = u"""
             SELECT
                 d.iddocumento,
                 d.fechacreacion ,
@@ -129,11 +128,11 @@ class FrmArqueo( Ui_frmArqueo, Base ):
 
             self.detailsModel.setQuery( u"""
             SELECT
-            l.cantidad AS 'Cantidad',
-            CONCAT_WS(' ',tm.simbolo, CAST(de.valor AS CHAR)) as 'Denominación',
-            FORMAT(l.cantidad * de.valor, 4) as 'Total',
-            de.idtipomoneda,
-            l.iddocumento
+                l.cantidad AS 'Cantidad',
+                CONCAT_WS(' ',tm.simbolo, CAST(de.valor AS CHAR)) as 'Denominación',
+                FORMAT(l.cantidad * de.valor, 4) as 'Total',
+                de.idtipomoneda,
+                l.iddocumento
             FROM lineasarqueo l
             JOIN denominaciones de ON de.iddenominacion = l.iddenominacion
             JOIN tiposmoneda tm ON de.idtipomoneda = tm.idtipomoneda
@@ -167,7 +166,7 @@ class FrmArqueo( Ui_frmArqueo, Base ):
 
     def updateDetailFilter( self, index ):
         self.detailsproxymodel.setFilterKeyColumn( IDDOCUMMENTOT )
-        self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( "iddocumento" ).toString() )
+        self.detailsproxymodel.setFilterRegExp( self.navmodel.record( index ).value( IDDOCUMMENTO ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
 
     def setControls( self, status ):
@@ -273,10 +272,10 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             if not self.database.isOpen():
                 if not self.database.open():
                     raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
-            for window in self.parent_window.findChild( QMdiArea ).subWindowList():
+            for window in self.parentWindow.findChild( QMdiArea ).subWindowList():
                 if window.widget():
-                    raise UserWarning( u"Por favor cierre las otras pestañas"\
-                                       + " de la aplicación antes de continuar"\
+                    raise UserWarning( u"Por favor cierre las otras pestañas"
+                                       + u" de la aplicación antes de continuar"
                                        + " con el arqueo" )
 
 
@@ -386,7 +385,7 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             ORDER BY d.idtipomoneda, d.valor
             """
             if not query.exec_( q ):
-                raise UserWarning( "No se pudo recuperar la lista de "\
+                raise UserWarning( "No se pudo recuperar la lista de "
                                    + "denominaciones" )
             denominationsmodelC = SingleSelectionModel()
             denominationsmodelC.headers = ["Id",
@@ -518,13 +517,13 @@ class FrmArqueo( Ui_frmArqueo, Base ):
                         else:
                             QMessageBox.warning( self,
                                                  qApp.organizationName(),
-                                                 "No se pudo autorizar "\
+                                                 "No se pudo autorizar "
                                                  + "el arqueo" )
             else:
                 QMessageBox.warning( self,
                                      qApp.organizationName(),
                                      unicode( inst )\
-                                     + u"\n Por favor especifique el motivo"\
+                                     + u"\n Por favor especifique el motivo"
                                      + " de la diferencia" )
 
     @property

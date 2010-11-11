@@ -95,12 +95,13 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
 
 
     @pyqtSlot()
-    def on_actionClients_activated( self ):
+    def on_actionClients_triggered( self ):
         """
         Activar el formulario de personas
         """
-        clientes = FrmPersona( constantes.CLIENTE, "Cliente" )
+        clientes = FrmPersona( constantes.CLIENTE, "Cliente" , self )
         clientes.show()
+
 
 
     @pyqtSlot()
@@ -225,7 +226,7 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
         """
         Activar el formulario de pagos
         """
-        pago = FrmPago( self.datosSesion )
+        pago = FrmPago( self.datosSesion , self )
         pago.show()
 
     @pyqtSlot()

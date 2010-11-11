@@ -18,8 +18,8 @@ import logging
 TIPO, ID, NOMBRE, DIRECCION, TELEFONO, CORREO, RUC, ACTIVO = range( 8 )
 
 class FrmPersona( Ui_frmPersona, Base ):
-    def __init__( self, tipo, rol, parent = None ):
-        super( FrmPersona, self ).__init__( parent )
+    def __init__( self, tipo, rol, parent ):
+        super( FrmPersona, self ).__init__( parent, True )
 
         self.tabledetails = None
         self.setWindowModality( Qt.WindowModal )

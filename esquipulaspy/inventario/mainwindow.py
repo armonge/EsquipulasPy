@@ -156,7 +156,7 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         """
         Slot documentation goes here.
         """
-        dialog = FrmPersona( constantes.PROVEEDOR, "Proveedor" )
+        dialog = FrmPersona( constantes.PROVEEDOR, "Proveedor" , self )
         dialog.show()
 #        catproveedores = FrmCatProveedores( self )
 #        self.mdiArea.addSubWindow( catproveedores )

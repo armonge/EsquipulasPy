@@ -90,7 +90,7 @@ class FrmFactura( Base, Ui_frmFactura ):
         QTimer.singleShot( 0, self.loadModels )
 
     def cargarRecibos( self ):
-        self.recibo = FrmRecibo()  #dlgRecibo( self, True )
+        self.recibo = FrmRecibo( self )  #dlgRecibo( self, True )
         self.recibo.setWindowModality( Qt.WindowModal )
         self.recibo.setWindowFlags( Qt.Dialog )
         self.recibo.actionNew.setVisible( False )
@@ -547,10 +547,10 @@ class FrmFactura( Base, Ui_frmFactura ):
     @pyqtSlot()
     def on_actionRecibo_activated( self ):
         index = self.mapper.currentIndex()
-        record = self.navmodel.record(index)
+        record = self.navmodel.record( index )
         self.recibo.remoteProxyModel.setFilterRegExp( "(%s)" % record.value( "iddocumento" ).toString() )
-        if self.recibo.remoteProxyModel.rowCount() >     0:
-            self.recibo.mapper.setCurrentIndex(1)
+        if self.recibo.remoteProxyModel.rowCount() > 0:
+            self.recibo.mapper.setCurrentIndex( 1 )
         if self.recibo.remoteProxyModel.rowCount() != 0:
             self.recibo.mapper.setCurrentIndex( 0 )
             self.recibo.show()
@@ -633,9 +633,9 @@ class FrmFactura( Base, Ui_frmFactura ):
         self.actionGoNext.setVisible( status )
         self.actionGoLast.setVisible( status )
         self.actionPreview.setVisible( status )
-        self.actionAnular.setVisible(status)
-        self.actionRecibo.setVisible(status)
-        
+        self.actionAnular.setVisible( status )
+        self.actionRecibo.setVisible( status )
+
         if status:
             self.navigate( 'last' )
             self.swcliente.setCurrentIndex( 1 )
