@@ -757,6 +757,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
     def on_ckTaxes_stateChanged( self, status ):
         self.editmodel.applyTaxes = True if status == Qt.Unchecked else False
         self.editmodel.reset()
+        self.editmodel.totalsModel.reset()
 
         if status == Qt.Checked:
             self.ckISO.setChecked( False )

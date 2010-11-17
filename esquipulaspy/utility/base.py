@@ -100,6 +100,7 @@ class Base( QMainWindow ):
         self.setupUi( self )
         if  not self.own_toolbar:
             self.parent().addToolBar( self.toolBar )
+            self.removeToolBar( self.toolBar )
 
         settings = QSettings()
         self.restoreState( settings.value( self.windowTitle()
