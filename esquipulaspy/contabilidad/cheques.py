@@ -820,42 +820,42 @@ class ChequesFiltroDelegate( AccountsSelectorDelegate ):
         self.accounts.setSourceModel( self.__accounts )
         self.accounts.setFilterKeyColumn( 0 )
 
-    def setModelData( self, editor, model, index ):
-
-        if index.column() in ( 1, 2 ):
-            model.setData( index, [
-                       self.accounts.index( editor.currentIndex(), 0 ).data(),
-                       self.accounts.index( editor.currentIndex(), 1 ).data(),
-                       self.accounts.index( editor.currentIndex(), 2 ).data()
-                       ] )
-            try:
-                index = self.accounts.mapToSource( 
-                              self.accounts.index( editor.currentIndex(), 0 ) )
-                del self.__accounts.items[index.row()]
-            except IndexError:
-                pass
-        else:
-            QStyledItemDelegate.setModelData( self, editor, model, index )
-
-    def createEditor( self, parent, _option, index ):
-
-        if index.column() in ( 1, 2 ):
-            if index.data() != "":
-                self.__accounts.items.append( [
-                                         index.model().lines[index.row()].itemId,
-                                         index.model().lines[index.row()].code,
-                                         index.model().lines[index.row()].name
-                                         ] )
-            sp = SearchPanel( self.accounts, parent )
-            sp.setColumn( index.column() )
-            return sp
-        elif index.column() == 3:
-            doublespinbox = QDoubleSpinBox( parent )
-            doublespinbox.setMinimum( -1000000 )
-            doublespinbox.setMaximum( 1000000 )
-            doublespinbox.setDecimals( 4 )
-
-            return doublespinbox
+#    def setModelData( self, editor, model, index ):
+#
+#        if index.column() in ( 1, 2 ):
+#            model.setData( index, [
+#                       self.accounts.index( editor.currentIndex(), 0 ).data(),
+#                       self.accounts.index( editor.currentIndex(), 1 ).data(),
+#                       self.accounts.index( editor.currentIndex(), 2 ).data()
+#                       ] )
+#            try:
+#                index = self.accounts.mapToSource( 
+#                              self.accounts.index( editor.currentIndex(), 0 ) )
+#                del self.__accounts.items[index.row()]
+#            except IndexError:
+#                pass
+#        else:
+#            QStyledItemDelegate.setModelData( self, editor, model, index )
+#
+#    def createEditor( self, parent, _option, index ):
+#
+#        if index.column() in ( 1, 2 ):
+#            if index.data() != "":
+#                self.__accounts.items.append( [
+#                                         index.model().lines[index.row()].itemId,
+#                                         index.model().lines[index.row()].code,
+#                                         index.model().lines[index.row()].name
+#                                         ] )
+#            sp = SearchPanel( self.accounts, parent )
+#            sp.setColumn( index.column() )
+#            return sp
+#        elif index.column() == 3:
+#            doublespinbox = QDoubleSpinBox( parent )
+#            doublespinbox.setMinimum( -1000000 )
+#            doublespinbox.setMaximum( 1000000 )
+#            doublespinbox.setDecimals( 4 )
+#
+#            return doublespinbox
 
 class Anular( QDialog ):
     def __init__( self , numero, parent = None ):

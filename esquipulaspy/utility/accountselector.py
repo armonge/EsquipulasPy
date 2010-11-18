@@ -34,7 +34,8 @@ from PyQt4.QtSql import QSqlQuery
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
 from utility.singleselectionmodel import SingleSelectionModel
-from utility.widgets.searchpanel import SearchPanel
+from utility.widgets.searchpanel import SearchPanel, \
+    SingleSelectionSearchPanelDelegate
 import logging
 
 
@@ -166,7 +167,7 @@ class AccountsSelectorModel( QAbstractTableModel ):
         return int( section + 1 )
 
 
-class AccountsSelectorDelegate( QStyledItemDelegate ):
+class AccountsSelectorDelegate( SingleSelectionSearchPanelDelegate ):
     def __init__( self, query, showTable = False ):
         super( AccountsSelectorDelegate, self ).__init__()
         self.showTable = showTable
@@ -183,19 +184,21 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
                                         ] )
 
 
+        self.proxymodel.setFilterKeyColumn( IDCUENTA )
 
-    def createEditor( self, parent, _option, index ):
+
+    def createEditor( self, parent, option, index ):
 
         if index.column() in ( CODCUENTA, NCUENTA ):
-            if index.data() != "":
-                self.accounts.items.append( [
-                                         index.model().lines[index.row()].itemId,
-                                         index.model().lines[index.row()].code,
-                                         index.model().lines[index.row()].name
-                                         ] )
-            sp = SearchPanel( self.accounts, parent, self.showTable )
-            sp.setColumn( index.column() )
+            model = index.model()
+            self.proxymodel.setSourceModel( self.accounts )
+            current = model.data( model.index( index.row(), IDCUENTA ) )
+            self.proxymodel.setFilterRegExp( self.filter( model, current ) )
+
+            sp = super( AccountsSelectorDelegate, self ).createEditor( parent, option, index )
+            sp.setColumnHidden( IDCUENTA )
             return sp
+
         elif index.column() == MONTO:
             doublespinbox = QDoubleSpinBox( parent )
             doublespinbox.setMinimum( -100000000000 )
@@ -205,32 +208,36 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
             return doublespinbox
 
     def setEditorData( self, editor, index ):
-        data = index.data()
         if index.column() in ( CODCUENTA, NCUENTA ):
-            i = editor.findText( data if type( data ) != QVariant else data.toString() )
+            model = index.model()
+            current = model.data( model.index( index.row(), IDCUENTA ) )
+            self.proxymodel.setFilterRegExp( self.filter( model, current ) )
+
+            text = index.data( Qt.DisplayRole ).toString()
+            i = editor.findText( text )
             if i == -1:
                 i = 0
+
             editor.setCurrentIndex( i )
             editor.lineEdit().selectAll()
+
         elif index.column() == MONTO:
             editor.setValue( index.model().data( index, Qt.EditRole ) if index.model().data( index, Qt.EditRole ) != "" else 0 )
         else:
             QStyledItemDelegate.setEditorData( self, editor, index )
 
     def setModelData( self, editor, model, index ):
-        
+
         if index.column() in ( NCUENTA, CODCUENTA ):
-            model.setData( index, [
-                                   self.accounts.index( editor.currentIndex(), 0 ).data(),
-                                   self.accounts.index( editor.currentIndex(), 1 ).data(),
-                                   self.accounts.index( editor.currentIndex(), 2 ).data()
-                                   ] )
-            try:
-                del self.accounts.items[editor.currentIndex()]
-            except IndexError:
-                pass
-            
-        
+            if editor.currentIndex() != -1:
+                proxyindex = self.proxymodel.index( editor.currentIndex() , 0 )
+                sourceindex = self.proxymodel.mapToSource( proxyindex )
+
+                model.setData( index, [
+                                       self.accounts.index( sourceindex.row(), 0 ).data().toInt()[0],
+                                       self.accounts.index( sourceindex.row(), 1 ).data(),
+                                       self.accounts.index( sourceindex.row(), 2 ).data()
+                                       ] )
         else:
             QStyledItemDelegate.setModelData( self, editor, model, index )
 

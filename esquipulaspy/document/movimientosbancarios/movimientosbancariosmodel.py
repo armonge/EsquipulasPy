@@ -12,14 +12,14 @@ from decimal import Decimal
 
 class MovimientosBancariosModel( AccountsSelectorModel, DatosDocModel ):
     def __init__( self ):
-        DatosDocModel.__init__(self)
+        DatosDocModel.__init__( self )
         AccountsSelectorModel.__init__( self )
 
     def setData( self, index, value, _role = Qt.EditRole ):
-        if index.row()==0 and index.column()==3  and Decimal(value.toString()) <0:
+        if index.row() == 0 and index.column() == 3  and Decimal( value.toString() ) < 0:
             return False
-        AccountsSelectorModel.setData(self, index, value, _role)
-        
+        return AccountsSelectorModel.setData( self, index, value, _role )
+
     def flags( self, index ):
         if not index.isValid():
             return Qt.ItemIsEnabled
