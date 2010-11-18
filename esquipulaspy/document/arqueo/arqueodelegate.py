@@ -94,9 +94,10 @@ class ArqueoDelegate( SingleSelectionSearchPanelDelegate ):
     def setModelData( self, editor, model, index ):
         if index.column() == DENOMINACION:
             try:
-                proxyindex = self.proxymodel.index( editor.currentIndex() , 0 )
-                sourceindex = self.proxymodel.mapToSource( proxyindex )
-                model.setData( index, self.denominationsmodel.items[sourceindex.row() ] )
+                if editor.currentIndex() != -1:
+                    proxyindex = self.proxymodel.index( editor.currentIndex() , 0 )
+                    sourceindex = self.proxymodel.mapToSource( proxyindex )
+                    model.setData( index, self.denominationsmodel.items[sourceindex.row() ] )
             except IndexError as inst:
                 logging.error( inst )
         else:

@@ -300,7 +300,8 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         query = QSqlQuery()
         try:
             if not QSqlDatabase.database().open():
-                raise UserWarning( u"No se pudo establecer una conexión con la base de datos" )
+                raise UserWarning( u"No se pudo establecer una conexión "
+                                   "con la base de datos" )
 
             dlgCuenta = dlgSelectCuenta( self )
             fila = -1
@@ -379,7 +380,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         except Exception as inst:
             logging.critical( unicode( inst ) )
             QMessageBox.critical( self, qApp.organizationName(),
-                                   u"Hubo un error al intentar iniciar una"\
+                                   u"Hubo un error al intentar iniciar una"
                                    + " nueva conciliación" )
         finally:
             if self.database.isOpen():

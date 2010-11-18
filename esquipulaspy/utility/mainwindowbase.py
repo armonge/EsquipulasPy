@@ -18,6 +18,7 @@
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
+
 '''
 Created on 11/06/2010
 
@@ -164,7 +165,7 @@ class MainWindowBase( QMainWindow ):
         "<b>%s: %s</b><br />" % ( qApp.organizationName(),
                                   qApp.applicationName() ) + \
         "Este programa ha sido desarrollado por Cusuco Software y se "\
-        + "distribuye bajo una licencia GPL, usted deberia de haber"\
+        + u"distribuye bajo una licencia GPL, usted debería de haber"\
         + " recibido una copia de esta licencia junto con el programa." )
 
     def help( self ):
@@ -224,17 +225,17 @@ class MainWindowBase( QMainWindow ):
                 if tmpuser.uid == self.user.uid or tmpuser.hasRole( 'root' ):
                     self.status = True
                 else:
-                    QMessageBox.critical( self, \
-                                         qApp.organizationName(), \
-                                         u"Usted esta intentando desbloquear " + \
-                                         " una sesión que no le pertenece", \
-                                         QMessageBox.Ok, \
+                    QMessageBox.critical( self,
+                                         qApp.organizationName(),
+                                         u"Usted esta intentando desbloquear "
+                                         " una sesión que no le pertenece",
+                                         QMessageBox.Ok,
                                          QMessageBox.Ok )
             else:
-                QMessageBox.critical( self, \
-                                         qApp.organizationName(), \
-                                         u"No ha sido posible autenticarle", \
-                                         QMessageBox.Ok, \
+                QMessageBox.critical( self,
+                                         qApp.organizationName(),
+                                         u"No ha sido posible autenticarle",
+                                         QMessageBox.Ok,
                                          QMessageBox.Ok )
 
 

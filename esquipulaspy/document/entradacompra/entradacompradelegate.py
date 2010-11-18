@@ -99,16 +99,17 @@ class EntradaCompraDelegate( SingleSelectionSearchPanelDelegate ):
         en el modelo
         """
         if index.column() == DESCRIPCION:
-            proxy_index = self.proxymodel.index( editor.currentIndex(), 0 )
-            source_index = self.proxymodel.mapToSource( proxy_index )
+            if editor.currentIndex() != -1:
+                proxy_index = self.proxymodel.index( editor.currentIndex(), 0 )
+                source_index = self.proxymodel.mapToSource( proxy_index )
 
-            fila = source_index.row()
-            modelo = self.prods
+                fila = source_index.row()
+                modelo = self.prods
 
-            model.setData( index, [
-                                   modelo.items[fila][0],
-                                   modelo.items[fila][1]
-            ] )
+                model.setData( index, [
+                                       modelo.items[fila][0],
+                                       modelo.items[fila][1]
+                ] )
         else:
             super( EntradaCompraDelegate, self ).setModelData( editor,
                                                                model,

@@ -30,7 +30,7 @@ TOTAL, SUBTOTAL, IVA, TOTALRET, TIPOCAMBIO, TASARETENCION, \
 ESTADO, IDESTADO, TOTALCHEQUE = range( 15 )
 #accounts model
 IDDOC, IDCUENTA, CODIGO, DESCRIPCION, MONTO = range( 5 )
-class FrmCheques( Ui_frmCheques, Base ):
+class FrmCheques( Base, Ui_frmCheques ):
     """
     Implementacion de la interfaz grafica para Cheques
     """
@@ -72,7 +72,7 @@ class FrmCheques( Ui_frmCheques, Base ):
                                 record.value( "iddocumento" ).toString() )
         self.tablenavigation.selectRow( self.mapper.currentIndex() )
         self.actionAnular.setEnabled( record.value( "idestado" ).toInt()[0] == constantes.CONFIRMADO )
-        
+
 #        if record.value( "caret.valorcosto" )>Decimal(0.00):
 #            print "tiene retencion"
 #        
@@ -237,7 +237,7 @@ class FrmCheques( Ui_frmCheques, Base ):
             self.tabledetails.addAction( self.actionDeleteRow )
         else:
             self.tabledetails.removeAction( self.actionDeleteRow )
-            
+
     def deleteRow( self ):
         """
         Funcion usada para borrar lineas de la tabla
@@ -250,13 +250,12 @@ class FrmCheques( Ui_frmCheques, Base ):
 
         self.editmodel.removeRows( row, 1 )
 
-        
+
     @pyqtSlot( bool )
     @if_edit_model
     def on_ckretencion_toggled( self, on ):
         """
         """
-
         if on :
             self.retencionwidget.setCurrentIndex( 1 )
             self.editmodel.hasretencion = True
@@ -282,7 +281,7 @@ class FrmCheques( Ui_frmCheques, Base ):
         if not query.size() == 1:
             QMessageBox.information( self,
                                      qApp.organizationName(),
-                                     "No fue posible obtener el porcentaje "\
+                                     "No fue posible obtener el porcentaje "
                                      + "del IVA" )
         if on :
             self.editmodel.hasiva = True
@@ -307,7 +306,7 @@ class FrmCheques( Ui_frmCheques, Base ):
                 if not self.database.open():
                     raise UserWarning( "Hubo un error al conectarse con la base de datos" )
 
-            self.editmodel.setData( self.editmodel.index(  0, 2 ),
+            self.editmodel.setData( self.editmodel.index( 0, 2 ),
                             [self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0],
                              self.cuentabancaria.record( index ).value( "codigo" ).toString(),
                              self.cuentabancaria.record( index ).value( "descripcion" ).toString()] )
@@ -360,6 +359,7 @@ class FrmCheques( Ui_frmCheques, Base ):
                                self.editmodel.index( 0, 3 ),
                                self.editmodel.totalCordobas.quantize( 
                                                      Decimal( '0.0001' ) ) )
+
         if self.editmodel.moneda == constantes.IDCORDOBAS:
 
             self.total.setText( moneyfmt( self.editmodel.totalCordobas,
@@ -427,7 +427,7 @@ class FrmCheques( Ui_frmCheques, Base ):
                 logging.critical( unicode( inst ) )
                 self.status = True
 
-                    
+
 
 
 
@@ -445,7 +445,7 @@ class FrmCheques( Ui_frmCheques, Base ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( u"No se pudo establecer la conexión "\
+                    raise UserWarning( u"No se pudo establecer la conexión "
                                        + "con la base de datos" )
 
             #Crea modelo para edicion            
@@ -457,11 +457,12 @@ class FrmCheques( Ui_frmCheques, Base ):
             FROM costosagregados c 
             WHERE activo=1 AND idtipocosto=%d
             """ % ( constantes.IVA ) )
+
             if not query.exec_():
-                raise UserWarning( "No se pudo ejecutar la consulta para"\
+                raise UserWarning( "No se pudo ejecutar la consulta para"
                                    + " obtener los valores de los impuestos" )
             elif not query.size() > 0:
-                raise UserWarning( "No se pudieron obtener los valores"\
+                raise UserWarning( "No se pudieron obtener los valores"
                                    + " de los impuestos" )
             query.first()
             self.editmodel.ivaRate = Decimal( query.value( 0 ).toString() )
@@ -507,11 +508,11 @@ class FrmCheques( Ui_frmCheques, Base ):
                     p.nombre,
                     p.activo
                     FROM personas p
-                    where p.tipopersona=2
+                    where p.tipopersona=%d
                     group by p.idpersona
                     ORDER BY p.nombre
                     ;
-            """ )
+            """ % constantes.PROVEEDOR )
 
             self.proveedoresfiltro = QSortFilterProxyModel()
             self.proveedoresfiltro.setSourceModel( self.proveedoresmodel )
@@ -564,7 +565,7 @@ class FrmCheques( Ui_frmCheques, Base ):
             line.itemId = record.value( "idcuentacontable" ).toInt()[0]
             line.code = record.value( "codigo" ).toString()
             line.name = record.value( "descripcion" ).toString()
-            line.amount = self.subtotal.value()
+            line.amount = Decimal( str( self.subtotal.value() ) )
 
             self.editmodel.insertRow( 0 )
             self.editmodel.lines[0] = line
@@ -589,6 +590,9 @@ class FrmCheques( Ui_frmCheques, Base ):
             self.lblretencion.setText( "" )
 
             self.status = False
+
+
+#            self.subtotal.valueChanged[float].connect( self.updateTotals )
         except UserWarning as inst:
             logging.error( unicode( inst ) )
             QMessageBox.warning( self,
@@ -598,7 +602,7 @@ class FrmCheques( Ui_frmCheques, Base ):
         except Exception as inst:
             QMessageBox.warning( self,
                                  qApp.organizationName(),
-                                 u"No se pudo iniciar la creación "\
+                                 u"No se pudo iniciar la creación "
                                  + "del nuevo cheque" )
             logging.critical( unicode( inst ) )
             self.status = True
@@ -619,20 +623,20 @@ class FrmCheques( Ui_frmCheques, Base ):
 
     @pyqtSlot()
     def anular( self ):
-        record = self.navmodel.record( self.mapper.currentIndex() )
         """
         @var: El elemento actual en el navmodel
         @type: QSqlRecord
         """
-        
+
+        record = self.navmodel.record( self.mapper.currentIndex() )
         doc = record.value( "iddocumento" ).toInt()[0]
         total = Decimal( record.value( "TotalCheque" ).toString() )
-        
+
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise Exception( "NO se pudo abrir la Base de datos" )
-            
+                    raise Exception( "No se pudo abrir la Base de datos" )
+
             if QMessageBox.question( self,
                  qApp.organizationName(),
                  u"¿Esta seguro que desea anular el cheque?",
@@ -656,7 +660,7 @@ class FrmCheques( Ui_frmCheques, Base ):
                             #
                             query = QSqlQuery( """
                                 SELECT fnConsecutivo(%d,NULL);
-                                """ % constantes.IDANULACION)
+                                """ % constantes.IDANULACION )
                             if not query.exec_():
                                 raise Exception( "No se pudo obtener el numero de la factura" )
                             query.first()
@@ -666,51 +670,51 @@ class FrmCheques( Ui_frmCheques, Base ):
                             INSERT INTO documentos(ndocimpreso,total,fechacreacion,idtipodoc,observacion,idestado)
                             VALUES(:ndocimpreso,:total,:fechacreacion,:idtipodoc,:observacion,:idestado)""" ):
                                 raise Exception( query.lastError().text() )
-                            
+
                             query.bindValue( ":ndocimpreso", n )
                             query.bindValue( ":total", total.to_eng_string() )
                             query.bindValue( ":fechacreacion", QDate.currentDate() )
                             query.bindValue( ":idtipodoc", constantes.IDANULACION )
                             query.bindValue( ":observacion", anulardialog.txtObservaciones.toPlainText() )
                             query.bindValue( ":idestado", constantes.CONFIRMADO )
-            
+
                             if not query.exec_():
                                 raise Exception( "No se pudo insertar el documento Anulacion" )
 
                             idanulacion = query.lastInsertId().toString()
-                            
+
                             query.prepare( "CALL spEliminarCheque(:doc,:anulado,:idcheque,:idretencion)" )
                             query.bindValue( ":doc", idanulacion )
                             query.bindValue( ":idcheque", doc )
-                            query.bindValue( ":anulado", constantes.ANULADO)
-                            query.bindValue( ":idretencion", constantes.IDRETENCION)
+                            query.bindValue( ":anulado", constantes.ANULADO )
+                            query.bindValue( ":idretencion", constantes.IDRETENCION )
                             if not query.exec_():
-                                raise UserWarning( "No se pudo Anular el Cheque" )                         
-                            
-            
+                                raise UserWarning( "No se pudo Anular el Cheque" )
+
+
                             if not query.prepare( "INSERT INTO docpadrehijos (idpadre,idhijo) VALUES" +
                         "(:idcheque," + idanulacion + ")" ):
             #                                "(:usuario," + insertedId + ",0),"
             #                                "(:supervisor," + insertedId + ",1)"):
                                 raise Exception( query.lastError().text() + "No se preparo la relacion de la anulacion con el Cheque" )
-            
+
                             query.bindValue( ":idcheque", doc )
-            
+
                             if not query.exec_():
                                 raise Exception( "No se pudo insertar la relacion de la Anulacion con el Cheque" )
-            
-            
+
+
                             if not query.prepare( "INSERT INTO personasxdocumento (idpersona,iddocumento,idaccion) VALUES" +
                             "(:usuario," + idanulacion + ",:accion)" ):
                                 raise Exception( query.lastError().text() + "No se inserto el usuario y autoriza" )
-            
+
                             query.bindValue( ":usuario", self.user.uid )
                             query.bindValue ( ":accion", constantes.AUTOR )
-            
+
                             if not query.exec_():
                                 raise Exception( "No se pudo Insertar la relacion de la anulacion con el usuario" )
-            
-            
+
+
                             if not self.database.commit():
                                 raise Exception( "NO se hizo el commit para la Anulacion" )
                             QMessageBox.information( self,
@@ -719,12 +723,12 @@ class FrmCheques( Ui_frmCheques, Base ):
                                                      QMessageBox.Ok )
                             self.updateModels()
         except UserWarning as inst:
-            logging.error(unicode(inst))
-            logging.error(query.lastError().text())
+            logging.error( unicode( inst ) )
+            logging.error( query.lastError().text() )
             self.database.rollback()
-            QMessageBox.critical(self,
+            QMessageBox.critical( self,
                                 qApp.organizationName(),
-                                unicode(inst))
+                                unicode( inst ) )
         except Exception as inst:
             logging.critical( unicode( inst ) )
             logging.critical( query.lastError().text() )
