@@ -218,14 +218,19 @@ class AccountsSelectorDelegate( QStyledItemDelegate ):
             QStyledItemDelegate.setEditorData( self, editor, index )
 
     def setModelData( self, editor, model, index ):
-
+        
         if index.column() in ( NCUENTA, CODCUENTA ):
             model.setData( index, [
                                    self.accounts.index( editor.currentIndex(), 0 ).data(),
                                    self.accounts.index( editor.currentIndex(), 1 ).data(),
                                    self.accounts.index( editor.currentIndex(), 2 ).data()
                                    ] )
-            del self.accounts.items[editor.currentIndex()]
+            try:
+                del self.accounts.items[editor.currentIndex()]
+            except IndexError:
+                pass
+            
+        
         else:
             QStyledItemDelegate.setModelData( self, editor, model, index )
 
