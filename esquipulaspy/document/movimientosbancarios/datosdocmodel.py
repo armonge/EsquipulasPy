@@ -89,9 +89,7 @@ class DatosDocModel( object ):
         Verdadero si la informaci�n obligatoria para la elaboracion del documento esta correcta
         @rtype: bool
         """
-        if self.idDoc == 0 :
-            self.mensajeError = "El id del documento no puede ser 0"
-        elif self.totalDoc == 0 :
+        if self.totalDoc == 0 :
             self.mensajeError = "El total del documento no puede ser 0"
         elif self.tipoDoc == 0 :
             self.mensajeError = "Por favor especifique el tipo de documento"

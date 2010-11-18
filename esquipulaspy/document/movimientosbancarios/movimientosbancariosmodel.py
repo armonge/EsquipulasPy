@@ -10,7 +10,7 @@ from utility.accountselector import AccountsSelectorModel
 from datosdocmodel import DatosDocModel
 from decimal import Decimal
 
-class MovimientosBancariosModel( AccountsSelectorModel, DatosDocModel ):
+class MovimientosBancariosModel(DatosDocModel, AccountsSelectorModel ):
     def __init__( self ):
         DatosDocModel.__init__( self )
         AccountsSelectorModel.__init__( self )
@@ -18,6 +18,7 @@ class MovimientosBancariosModel( AccountsSelectorModel, DatosDocModel ):
     def setData( self, index, value, _role = Qt.EditRole ):
         if index.row() == 0 and index.column() == 3  and Decimal( value.toString() ) < 0:
             return False
+
         return AccountsSelectorModel.setData( self, index, value, _role )
 
     def flags( self, index ):

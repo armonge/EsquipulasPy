@@ -109,7 +109,10 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         self.editmodel.observacionesDoc = self.txtobservaciones.toPlainText()
         self.editmodel.lineasDoc = self.editmodel.lines
         self.editmodel.totalDoc = self.editmodel.lineasDoc[0].amount
-        Base.save( self, True )
+        if self.editmodel.valid:
+            Base.save( self, True )
+        else:
+            QMessageBox.information(None, "Datos Incompletos", self.editmodel.mensajeError)
 
     @pyqtSlot( int )
     @if_edit_model
