@@ -24,7 +24,7 @@ class ConciliacionModel( QAbstractTableModel ):
     @cvar: El id del tipo de documento
     @type: int
     """
-    def __init__( self ):
+    def __init__( self,usuarioId ):
         super( ConciliacionModel, self ).__init__()
 
         self.validError = "La conciliacion no es valida"
@@ -97,7 +97,7 @@ class ConciliacionModel( QAbstractTableModel ):
         @ivar: Fecha de la conciliacion
         @type:QDate
         """
-        self.uid = 0
+        self.uid = usuarioId
         """
         @ivar: El id del usuario que realiza esta conciliación
         @type: int
@@ -119,10 +119,6 @@ class ConciliacionModel( QAbstractTableModel ):
         Es el saldo que la cuenta tiene al final del mes
         @rtype: Decimal 
         """
-#        foo = sum( [ line.monto for line in self.lines if line.valid ] )
-#        return foo if foo != 0 else Decimal( 0 )
-#FIXME: Para que sirve index aca??? temporalmente en comentarios....
-#        index = self.rowCount() - 1 if self.rowCount() > 0 else 0
         tmpsubtotal = self.saldoInicialLibro + self.notascredito + self.notasdebito
         return tmpsubtotal if tmpsubtotal != 0 else Decimal( 0 )
 
@@ -291,16 +287,7 @@ class ConciliacionModel( QAbstractTableModel ):
             if not QSqlDatabase.database().transaction():
                 raise Exception( u"No se puedo comenzar la transacción" )
 #OBTENER NUMERO DE DOCUMENTO
-#FIXME: Usar el procedimiento almacenado
-            query.prepare( """
-                SELECT
-                      IF( 
-                          MAX(CAST(ndocimpreso AS SIGNED)) IS NULL,
-                          0,
-                          MAX(CAST(ndocimpreso AS SIGNED))
-                     )+1
-                FROM documentos d
-                WHERE idtipodoc=:tipodoc
+            query.prepare( """SELECT fnConsecutivo(:tipodoc,null)
                 ;
                 """ )
             query.bindValue( ":idtipodoc", self.__documentType )
@@ -321,15 +308,17 @@ class ConciliacionModel( QAbstractTableModel ):
                 print query.lastError().databaseText()
                 raise Exception( "No se pudo insertar el documento" )
 
+            
             insertedId = query.lastInsertId().toInt()[0]
 #INSERTAR RELACION CON EL USUARIO                        
             query.prepare( """
-            INSERT INTO personasxdocumento(iddocumento,idpersona)
-            VALUES (:iddoc,:idusuario)
+            INSERT INTO personasxdocumento(iddocumento,idpersona,idaccion)
+            VALUES (:iddoc,:idusuario,:accion)
             """ )
 
             query.bindValue( ":iddoc", insertedId )
             query.bindValue( ":idusuario", self.uid )
+            query.bindValue( ":accion", constantes.AUTOR )
 
             if not query.exec_():
                 raise Exception( "No se pudo insertar la relacion"\
@@ -337,15 +326,14 @@ class ConciliacionModel( QAbstractTableModel ):
 #INSERTAR DATOS CONCILIACION
             query.prepare( """
             INSERT INTO conciliaciones(iddocumento,saldobanco,saldolibro,fecha,
-            idcuentacontable)
+            idcuentabancaria)
             VALUES (:iddoc,:saldobanco,:saldolibro,LAST_DAY(:fecha),:idcuenta);
             """ )
             query.bindValue( ":iddoc", insertedId )
-            print self.saldoInicialBanco.to_eng_string()
+#            print self.saldoInicialBanco.to_eng_string()
             query.bindValue( ":saldobanco", str( self.saldoInicialBanco ) )
             query.bindValue( ":saldolibro", str( self.saldoInicialLibro ) )
-            query.bindValue( ":fecha",
-                             self.fechaConciliacion.toString( "yyyyMMdd" ) )
+            query.bindValue( ":fecha", self.fechaConciliacion.toString( "yyyyMMdd" ) )
             query.bindValue( ":idcuenta", self.idCuentaContable )
 
             if not query.exec_():
@@ -364,6 +352,7 @@ class ConciliacionModel( QAbstractTableModel ):
         except Exception as inst:
             logging.error( unicode( inst ) )
             logging.error( query.lastError().text() )
+            logging.error( QSqlDatabase.database().lastError().text())
             QSqlDatabase.database().rollback()
 
             return False

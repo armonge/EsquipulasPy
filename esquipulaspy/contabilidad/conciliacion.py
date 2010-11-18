@@ -302,6 +302,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
                                    "con la base de datos" )
 
             dlgCuenta = dlgSelectCuenta( self )
+            
             fila = -1
     #REPETIR MIENTRAS NO SELECCIONE UNA FILA
             while fila == -1:
@@ -315,8 +316,8 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
                     return
 
     # SI SELECCIONO UNA FILA SIGUE
-            self.editmodel = ConciliacionModel()
-            self.editmodel.uid = self.user.uid
+            self.editmodel = ConciliacionModel(self.user.uid)
+        
             self.txtbanco.setText( dlgCuenta.filtermodel.index( fila, 0 ).data().toString() )
             self.txtcuentabanco.setText( dlgCuenta.filtermodel.index( fila, 1 ).data().toString() )
             self.txtmoneda.setText( dlgCuenta.filtermodel.index( fila, 2 ).data().toString() )
@@ -452,29 +453,31 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
     @pyqtSlot( bool )
     @if_edit_model
     def on_btnNotasCD_clicked( self, _checked ):
+        pass
+    
 #        notas = dlgMovimientosBancarios( self )
-        notas.setWindowModality( Qt.WindowModal )
-        if notas.exec_() == QDialog.Accepted:
-            row = self.editmodel.rowCount()
-
-            datosDoc = notas.editmodel.datos
-
-            linea = LineaConciliacion( self.editmodel )
-            linea.fecha = datosDoc.dateTime.toString( "dd/MM/yy" )
-            linea.monto = datosDoc.total
-            linea.idTipoDoc = datosDoc.idTipoDoc
-
-            linea.concepto = notas.editmodel.codigoDoc + " " + linea.fecha
-            linea.saldo = self.editmodel.lines[row - 1].saldo + linea.monto
-            linea.conciliado = 1
-            linea.delBanco = 1
-            linea.concepto2 = notas.editmodel.descripcionDoc + " " + linea.fecha
-            linea.idDoc = 0
-            linea.datos = datosDoc
-            self.editmodel.insertRows( row )
-            self.editmodel.lines[row] = linea
-            index = self.editmodel.index( row, CONCILIADO )
-            self.editmodel.dataChanged.emit( index, index )
+#        notas.setWindowModality( Qt.WindowModal )
+#        if notas.exec_() == QDialog.Accepted:
+#            row = self.editmodel.rowCount()
+#
+#            datosDoc = notas.editmodel.datos
+#
+#            linea = LineaConciliacion( self.editmodel )
+#            linea.fecha = datosDoc.dateTime.toString( "dd/MM/yy" )
+#            linea.monto = datosDoc.total
+#            linea.idTipoDoc = datosDoc.idTipoDoc
+#
+#            linea.concepto = notas.editmodel.codigoDoc + " " + linea.fecha
+#            linea.saldo = self.editmodel.lines[row - 1].saldo + linea.monto
+#            linea.conciliado = 1
+#            linea.delBanco = 1
+#            linea.concepto2 = notas.editmodel.descripcionDoc + " " + linea.fecha
+#            linea.idDoc = 0
+#            linea.datos = datosDoc
+#            self.editmodel.insertRows( row )
+#            self.editmodel.lines[row] = linea
+#            index = self.editmodel.index( row, CONCILIADO )
+#            self.editmodel.dataChanged.emit( index, index )
 
     @pyqtSlot( bool )
     @if_edit_model
