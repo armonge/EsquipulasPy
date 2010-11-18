@@ -2,27 +2,25 @@
 """
 Module implementing frmConciliacion.
 """
-import functools
+from PyQt4.QtCore import pyqtSlot, QModelIndex, Qt, QTimer, QDate, QVariant
+from PyQt4.QtGui import QSortFilterProxyModel, QDataWidgetMapper, QDialog, \
+    QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
+    QLineEdit, QDateTimeEdit, QMessageBox, qApp
+from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from decimal import Decimal
+from document.conciliacion import ConciliacionModel, LineaConciliacion
+from ui.Ui_conciliacion import Ui_frmConciliacion
+from utility.base import Base
+from utility.constantes import IDND, IDCHEQUE, IDERROR
+from utility.decorators import if_edit_model
+from utility.moneyfmt import moneyfmt
 import logging
 
-from PyQt4.QtCore import pyqtSlot, QModelIndex, Qt, QTimer, \
-    QDate, QVariant
-from PyQt4.QtGui import  QSortFilterProxyModel, QDataWidgetMapper, \
-    QDialog, QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
-     QLineEdit, QDateTimeEdit, QMessageBox, qApp
-from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 
 
-from document.conciliacion import ConciliacionModel, LineaConciliacion
 
-from utility.base import Base
-from utility.moneyfmt import moneyfmt
-from utility.constantes import IDND, IDCHEQUE, IDERROR
 
-from ui.Ui_conciliacion import Ui_frmConciliacion
-#from movimientosbancarios import dlgMovimientosBancarios
-from utility.decorators import if_edit_model
+from movimientosbancarios import FrmMovimientosBancarios
 
 
 FECHA, CONCEPTO, DEBE, HABER, SALDO, CONCILIADO, DELBANCO, \
@@ -256,14 +254,14 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
 
 
 
-    @pyqtSlot( "QString" )
+    @pyqtSlot( float )
     def on_spbsaldobanco_valueChanged ( self, value ):
         """
         Asignar el saldo inicial del banco al modelo
         """
         if not self.editmodel is None:
 #            value = self.spbsaldobanco.value()           
-            self.editmodel.saldoInicialBanco = Decimal( value )
+            self.editmodel.saldoInicialBanco = Decimal( str( value ) )
             self.updateLabels()
 
 
@@ -295,7 +293,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
 
     def newDocument( self ):
         """
-        Slot documentation goes here.
+        Iniciar un nuevo documento
         """
         query = QSqlQuery()
         try:
@@ -332,9 +330,8 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
             self.editmodel.fechaConciliacion = QDate( fecha.year(), fecha.month(), fecha.daysInMonth() )
 
 
-            query.prepare( "CALL spMovimientoCuenta( %d, %s )" % ( self.editmodel.idCuentaContable,
-                self.editmodel.fechaConciliacion.toString( "yyyyMMdd" ) ) )
-            if not query.exec_():
+            if not query.exec_( "CALL spMovimientoCuenta( %d, %s )" % ( self.editmodel.idCuentaContable,
+                self.editmodel.fechaConciliacion.toString( "yyyyMMdd" ) ) ):
                 raise Exception( query.lastError().text() )
 
             row = 0
@@ -412,7 +409,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
 
         if QMessageBox.question( self,
                                  qApp.organizationName(),
-                                  u"""¿Desea guardar el documento?""" ,
+                                  u"¿Desea guardar el documento?",
                                    QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
             if self.editmodel.save():
                 QMessageBox.information( self,
@@ -425,7 +422,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
             else:
                 QMessageBox.critical( self,
                      qApp.organizationName(),
-                    """Ha ocurrido un error al guardar el documento""" )
+                    "Ha ocurrido un error al guardar el documento" )
 
     @property
     def valid( self ):
@@ -433,11 +430,11 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         if modelo.idCuentaContable == 0:
             QMessageBox.warning( self,
                      qApp.organizationName(),
-                     """Por favor elija la cuenta bancaria""" )
+                     "Por favor elija la cuenta bancaria" )
         elif modelo.diferencia != 0:
             QMessageBox.warning( self,
                      qApp.organizationName(),
-                     """Los saldos según Banco y según libro no están conciliados""" )
+                     u"Los saldos según Banco y según libro no están conciliados" )
         else:
             return True
 
@@ -636,11 +633,13 @@ class dlgSelectCuenta( QDialog ):
 #************************************************
 class RONavigationModel( QSqlQueryModel ):
     """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
+        Esta funcion redefine data en la clase base, es el metodo 
+        que se utiliza para mostrar los datos del modelo
     """
     def data( self, index, role = Qt.DisplayRole ):
         """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
+        Esta funcion redefine data en la clase base, es el metodo 
+        que se utiliza para mostrar los datos del modelo
         """
         if not index.isValid():
             return None
@@ -714,7 +713,8 @@ class ReadOnlyTableModel( QSqlQueryModel ):
 
     def data( self, index, role = Qt.DisplayRole ):
         """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
+        Esta funcion redefine data en la clase base, es el metodo 
+        que se utiliza para mostrar los datos del modelo
         """
 
         if not index.isValid():
@@ -809,7 +809,8 @@ class DetalleTableModel( QSortFilterProxyModel ):
 
     def data( self, index, role = Qt.DisplayRole ):
         """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
+        Esta funcion redefine data en la clase base, es el metodo que 
+        se utiliza para mostrar los datos del modelo
         """
         if not index.isValid():
             return None

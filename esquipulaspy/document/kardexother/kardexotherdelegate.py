@@ -83,7 +83,7 @@ class KardexOtherDelegate( SingleSelectionSearchPanelDelegate ):
 
     def setModelData( self, editor, model, index ):
         """
-        En este evento se toma el resultado del editor y se introduco en el modelo
+        En este evento se toma el resultado del editor y se introduce en el modelo
         """
         if index.column() in ( DESCRIPCION, COSTO ):
             if self.proxymodel.rowCount() > 0:
