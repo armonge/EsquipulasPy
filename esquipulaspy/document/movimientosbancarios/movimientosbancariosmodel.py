@@ -29,11 +29,11 @@ class MovimientosBancariosModel( AccountsSelectorModel, DatosDocModel ):
         Verdadero si el monto de la cuenta contable no debe de ser editada
         @rtype: bool
         """
-        if self.tipoDoc == constantes.IDDEPOSITO:
-            if index.row() == 0:
-                return index.column() in ( 1, 2 )
-            else:
-                return False
+#        if self.tipoDoc == constantes.IDDEPOSITO:
+        if index.row() == 0:
+            return index.column() in ( 1, 2 )
         else:
-            return index.column() in ( 1, 2 ) and index.row() == 0
+            return True
+#        else:
+#            return index.column() in ( 1, 2 ) and index.row() == 0
 

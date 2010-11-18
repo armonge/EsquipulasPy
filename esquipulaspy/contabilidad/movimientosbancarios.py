@@ -97,7 +97,7 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         self.editmodel.setData( self.editmodel.index( 0, 2 ),
                             [self.cuentasModel.record( index ).value( "idcuentacontable" ).toInt()[0],
                              self.cuentasModel.record( index ).value( "codigo" ).toString(),
-                             self.cuentasModel.record( index ).value( "descripcion" ).toString()] )
+                             self.cuentasModel.record( index ).value( "Cuenta Contable" ).toString()] )
 #        self.accountseditdelegate.accounts.setFilterRegExp( "[^%d]" % self.cuentabancaria.record( index ).value( "idcuentacontable" ).toInt()[0] )
 
     def updateDetailFilter( self, _index ):
@@ -137,10 +137,8 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             SELECT
                 c.idcuentacontable,
                 cc.codigo,
-                cc.descripcion,
-                c.ctabancaria as Cuenta,
-                b.descripcion as Banco,
-                tm.moneda as Moneda
+                cc.descripcion as 'Cuenta Contable',
+                CONCAT(c.ctabancaria, ' [ ' , b.descripcion, ' - ', tm.simbolo, ' ]') as 'Cuenta Bancaria'
             FROM cuentasbancarias c
             JOIN bancos b ON b.idbanco = c.idbanco
             JOIN tiposmoneda tm ON tm.idtipomoneda= c.idtipomoneda
@@ -152,13 +150,15 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
                                         + " por favor cree una" )
 
 
-            self.cbcuenta.setModel( self.cuentasModel )
-            self.cbcuenta.setCurrentIndex( -1 )
-            self.cbcuenta.tabla.setColumnHidden( 0, True )
-            self.cbcuenta.tabla.setColumnHidden( 1, True )
-            self.cbcuenta.tabla.setColumnHidden( 2, True )
-
-            self.txttipodoc.setText( "Deposito" )
+            self.cbcuenta.setModelColumn(3)            
+            self.cbcuenta.setModel(self.cuentasModel)
+            self.cbcuenta.setCurrentIndex(-1)
+            self.cbcuenta.tabla.setColumnHidden(0,True)
+            #self.cbcuenta.tabla.setColumnHidden(1,True)
+            #self.cbcuenta.tabla.setColumnHidden(2,True)
+            
+            self.txttipodoc.setText("Deposito")
+            
 
             #            Rellenar el combobox de las CONCEPTOS
             self.conceptosModel = QSqlQueryModel()

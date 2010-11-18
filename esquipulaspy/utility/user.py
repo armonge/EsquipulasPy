@@ -106,6 +106,7 @@ class dlgUserLogin( dlgAbstractUserLogin ):
     Dialogo utilizado para pedir valores de usuario, contraseña 
     y base de datos al inicio de sesión
     """
+    
     def accept( self ):
         database.getDatabase( self.txtBd.text(), "--dbconfig" in qApp.arguments() )
         super( dlgUserLogin, self ).accept()

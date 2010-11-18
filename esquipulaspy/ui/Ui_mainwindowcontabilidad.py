@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Workspace\EsquipulasPy\esquipulaspy\ui\mainwindowcontabilidad.ui'
+# Form implementation generated from reading ui file 'c:\workspace\EsquipulasPy\esquipulaspy\ui\mainwindowcontabilidad.ui'
 #
-# Created: Mon Oct 18 23:26:17 2010
+# Created: Wed Nov 17 20:13:29 2010
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -57,7 +57,7 @@ class Ui_MainWindow(object):
         self.toolBox = QtGui.QToolBox(self.dockWidgetContents_2)
         self.toolBox.setObjectName(_fromUtf8("toolBox"))
         self.page_2 = QtGui.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 214, 620))
+        self.page_2.setGeometry(QtCore.QRect(0, -51, 213, 620))
         self.page_2.setObjectName(_fromUtf8("page_2"))
         self.gridLayout = QtGui.QGridLayout(self.page_2)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
@@ -217,7 +217,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.btnCierreAnual, 7, 0, 1, 1)
         self.toolBox.addItem(self.page_2, _fromUtf8(""))
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 230, 572))
+        self.page.setGeometry(QtCore.QRect(0, 0, 134, 88))
         self.page.setObjectName(_fromUtf8("page"))
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.page)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
@@ -283,8 +283,7 @@ class Ui_MainWindow(object):
         self.btnConciliacion.setText(QtGui.QApplication.translate("MainWindow", "Conciliación\n"
 "Bancaria", None, QtGui.QApplication.UnicodeUTF8))
         self.btnConciliacion.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+3", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnNotasCD.setText(QtGui.QApplication.translate("MainWindow", "Movimientos\n"
-"Bancarios", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnNotasCD.setText(QtGui.QApplication.translate("MainWindow", "Depositos", None, QtGui.QApplication.UnicodeUTF8))
         self.btnNotasCD.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))
         self.btnCierreMensual.setText(QtGui.QApplication.translate("MainWindow", "Cierre Mensual", None, QtGui.QApplication.UnicodeUTF8))
         self.btnCierreMensual.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+4", None, QtGui.QApplication.UnicodeUTF8))

@@ -92,8 +92,8 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
-          <width>214</width>
+          <y>-51</y>
+          <width>213</width>
           <height>620</height>
          </rect>
         </property>
@@ -361,8 +361,7 @@ Bancaria</string>
             </font>
            </property>
            <property name="text">
-            <string>Movimientos
-Bancarios</string>
+            <string>Depositos</string>
            </property>
            <property name="icon">
             <iconset resource="res.qrc">
@@ -489,8 +488,8 @@ Bancarios</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>230</width>
-          <height>572</height>
+          <width>134</width>
+          <height>88</height>
          </rect>
         </property>
         <attribute name="label">
