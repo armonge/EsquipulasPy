@@ -54,7 +54,7 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
         Constructor
         '''
         super( FrmKardexOther, self ).__init__( parent )
-
+        self.actionNew.setEnabled(False)
         self.navmodel = QSqlQueryModel()
 
         self.detailsModel = QSqlQueryModel()
@@ -81,6 +81,11 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
         QTimer.singleShot( 0, self.loadModels )
 
     def setControls( self, status ):
+        if self.user.hasRole( "contabilidad" ):
+            self.actionNew.setEnabled( True )
+            self.dtPicker.setReadOnly( False )
+
+            
         self.actionPrint.setVisible( status )
         self.actionGoFirst.setVisible( status )
         self.actionGoPrevious.setVisible( status )
@@ -105,6 +110,9 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
         if not status:
             self.tabWidget.setCurrentIndex( 0 )
             self.tabledetails.addAction( self.actionDeleteRow )
+            
+        
+            
         else:
             self.tabledetails.removeAction( self.actionDeleteRow )
 
@@ -119,9 +127,6 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
         self.tableaccounts.setColumnHidden( IDDOCUMENTOC, True )
         self.tableaccounts.setColumnHidden( IDCUENTA, True )
 
-        if self.user.hasRole( "contabilidad" ):
-            self.actionNew.setVisible( True )
-            self.dtPicker.setReadOnly( False )
 
         self.tabledetails.setColumnWidth( DESCRIPCION, 300 )
 
