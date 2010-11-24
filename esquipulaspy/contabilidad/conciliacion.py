@@ -21,6 +21,7 @@ import logging
 
 
 from movimientosbancarios import FrmMovimientosBancarios
+#from wsgiref.validate import status_int
 
 
 FECHA, CONCEPTO, DEBE, HABER, SALDO, CONCILIADO, DELBANCO, \
@@ -62,7 +63,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
 
         self.detailsmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
 
-
+        
 #        Cargar los modelos en un hilo aparte
         QTimer.singleShot( 0, self.loadModels )
 
@@ -270,6 +271,8 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         @param status: false = editando        true = navegando
         """
         self.actionPrint.setVisible( status )
+        self.btnAdd.setVisible(not status)
+        self.btnRemove.setVisible(not status)
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
         self.tabnavigation.setEnabled( status )

@@ -141,7 +141,6 @@ class AccountsSelectorModel( QAbstractTableModel ):
             self.dataChanged.emit( index, index )
 
             self.dataChanged.emit( self.index( MONTO, len( self.lines ) ) , self.index( MONTO, len( self.lines ) ) )
-
             return True
         return False
 
@@ -173,7 +172,7 @@ class AccountsSelectorDelegate( SingleSelectionSearchPanelDelegate ):
         self.showTable = showTable
         query.exec_()
         if not query.size() > 0:
-            raise UserWarning( "No hay cuentas contables en el modelo" )
+            raise UserWarning( "No existe ninguna cuenta contable con saldo disponible" )
         self.accounts = SingleSelectionModel()
         self.accounts.headers = ["idcuenta", "codigo", "descripcion"]
         while query.next():

@@ -26,9 +26,10 @@ Created on 28/06/2010
 
 El formulario principal de contabilidad
 '''
-from PyQt4.QtCore import pyqtSlot
+from PyQt4.QtCore import pyqtSlot,Qt
 
 from operations import FrmOperations
+from balanceinicial import FrmBalanceInicial
 from estadoresultado import FrmEstadoResultado
 from cuentas import FrmAccounts
 from balancegeneral import FrmBalanceGeneral
@@ -36,11 +37,12 @@ from cheques import FrmCheques
 from cierrecontable import FrmCierreContable
 from conciliacion import FrmConciliacion
 from movimientosbancarios import FrmMovimientosBancarios
-
+from PyQt4.QtSql import QSqlQuery
+#from PyQt4.QtGui import QMessageBox
 from ui.Ui_mainwindowcontabilidad import Ui_MainWindow
 from utility import constantes
 from utility.mainwindowbase import MainWindowBase
-
+import logging
 class MainWindow( MainWindowBase, Ui_MainWindow ):
     """
 
@@ -52,11 +54,37 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         """
         super( MainWindow, self ).__init__( module, parent )
         self.startUi()
+        
+        self.inicial = True
         self.init()
 
 
     def init( self ):
+        try:
+            if not self.database.isOpen():
+                if not self.database.open():
+                    raise UserWarning( u"No se pudo abrir la conexión "\
+                                       + "con la base de datos" )
+            query = QSqlQuery( """
+                           SELECT * FROM cuentascontables c
+                        jOIN cuentasxdocumento cd ON c.idcuenta = cd.idcuenta
+                        ;
+                    """ )
+            if not query.exec_():
+                raise UserWarning( "No se pudo consultar el catalogo de cuentas" )
+            
+            self.inicial = query.size()==0
+            
+    
+        except UserWarning as inst:
+            logging.error( unicode( inst ) )
+            self.movimientosDisponibles(False)
+        finally:
+            if self.database.isOpen():
+                self.database.close()
+        self.btnMovements.setText("Balance \n Inicial" if self.inicial else "Ajustes Contables" )
         self.status = True
+
 
     def closeEvent( self, event ):
         u"""
@@ -69,19 +97,23 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
                 return
 
     def setControls( self, status ):
-        self.btnMovements.setEnabled( status )
-        self.btnAccounts.setEnabled( status )
-        self.btnBalance.setEnabled( status )
-        self.btnNotasCD.setEnabled( status )
-        self.btnCheques.setEnabled( status )
-        self.btnConciliacion.setEnabled( status )
-        self.btnEstado.setEnabled( status )
-
-        self.mdiArea.setEnabled( status )
-        self.mdiArea.setVisible( status )
-
         self.actionLockSession.setVisible( status )
         self.actionUnlockSession.setVisible( not status )
+        self.btnMovements.setEnabled( status )
+        self.mdiArea.setEnabled( status )
+        self.mdiArea.setVisible( status )      
+        
+        status = status and not self.inicial
+        self.btnDocumentos.setEnabled(status)
+        self.btnAccounts.setEnabled( status )
+        self.btnDepositos.setEnabled( status )
+        self.btnCheques.setEnabled( status )
+        self.btnConciliacion.setEnabled( status )
+        self.btnCierreAnual.setEnabled(status)
+        self.btnCierreMensual.setEnabled(status)
+
+
+
 
 
     @pyqtSlot()
@@ -142,9 +174,11 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
 
     @pyqtSlot()
     def on_btnMovements_clicked( self ):
-        operations = FrmOperations( self )
-        self.mdiArea.addSubWindow( operations )
+        operations =FrmBalanceInicial(self) if self.inicial else FrmOperations( self ) 
+        if not self.inicial:
+            self.mdiArea.addSubWindow( operations )
         operations.show()
+
 
     @pyqtSlot()
     def on_btnAccounts_clicked( self ):

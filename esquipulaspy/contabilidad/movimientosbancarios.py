@@ -114,6 +114,13 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
         else:
             QMessageBox.information(None, "Datos Incompletos", self.editmodel.mensajeError)
 
+    def cancel(self):
+        self.editmodel = None
+        self.tablenavigation.setModel( self.navproxymodel )
+        self.tabledetails.setModel( self.detailsproxymodel )
+        self.status = True
+
+
     @pyqtSlot( int )
     @if_edit_model
     def on_cbconcepto_currentIndexChanged( self, index ):
@@ -159,9 +166,6 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             self.cbcuenta.tabla.setColumnHidden(0,True)
             #self.cbcuenta.tabla.setColumnHidden(1,True)
             #self.cbcuenta.tabla.setColumnHidden(2,True)
-            
-            self.txttipodoc.setText("Deposito")
-            
 
             #            Rellenar el combobox de las CONCEPTOS
             self.conceptosModel = QSqlQueryModel()
@@ -172,6 +176,14 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             """ % constantes.IDDEPOSITO )
             if self.conceptosModel.rowCount() == 0:
                 raise UserWarning( "No existen conceptos para los depositos, por favor cree uno" )
+
+            self.cuentasDelegate = AccountsSelectorDelegate( QSqlQuery( """
+            SELECT c.idcuenta, c.codigo, c.descripcion
+            JOIN cuentasxdocumento cd ON c.idcuenta = cd.idcuenta
+            FROM cuentascontables c
+            WHERE c.idcuenta in (%d,%d,%d)
+            """ %(constantes.CAJAGENERAL,constantes.CAJACHICA, constantes.CAPITAL) ) )
+            
 
             self.cbconcepto.setModel( self.conceptosModel )
 
@@ -188,15 +200,11 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             self.editmodel.fechaDoc = QDateTime.currentDateTime()
             self.editmodel.autorId = self.user.uid
                 #        Crea un edit delegate para las cuentas
-            self.cuentasDelegate = AccountsSelectorDelegate( QSqlQuery( """
-            SELECT c.idcuenta, c.codigo, c.descripcion
-            FROM cuentascontables c
-            WHERE c.idcuenta in (4,5,6)
-            """ ) )
             self.tabledetails.setItemDelegate( self.cuentasDelegate )
             self.tabledetails.setModel( self.editmodel )
 
             self.tabledetails.setModel( self.editmodel )
+            self.txttipodoc.setText("Deposito")
             self.status = False
 
         except UserWarning as inst:

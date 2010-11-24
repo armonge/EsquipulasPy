@@ -190,7 +190,7 @@
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_3">
                 <item>
-                 <widget class="QPushButton" name="btnNotasCD">
+                 <widget class="QPushButton" name="btnAdd">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -207,10 +207,14 @@
                    <string>Agregar notas de crédito o débito</string>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background: url(:/icons/res/list-add.png) no-repeat;</string>
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="res.qrc">
+                    <normaloff>:/icons/res/list-add.png</normaloff>:/icons/res/list-add.png</iconset>
                   </property>
                   <property name="shortcut">
                    <string>Ctrl+A</string>
@@ -218,7 +222,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="btnremove">
+                 <widget class="QPushButton" name="btnRemove">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -232,10 +236,14 @@
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">background:url(:/icons/res/arrow-right.png)  no-repeat;</string>
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="res.qrc">
+                    <normaloff>:/icons/res/list-remove.png</normaloff>:/icons/res/list-remove.png</iconset>
                   </property>
                  </widget>
                 </item>
