@@ -136,23 +136,22 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
 #        El modelo principal
             self.navmodel.setQuery( """
             SELECT
-                c.fecha,
-                b.descripcion as banco,
+                c.Fecha,
+                b.descripcion as Banco,
                 cb.ctabancaria,
-                m.simbolo,
-                cc.codigo,
+                m.Simbolo,
+                cc.Codigo,
                 c.saldolibro,
                 c.saldobanco,
                 cb.idcuentacontable,
                 c.iddocumento
                 FROM conciliaciones c
-                JOIN cuentasbancarias cb ON c.idcuentacontable = cb.idcuentacontable
+                JOIN cuentasbancarias cb ON c.idcuentabancaria = cb.idcuentacontable
                 JOIN bancos b ON b.idbanco = cb.idbanco
                 JOIN tiposmoneda m ON m.idtipomoneda = cb.idtipomoneda
                 JOIN cuentascontables cc ON cc.idcuenta = cb.idcuentacontable
                 ORDER BY c.iddocumento
                 ;
-                
             """ )
 #        Este objeto mapea una fila del modelo self.navproxymodel a los controles
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
