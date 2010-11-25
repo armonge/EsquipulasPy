@@ -283,9 +283,9 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             JOIN cuentasxdocumento cd ON cd.iddocumento = d.iddocumento
             JOIN vw_cuentasbancarias cb ON cb.idcuenta=cd.idcuenta
             LEFT JOIN conceptos con ON con.idconcepto = d.idconcepto
-            WHERE td.modulo=%d
+            WHERE d.idtipodoc=%d
             ORDER BY d.iddocumento,d.fechacreacion DESC
-                ; """ % constantes.IDCONTABILIDAD )
+                ; """ % constantes.IDDEPOSITO)
 
     #        El modelo que filtra a self.navmodel
             self.navproxymodel = QSortFilterProxyModel()
@@ -312,6 +312,7 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             self.detailsproxymodel = QSortFilterProxyModel()
             self.detailsproxymodel.setSourceModel( self.detailsmodel )
             self.detailsproxymodel.setFilterKeyColumn( IDDOCUMENTO )
+            self.detailsproxymodel.setFilterRegExp("-1")
 
             self.mapper.setSubmitPolicy( QDataWidgetMapper.ManualSubmit )
             self.mapper.setModel( self.navproxymodel )

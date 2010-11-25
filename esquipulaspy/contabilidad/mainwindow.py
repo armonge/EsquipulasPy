@@ -185,9 +185,10 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         accounts = FrmAccounts( self )
         self.mdiArea.addSubWindow( accounts )
         accounts.show()
+        
 
     @pyqtSlot()
-    def on_btnNotasCD_clicked( self ):
+    def on_btnDepositos_clicked( self ):
         mov = FrmMovimientosBancarios( self )
         self.mdiArea.addSubWindow( mov )
         mov.show()

@@ -172,7 +172,7 @@ class AccountsSelectorDelegate( SingleSelectionSearchPanelDelegate ):
         self.showTable = showTable
         query.exec_()
         if not query.size() > 0:
-            raise UserWarning( "No existe ninguna cuenta contable con saldo disponible" )
+            raise UserWarning( "No hay cuentas contables con saldo disponible para realizar esta operacion" )
         self.accounts = SingleSelectionModel()
         self.accounts.headers = ["idcuenta", "codigo", "descripcion"]
         while query.next():

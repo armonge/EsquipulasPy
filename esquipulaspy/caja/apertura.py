@@ -24,8 +24,11 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
         super( DlgApertura, self ).__init__( parent )
         self.parentWindow = parent
         self.setupUi( self )
-
+        
+        self.fechaApertura = None
+        self.capitalMaximo = Decimal(0)
         self.editmodel = AperturaModel( parent.datosSesion )
+        
         self.cerrar = cerrar
 
 
@@ -71,15 +74,25 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
                     """ % ( self.editmodel.datosSesion.usuarioId,
                             constantes.IDARQUEO ) )
                 query.first()
+                self.fechaApertura = query.value( 0 ).toDate()
+                
+                query = QSqlQuery( """
+                SELECT sum(monto) FROM cuentasxdocumento c where idcuenta in(%d,%d);
+                    """ %(constantes.CAJACHICA,constantes.CAJAGENERAL ))
+                query.first()
+                
+                self.capitalMaximo = Decimal(query.value(0).toString())
+                
+#                if self.capitalMaximo <=0:
+#                    raise UserWarning("No hay fondos en la cuenta contable caja")
+#                
 
             except UserWarning as inst:
                 QMessageBox.critical( self, qApp.organizationName(),
                                       unicode( inst ) )
                 logging.error( unicode( inst ) )
-                self.reject()
             except Exception as inst:
                 logging.error( unicode( inst ) )
-                self.reject()
             finally:
                 if QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().close()
@@ -87,8 +100,8 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
     #        self.dtFechaTime.setReadOnly( True )
             self.dtFechaTime.setDisplayFormat( 'dd/MM/yyyy' )
             self.dtFechaTime.setMaximumDateTime( QDateTime.currentDateTime() )
-            if query.value( 0 ).toDate() is not None:
-                self.dtFechaTime.setMinimumDate( query.value( 0 ).toDate() )
+            if self.fechaApertura is not None:
+                self.dtFechaTime.setMinimumDate( self.fechaApertura )
 
 
             self.cbcaja.setModel( self.cajasmodel )
