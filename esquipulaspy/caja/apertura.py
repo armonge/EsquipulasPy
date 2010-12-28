@@ -42,6 +42,9 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
 
         self.txtSaldoC.setAlignment( Qt.AlignRight )
         self.txtSaldoD.setAlignment( Qt.AlignRight )
+        self.txtSaldoC.setPrefix("C$")
+        self.txtSaldoD.setPrefix("US$")
+        
         self.supervisor = None
 
         if cerrar:
@@ -59,7 +62,20 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
                         raise UserWarning( u"No se pudo abrir la conexión "\
                                            + "con la base de datos" )
 
-                self.cajasmodel.setQuery( "SELECT idcaja, descripcion FROM cajas" )
+                self.cajasmodel.setQuery( """
+                SELECT
+                    d.idcaja,
+                    c.descripcion,
+                    SUM(IF(m.idtipomoneda = %d,m.monto,0)) as totalC,
+                    SUM(IF(m.idtipomoneda = %d,m.monto,0)) as totalD
+                FROM
+                movimientoscaja m
+                JOIN documentos d ON d.iddocumento = m.iddocumento
+                JOIN cajas c ON c.idcaja = d.idcaja
+                WHERE d.idcaja is not null AND m.idtipomovimiento=%d
+                group by d.idcaja;""" % ( constantes.IDCORDOBAS,
+                        constantes.IDDOLARES, constantes.IDPAGOEFECTIVO)
+                )
                 if self.cajasmodel.rowCount() == 0:
                     QMessageBox.critical( self, qApp.organizationName(),
                                          "No existe ninguna caja en la base de datos" )
@@ -76,13 +92,18 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
                 query.first()
                 self.fechaApertura = query.value( 0 ).toDate()
                 
-                query = QSqlQuery( """
-                SELECT sum(monto) FROM cuentasxdocumento c where idcuenta in(%d,%d);
-                    """ %(constantes.CAJACHICA,constantes.CAJAGENERAL ))
-                query.first()
                 
-                self.capitalMaximo = Decimal(query.value(0).toString())
+   
                 
+
+                
+#                query = QSqlQuery( """
+#                SELECT sum(monto) FROM cuentasxdocumento c where idcuenta in(%d,%d);
+#                    """ %(constantes.CAJACHICA,constantes.CAJAGENERAL ))
+#                query.first()
+#                
+#                self.capitalMaximo = Decimal(query.value(0).toString())
+#                
 #                if self.capitalMaximo <=0:
 #                    raise UserWarning("No hay fondos en la cuenta contable caja")
 #                
@@ -162,6 +183,17 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
     def on_txtSaldoD_editingFinished( self ):
         if self.editmodel != None:
             self.editmodel.saldoDolar = Decimal( str( self.txtSaldoD.value() ) )
+            
+    @pyqtSlot(int)
+    def on_cbcaja_currentIndexChanged(self,indice):
+        if indice ==-1:
+            self.txtSaldoC.setValue(0)
+            self.txtSaldoD.setValue(0)
+        else:
+            self.txtSaldoC.setValue( Decimal( self.cajasmodel.data(self.cajasmodel.index(indice,2)).toString()))
+            self.txtSaldoD.setValue( Decimal( self.cajasmodel.data(self.cajasmodel.index(indice,3)).toString()))
+#        self.txtSaldoD.setValue( Decimal( query.value( 1 ).toString() ))
+       
 
     @property
     def idsesion( self ):

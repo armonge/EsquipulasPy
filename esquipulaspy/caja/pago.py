@@ -144,7 +144,7 @@ class FrmPago( Ui_frmPago, Base ):
                     self.sesion.cajaId,
                     constantes.IDPAGOEFECTIVO ) )
             if not query.exec_():
-                raise UserWarning( u"No pudo obtenerse el número del comprobante" )
+                raise UserWarning( u"No pudo obtenerse de la base de datos la cantidad de dinero en caja" )
             query.first()
             maxCordoba = Decimal( query.value( 0 ).toString() )
             maxDolar = Decimal( query.value( 1 ).toString() )
