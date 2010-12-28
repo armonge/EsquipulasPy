@@ -214,7 +214,7 @@ class AperturaModel( object ):
 
 
             if query.size() == 0:
-                self.error = u"La sesión no fue abierta porque no existe un tipo de cambio para la fecha actual"
+                self.error = u"La sesión de caja no fue abierta porque no existe un tipo de cambio para la fecha actual"
                 return False
 
 

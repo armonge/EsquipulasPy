@@ -191,7 +191,7 @@ class FrmFactura( Base, Ui_frmFactura ):
             self.proxyexistenciaModel.setFilterKeyColumn( IDBODEGAEX )
 
             if self.proxyexistenciaModel.rowCount() == 0:
-                raise UserWarning( "No hay articulos en existencia" )
+                raise UserWarning( "No hay articulos en bodega" )
 
             delegate = FacturaDelegate( self.proxyexistenciaModel )
 
@@ -336,7 +336,7 @@ class FrmFactura( Base, Ui_frmFactura ):
         result = False
         try:
             if not self.valid:
-                raise UserWarning( u"El recibo no es valido" )
+                return False
 
             if self.editmodel.escontado:
                 recibo = DlgRecibo( self )
@@ -846,7 +846,7 @@ class FrmFactura( Base, Ui_frmFactura ):
             self.cbbodega.setFocus()
         elif int( self.editmodel.validLines ) == 0:
             QMessageBox.warning( self, qApp.organizationName(),
-                              "Algunas filas de la factura estan incompletas" )
+                              "Por favor complete la información de los artículos comprados" )
         else:
             return True
         return False

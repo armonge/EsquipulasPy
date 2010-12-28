@@ -148,12 +148,11 @@ class EntradaCompraModel( DocumentBase ):
                 raise UserWarning( "No se ha definido un tipo de cambio "\
                                    + "para el documento" )
             elif not self.printedDocumentNumber != "":
-                raise UserWarning( "No ha escrito el numero de documento" )
+                raise UserWarning( u"Por favor escriba el número de la factura de compra" )
             elif not int( self.providerId ) != 0:
                 raise  UserWarning( "No ha definido al proveedor" )
             elif not int( self.validLines ) > 0:
-                raise UserWarning( "No hay ninguna linea valida en la entrada "\
-                                   + "de compra" )
+                raise UserWarning( u"Por favor ingrese toda la información requerida para los articulos" )
             elif not int( self.idIVA ) != 0:
                 raise UserWarning( u"No hay un IVA asociado a la entrada "\
                                    + "de compra" )

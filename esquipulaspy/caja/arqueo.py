@@ -55,7 +55,7 @@ class FrmArqueo( Ui_frmArqueo, Base ):
     Esta clase implementa el formulario arqueo
     '''
     web = "arqueos.php?doc="
-    def __init__( self, datos_sesion, parent ):
+    def __init__( self, datos_sesion, parent, edit = False ):
         u'''
         @param datos_sesion: La información de la sesion de caja
         '''
@@ -63,13 +63,22 @@ class FrmArqueo( Ui_frmArqueo, Base ):
         self.sesion = datos_sesion
         self.setWindowModality( Qt.WindowModal )
         self.setWindowFlags( Qt.Dialog )
+#        self.status = False 
 
+        self.__dolar_proxy = ArqueoProxyModel()
+        self.__cordoba_proxy = ArqueoProxyModel()
+                    
+        
         self.editmodel = None
 
 #        El modelo principal
         self.navmodel = QSqlQueryModel( self )
-#        El modelo que filtra a self.navmodel
+    #        El modelo que filtra a self.navmodel
         self.navproxymodel = QSortFilterProxyModel( self )
+        self.__details_proxymodel_d = QSortFilterProxyModel( self )
+        self.__details_proxymodel_c = QSortFilterProxyModel( self )
+        
+        
         self.navproxymodel.setSourceModel( self.navmodel )
 #        Este es el modelo con los datos de la tabla con los detalles
         self.detailsModel = QSqlQueryModel( self )
@@ -78,21 +87,26 @@ class FrmArqueo( Ui_frmArqueo, Base ):
         self.detailsproxymodel.setSourceModel( self.detailsModel )
 
         #filtrar en dolares y en cordobas
-        self.__details_proxymodel_d = QSortFilterProxyModel( self )
+        
         self.__details_proxymodel_d.setSourceModel( self.detailsproxymodel )
         self.__details_proxymodel_d.setFilterKeyColumn( MONEDA )
         self.__details_proxymodel_d.setFilterRegExp( "^%d$" % constantes.IDDOLARES )
 
-        self.__details_proxymodel_c = QSortFilterProxyModel( self )
+    
         self.__details_proxymodel_c.setSourceModel( self.detailsproxymodel )
         self.__details_proxymodel_c.setFilterKeyColumn( MONEDA )
         self.__details_proxymodel_c.setFilterRegExp( "^%d$" % constantes.IDCORDOBAS )
-
-        self.__dolar_proxy = ArqueoProxyModel()
-        self.__cordoba_proxy = ArqueoProxyModel()
-
-        self.status = True
-        QTimer.singleShot( 0, self.loadModels )
+           
+        
+        
+        if edit:
+            self.status = False
+            self.newDocument()
+            self.actionCancel.setVisible(False)
+            self.tabWidget.setTabEnabled(1,False)
+        else:
+            self.status = True
+            QTimer.singleShot( 0, self.loadModels )
 
     def updateModels( self ):
         try:
@@ -182,6 +196,10 @@ class FrmArqueo( Ui_frmArqueo, Base ):
 
         self.actionCancel.setVisible( not status )
         self.actionSave.setVisible( not status )
+        self.actionGoFirst.setVisible(  status )
+        self.actionGoLast.setVisible(  status )
+        self.actionGoNext.setVisible(  status )
+        self.actionGoPrevious.setVisible(  status )
 
         self.sbCkD.setReadOnly( status )
         self.sbCkC.setReadOnly( status )

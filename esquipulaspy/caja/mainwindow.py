@@ -205,8 +205,9 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
             if self.database.isOpen():
                 self.database.close()
         else:
-            arqueo = FrmArqueo( self.datosSesion, self )
+            arqueo = FrmArqueo( self.datosSesion, self,True )
             arqueo.show()
+
 
 
 

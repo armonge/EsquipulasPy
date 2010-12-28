@@ -172,6 +172,10 @@ class KardexModel( DocumentBase ):
         elif role == Qt.EditRole:
             if column == NUMAJUSTE:
                 return line.numajuste
+            
+        elif role == Qt.TextAlignmentRole:
+            if column == NUMDOC:
+                return Qt.AlignHCenter | Qt.AlignCenter
 
     def flags( self, index ):
         if not index.isValid():

@@ -136,7 +136,8 @@ class FrmKardex( Ui_frmKardex, Base ):
                                      OBSERVACION, "plainText" )
 
 
-            self.tabledetails.horizontalHeader().setStretchLastSection( True )
+#            self.tabledetails.horizontalHeader().setStretchLastSection( True )
+            self.tabledetails.setColumnHidden(0,True)
         except UserWarning as inst:
             QMessageBox.critical( self, qApp.organizationName(),
                                   unicode( inst ) )
@@ -193,12 +194,12 @@ class FrmKardex( Ui_frmKardex, Base ):
         else:
             self.tabledetails.setEditTriggers( 
                                           QAbstractItemView.AllEditTriggers )
-            self.tabledetails.resizeColumnsToContents()
-            self.tabledetails.horizontalHeader().setStretchLastSection( True )
+        self.tabledetails.resizeColumnsToContents()
+#            self.tabledetails.horizontalHeader().setStretchLastSection( True )
 
         self.txtKardexObservation.setReadOnly( status )
 
-        self.tabledetails.horizontalHeader().setStretchLastSection( True )
+#        self.tabledetails.horizontalHeader().setStretchLastSection( True )
 
 
 
@@ -291,7 +292,7 @@ class FrmKardex( Ui_frmKardex, Base ):
 
                 self.dtPicker.setDateTime( QDateTime.currentDateTime() )
                 self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
-
+                self.tabledetails.resizeColumnsToContents()
         except UserWarning as inst:
             QMessageBox.critical( self, qApp.organizationName(),
                                    unicode( inst ) )
@@ -347,7 +348,7 @@ class dlgSelectDoc( QDialog ):
 
         self.tblBills.setModel( self.filtermodel )
 
-        self.tblBills.horizontalHeader().setStretchLastSection( True )
+#        self.tblBills.horizontalHeader().setStretchLastSection( True )
 
         iddoc, _ndocimpreso, _bodega, _fecha, idbodega, observacion = range( 6 )
         self.tblBills.setColumnHidden( iddoc, True )
