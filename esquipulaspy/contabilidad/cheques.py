@@ -546,11 +546,11 @@ class FrmCheques( Base, Ui_frmCheques ):
             #self.status = False
     #            Rellenar el combobox de las CONCEPTOS
 
-            self.cuentabancaria.setQuery( """
+            self.cuentabancaria.setQuery( u"""
                SELECT 
                    idcuentacontable,
                    cc.codigo,
-                   CONCAT(cc.descripcion,"  Moneda: ",tm.moneda) as Descripcion,
+                   CONCAT(cc.descripcion,"  Moneda: ",tm.moneda) as Descripción,
                    tm.moneda as Moneda,
                    tm.simbolo as simbolo,
                    tm.idtipomoneda as IDMONEDA
@@ -603,7 +603,7 @@ class FrmCheques( Base, Ui_frmCheques ):
             QMessageBox.warning( self,
                                  qApp.organizationName(),
                                  u"No se pudo iniciar la creación "
-                                 + "del nuevo cheque" )
+                                 "del nuevo cheque" )
             logging.critical( unicode( inst ) )
             self.status = True
         finally:

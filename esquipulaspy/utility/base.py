@@ -130,9 +130,14 @@ class Base( QMainWindow ):
 
         self.mapper.currentIndexChanged[int].connect( self.updateDetailFilter )
 
+
+
+
+
         self.actionCut.setVisible( False )
         self.actionPaste.setVisible( False )
         self.actionCopy.setVisible( False )
+
 
     def closeEvent( self, event ):
         u"""
@@ -270,8 +275,11 @@ class Base( QMainWindow ):
         un QTimer, carga los formularios por primera vez
         """
         self.updateModels()
+
         self.navigate( 'last' )
         self.status = True
+
+
 
     def _setStatus( self, stat ):
         """
@@ -539,7 +547,11 @@ class Base( QMainWindow ):
         self.editmodel.removeRows( row, 1 )
         self.updateLabels()
 
-    def updateLabels():
+    def updateLabels( self ):
+        """
+        Este metodo se llama para actualizar las etiquetas de totales en el
+        formulario
+        """
         raise NotImplementedError()
 
     def createActions( self ):

@@ -69,6 +69,9 @@ dlgUserLogin .QFrame{
 QMainWindow > .QDockWidget, QMainWindow > .QDockWidget .QWidget {
     background-color:#5677FF;
 }
+QMdiArea QMainWindow > .QDockWidget, QMdiArea QMainWindow > .QDockWidget .QWidget {
+    background-color: transparent;
+}
 QDockWidget::title {
     text-align: left;
     background: lightgray;
@@ -92,9 +95,6 @@ QMainWindow{
     background-image: url(:/images/res/logo-big.png);
     background-position:right bottom;
     background-repeat:no-repeat;
-}
-QMdiArea QMainWindow{
-    background-image: url()
 }
 """ )
 if "--inventario" in sys.argv:

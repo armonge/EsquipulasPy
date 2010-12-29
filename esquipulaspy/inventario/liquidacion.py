@@ -19,6 +19,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 #FIXME: Al cambiar con el raton no se actualizan los totales
+#FIXME: Al navegar con el teclado no se llama a updateDetailFilter
 """
 Module implementing frmLiquidacion.
 """
@@ -429,6 +430,8 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             self.tablenavigation.resizeColumnsToContents()
             self.tabledetails.setModel( self.detailsproxymodel )
             self.tabletotals.setModel( self.navproxyproxymodel )
+
+
         except UserWarning as inst:
             QMessageBox.critical( self, qApp.organizationName(),
                                    unicode( inst ) )
@@ -917,7 +920,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                                        + "con la base de datos" )
             docid = self.navmodel.record( self.mapper.currentIndex() ).value( 
                                                         IDDOCUMENTO ).toInt()[0]
-            self.xdockWidget.setCollapsed( False )
+            self.xdockWidget.setVisible( True )
             self.accountsEditModel = LiquidacionAccountsModel( docid, self.user )
             accountsdelegate = AccountsSelectorDelegate( QSqlQuery( """
              SELECT 
