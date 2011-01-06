@@ -121,7 +121,6 @@ class LineaEntradaCompra( LineaBase ):
 
 
         if not query.exec_():
-            print query.lastError().text()
             raise Exception( "Hubo un error al guardar una linea" )
 
 

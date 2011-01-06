@@ -369,14 +369,12 @@ class Account( object ):
         UPDATE cuentascontables 
         SET esdebe = :esdebe WHERE idcuenta = :id LIMIT 1
         """ ):
-            print query.lastError().text()
             raise UserWarning( "No se pudo cambiar el estado \"Es debe \" de la cuenta" )
 
 
         query.bindValue( ":esdebe", esdebe )
         query.bindValue( ":id", self.itemData[IDCUENTA] )
         if not query.exec_():
-            print query.lastError().text()
             raise UserWarning( "No se pudo cambiar el estado \"Es debe \" de la cuenta" )
 
         if query.numRowsAffected() < 1:
@@ -393,13 +391,11 @@ class Account( object ):
         UPDATE cuentascontables 
         SET codigo = :code WHERE idcuenta = :id LIMIT 1
         """ ):
-            print query.lastError().text()
             raise UserWarning( "No se pudo cambiar el codigo de la cuenta" )
 
         query.bindValue( ":code", code.strip() )
         query.bindValue( ":id", self.itemData[IDCUENTA] )
         if not query.exec_():
-            print query.lastError().text()
             raise UserWarning( "No se pudo cambiar el codigo de la cuenta" )
 
         if query.numRowsAffected() < 1:
@@ -416,12 +412,10 @@ class Account( object ):
         if not query.prepare( """
         UPDATE cuentascontables SET descripcion = :desc WHERE idcuenta = :id LIMIT 1
         """ ):
-            print query.lastError().text()
             return False
         query.bindValue( ":desc", description.strip() )
         query.bindValue( ":id", self.itemData[IDCUENTA] )
         if not query.exec_():
-            print query.lastError().text()
             return False
         if query.numRowsAffected() < 1:
             return False

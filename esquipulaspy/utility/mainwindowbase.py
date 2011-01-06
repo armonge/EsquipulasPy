@@ -228,7 +228,7 @@ class MainWindowBase( QMainWindow ):
                     QMessageBox.critical( self,
                                          qApp.organizationName(),
                                          u"Usted esta intentando desbloquear "
-                                         " una sesión que no le pertenece",
+                                         u" una sesión que no le pertenece",
                                          QMessageBox.Ok,
                                          QMessageBox.Ok )
             else:

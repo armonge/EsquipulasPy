@@ -596,7 +596,7 @@ class FrmRecibo( Ui_frmRecibo, Base ):
 #            self.tabledetails.resizeColumnsToContents()
 
         except Exception as inst:
-            print inst
+            pass
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()
@@ -915,7 +915,6 @@ class DatosRecibo( object ):
             query.bindValue( ":caja", self.datosSesion.cajaId )
 
             if not query.exec_():
-                print query.lastError().text()
                 raise Exception( "No se pudo insertar el recibo" )
             insertedId = query.lastInsertId().toString()
 
@@ -1018,8 +1017,6 @@ class DatosRecibo( object ):
                 if not QSqlDatabase.database().commit():
                     raise Exception( "No se pudo hacer commit" )
         except Exception as inst:
-            print  query.lastError().databaseText()
-            print inst.args
             QSqlDatabase.database().rollback()
             return False
 

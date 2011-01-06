@@ -199,7 +199,7 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
             FROM conceptos
             WHERE idtipodoc = %d
              """ % constantes.IDAJUSTECONTABLE
-            print q
+            
             self.conceptsmodel.setQuery( q )
 
             if self.conceptsmodel.rowCount() < 1:

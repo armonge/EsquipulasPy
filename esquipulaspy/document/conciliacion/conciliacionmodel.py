@@ -305,7 +305,6 @@ class ConciliacionModel( QAbstractTableModel ):
             query.bindValue( ":total", self.totalBanco.to_eng_string() )
 
             if not query.exec_():
-                print query.lastError().databaseText()
                 raise Exception( "No se pudo insertar el documento" )
 
             

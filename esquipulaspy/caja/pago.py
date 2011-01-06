@@ -219,7 +219,6 @@ class FrmPago( Ui_frmPago, Base ):
             logging.error( unicode( inst ) )
             logging.error( query.lastError().text() )
 #        except Exception as inst:
-#            print inst
 #            QMessageBox.critical( self, qApp.organizationName(),
 #                                   "Hubo un problema al tratar de crear"\
 #                                   + " el nuevo pago" )

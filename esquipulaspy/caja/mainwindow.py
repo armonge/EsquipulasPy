@@ -191,11 +191,11 @@ class MainWindow( MainWindowBase, Ui_MainWindow, ):
                     else:
                         QMessageBox.critical( self,
                                                qApp.organizationName(),
-                                                u"No fue posible abrir la "\
-                                                + "sesión anterior. Por favor"\
-                                                + " contacte al administrador"\
+                                                u"No fue posible abrir la "
+                                                + "sesión anterior. Por favor"
+                                                + " contacte al administrador"
                                                 + " del sistema" )
-                        logging.error( u"No se pudo continuar con la sesión"\
+                        logging.error( u"No se pudo continuar con la sesión"
                                        + " de caja del usuario" )
             else:
                 apertura = DlgApertura( self )

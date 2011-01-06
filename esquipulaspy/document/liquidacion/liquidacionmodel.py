@@ -288,11 +288,11 @@ class LiquidacionModel( DocumentBase ):
             elif not  int( self.warehouseId ) > 0:
                 raise UserWarning( "No ha seleccionado una bodega" )
             elif not int( self.exchangeRateId ) > 0:
-                raise UserWarning( "No existe un tipo de cambio "\
+                raise UserWarning( "No existe un tipo de cambio "
                                       + "para esta fecha" )
             elif not  int( self.validLines ) > 0:
-                raise UserWarning( u"No existe ninguna linea valida en "\
-                                      + "la liquidación" )
+                raise UserWarning( u"No existe ninguna linea valida en "
+                                      + u"la liquidación" )
             elif not self.origin.strip() != "":
                 raise UserWarning( "No ha escrito la procedencia" )
             elif not int( self.tsimId ) > 0:

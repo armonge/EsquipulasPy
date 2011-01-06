@@ -177,10 +177,7 @@ class PagoModel( object ):
 
 
             if not query.exec_():
-                print "iddocumento = " + insertedId
-                print "idusuario = " + str( self.datos_sesion.usuarioId )
-                print "idbeneficiario = " + str( self.beneficiarioId )
-                raise Exception( "No se Inserto la relacion entre el documento"\
+                raise Exception( "No se Inserto la relacion entre el documento"
                                  + " y las personas" )
 
 
@@ -214,8 +211,6 @@ class PagoModel( object ):
                 query.bindValue( ":idcostoagregado", self.ivaId )
 
                 if not query.exec_():
-                    print insertedId
-                    print self.ivaId
                     raise Exception( "El iva NO SE INSERTO" )
 
             if self.aplicarRet:
@@ -227,8 +222,6 @@ class PagoModel( object ):
                 query.bindValue( ":idcostoagregado", self.retencionId )
 
                 if not query.exec_():
-                    print insertedId
-                    print self.retencionId
                     raise Exception( "La retencion NO SE INSERTO" )
 
 

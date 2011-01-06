@@ -214,7 +214,6 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
             self.status = True
         except Exception as inst:
             logging.critical( unicode( inst ) )
-            print inst
             QMessageBox.critical( self, qApp.organizationName(),
                                   u"Hubo un error al actualizar los datos" )
             self.status = True

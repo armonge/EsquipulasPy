@@ -32,7 +32,6 @@ class FrmBanks (FrmCatGeneric):
             return True
 
         except Exception as inst:
-            print inst
 
             if self.database.isOpen():
                 self.database.close()

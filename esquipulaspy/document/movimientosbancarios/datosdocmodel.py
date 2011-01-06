@@ -148,7 +148,6 @@ class DatosDocModel( object ):
         query.bindValue( ":externo",self.bancoDoc)
 
         if not query.exec_():
-            print query.lastError().text()
             raise Exception( "No se pudo ejecutar la consulta para guardar el documento" )
 
 
@@ -159,7 +158,6 @@ class DatosDocModel( object ):
         INSERT INTO personasxdocumento (idpersona, iddocumento,idaccion) 
         VALUES (:usuario, :documento,:accion)
         """ ):
-            print query.lastError().text()
             raise Exception( "No se pudo preparar la consulta para insertar el usuario" )
         
         query.bindValue( ":usuario", self.autorId )
@@ -167,7 +165,6 @@ class DatosDocModel( object ):
         query.bindValue( ":accion", constantes.AUTOR )
 
         if not query.exec_():
-            print query.lastError().text()
             raise Exception( u"No se pudo guardar la relacion con el usuario" )
 
 

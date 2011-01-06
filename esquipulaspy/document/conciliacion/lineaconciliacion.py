@@ -49,7 +49,6 @@ class LineaConciliacion( object ):
         """ )
         query.bindValue( ":idconciliacion", iddocumento )
         query.bindValue( ":iddocumento", self.idDoc )
-        print str( iddocumento ) + "-" + str( self.idDoc )
 
         if not query.exec_():
             raise Exception( "No se pudo guardar la linea con el articulo %d" %

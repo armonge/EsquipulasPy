@@ -223,7 +223,7 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
                 else:
                     self.saveAnual()
     def saveAnual(self):
-        print "Anual"
+        pass
                 
     def saveMensual(self):
         query = QSqlQuery()

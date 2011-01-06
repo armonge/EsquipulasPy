@@ -92,7 +92,6 @@ class FrmCierreCaja ( QDialog, Ui_dlgApertura ):
 
             self.accept()
         except Exception as inst:
-            print inst
             self.reject()
 
     def on_buttonBox_cancelled( self ):

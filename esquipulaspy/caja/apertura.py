@@ -59,9 +59,11 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
             try:
                 if not QSqlDatabase.database().isOpen():
                     if not QSqlDatabase.database().open():
-                        raise UserWarning( u"No se pudo abrir la conexión "\
+                        raise UserWarning( u"No se pudo abrir la conexión "
                                            + "con la base de datos" )
 
+                
+                
                 self.cajasmodel.setQuery( """
                 SELECT
                     d.idcaja,
@@ -84,41 +86,25 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
                 SELECT
                     fechacreacion
                     FROM esquipulasdb.documentos d
-                    LEFT JOIN personasxdocumento pd on pd.iddocumento = d.iddocumento
-                    WHERE pd.idpersona = %d and idtipodoc =%d
-                    ;
+                    LEFT JOIN personasxdocumento pd ON pd.iddocumento = d.iddocumento
+                    WHERE pd.idpersona = %d AND idtipodoc =%d;
                     """ % ( self.editmodel.datosSesion.usuarioId,
                             constantes.IDARQUEO ) )
                 query.first()
                 self.fechaApertura = query.value( 0 ).toDate()
                 
                 
-   
-                
-
-                
-#                query = QSqlQuery( """
-#                SELECT sum(monto) FROM cuentasxdocumento c where idcuenta in(%d,%d);
-#                    """ %(constantes.CAJACHICA,constantes.CAJAGENERAL ))
-#                query.first()
-#                
-#                self.capitalMaximo = Decimal(query.value(0).toString())
-#                
-#                if self.capitalMaximo <=0:
-#                    raise UserWarning("No hay fondos en la cuenta contable caja")
-#                
 
             except UserWarning as inst:
                 QMessageBox.critical( self, qApp.organizationName(),
                                       unicode( inst ) )
                 logging.error( unicode( inst ) )
             except Exception as inst:
-                logging.error( unicode( inst ) )
+                logging.critical( unicode( inst ) )
             finally:
                 if QSqlDatabase.database().isOpen():
                     QSqlDatabase.database().close()
 
-    #        self.dtFechaTime.setReadOnly( True )
             self.dtFechaTime.setDisplayFormat( 'dd/MM/yyyy' )
             self.dtFechaTime.setMaximumDateTime( QDateTime.currentDateTime() )
             if self.fechaApertura is not None:
@@ -192,7 +178,6 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
         else:
             self.txtSaldoC.setValue( Decimal( self.cajasmodel.data(self.cajasmodel.index(indice,2)).toString()))
             self.txtSaldoD.setValue( Decimal( self.cajasmodel.data(self.cajasmodel.index(indice,3)).toString()))
-#        self.txtSaldoD.setValue( Decimal( query.value( 1 ).toString() ))
        
 
     @property

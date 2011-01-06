@@ -428,7 +428,6 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
         except Exception as inst:
             QMessageBox.critical( self, qApp.organizationName(), "El sistema no pudo iniciar una nueva entrada de kardex" )
             self.status = True
-            print inst
 
 
     def cancel( self ):

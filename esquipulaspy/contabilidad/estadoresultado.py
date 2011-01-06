@@ -66,7 +66,7 @@ class FrmEstadoResultado( QMainWindow, Ui_frmEstadoResultado ):
             self.tabledetails.resizeColumnsToContents()
 
         except Exception as inst:
-            print inst
+            pass
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()

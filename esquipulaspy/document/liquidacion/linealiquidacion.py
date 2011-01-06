@@ -424,15 +424,8 @@ class LineaLiquidacion( LineaBase ):
         query.bindValue( ":costocompra", str( self.itemCost ) )
         query.bindValue( ":linea", nlinea )
 
-        print iddocumento
-        print self.itemId
-        print self.quantity
-        print str( self.costoDolar )
-        print str( self.itemCost )
-        print nlinea
 
         if not query.exec_():
-            print query.lastError().text()
             raise Exception( "Error al insertar una de las lineas del documento" )
 
         idarticuloxdocumento = query.lastInsertId()

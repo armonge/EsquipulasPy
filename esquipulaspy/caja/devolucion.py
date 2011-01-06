@@ -201,7 +201,6 @@ class FrmDevolucion( Ui_frmDevoluciones, Base ):
         except Exception as inst:
             logging.critical( unicode( inst ) )
             QMessageBox.critical( self, qApp.organizationName(), u"Hubo un error al cargar la lista de devoluciones" )
-            print inst
         finally:
             if self.database.isOpen():
                 self.database.close()

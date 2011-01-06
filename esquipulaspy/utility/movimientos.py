@@ -190,10 +190,6 @@ def movFacturaCredito( iddoc, subtotal, impuesto, totalcosto ):
     query.bindValue( ":impuesto", impuesto.to_eng_string() )
     query.bindValue( ":totalpagar", ( subtotal + impuesto ).to_eng_string() )
     
-    print "movimientos contables"
-    print subtotal
-    print impuesto
-    print (subtotal + impuesto )
     
     if not query.exec_():
         print( query.lastError().text() )
@@ -256,10 +252,6 @@ def movAbonoDeCliente( iddoc, total, retencion,ganancia ):
             print( query.lastError().text() )
             raise Exception( "No fue posible insertar las cuentas Rencion Pagada para el recibo" )
         
-    print "movimientos del recibo"
-    print retencion
-    print ganancia
-    print total
 
 def movPagoRealizado( iddoc, subtotal, impuesto , retencion , ctabanco_caja = CAJAGENERAL, ctaproveedor_gasto = PROVEEDORLOCAL ):
     '''

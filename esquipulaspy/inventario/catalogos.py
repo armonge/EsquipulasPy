@@ -95,7 +95,6 @@ class FrmCatConceptos( FrmCatGeneric ):
                                            "Descripcion", Qt.DisplayRole );
             return True
         except Exception as inst:
-            print inst
 
             if self.database.isOpen():
                 self.database.close()
@@ -157,7 +156,6 @@ class FrmCatProveedores( FrmCatGeneric ):
             return True
 
         except Exception as inst:
-            print inst
 
             if self.database.isOpen():
                 self.database.close()

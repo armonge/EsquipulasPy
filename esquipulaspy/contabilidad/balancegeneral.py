@@ -126,7 +126,7 @@ class FrmBalanceGeneral( QMainWindow, Ui_frmBalanceGeneral ):
     #        self.activoTree.expandAll()
     #        self.pasivoTree.expandAll()
         except Exception as inst:
-            print inst
+            pass
         finally:
             if QSqlDatabase.database().isOpen():
                 QSqlDatabase.database().close()

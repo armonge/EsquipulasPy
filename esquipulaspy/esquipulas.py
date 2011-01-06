@@ -96,6 +96,10 @@ QMainWindow{
     background-position:right bottom;
     background-repeat:no-repeat;
 }
+QDockWidget QPushButton{
+    text-align:left;
+    padding-left:15px;
+}
 """ )
 if "--inventario" in sys.argv:
     app.setApplicationName( "Compras e Inventario" )

@@ -118,7 +118,6 @@ class ReciboModel( AccountsSelectorModel ):
                 line.banco = ""
         elif column == BANCO:
             line.bancoId = value[0]
-            print line.bancoId
             line.banco = value[1]
         elif column == MONTO:
             return self.asignarMonto( index, value )
