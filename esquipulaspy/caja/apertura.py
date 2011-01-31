@@ -63,23 +63,33 @@ class DlgApertura ( QDialog, Ui_dlgApertura ):
                                            + "con la base de datos" )
 
                 
-                
-                self.cajasmodel.setQuery( """
+                q = """
                 SELECT
                     d.idcaja,
                     c.descripcion,
-                    SUM(IF(m.idtipomoneda = %d,m.monto,0)) as totalC,
-                    SUM(IF(m.idtipomoneda = %d,m.monto,0)) as totalD
+                    SUM(IF(m.idtipomoneda = %d,m.monto,0)) AS totalC,
+                    SUM(IF(m.idtipomoneda = %d,m.monto,0)) AS totalD
                 FROM
                 movimientoscaja m
                 JOIN documentos d ON d.iddocumento = m.iddocumento
                 JOIN cajas c ON c.idcaja = d.idcaja
                 WHERE d.idcaja is not null AND m.idtipomovimiento=%d
-                group by d.idcaja;""" % ( constantes.IDCORDOBAS,
+                GROUP BY  d.idcaja;""" % ( constantes.IDCORDOBAS,
                         constantes.IDDOLARES, constantes.IDPAGOEFECTIVO)
-                )
+                self.cajasmodel.setQuery( q )
                 if self.cajasmodel.rowCount() == 0:
-                    QMessageBox.critical( self, qApp.organizationName(),
+                    q = """
+                    SELECT
+                        c.idcaja,
+                        c.descripcion,
+                        0 AS totalC,
+                        0 AS totalD
+                    FROM cajas c;
+                    """
+                    self.cajasmodel.setQuery( q )
+#                    FIXME:Esto no funciona en el caso de que hallan varias cajas y solo 
+                    if self.cajasmodel.rowCount() == 0:
+                        QMessageBox.critical( self, qApp.organizationName(),
                                          "No existe ninguna caja en la base de datos" )
 
                 query = QSqlQuery( """

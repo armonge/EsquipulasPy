@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       ${file}
 #       
 #       Copyright 2010 Andrés Reyes Monge <armonge@gmail.com>
 #       
@@ -26,7 +25,8 @@ Created on 12/10/2010
 '''
 import sip
 import unittest
-sip.setapi( 'QString', 2 )
+if __name__ == '__main__':
+    sip.setapi( 'QString', 2 )
 
 from PyQt4.QtCore import QCoreApplication, QVariant
 from decimal import Decimal
