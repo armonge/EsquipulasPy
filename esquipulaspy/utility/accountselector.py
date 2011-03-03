@@ -28,14 +28,13 @@ para cuentas contables, para utilizarlo es necesario asignar el modelo y el dele
 a un QTableView, el delegado necesita como parametro una consulta SQL que retorne una tabla del tipo
 IDCUENTA, CODIGO, DESCRIPCION
 '''
-from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex, QVariant, QSize
+from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex, QSize
 from PyQt4.QtGui import QStyledItemDelegate, QDoubleSpinBox
 from PyQt4.QtSql import QSqlQuery
 from decimal import Decimal
 from utility.moneyfmt import moneyfmt
 from utility.singleselectionmodel import SingleSelectionModel
-from utility.widgets.searchpanel import SearchPanel, \
-    SingleSelectionSearchPanelDelegate
+from utility.widgets.searchpanel import SingleSelectionSearchPanelDelegate
 import logging
 
 

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/kardexother.ui'
+# Form implementation generated from reading ui file 'kardexother.ui'
 #
-# Created: Mon Oct  4 23:00:41 2010
-#      by: PyQt4 UI code generator 4.7.7
+# Created by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -124,6 +123,7 @@ class Ui_FrmKardexOther(object):
         self.layoutWidget = QtGui.QWidget(self.splitter)
         self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
         self.verticalLayout_7 = QtGui.QVBoxLayout(self.layoutWidget)
+        self.verticalLayout_7.setMargin(0)
         self.verticalLayout_7.setObjectName(_fromUtf8("verticalLayout_7"))
         self.label_6 = QtGui.QLabel(self.layoutWidget)
         self.label_6.setObjectName(_fromUtf8("label_6"))
@@ -134,6 +134,7 @@ class Ui_FrmKardexOther(object):
         self.layoutWidget1 = QtGui.QWidget(self.splitter)
         self.layoutWidget1.setObjectName(_fromUtf8("layoutWidget1"))
         self.verticalLayout_6 = QtGui.QVBoxLayout(self.layoutWidget1)
+        self.verticalLayout_6.setMargin(0)
         self.verticalLayout_6.setObjectName(_fromUtf8("verticalLayout_6"))
         self.lblaccounts = QtGui.QLabel(self.layoutWidget1)
         self.lblaccounts.setObjectName(_fromUtf8("lblaccounts"))
@@ -172,12 +173,9 @@ class Ui_FrmKardexOther(object):
         self.tabWidget.addTab(self.tabnavigation, icon1, _fromUtf8(""))
         self.verticalLayout.addWidget(self.tabWidget)
         FrmKardexOther.setCentralWidget(self.centralwidget)
-        self.statusbar = QtGui.QStatusBar(FrmKardexOther)
-        self.statusbar.setObjectName(_fromUtf8("statusbar"))
-        FrmKardexOther.setStatusBar(self.statusbar)
         self.toolBar = QtGui.QToolBar(FrmKardexOther)
         self.toolBar.setObjectName(_fromUtf8("toolBar"))
-        FrmKardexOther.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        FrmKardexOther.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.label_2.setBuddy(self.txtPrintedDocumentNumber)
         self.label_5.setBuddy(self.dtPicker)
         self.label_3.setBuddy(self.cbConcept)
@@ -223,9 +221,7 @@ class Ui_FrmKardexOther(object):
 "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Comentario&amp;s</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.lblaccounts.setText(QtGui.QApplication.translate("FrmKardexOther", "<b>&Movimientos</b>", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), "")
         self.label.setText(QtGui.QApplication.translate("FrmKardexOther", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), "")
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("FrmKardexOther", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc

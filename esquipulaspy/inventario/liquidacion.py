@@ -18,7 +18,6 @@
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
-#FIXME: Al cambiar con el raton no se actualizan los totales
 #FIXME: Al navegar con el teclado no se llama a updateDetailFilter
 """
 Module implementing frmLiquidacion.
@@ -84,8 +83,17 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
 #        El modelo principal
         self.navmodel = LiquidacionNavModel( self )
+        '''
+        @ivar: El modelo usado en la navegacion
+        @type: LiquidacionNavModel
+        '''
 #        El modelo que filtra a self.navmodel
         self.navproxymodel = QSortFilterProxyModel( self )
+        '''
+        @ivar: Modelo usado para filtrar el modelo de navegacion al usar la barra de busqueda
+        @type: QSortFilterProxyModel
+        '''
+
         self.navproxymodel.setSourceModel( self.navmodel )
         self.navproxymodel.setFilterKeyColumn( -1 )
 
@@ -94,14 +102,32 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
 #        Este es el modelo con los datos de la con los detalles
         self.detailsmodel = QSqlQueryModel( self )
+        '''
+        @ivar: El modelo usado para mostrar en la tabla de detalles
+        @type: QSqlQueryModel
+        '''
+
 ##        Este es el filtro del modelo anterior
         self.detailsproxymodel = QSortFilterProxyModel( self )
+        '''
+        @ivar: El modelo usado para filtrar la tabla de detalles
+        @ŧype: QSortFilterProxyModel
+        '''
+
         self.detailsproxymodel.setSourceModel( self.detailsmodel )
         self.detailsproxymodel.setFilterKeyColumn( -1 )
 
 #        Este es el modelo para las cuentas
         self.__accounts_model = QSqlQueryModel( self )
+        '''
+        @ivar: El modelo usado en las cuentas
+        @type: QSqlQueryModel
+        '''
         self.__accounts_proxy_model = QSortFilterProxyModel()
+        '''
+        @ivar: El modelo usado para filtrar las cuentas contables
+        @type: QSortFilterProxyModel
+        '''
         self.__accounts_proxy_model.setSourceModel( self.__accounts_model )
 
 
@@ -127,7 +153,20 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
         self.tabledetails.setOrder( 1, 3 )
 
+
+        self.actionDeleteAccountsRow = self.createAction( 
+                                         text = "Borrar la fila",
+                                          icon = ":/icons/res/edit-delete.png",
+                                          slot = self.deleteAccountsRow )
+        '''
+        @ivar: Esta accion borra una fila del modelo de cuentas de la liquidacion
+        @type: QAction
+        '''
+
         QTimer.singleShot( 0, self.loadModels )
+
+
+
 
     def updateDetailFilter( self, index ):
 
@@ -305,6 +344,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         elif status == 3:
             self.tabTotalsAccounts.setCurrentIndex( 0 )
             self.tableaccounts.setEditTriggers( QTableView.AllEditTriggers )
+
             if self.user.hasRole( "contabilidad" ):
                 self.action_edit_accounts.setVisible( False )
 
@@ -329,14 +369,14 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                     ROUND(d.totalagencia * d.tasa,4) AS 'Agencia',
                     ROUND(d.totalalmacen * d.tasa,4) AS 'Almacen',
                     d.fletetotal AS 'Flete',
-                    d.segurototal as 'Seguro',
+                    d.segurototal AS 'Seguro',
                     d.otrosgastos AS 'Otros Gastos',
                     d.porcentajetransporte AS 'Transporte',
                     d.porcentajepapeleria AS 'Papelería',
                     d.peso AS 'Peso',
                     d.Proveedor AS 'Proveedor',
                     d.bodega AS 'Bodega',
-                    IF(SUM(IF(ca.idtipocosto = %d AND ca.valorcosto IS NOT NULL,ca.valorcosto,0)) != 0, 1,0) as  'APLICA ISO',
+                    IF(SUM(IF(ca.idtipocosto = %d AND ca.valorcosto IS NOT NULL,ca.valorcosto,0)) != 0, 1,0) AS  'APLICA ISO',
                     d.tasa,
                     d.estado,
                     lt.fobtotal,
@@ -344,7 +384,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                     lt.impuestototal,
                     d.totald AS 'Total US$',
                     d.totalc AS 'Total C$',
-                    IF(SUM(IFNULL(ca.valorcosto,0)) + SUM(caxl.dai +caxl.isc) != 0, 0,1) as  'EXONERADO'
+                    IF(SUM(IFNULL(ca.valorcosto,0)) + SUM(caxl.dai +caxl.isc) != 0, 0,1) AS  'EXONERADO'
                 FROM vw_liquidacionesguardadas d
                 JOIN vw_liquidacioncontotales lt ON lt.iddocumento = d.iddocumento
                 LEFT JOIN costosxdocumento cxd ON d.iddocumento = cxd.iddocumento
@@ -359,25 +399,25 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                 a.idarticulo as 'Id',
                 descripcion as 'Descripción',
                 unidades as 'Cantidad',
-                CONCAT('US$', FORMAT(costocompra,4)) as 'Costo Compra US$',
-                CONCAT('US$', FORMAT(fob,4)) as 'FOB US$',
-                CONCAT('US$', FORMAT(flete,4)) as 'Flete US$',
-                CONCAT('US$', FORMAT(seguro,4)) as 'Seguro US$',
-                CONCAT('US$', FORMAT(otrosgastos,4)) as 'Otros Gastos US$',
-                CONCAT('US$', FORMAT(cif,4)) as 'CIF US$',
-                CONCAT('US$', FORMAT(impuestos,4)) as 'Impuestos US$',
-                CONCAT('US$', FORMAT(comision,4)) as 'Comisión US$',
-                CONCAT('US$', FORMAT(agencia,4)) as 'Agencia US$',
-                CONCAT('US$', FORMAT(almacen,4)) as 'Almacen US$',
-                CONCAT('US$', FORMAT(papeleria,4)) as 'Papelería US$',
-                CONCAT('US$', FORMAT(transporte,4)) as 'Transporte US$',
-                CONCAT('US$', FORMAT(costototal,4))  as 'Costo Total US$',
-                CONCAT('US$', FORMAT(costounit,4))  as 'Costo Unitario US$',
-                CONCAT('C$', FORMAT(costototal * tc.tasa ,4)) as 'Costo Total C$',
-                CONCAT('C$', FORMAT(costounit  * tc.tasa ,4)) as 'Costo Unitario C$',
+                CONCAT('US$', FORMAT(costocompra,4)) AS 'Costo Compra US$',
+                CONCAT('US$', FORMAT(fob,4)) AS 'FOB US$',
+                CONCAT('US$', FORMAT(flete,4)) AS 'Flete US$',
+                CONCAT('US$', FORMAT(seguro,4)) AS 'Seguro US$',
+                CONCAT('US$', FORMAT(otrosgastos,4)) AS 'Otros Gastos US$',
+                CONCAT('US$', FORMAT(cif,4)) AS 'CIF US$',
+                CONCAT('US$', FORMAT(impuestos,4)) AS 'Impuestos US$',
+                CONCAT('US$', FORMAT(comision,4)) AS 'Comisión US$',
+                CONCAT('US$', FORMAT(agencia,4)) AS 'Agencia US$',
+                CONCAT('US$', FORMAT(almacen,4)) AS 'Almacen US$',
+                CONCAT('US$', FORMAT(papeleria,4)) AS 'Papelería US$',
+                CONCAT('US$', FORMAT(transporte,4)) AS 'Transporte US$',
+                CONCAT('US$', FORMAT(costototal,4))  AS 'Costo Total US$',
+                CONCAT('US$', FORMAT(costounit,4))  AS 'Costo Unitario US$',
+                CONCAT('C$', FORMAT(costototal * tc.tasa ,4)) AS 'Costo Total C$',
+                CONCAT('C$', FORMAT(costounit  * tc.tasa ,4)) AS 'Costo Unitario C$',
                 v.iddocumento
             FROM vw_articulosprorrateados v
-            JOIN documentos d on d.iddocumento=v.iddocumento
+            JOIN documentos d ON d.iddocumento=v.iddocumento
             JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
             JOIN vw_articulosdescritos a ON a.idarticulo = v.idarticulo
             ORDER BY v.nlinea
@@ -389,7 +429,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                 c.idcuenta, 
                 cc.codigo, 
                 cc.descripcion,
-                CONCAT('C$',FORMAT(c.monto,4)) as 'Monto', 
+                CONCAT('C$',FORMAT(c.monto,4)) AS 'Monto', 
                 d.iddocumento 
             FROM cuentasxdocumento c  
             JOIN documentos d ON c.iddocumento = d.iddocumento
@@ -466,13 +506,13 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( u"No se pudo establecer una conexión "\
+                    raise UserWarning( u"No se pudo establecer una conexión "
                                        + "con la base de datos" )
 
             query.prepare( "SELECT idtc FROM tiposcambio LIMIT 1" )
             query.exec_()
             if not query.first():
-                raise UserWarning( u"No existen tipos de cambio en "\
+                raise UserWarning( u"No existen tipos de cambio en "
                                    + "la base de datos" )
 
             self.editmodel = LiquidacionModel( self.user.uid )
@@ -493,10 +533,10 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
                     constantes.TSIM,
                     constantes.ISO ) )
             if not query.exec_():
-                raise UserWarning( "No se pudo ejecutar la consulta para "\
+                raise UserWarning( "No se pudo ejecutar la consulta para "
                                    + "obtener los valores de los impuestos" )
             elif not query.size() == 4:
-                raise UserWarning( "No se pudieron obtener los valores "\
+                raise UserWarning( "No se pudieron obtener los valores "
                                    + "de los impuestos" )
 #TODO: Deberian acaso los valores de iva, spe, tsim, iso cambiar 
 #cuando cambie la fecha???            
@@ -538,15 +578,16 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             """ )
             if not warehouseModel.rowCount() > 0:
                 raise UserWarning( "No existen bodegas en el sistema" )
+
             self.cbWarehouse.setModel( warehouseModel )
             self.cbWarehouse.setModelColumn( 1 )
 
             self.editdelegate = LiquidacionDelegate()
             self.updateArticleList( query )
             if self.editdelegate.prods.rowCount() == 0:
-                raise UserWarning( u"El sistema no tiene registrado ningún "\
-                                   + u"tipo de articulo, por favor añada "\
-                                   + "articulos antes de hacer una "\
+                raise UserWarning( u"El sistema no tiene registrado ningún "
+                                   + u"tipo de articulo, por favor añada "
+                                   + "articulos antes de hacer una "
                                    + u"liquidación" )
 
 
@@ -866,7 +907,9 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
             providers_model = QSqlQueryModel()
             providers_model.setQuery( """
-            SELECT idpersona, nombre 
+            SELECT 
+                idpersona, 
+                nombre 
             FROM personas p 
             WHERE tipopersona = 2 AND activo = 1
             """ )
@@ -877,7 +920,9 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
             warehouse_model = QSqlQueryModel()
             warehouse_model.setQuery( """
-            SELECT idbodega, nombrebodega
+            SELECT 
+                idbodega, 
+                nombrebodega
             FROM bodegas b
             ORDER BY idbodega
             """ )
@@ -899,9 +944,9 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             self.cancel()
         except Exception as inst:
             QMessageBox.critical( self, qApp.organizationName(),
-                "Hubo un error fatal al tratar de actualizar la lista " \
-                + "de articulos, el sistema no puede recuperarse" \
-                + " y sus cambios se han perdido" )
+                "Hubo un error fatal al tratar de actualizar la lista "
+                + u"de articulos, el sistema no puede recuperarse"
+                + u" y sus cambios se han perdido" )
             logging.error( query.lastError().text() )
             logging.critical( unicode( inst ) )
             self.cancel()
@@ -912,11 +957,11 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         """
         try:
             if not self.user.hasRole( "contabilidad" ):
-                raise UserWarning( "Usted no tiene permisos para editar "\
+                raise UserWarning( "Usted no tiene permisos para editar "
                                   + "cuentas contables" )
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( u"No se pudo abrir la conexión "\
+                    raise UserWarning( u"No se pudo abrir la conexión "
                                        + "con la base de datos" )
             docid = self.navmodel.record( self.mapper.currentIndex() ).value( 
                                                         IDDOCUMENTO ).toInt()[0]
@@ -950,6 +995,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             self.tabWidget.setCurrentIndex( 0 )
 
             self.tableaccounts.resizeColumnsToContents()
+            self.tableaccounts.addAction( self.actionDeleteAccountsRow )
             self.status = 3
 
         except UserWarning as inst:
@@ -961,12 +1007,24 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
 
         except Exception as inst:
             QMessageBox.critical( self, qApp.organizationName(),
-                                  u"El sistema no pudo iniciar la edición " \
+                                  u"El sistema no pudo iniciar la edición "
                                   + " de las cuentas contables" )
 
             logging.critical( unicode( inst ) )
             self.tableaccounts.setModel( self.__accounts_proxy_model )
             self.status = 1
+
+    def deleteAccountsRow( self ):
+        """
+        Funcion usada para borrar lineas de la tabla de cuentas contables
+        """
+        index = self.tableaccounts.currentIndex()
+
+        if not index.isValid():
+            return
+        row = index.row()
+
+        self.accountsEditModel.removeRows( row, 1 )
 
     def addActionsToToolBar( self ):
         self.actionUpdateArticles = self.createAction( 
@@ -992,6 +1050,10 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         ] )
         self.toolBar.addSeparator()
 
+        action_toggle_details = self.xdockWidget.toggleViewAction()
+        action_toggle_details.setIcon( QIcon( ":/icons/res/view-list-details.png" ) )
+        self.toolBar.addAction( action_toggle_details )
+
         if self.user.hasRole( "contabilidad" ):
             self.action_edit_accounts = self.createAction( 
                  text = "Editar cuentas contables",
@@ -1002,9 +1064,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
             self.toolBar.addActions( [
                 self.action_edit_accounts
                                      ] )
-        action_toggle_details = self.xdockWidget.toggleViewAction()
-        action_toggle_details.setIcon( QIcon( ":/icons/res/view-list-details.png" ) )
-        self.toolBar.addAction( action_toggle_details )
+
 
 
 class LiquidacionNavModel( QSqlQueryModel ):

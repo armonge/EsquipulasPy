@@ -5,4 +5,4 @@ exitname=$dirname/Ui_${base%.*}.py
 echo $1 $exitname;
 pyuic4 -x "$1" > "$exitname"
 
-echo "$1" > /home/marcos/workspace/EsquipulasPy/uicomp.log
+echo "$1" > $HOME/uicomp.log

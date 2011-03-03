@@ -463,8 +463,9 @@ class LiquidacionModel( DocumentBase ):
         if len( self.__lines ) == 0:
             self.insertRow( 0 )
         return True
-        #else:
-            #return False
+
+
+
     def updateLines( self, query ):
         for line in [line for line in self.lines if line.itemId != 0]:
             line.update( query )
@@ -980,6 +981,8 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
     """
     Esta clase trabaja en las cuentas contables de liquidación
     """
+    IDCUENTA, CODCUENTA, NCUENTA, MONTO = range( 4 )
+
     def __init__( self, docid, user ):
         super( LiquidacionAccountsModel, self ).__init__()
         self.docid = docid
@@ -992,6 +995,11 @@ class LiquidacionAccountsModel( AccountsSelectorModel ):
             return Qt.ItemIsEnabled | Qt.ItemIsEditable
         else:
             return Qt.ItemIsEnabled
+
+    def removeRows( self, position, rows = 1, _parent = QModelIndex() ):
+        if position > 0:
+            return super( LiquidacionAccountsModel, self ).removeRows( position, rows, _parent )
+        return False
 
     def save( self ):
         query = QSqlQuery()

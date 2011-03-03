@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui/entradacompra.ui'
+# Form implementation generated from reading ui file 'entradacompra.ui'
 #
-# Created: Fri Oct 15 02:08:49 2010
-#      by: PyQt4 UI code generator 4.7.7
+# Created by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -251,14 +250,11 @@ class Ui_frmEntradaCompra(object):
         self.tabWidget.addTab(self.tabnavigation, icon1, _fromUtf8(""))
         self.gridLayout.addWidget(self.tabWidget, 1, 0, 1, 1)
         frmEntradaCompra.setCentralWidget(self.centralwidget)
-        self.statusbar = QtGui.QStatusBar(frmEntradaCompra)
-        self.statusbar.setObjectName(_fromUtf8("statusbar"))
-        frmEntradaCompra.setStatusBar(self.statusbar)
         self.toolBar = QtGui.QToolBar(frmEntradaCompra)
         self.toolBar.setAllowedAreas(QtCore.Qt.AllToolBarAreas)
         self.toolBar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.toolBar.setObjectName(_fromUtf8("toolBar"))
-        frmEntradaCompra.addToolBar(QtCore.Qt.ToolBarArea(QtCore.Qt.TopToolBarArea), self.toolBar)
+        frmEntradaCompra.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.label_2.setBuddy(self.txtDocumentNumber)
         self.label.setBuddy(self.dtPicker)
         self.label_3.setBuddy(self.txtProvider)
@@ -307,9 +303,7 @@ class Ui_frmEntradaCompra(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Proveedor:</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), '')
         self.label_4.setText(QtGui.QApplication.translate("frmEntradaCompra", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), '')
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmEntradaCompra", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
 
 from utility.widgets import OrderedEditTable
