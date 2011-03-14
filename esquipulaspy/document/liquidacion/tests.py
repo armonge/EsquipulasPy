@@ -54,6 +54,7 @@ class TestLiquidacionSimple( unittest.TestCase ):
         self.liquidacion.weightFactor = 1000
         self.liquidacion.warehouseId = 1
 
+
         self.liquidacion.insertRow( 0 )
 
         self.liquidacion.setData( self.liquidacion.index( 0, COSTOUNIT ), QVariant( "1" ) )
@@ -77,6 +78,7 @@ class TestLiquidacionSimple( unittest.TestCase ):
 
     def test_cif( self ):
         self.assertEqual( self.liquidacion.cifTotal, Decimal( '1' ) )
+        self.assertEqual( self.liquidacion.cifTotalC, Decimal( '21.5689' ) )
 
     def test_iva( self ):
         self.assertEqual( self.liquidacion.ivaTotal, Decimal( '0.2772' ) )
@@ -85,8 +87,10 @@ class TestLiquidacionSimple( unittest.TestCase ):
 
     def test_taxes( self ):
         self.assertEqual( self.liquidacion.taxesTotal, Decimal( '6.4752' ) )
+        self.assertEqual( self.liquidacion.taxesTotalC, Decimal( ' 139.6629412800' ) )
         self.liquidacion.warehouseId = 2
         self.assertEqual( self.liquidacion.taxesTotal, Decimal( ' 6.1980' ) )
+        self.assertEqual( self.liquidacion.taxesTotalC, Decimal( ' 133.68404220' ) )
 
     def test_speTotal( self ):
         self.assertEqual( self.liquidacion.speTotal, Decimal( '5' ) )
@@ -102,8 +106,16 @@ class TestLiquidacionSimple( unittest.TestCase ):
     def test_numrows( self ):
         self.assertEqual( self.liquidacion.rowCount(), 2 )
 
+        self.liquidacion.removeRow( 1 )
+        self.assertEqual( self.liquidacion.rowCount(), 1 )
+
     def test_iso( self ):
         self.assertEqual( self.liquidacion.isoTotal, Decimal( '0.35' ) )
+
+    def test_tsim( self ):
+        self.assertEqual( self.liquidacion.tsimTotal, 0 )
+        self.liquidacion.weight = Decimal( 1000 )
+        self.assertEqual( self.liquidacion.tsimTotal, Decimal( '0.5' ) )
 
 class TestLineaLiquidacion( unittest.TestCase ):
     """

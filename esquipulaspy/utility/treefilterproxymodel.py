@@ -21,13 +21,16 @@
 
 from PyQt4.QtGui import QSortFilterProxyModel
 class TreeFilterProxyModel( QSortFilterProxyModel ):
+    """
+    Model used to filter a tree model
+    """
     #FIXME: Funciona pero es endemoniadamente lento
     def __init__( self, parent = None ):
         super( TreeFilterProxyModel, self ).__init__( parent )
         self.__showAllChildren = False
 
     def showAllChildren( self ):
-        return self.__showAllChildren;
+        return self.__showAllChildren
 
     def setShowAllChildren( self, showAllChildren ):
         if showAllChildren == self.__showAllChildren:
