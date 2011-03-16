@@ -20,7 +20,7 @@ class PagoModel( object ):
     """
     __documentType = constantes.IDPAGO
 
-    def __init__( self , datos_sesion ):
+    def __init__( self , datosSesion ):
 
         super( PagoModel, self ).__init__()
 
@@ -54,7 +54,7 @@ class PagoModel( object ):
         @ivar: Almacena el total de dolares del pago
         @type: Decimal
         """
-        self.datos_sesion = datos_sesion
+        self.datosSesion = datosSesion
         """
         @ivar: Almacena DatosSesion para manejar las documentos en sesion de caja correspondiente
         @type: DatosSesion
@@ -134,14 +134,14 @@ class PagoModel( object ):
             """ ):
                 raise Exception( "No se pudo guardar el documento" )
             query.bindValue( ":ndocimpreso", self.docImpreso )
-            query.bindValue( ":fechacreacion", self.datos_sesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString( "hhmmss" ) )
+            query.bindValue( ":fechacreacion", self.datosSesion.fecha.toString( 'yyyyMMdd' ) + QDateTime.currentDateTime().toString( "hhmmss" ) )
             query.bindValue( ":idtipodoc", self.__documentType )
             query.bindValue( ":observacion", self.observaciones )
-            total = self.totalDolar - ( self.retencionCordoba / self.datos_sesion.tipoCambioBanco )
+            total = self.totalDolar #- ( self.retencionCordoba / self.datosSesion.tipoCambioBanco )
             query.bindValue( ":total", str( total ) )
 #            query.bindValue( ":escontado", self.escontado )
-            query.bindValue( ":idtc", self.datos_sesion.tipoCambioId )
-            query.bindValue( ":caja", self.datos_sesion.cajaId )
+            query.bindValue( ":idtc", self.datosSesion.tipoCambioId )
+            query.bindValue( ":caja", self.datosSesion.cajaId )
             query.bindValue( ":con", self.conceptoId )
 #            query.bindValue( ":estado",  constantes.INCOMPLETO)
 
@@ -157,7 +157,7 @@ class PagoModel( object ):
                 VALUES (:idsesion,:idpago)
                 """ )
 
-            query.bindValue( ":idsesion", self.datos_sesion.sesionId )
+            query.bindValue( ":idsesion", self.datosSesion.sesionId )
             query.bindValue( ":idpago", insertedId )
 
             if not query.exec_():
@@ -170,7 +170,7 @@ class PagoModel( object ):
                 "(" + insertedId + ",:idbeneficiario,:beneficiario)"
                 )
 
-            query.bindValue( ":iduser", self.datos_sesion.usuarioId )
+            query.bindValue( ":iduser", self.datosSesion.usuarioId )
             query.bindValue( ":autor", constantes.AUTOR )
             query.bindValue( ":idbeneficiario", self.beneficiarioId )
             query.bindValue( ":beneficiario", constantes.PROVEEDOR )
@@ -178,6 +178,7 @@ class PagoModel( object ):
 
             if not query.exec_():
                 raise Exception( "No se Inserto la relacion entre el documento"
+
                                  + " y las personas" )
 
 
@@ -241,14 +242,14 @@ class PagoModel( object ):
     @return_decimal
     def totalDolar( self ):
         try:
-            return self.totalD + redondear( self.totalC / self.datos_sesion.tipoCambioBanco )
+            return self.totalD + redondear( self.totalC / self.datosSesion.tipoCambioBanco )
         except DivisionByZero:
             return Decimal( "0" )
     @property
     @return_decimal
     def totalCordoba( self ):
         try:
-            return self.totalC + redondear( self.totalD * self.datos_sesion.tipoCambioBanco )
+            return self.totalC + redondear( self.totalD * self.datosSesion.tipoCambioBanco )
         except DivisionByZero:
             return Decimal( "0" )
     @property

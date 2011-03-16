@@ -470,15 +470,15 @@ class FrmPago( Ui_frmPago, Base ):
                pago.Fecha,
                 pago.nombre as Beneficiario,
                 pago.Concepto,
-                pago.total,
+                CONCAT('US$',FORMAT(pago.total,4)),
                 IF(SUM(IF(ca.idtipocosto=1,1,0))>0,1,0) as coniva,
                 IF(SUM(IF(ca.idtipocosto in (8,9),1,0))>0,1,0) as conret,
                 SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto,0)) as tasaret,
                 SUM(IF(mc.idtipomoneda =1,-mc.monto,0)) as totalc,
                 SUM(IF(mc.idtipomoneda =2,-mc.monto,0)) as totald,
-                ROUND(pago.total + (pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto/100,0)),4) as total,
+                CONCAT('US$',FORMAT(ROUND(pago.total + (pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto/100,0)),4),4)) as total,
                 -- pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) as subtotal,
-                ROUND((pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto/100,0)),4) as retencion,
+                CONCAT('US$',FORMAT(ROUND((pago.total / (1 +SUM(IF(ca.idtipocosto=1,ca.valorcosto/100,0))) ) * SUM(IF(ca.idtipocosto in (8,9),ca.valorcosto/100,0)),4),4)) as retencion,
                 pago.observacion,
                 pago.tasa
 
@@ -569,8 +569,8 @@ class FrmPago( Ui_frmPago, Base ):
             self.mapper.addMapping( self.txtconcepto, CONCEPTO, "text" )
             self.mapper.addMapping( self.txttasaret, TASARETENCION, "text" )
             self.mapper.addMapping( self.lbltotalpago, TOTALPAGADO, "text" )
-            self.mapper.addMapping( self.lbltotalpago, TOTALPAGADO, "text" )
-            self.mapper.addMapping( self.lbltotalpago, TOTALPAGADO, "text" )
+            self.mapper.addMapping( self.lbltotal, TOTAL, "text" )
+            self.mapper.addMapping( self.lblretencion, TOTALRETENCION, "text" )
             self.mapper.addMapping( self.ckretener, CONRETENCION, "checked" )
             self.mapper.addMapping( self.ckiva, CONIVA, "checked" )
 #            self.mapper.addMapping( self.sbtotalc, TOTALC, "value" )
