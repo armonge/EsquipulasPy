@@ -179,8 +179,8 @@ class FrmMovimientosBancarios( Ui_frmMovimientosBancarios, Base ):
 
             self.cuentasDelegate = AccountsSelectorDelegate( QSqlQuery( """
             SELECT c.idcuenta, c.codigo, c.descripcion
-            JOIN cuentasxdocumento cd ON c.idcuenta = cd.idcuenta
             FROM cuentascontables c
+            JOIN cuentasxdocumento cd ON c.idcuenta = cd.idcuenta
             WHERE c.idcuenta in (%d,%d,%d)
             """ %(constantes.CAJAGENERAL,constantes.CAJACHICA, constantes.CAPITAL) ) )
             
