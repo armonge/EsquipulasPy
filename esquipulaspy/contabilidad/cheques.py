@@ -416,7 +416,7 @@ class FrmCheques( Base, Ui_frmCheques ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( u"No se pudo establecer la conexión con la base de datos" )
+                    raise UserWarning( u"No se pudo establecer la conexiÃ³n con la base de datos" )
 
             self.updateModels()
             self.navigate( 'last' )
@@ -445,7 +445,7 @@ class FrmCheques( Base, Ui_frmCheques ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( u"No se pudo establecer la conexión "
+                    raise UserWarning( u"No se pudo establecer la conexiÃ³n "
                                        + "con la base de datos" )
 
             #Crea modelo para edicion            
@@ -547,19 +547,23 @@ class FrmCheques( Base, Ui_frmCheques ):
     #            Rellenar el combobox de las CONCEPTOS
 
             self.cuentabancaria.setQuery( u"""
-               SELECT 
+                 SELECT
                    idcuentacontable,
                    cc.codigo,
                    CONCAT(cc.descripcion,"  Moneda: ",tm.moneda) as Descripción,
                    tm.moneda as Moneda,
                    tm.simbolo as simbolo,
                    tm.idtipomoneda as IDMONEDA
-               FROM cuentasbancarias c 
+               FROM cuentasbancarias c
                JOIN cuentascontables cc ON cc.idcuenta=c.idcuentacontable
-               JOIN tiposmoneda tm ON tm.idtipomoneda=c.idtipomoneda;
+               JOIN tiposmoneda tm ON tm.idtipomoneda=c.idtipomoneda
+               JOIN cuentasxdocumento cd ON cd.idcuenta=cc.idcuenta
+               GROUP BY cc.idcuenta;
             """ )
-
-
+            if self.cuentabancaria.rowCount()< 0:
+                    QMessageBox.warning( self,
+                                         qApp.organizationName(),
+                                         u"Saldo insuficiente en cuentas bancarias" )           
             line = AccountsSelectorLine()
             record = self.cuentabancaria.record( self.cbocuenta.currentIndex() )
             line.itemId = record.value( "idcuentacontable" ).toInt()[0]
@@ -602,7 +606,7 @@ class FrmCheques( Base, Ui_frmCheques ):
         except Exception as inst:
             QMessageBox.warning( self,
                                  qApp.organizationName(),
-                                 u"No se pudo iniciar la creación "
+                                 u"No se pudo iniciar la creaciÃ³n "
                                  "del nuevo cheque" )
             logging.critical( unicode( inst ) )
             self.status = True
@@ -639,7 +643,7 @@ class FrmCheques( Base, Ui_frmCheques ):
 
             if QMessageBox.question( self,
                  qApp.organizationName(),
-                 u"¿Esta seguro que desea anular el cheque?",
+                 u"Â¿Esta seguro que desea anular el cheque?",
                  QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
 
                 anulardialog = Anular( self.navmodel.record( self.mapper.currentIndex() ).value( "No. Cheque" ).toString() )
@@ -656,7 +660,7 @@ class FrmCheques( Base, Ui_frmCheques ):
                         else:
                             query = QSqlQuery()
                             if not self.database.transaction():
-                                raise Exception( "No se pudo comenzar la transacción" )
+                                raise Exception( u"No se pudo comenzar la transacción" )
                             #
                             query = QSqlQuery( """
                                 SELECT fnConsecutivo(%d,NULL);
@@ -764,14 +768,14 @@ class FrmCheques( Base, Ui_frmCheques ):
 
         if QMessageBox.question( self,
                                  qApp.organizationName(),
-                                 u"¿Esta seguro que desea guardar?",
+                                 u"Â¿Esta seguro que desea guardar?",
                                  QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
 
             if self.editmodel.valid:
                 if self.editmodel.save():
                     QMessageBox.information( self,
                          qApp.organizationName() ,
-                         u"El documento se ha guardado con éxito" )
+                         u"El documento se ha guardado con Ã©xito" )
                     self.editmodel = None
                     self.updateModels()
                     self.navigate( 'last' )
@@ -790,7 +794,7 @@ class FrmCheques( Base, Ui_frmCheques ):
                     QMessageBox.warning( self,
                                          qApp.organizationName() ,
                                          u"El documento no puede guardarse ya "\
-                                         + "que la información no esta completa" )
+                                         + "que la informaciÃ³n no esta completa" )
 
 
 class ROAccountsModel( QSortFilterProxyModel ):
