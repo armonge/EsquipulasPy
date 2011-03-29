@@ -112,7 +112,7 @@ def getDatabase( db, newsettings = False ):
         database.setHostName( settings.value( "%s/DBServer" % db ).toString() )
         database.setUserName( settings.value( "%s/DBUser" % db ).toString() )
         database.setPassword( settings.value( "%s/DBPassword" % db ).toString() )        
-        database.setConnectOptions("MYSQL_OPT_CONNECT_TIMEOUT=5")
+#        database.setConnectOptions("MYSQL_OPT_CONNECT_TIMEOUT=5")
 
 
         reports.Reports.url = settings.value( "%s/DBReports" % db ).toString()
