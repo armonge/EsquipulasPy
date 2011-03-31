@@ -993,7 +993,7 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
     def addActionsToToolBar( self ):
         self.actionUpdateArticles = self.createAction( 
                 text = "Actualizar lista de articulos",
-                icon = ":/icons/res/view-refresh.png",
+                icon = QIcon.fromTheme( 'view-refresh', QIcon( ":/icons/res/view-refresh.png" ) ),
                  slot = self.updateArticles )
 
         self.toolBar.addActions( [
@@ -1017,15 +1017,15 @@ class FrmLiquidacion( Ui_FrmLiquidacion, Base ):
         if self.user.hasRole( "contabilidad" ):
             self.action_edit_accounts = self.createAction( 
                  text = "Editar cuentas contables",
-                 icon = ":/icons/res/view-bank-account.png",
+                 icon = QIcon.fromTheme( u'view-bank-account', QIcon( ":/icons/res/view-bank-account.png" ) ),
                  slot = self.editAccounts )
 
 
-            self.toolBar.addActions( [
+            self.toolBar.addAction( 
                 self.action_edit_accounts
-                                     ] )
+                                    )
         action_toggle_details = self.xdockWidget.toggleViewAction()
-        action_toggle_details.setIcon( QIcon( ":/icons/res/view-list-details.png" ) )
+        action_toggle_details.setIcon( QIcon.fromTheme( 'view-list-details', QIcon( ":/icons/res/view-list-details.png" ) ) )
         self.toolBar.addAction( action_toggle_details )
 
 

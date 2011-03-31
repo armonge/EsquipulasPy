@@ -6,7 +6,7 @@ Created on 21/08/2010
 '''
 from PyQt4.QtCore import pyqtSlot, Qt
 from PyQt4.QtGui import QDataWidgetMapper, QMessageBox, QSortFilterProxyModel, \
-    qApp
+    qApp, QIcon
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
 from ui.Ui_persona import Ui_frmPersona
 from utility.base import Base
@@ -197,7 +197,7 @@ class FrmPersona( Ui_frmPersona, Base ):
         self.actionEditar = self.createAction( 
                                   text = "Editar",
                                   tip = u"Editar la persona",
-                                  icon = ":/icons/res/document-edit.png",
+                                  icon = QIcon.fromTheme( 'document-edit', QIcon( ":/icons/res/document-edit.png" ) ),
                                   slot = functools.partial( self._setStatus, 2 ) )
         self.toolBar.addActions( [
             self.actionEditar

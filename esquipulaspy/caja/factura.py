@@ -9,7 +9,7 @@ from PyQt4.QtCore import pyqtSlot, Qt, QModelIndex, QTimer, QDate, QDateTime
 from PyQt4.QtGui import QDataWidgetMapper, QSortFilterProxyModel, QMessageBox, \
     QAbstractItemView, QCompleter, QDialog, qApp, QFormLayout, QVBoxLayout, \
     QDateEdit, QDoubleSpinBox, QLabel, QFrame, QDialogButtonBox, QPlainTextEdit, \
-    QComboBox, QGridLayout
+    QComboBox, QGridLayout, QIcon
 from PyQt4.QtSql import QSqlQuery, QSqlQueryModel
 from decimal import Decimal
 from document.factura.facturadelegate import FacturaDelegate, \
@@ -292,7 +292,7 @@ class FrmFactura( Base, Ui_frmFactura ):
 
     def addActionsToToolBar( self ):
         self.actionRefresh = self.createAction( text = "Actualizar",
-                                icon = ":/icons/res/view-refresh.png",
+                                icon = QIcon.fromThem( 'view-refresh', QIcon( ":/icons/res/view-refresh.png" ) ),
                                  slot = self.refresh,
                                  shortcut = Qt.Key_F5 )
 

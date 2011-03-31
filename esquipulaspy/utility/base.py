@@ -405,7 +405,10 @@ class Base( QMainWindow ):
         """
         action = QAction( text, self )
         if icon is not None:
-            action.setIcon( QIcon( icon ) )
+            if type( icon ) == QIcon:
+                action.setIcon( icon )
+            else:
+                action.setIcon( QIcon( icon ) )
         if shortcut is not None:
             action.setShortcut( shortcut )
         if tip is not None:
@@ -561,41 +564,41 @@ class Base( QMainWindow ):
         self.actionNew = self.createAction( 
                                         text = "Nuevo",
                                         tip = "Crear un nuevo documento",
-                                        icon = ":/icons/res/document-new.png",
+                                        icon = QIcon.fromTheme( 'document-new', QIcon( ":/icons/res/document-new.png" ) ),
                                         shortcut = "Ctrl+n",
                                         slot = self.newDocument )
         self.actionPreview = self.createAction( 
                                         text = "Previsualizar",
                                         tip = u"Vista de impresión del documento",
-                                        icon = ":/icons/res/document-preview.png",
+                                        icon = QIcon.fromTheme( 'document-print-preview', QIcon( ":/icons/res/document-preview.png" ) ),
                                         shortcut = "Ctrl+p",
                                         slot = self.preview )
         self.actionPrint = self.createAction( 
                                         text = "Imprimir",
                                         tip = "Imprimir el documento",
-                                        icon = ":/icons/res/document-print.png",
+                                        icon = QIcon.fromTheme( 'document-print', QIcon( ":/icons/res/document-print.png" ) ),
                                         slot = self.printDocument )
         self.actionSave = self.createAction( 
                                         text = "Guardar",
                                         tip = "Guardar el documento",
-                                        icon = ":/icons/res/document-save.png",
+                                        icon = QIcon.fromTheme( 'document-save', QIcon( ":/icons/res/document-save.png" ) ),
                                         shortcut = "Ctrl+g",
                                         slot = self.save )
         self.actionCancel = self.createAction( 
                                         text = "Cancelar",
-                                        tip = "Cancelar la creación del nuevo documento",
-                                        icon = ":/icons/res/dialog-cancel.png",
+                                        tip = u"Cancelar la creación del nuevo documento",
+                                        icon = QIcon.fromTheme( 'window-close', QIcon( ":/icons/res/dialog-cancel.png" ) ),
                                         shortcut = "Esc",
                                         slot = self.cancel )
 
         #edicion, TODO: QUE FUNCIONEN ESTAS ACCIONES
         self.actionCopy = self.createAction( 
                                         text = "Copiar",
-                                        icon = ":/icons/res/edit-copy.png",
+                                        icon = QIcon.fromTheme( 'edit-copy', QIcon( ":/icons/res/edit-copy.png" ) ),
                                         shortcut = "Ctrl+c" )
         self.actionCut = self.createAction( 
                                         text = "Cortar",
-                                        icon = ":/icons/res/edit-cut.png",
+                                        icon = QIcon.fromTheme( 'edit-cut', QIcon( ":/icons/res/edit-cut.png" ) ),
                                         shortcut = "Ctrl+x" )
         self.actionPaste = self.createAction( 
                                         text = "Pegar",
@@ -606,31 +609,31 @@ class Base( QMainWindow ):
         self.actionGoFirst = self.createAction( 
                                         text = "Primer documento",
                                         tip = "Ir al primer documento",
-                                        icon = ":/icons/res/go-first.png",
+                                        icon = QIcon.fromTheme( 'go-first', QIcon( ":/icons/res/go-first.png" ) ),
                                         slot = functools.partial( self.navigate,
                                                                   'first' ) )
         self.actionGoPrevious = self.createAction( 
                                         text = "Documento anterior",
                                         tip = "Ir al documento anterior",
-                                        icon = ":/icons/res/go-previous.png" ,
+                                        icon = QIcon.fromTheme( 'go-previous', QIcon( ":/icons/res/go-previous.png" ) ),
                                         slot = functools.partial( self.navigate,
                                                                  'previous' ) )
         self.actionGoLast = self.createAction( 
                                         text = "Ultimo documento",
                                         tip = "Ir al ultimo documento",
-                                        icon = ":/icons/res/go-last.png",
+                                        icon = QIcon.fromTheme( 'go-last', QIcon( ":/icons/res/go-last.png" ) ),
                                         slot = functools.partial( self.navigate,
                                                                   'last' ) )
         self.actionGoNext = self.createAction( 
                                         text = "Documento siguiente",
                                         tip = "Ir al siguiente documento" ,
-                                        icon = ":/icons/res/go-next.png" ,
+                                        icon = QIcon.fromTheme( 'go-next', QIcon( ":/icons/res/go-next.png" ) ) ,
                                         slot = functools.partial( self.navigate,
                                                                  'next' ) )
 
         self.actionDeleteRow = self.createAction( 
                                         text = "Borrar la fila",
-                                        icon = ":/icons/res/edit-delete.png",
+                                        icon = QIcon.fromTheme( 'edit-delete', QIcon( ":/icons/res/edit-delete.png" ) ),
                                         slot = self.deleteRow )
 
         self.addActionsToToolBar()

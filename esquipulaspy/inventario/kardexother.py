@@ -25,7 +25,7 @@ Created on 23/07/2010
 '''
 import logging
 
-from PyQt4.QtGui import  QSortFilterProxyModel, QMessageBox, QAbstractItemView, qApp
+from PyQt4.QtGui import  QSortFilterProxyModel, QMessageBox, QAbstractItemView, qApp, QIcon
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from PyQt4.QtCore import QTimer, pyqtSlot, QDateTime
 
@@ -54,7 +54,7 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
         Constructor
         '''
         super( FrmKardexOther, self ).__init__( parent )
-        self.actionNew.setEnabled(False)
+        self.actionNew.setEnabled( False )
         self.navmodel = QSqlQueryModel()
 
         self.detailsModel = QSqlQueryModel()
@@ -85,7 +85,7 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
             self.actionNew.setEnabled( True )
             self.dtPicker.setReadOnly( False )
 
-            
+
         self.actionPrint.setVisible( status )
         self.actionGoFirst.setVisible( status )
         self.actionGoPrevious.setVisible( status )
@@ -110,9 +110,9 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
         if not status:
             self.tabWidget.setCurrentIndex( 0 )
             self.tabledetails.addAction( self.actionDeleteRow )
-            
-        
-            
+
+
+
         else:
             self.tabledetails.removeAction( self.actionDeleteRow )
 
@@ -160,7 +160,7 @@ class FrmKardexOther( Ui_FrmKardexOther, Base ):
         if self.user.hasRole( "kardex" ): #si el usuario no es de kardex no deberia de poder dar entrada a bodega
             self.actionGiveEntry = self.createAction( 
                                                      text = "Dar entrada al documento",
-                                                     icon = ":/icons/res/dialog-ok-apply.png",
+                                                    icon = QIcon.fromTheme( 'dialog-ok-apply', QIcon( ":/icons/res/dialog-ok-apply.png" ) ),
                                                      slot = self.giveEntry )
             self.toolBar.addActions( [
                 self.actionGiveEntry

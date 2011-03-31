@@ -35,6 +35,9 @@ class FrmPago( Ui_frmPago, Base ):
     def __init__( self , sesion, parent ):
         '''
         Constructor
+        @param sesion: Los datos de la sesión actual de caja
+        @param parent: La ventana padre del formulario
+        @type sesion: DatosSesion
         '''
         super( FrmPago, self ).__init__( parent, True )
         self.setWindowModality( Qt.WindowModal )
@@ -441,7 +444,7 @@ class FrmPago( Ui_frmPago, Base ):
         """
         self.ckretener.setEnabled( self.editmodel.tieneRetencion )
         retencion = self.editmodel.retencionCordoba
-        self.lblretencion.setText( moneyfmt( retencion / self.editmodel.datosSesion.tipoCambioBanco, 4, "US$ " ) )
+        self.lblretencion.setText( moneyfmt( retencion / self.sesion.tipoCambioBanco, 4, "US$ " ) )
         self.lblretencion.setToolTip( moneyfmt( retencion, 4, "C$ " ) )
 
 
@@ -449,7 +452,7 @@ class FrmPago( Ui_frmPago, Base ):
         self.lbltotal.setToolTip( moneyfmt( self.editmodel.totalCordoba, 4, "C$ " ) )
 
         total = self.editmodel.totalCordoba - retencion
-        self.lbltotalpago.setText( moneyfmt( total / self.editmodel.datosSesion.tipoCambioBanco , 4, "US$ " ) )
+        self.lbltotalpago.setText( moneyfmt( total / self.sesion.tipoCambioBanco , 4, "US$ " ) )
         self.lbltotalpago.setToolTip( moneyfmt( total, 4, "C$ " ) )
 
 

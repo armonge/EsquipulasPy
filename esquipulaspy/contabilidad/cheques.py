@@ -4,23 +4,25 @@ Created on 03/07/2010
 
 @author: MARCOS
 '''
+import logging
+from decimal import Decimal, InvalidOperation
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot, Qt, QDateTime, QTimer, QDate
 from PyQt4.QtGui import QSortFilterProxyModel, QMessageBox, QCompleter, \
-    QDataWidgetMapper, QStyledItemDelegate, QDoubleSpinBox, qApp, QDialog
+    QDataWidgetMapper, qApp, QDialog
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery
-from decimal import Decimal, InvalidOperation
-from document.cheque.chequemodel import ChequeModel
+
+
 from ui.Ui_cheques import Ui_frmCheques
+
 from utility import constantes
 from utility.accountselector import AccountsSelectorDelegate, \
     AccountsSelectorLine
 from utility.base import Base
 from utility.moneyfmt import moneyfmt
-from utility.widgets.searchpanel import SearchPanel
-import logging
 from utility.decorators import if_edit_model
 
+from document.cheque.chequemodel import ChequeModel
 
 
 
