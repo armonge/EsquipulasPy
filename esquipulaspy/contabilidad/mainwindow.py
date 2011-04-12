@@ -104,7 +104,7 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         self.mdiArea.setVisible( status )      
         
         status = status and not self.inicial
-        self.btnDocumentos.setEnabled(status)
+
         self.btnAccounts.setEnabled( status )
         self.btnDepositos.setEnabled( status )
         self.btnCheques.setEnabled( status )
@@ -152,25 +152,6 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         conciliacion = FrmConciliacion( self )
         self.mdiArea.addSubWindow( conciliacion )
         conciliacion.show()
-
-    @pyqtSlot()
-    def on_btnBalance_clicked( self ):
-        """
-        Slot documentation goes here.
-        """
-        balance = FrmBalanceGeneral( self )
-        self.mdiArea.addSubWindow( balance )
-        balance.show()
-
-    @pyqtSlot()
-    def on_btnEstado_clicked( self ):
-        """
-        Slot documentation goes here.
-        """
-        estado = FrmEstadoResultado( self )
-        self.mdiArea.addSubWindow( estado )
-        estado.show()
-
 
     @pyqtSlot()
     def on_btnMovements_clicked( self ):

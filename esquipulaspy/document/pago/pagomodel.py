@@ -3,9 +3,6 @@
 Created on 18/05/2010
 @author: Luis Carlos Mejia Garcia
 '''
-
-
-
 from PyQt4.QtCore import QDateTime
 from PyQt4.QtSql import QSqlQuery, QSqlDatabase
 from decimal import Decimal, DivisionByZero
@@ -180,8 +177,6 @@ class PagoModel( object ):
                 raise Exception( "No se Inserto la relacion entre el documento"
 
                                  + " y las personas" )
-
-
             if self.totalC != 0:
                 if not query.prepare( "INSERT INTO movimientoscaja(iddocumento,idtipomovimiento,idtipomoneda,monto) VALUES " +
                 "(" + insertedId + ",1,1,-:totalCordoba)" ):
