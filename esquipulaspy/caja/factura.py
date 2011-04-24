@@ -292,7 +292,7 @@ class FrmFactura( Base, Ui_frmFactura ):
 
     def addActionsToToolBar( self ):
         self.actionRefresh = self.createAction( text = "Actualizar",
-                                icon = QIcon.fromThem( 'view-refresh', QIcon( ":/icons/res/view-refresh.png" ) ),
+                                icon = QIcon.fromTheme( 'view-refresh', QIcon( ":/icons/res/view-refresh.png" ) ),
                                  slot = self.refresh,
                                  shortcut = Qt.Key_F5 )
 

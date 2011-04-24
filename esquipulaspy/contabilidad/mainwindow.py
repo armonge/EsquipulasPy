@@ -112,10 +112,6 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         self.btnCierreAnual.setEnabled(status)
         self.btnCierreMensual.setEnabled(status)
 
-
-
-
-
     @pyqtSlot()
     def on_btnCierreMensual_clicked( self ):
         """
