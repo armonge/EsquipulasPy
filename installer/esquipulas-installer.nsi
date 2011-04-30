@@ -72,32 +72,7 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File ..\esquipulaspy\dist\_hashlib.pyd
-    File ..\esquipulaspy\dist\bz2.pyd
-    File ..\esquipulaspy\dist\esquipulas.exe
-    File ..\esquipulaspy\dist\libmySQL.dll
-	File ..\esquipulaspy\dist\ssleay32.dll
-	File ..\esquipulaspy\dist\libeay32.dll
-    File ..\esquipulaspy\dist\phonon4.dll
-    File ..\esquipulaspy\dist\PyQt4.QtCore.pyd
-    File ..\esquipulaspy\dist\PyQt4.QtGui.pyd
-    File ..\esquipulaspy\dist\PyQt4.QtNetwork.pyd
-    File ..\esquipulaspy\dist\PyQt4.QtSql.pyd
-    File ..\esquipulaspy\dist\PyQt4.QtWebKit.pyd
-    File ..\esquipulaspy\dist\python26.dll
-    File ..\esquipulaspy\dist\QtCore4.dll
-    File ..\esquipulaspy\dist\QtGui4.dll
-    File ..\esquipulaspy\dist\QtHelp4.dll
-    File ..\esquipulaspy\dist\QtNetwork4.dll
-    File ..\esquipulaspy\dist\QtSql4.dll
-    File ..\esquipulaspy\dist\QtWebKit4.dll
-    File ..\esquipulaspy\dist\select.pyd
-    File ..\esquipulaspy\dist\sip.pyd
-    File ..\esquipulaspy\dist\unicodedata.pyd
-    File ..\esquipulaspy\dist\w9xpopen.exe
-    File ..\esquipulaspy\dist\logo.ico
-    File /r ..\esquipulaspy\dist\sqldrivers
-    File /r ..\esquipulaspy\dist\translations
+    File /r ..\esquipulaspy\dist\*
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
 SectionEnd
 
@@ -123,10 +98,9 @@ Section Ayuda SEC0004
     SetOutPath $INSTDIR
     SetOverwrite on
     File ..\esquipulaspy\dist\assistant.exe
-    File ..\esquipulaspy\dist\doc.qch
+    File ..\esquipulaspy\dist\user.qch
     File ..\esquipulaspy\dist\esquipulashelpcollection.qhc
     File ..\esquipulaspy\dist\qt.conf
-    #File ..\esquipulaspy\dist\QtAssistantClient4.dll
     File ..\esquipulaspy\dist\QtCLucene4.dll
     File ..\esquipulaspy\dist\QtXml4.dll
     File ..\esquipulaspy\dist\QtXmlPatterns4.dll

@@ -14,6 +14,10 @@ import os
 import zlib
 import shutil
 
+from distutils.sysconfig import get_python_lib
+
+SITE_PACKAGES =  get_python_lib()
+
 
 
 class Target( object ):
@@ -29,21 +33,22 @@ class Target( object ):
 # the setup call at the end of this file. So, I put all the big lists
 # here and I wrap them using the textwrap module.
 
-data_files = [( '', [os.getcwd() + r'\..\doc\manual\doc.qch',
+data_files = [( '', [os.getcwd() + r'\..\doc\manual\user.qch',
+					os.getcwd() + r'\..\doc\manual\installation.qch',
                     os.getcwd() + r'\..\doc\manual\esquipulashelpcollection.qhc',
                     os.getcwd() + r'\ui\res\logo.ico',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\assistant.exe',
-					'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\libeay32.dll',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\libmySQL.dll',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\phonon4.dll',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\qt.conf',
-					'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\ssleay32.dll',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtCLucene4.dll',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtHelp4.dll',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtXml4.dll',
-                    'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\QtXmlPatterns4.dll'] ),
-              ( 'sqldrivers', ['C:\\Python26\\Lib\\site-packages\\PyQt4\\plugins\\sqldrivers\\qsqlite4.dll',
-                              'C:\\Python26\\Lib\\site-packages\\PyQt4\\plugins\\sqldrivers\\qsqlmysql4.dll'] ),
+                    SITE_PACKAGES + '\\PyQt4\\bin\\assistant.exe',
+					SITE_PACKAGES + '\\PyQt4\\bin\\libeay32.dll',
+                    SITE_PACKAGES + '\\PyQt4\\bin\\libmySQL.dll',
+                    SITE_PACKAGES + '\\PyQt4\\bin\\phonon4.dll',
+                    SITE_PACKAGES + '\\PyQt4\\bin\\qt.conf',
+					SITE_PACKAGES + '\\PyQt4\\bin\\ssleay32.dll',
+                    SITE_PACKAGES + '\\PyQt4\\bin\\QtCLucene4.dll',
+                    SITE_PACKAGES + '\\PyQt4\\bin\\QtHelp4.dll',
+                    SITE_PACKAGES + '\\PyQt4\\bin\\QtXml4.dll',
+                    SITE_PACKAGES + '\\PyQt4\\bin\\QtXmlPatterns4.dll'] ),
+              ( 'sqldrivers', [SITE_PACKAGES + '\\PyQt4\\plugins\\sqldrivers\\qsqlite4.dll',
+                              SITE_PACKAGES + '\\PyQt4\\plugins\\sqldrivers\\qsqlmysql4.dll'] ),
               ( 'translations', [os.getcwd() + r'\translations\\qt_es.qm'] )]
 
 includes = []
