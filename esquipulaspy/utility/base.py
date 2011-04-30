@@ -21,7 +21,7 @@
 """
 Module implementing Base
 """
-from PyQt4.QtCore import pyqtSlot, QSettings, QUrl, QDateTime, QModelIndex
+from PyQt4.QtCore import pyqtSlot, QSettings, QUrl, QDateTime, QModelIndex, QSize
 from PyQt4.QtGui import QMessageBox, QDataWidgetMapper, QIcon, QAction, \
     QProgressBar, QPrinter, QPrintDialog, QDialog, qApp, QShortcut, QKeySequence, \
     QMainWindow
@@ -137,6 +137,7 @@ class Base( QMainWindow ):
         self.actionCut.setVisible( False )
         self.actionPaste.setVisible( False )
         self.actionCopy.setVisible( False )
+
 
 
     def closeEvent( self, event ):
@@ -570,7 +571,7 @@ class Base( QMainWindow ):
         self.actionPreview = self.createAction( 
                                         text = "Previsualizar",
                                         tip = u"Vista de impresión del documento",
-                                        icon = QIcon.fromTheme( 'document-print-preview', QIcon( ":/icons/res/document-preview.png" ) ),
+                                        icon = QIcon.fromTheme( 'document-preview', QIcon( ":/icons/res/document-preview.png" ) ),
                                         shortcut = "Ctrl+p",
                                         slot = self.preview )
         self.actionPrint = self.createAction( 
@@ -587,7 +588,7 @@ class Base( QMainWindow ):
         self.actionCancel = self.createAction( 
                                         text = "Cancelar",
                                         tip = u"Cancelar la creación del nuevo documento",
-                                        icon = QIcon.fromTheme( 'window-close', QIcon( ":/icons/res/dialog-cancel.png" ) ),
+                                        icon = QIcon.fromTheme( 'dialog-cancel', QIcon( ":/icons/res/dialog-cancel.png" ) ),
                                         shortcut = "Esc",
                                         slot = self.cancel )
 
