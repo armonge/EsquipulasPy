@@ -11,7 +11,7 @@ Created on 23/11/2010
 '''
 import logging
 
-from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QTableView, QItemSelectionModel, \
+from PyQt4.QtGui import QHBoxLayout,QMainWindow, QSortFilterProxyModel, QTableView, QItemSelectionModel, \
 QItemSelection, QDataWidgetMapper, QMessageBox, qApp,QPushButton,QSizePolicy,QIcon,QPixmap
 from PyQt4.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 from PyQt4.QtCore import pyqtSlot, QDateTime, QTimer, Qt,QSize
@@ -60,6 +60,7 @@ class FrmBalanceInicial( QMainWindow, Ui_frmOperations ):
 
             self.dtPicker.setDateTime( QDateTime.currentDateTime() )
             self.dtPicker.setMaximumDateTime( QDateTime.currentDateTime() )
+            self.dtPicker.setReadOnly(False)
 
             self.tableDetails.setModel( self.editModel )
             self.tableDetails.setColumnHidden( IDCUENTA, True )
@@ -78,6 +79,7 @@ class FrmBalanceInicial( QMainWindow, Ui_frmOperations ):
         self.buttonBox.accepted.connect( self.save )
         self.stackedWidget.setCurrentIndex(0)
         self.dtPicker.setAlignment(Qt.AlignHCenter)
+        
     
         self.btnAdd = QPushButton(self.groupBox)
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -103,10 +105,12 @@ class FrmBalanceInicial( QMainWindow, Ui_frmOperations ):
         self.btnRemove.setIcon(icon1)
         self.btnRemove.clicked.connect(self.removeRow)
         
-
-        self.verticalLayout.addWidget(self.dtPicker)
-        self.verticalLayout.addWidget(self.btnAdd)
-        self.verticalLayout.addWidget(self.btnRemove)
+        
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.addWidget(self.dtPicker)
+        self.horizontalLayout.addWidget(self.btnAdd)
+        self.horizontalLayout.addWidget(self.btnRemove)
+        self.verticalLayout.addLayout(self.horizontalLayout)
         self.verticalLayout.addWidget(self.tableDetails)
         self.verticalLayout.addWidget(self.stackedWidget)
     
