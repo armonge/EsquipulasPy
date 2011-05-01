@@ -24,6 +24,7 @@ Created on 14/03/2011
 @author: armonge
 '''
 import unittest
+from pyqtconfig import Qt
 from PyQt4.QtTest import QTest
 
 class LiquidacionTest( unittest.TestCase ):

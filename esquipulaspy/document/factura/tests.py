@@ -5,8 +5,8 @@ Created on 15/10/2010
 @author: armonge
 Pruebas para el modulo document.factura
 '''
-import sip
-sip.setapi( 'QString', 2 )
+from pyqtconfig import Qt
+
 from facturamodel import FacturaModel, DESCRIPCION, CANTIDAD
 from caja.mainwindow import DatosSesion
 

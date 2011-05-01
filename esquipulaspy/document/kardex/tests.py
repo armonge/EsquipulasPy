@@ -4,8 +4,7 @@ Created on 18/10/2010
 
 @author: armonge
 '''
-import sip
-sip.setapi( 'QString', 2 )
+from pyqtconfig import Qt
 from lineakardex import LineaKardex
 
 from PyQt4.QtCore import QCoreApplication

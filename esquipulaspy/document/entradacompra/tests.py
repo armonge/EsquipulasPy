@@ -23,9 +23,7 @@ Created on 13/10/2010
 
 @author: armonge
 '''
-import sip
-if __name__ == "__main__":
-    sip.setapi( "QString", 2 )
+from pyqtconfig import Qt
 from PyQt4.QtCore import QVariant, QCoreApplication
 from decimal import Decimal
 from document.entradacompra.entradacompramodel import EntradaCompraModel, \

@@ -23,8 +23,7 @@ Created on 18/10/2010
 
 @author: armonge
 '''
-import sip
-sip.setapi( "QString", 2 )
+from pyqtconfig import Qt
 from PyQt4.QtCore import QCoreApplication
 from decimal import Decimal
 from devolucionmodel import DevolucionModel

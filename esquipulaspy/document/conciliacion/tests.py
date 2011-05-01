@@ -5,18 +5,16 @@ Created on 17/10/2010
 @author: armonge
 '''
 #TODO: Esta prueba TIENE que ser más extensiva
-import sip
-sip.setapi( "QString", 2 )
-
-from lineaconciliacion import LineaConciliacion
-from conciliacionmodel import ConciliacionModel
 import unittest
 
+from pyqtconfig import Qt
+from lineaconciliacion import LineaConciliacion
+from conciliacionmodel import ConciliacionModel
 from PyQt4.QtCore import QCoreApplication
 
 
 class TestLineConciliacion( unittest.TestCase ):
-
+    
     def setUp( self ):
         _app = QCoreApplication( [] )
         self.linea_conciliacion = LineaConciliacion( self )

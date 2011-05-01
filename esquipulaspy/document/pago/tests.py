@@ -3,9 +3,7 @@ Created on 21/10/2010
 
 @author: Administrador
 '''
-import sip
-sip.setapi( "QString", 2 )
-
+from pyqtconfig import Qt
 import unittest
 from decimal import Decimal
 from PyQt4.QtCore import QCoreApplication

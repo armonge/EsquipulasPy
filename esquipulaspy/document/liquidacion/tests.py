@@ -23,10 +23,8 @@ Created on 12/10/2010
 
 @author: armonge
 '''
-import sip
 import unittest
-if __name__ == '__main__':
-    sip.setapi( 'QString', 2 )
+from pyqtconfig import Qt
 
 from PyQt4.QtCore import QCoreApplication, QVariant
 from decimal import Decimal
