@@ -14,56 +14,57 @@
    <string>Ajustes Contables</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="txtSearch"/>
-    </item>
-    <item row="2" column="0" colspan="2">
-     <widget class="QTableView" name="tableNavigation">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>1</verstretch>
-       </sizepolicy>
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
-      <property name="editTriggers">
-       <set>QAbstractItemView::NoEditTriggers</set>
-      </property>
-      <property name="alternatingRowColors">
-       <bool>true</bool>
-      </property>
-      <property name="selectionMode">
-       <enum>QAbstractItemView::SingleSelection</enum>
-      </property>
-      <property name="selectionBehavior">
-       <enum>QAbstractItemView::SelectRows</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0" colspan="2">
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QTableView" name="tableDetails">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="editTriggers">
-         <set>QAbstractItemView::NoEditTriggers</set>
-        </property>
-        <property name="alternatingRowColors">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
+      <widget class="QWidget" name="">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>&amp;Buscar</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtSearch</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="txtSearch"/>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QTableView" name="tableNavigation">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>1</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QGroupBox" name="groupBox">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
             <horstretch>1</horstretch>
             <verstretch>1</verstretch>
            </sizepolicy>
@@ -92,7 +93,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="0" column="3">
             <widget class="QLabel" name="label_3">
              <property name="text">
               <string>Concepto</string>
@@ -102,7 +103,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="2">
+           <item row="0" column="4">
             <widget class="QStackedWidget" name="stConcepts">
              <property name="currentIndex">
               <number>0</number>
@@ -111,6 +112,9 @@
               <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
                 <widget class="QLineEdit" name="txtConcept">
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -135,62 +139,23 @@
          </widget>
         </item>
         <item>
-         <widget class="QStackedWidget" name="stackedWidget">
+         <widget class="QTableView" name="tableDetails">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
+           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+            <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="currentIndex">
-           <number>1</number>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
           </property>
-          <widget class="QWidget" name="page">
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item>
-             <widget class="QDialogButtonBox" name="buttonBox">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="standardButtons">
-               <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="page_2">
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <item>
-             <widget class="QPushButton" name="btnAdd">
-              <property name="text">
-               <string>Añadir</string>
-              </property>
-              <property name="icon">
-               <iconset resource="res.qrc">
-                <normaloff>:/icons/res/list-add.png</normaloff>:/icons/res/list-add.png</iconset>
-              </property>
-              <property name="shortcut">
-               <string>Ctrl+N</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>&amp;Buscar</string>
-      </property>
-      <property name="buddy">
-       <cstring>txtSearch</cstring>
-      </property>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -205,7 +170,40 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNuevo"/>
+   <addaction name="actionGuardar"/>
+   <addaction name="actionCancelar"/>
   </widget>
+  <action name="actionNuevo">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icons/res/document-new.png</normaloff>:/icons/res/document-new.png</iconset>
+   </property>
+   <property name="text">
+    <string>nuevo</string>
+   </property>
+   <property name="toolTip">
+    <string>Crear nuevo Ajuste Contable</string>
+   </property>
+  </action>
+  <action name="actionGuardar">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icons/res/document-save.png</normaloff>:/icons/res/document-save.png</iconset>
+   </property>
+   <property name="text">
+    <string>guardar</string>
+   </property>
+  </action>
+  <action name="actionCancelar">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/icons/res/dialog-cancel.png</normaloff>:/icons/res/dialog-cancel.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cancelar</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="res.qrc"/>

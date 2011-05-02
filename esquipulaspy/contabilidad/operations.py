@@ -72,13 +72,15 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
 
         self.tableDetails.setColumnHidden( IDCUENTA, True )
         self.tableDetails.setColumnHidden( IDDOCUMENTOC, True )
+        
+        self.actionCancelar.setVisible( False)
+        self.actionGuardar.setVisible( False)
 
-
-        self.buttonBox.accepted.connect( self.save )
+#        self.actionGuardar.activated.connect( self.save )
         self.tableNavigation.selectionModel().selectionChanged[QItemSelection, QItemSelection].connect( self.updateDetails )
 
         QTimer.singleShot( 0, self.updateModels )
-
+    
     def updateModels( self ):
         try:
             if not self.database.isOpen():
@@ -146,12 +148,17 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
         @param status: El modo del formulario
         @type status:bool
         """
+        
+        self.widget.setHidden(status)
         self.txtSearch.setEnabled( not status )
+        self.actionNuevo.setVisible(not status)
+        self.actionCancelar.setVisible( status)
+        self.actionGuardar.setVisible( status)
         self.cbConcepts.setEnabled( status )
         self.tableDetails.setEditTriggers( QTableView.AllEditTriggers if status else QTableView.NoEditTriggers )
         self.tableNavigation.setEnabled( not status )
         self.tableDetails.setEditTriggers( QTableView.AllEditTriggers )
-        self.stackedWidget.setCurrentIndex( 0 if status else 1 )
+#        self.stackedWidget.setCurrentIndex( 0 if status else 1 )
         self.stConcepts.setCurrentIndex( 1 if status else 0 )
 
     def getStatus( self ):
@@ -160,17 +167,19 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
 
 
     @pyqtSlot()
-    def on_buttonBox_rejected( self ):
+    def on_actionCancelar_activated( self ):
         self.status = False
         self.editModel = None
-
         self.tableDetails.setModel( self.detailsproxymodel )
         self.tableDetails.setColumnHidden( IDDOCUMENTOC, True )
         self.tableDetails.setColumnHidden( IDCUENTA, True )
 
-
     @pyqtSlot()
-    def on_btnAdd_clicked( self ):
+    def on_actionGuardar_activated( self ):
+        self.save()
+        
+    @pyqtSlot()
+    def on_actionNuevo_activated( self ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
