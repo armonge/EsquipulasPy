@@ -9,3 +9,4 @@
 - Permitir modificar COSTO EN KARDEX otros movimientos.
 - Recibo no filtra bien los tipos de pago
 - Imprimir en REPORTE FACTURA el monto en cordobas
+En ajustes contables, hay que implementar el agregar y eliminar Filas, y se debe de preguntar antes de guardar, tambien se debería de validar la fecha a que esté siempre entre el rango del mes que actualmente se está contabilizando.
