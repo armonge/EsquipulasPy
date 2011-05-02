@@ -50,6 +50,7 @@ class Ui_frmOperations(object):
         self.tableDetails.setObjectName(_fromUtf8("tableDetails"))
         self.gridLayout.addWidget(self.tableDetails, 0, 0, 1, 1)
         self.verticalLayout = QtGui.QVBoxLayout()
+        
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.groupBox = QtGui.QGroupBox(self.centralwidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Preferred)

@@ -102,7 +102,7 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         self.btnMovements.setEnabled( status )
         self.mdiArea.setEnabled( status )
         self.mdiArea.setVisible( status )      
-        self.btnAccounts.setEnabled( status )
+        self.actionCuentas.setEnabled( status )
         status = status and not self.inicial
 
         
@@ -158,7 +158,7 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
 
 
     @pyqtSlot()
-    def on_btnAccounts_clicked( self ):
+    def on_actionCuentas_activated( self ):
         accounts = FrmAccounts( self )
         self.mdiArea.addSubWindow( accounts )
         accounts.show()
