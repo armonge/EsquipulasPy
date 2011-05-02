@@ -102,10 +102,10 @@ class MainWindow( MainWindowBase, Ui_MainWindow ):
         self.btnMovements.setEnabled( status )
         self.mdiArea.setEnabled( status )
         self.mdiArea.setVisible( status )      
-        
+        self.btnAccounts.setEnabled( status )
         status = status and not self.inicial
 
-        self.btnAccounts.setEnabled( status )
+        
         self.btnDepositos.setEnabled( status )
         self.btnCheques.setEnabled( status )
         self.btnConciliacion.setEnabled( status )
