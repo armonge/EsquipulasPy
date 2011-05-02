@@ -202,6 +202,7 @@ class FrmBalanceInicial( QMainWindow, Ui_frmOperations ):
                 
                 QMessageBox.information(self, "Balance Inicial","El Balance Inicial se ha guardado con exito")
                 self.parent().inicial = False
+                self.parent().btnMovements.setText("Ajustes Contables" )
                 self.parent().status = True
                 self.close()
             except UserWarning as inst:
