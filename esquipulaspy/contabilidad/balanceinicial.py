@@ -32,7 +32,8 @@ class FrmBalanceInicial( QMainWindow, Ui_frmOperations ):
         self.__status = False
         self.database = QSqlDatabase.database()
         self.user = user.LoggedUser
-        
+        self.actionNuevo.setVisible(False)
+        self.widget.setHidden(True)
         
 
 #        self.setMaximumSize(600,300)
@@ -76,8 +77,8 @@ class FrmBalanceInicial( QMainWindow, Ui_frmOperations ):
             logging.critical( unicode( inst ) )
 
     def startUI(self):        
-        self.buttonBox.accepted.connect( self.save )
-        self.stackedWidget.setCurrentIndex(0)
+        
+#        self.stackedWidget.setCurrentIndex(0)
         self.dtPicker.setAlignment(Qt.AlignHCenter)
         
     
@@ -112,7 +113,7 @@ class FrmBalanceInicial( QMainWindow, Ui_frmOperations ):
         self.horizontalLayout.addWidget(self.btnRemove)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.verticalLayout.addWidget(self.tableDetails)
-        self.verticalLayout.addWidget(self.stackedWidget)
+#        self.verticalLayout.addWidget(self.stackedWidget)
     
         self.tableDetails.setEditTriggers( QTableView.AllEditTriggers)
         self.tableNavigation.setVisible(False)
@@ -131,9 +132,13 @@ class FrmBalanceInicial( QMainWindow, Ui_frmOperations ):
         if filas>2:
             self.editModel.removeRows( self.tableDetails.currentIndex().row(), 1)
             self.btnRemove.setEnabled(filas-1>2)
-    
+
     @pyqtSlot()
-    def on_buttonBox_rejected( self ):
+    def on_actionGuardar_activated( self ):
+        self.save()
+            
+    @pyqtSlot()
+    def on_actionCancelar_activated( self ):
         self.close()
 
 

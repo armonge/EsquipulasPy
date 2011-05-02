@@ -206,13 +206,13 @@ class FrmOperations( QMainWindow, Ui_frmOperations ):
                 idconcepto,
                 descripcion
             FROM conceptos
-            WHERE idtipodoc = %d
-             """ % constantes.IDAJUSTECONTABLE
+            WHERE idtipodoc = %d and idconcepto <>%d
+             """ % (constantes.IDAJUSTECONTABLE,constantes.IDCONCEPTOBALANCEINICIAL)
             
             self.conceptsmodel.setQuery( q )
 
             if self.conceptsmodel.rowCount() < 1:
-                raise UserWarning( "No existen conceptos" )
+                raise UserWarning( "No existen conceptos para ajustes contables, por favor comuniquese con el administrador del sistema" )
 
 
             self.cbConcepts.setModel( self.conceptsmodel )
