@@ -12,3 +12,7 @@
 En ajustes contables, hay que implementar el agregar y eliminar Filas, y se debe de preguntar antes de guardar, tambien se debería de validar la fecha a que esté siempre entre el rango del mes que actualmente se está contabilizando.
 
 En el catálogo de cuentas contables al no insertar todo el codigo , muestra un mensaje de error pero se cierra el dialogo, lo que no permite terminar de escribir el codigo de la cuenta
+
+Error en Cheques, cuando valida que no hay conceptos de todos modos oculta el boton nuevo y muestra el guardar y cancelar.
+
+Error en Cheques, cuando valida que no hay Tipos de Cambio de todos modos oculta el boton nuevo y muestra el guardar y cancelar.
