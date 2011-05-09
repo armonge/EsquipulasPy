@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\workspace\EsquipulasPy\esquipulaspy\ui\conciliacion.ui'
 #
-# Created: Tue Nov 23 18:55:05 2010
+# Created: Sun May 08 18:49:35 2011
 #      by: PyQt4 UI code generator 4.7.7
 #
 # WARNING! All changes made in this file will be lost!
@@ -447,7 +447,7 @@ class Ui_frmConciliacion(object):
         self.groupBox_2.setTitle(QtGui.QApplication.translate("frmConciliacion", "Libro", None, QtGui.QApplication.UnicodeUTF8))
         self.label_6.setText(QtGui.QApplication.translate("frmConciliacion", "Saldo del banco", None, QtGui.QApplication.UnicodeUTF8))
         self.lbltotallibro_2.setText(QtGui.QApplication.translate("frmConciliacion", "MÁS: DEPOSITOS EN TRANSITO", None, QtGui.QApplication.UnicodeUTF8))
-        self.lbltotallibro_3.setText(QtGui.QApplication.translate("frmConciliacion", "MENOS: CHEQUES EN  EN TRANSITO", None, QtGui.QApplication.UnicodeUTF8))
+        self.lbltotallibro_3.setText(QtGui.QApplication.translate("frmConciliacion", "MENOS: CHEQUES EN TRANSITO", None, QtGui.QApplication.UnicodeUTF8))
         self.lbltotallibro.setText(QtGui.QApplication.translate("frmConciliacion", "Total Disponible:", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_3.setTitle(QtGui.QApplication.translate("frmConciliacion", "Banco", None, QtGui.QApplication.UnicodeUTF8))
         self.label_7.setText(QtGui.QApplication.translate("frmConciliacion", "Saldo del auxiliar de la empresa", None, QtGui.QApplication.UnicodeUTF8))
@@ -455,9 +455,9 @@ class Ui_frmConciliacion(object):
         self.lbltotallibro_5.setText(QtGui.QApplication.translate("frmConciliacion", "MENOS: NOTAS DE DEBITO", None, QtGui.QApplication.UnicodeUTF8))
         self.lbltotalbanco.setText(QtGui.QApplication.translate("frmConciliacion", "Total Disponible:", None, QtGui.QApplication.UnicodeUTF8))
         self.lbldiferencia.setText(QtGui.QApplication.translate("frmConciliacion", "Diferencia C$ 0.0000", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails),""  )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), )
         self.label_4.setText(QtGui.QApplication.translate("frmConciliacion", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation),"" )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), )
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmConciliacion", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc

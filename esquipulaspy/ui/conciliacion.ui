@@ -382,7 +382,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>MENOS: CHEQUES EN  EN TRANSITO</string>
+                  <string>MENOS: CHEQUES EN TRANSITO</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
