@@ -455,9 +455,9 @@ class Ui_frmConciliacion(object):
         self.lbltotallibro_5.setText(QtGui.QApplication.translate("frmConciliacion", "MENOS: NOTAS DE DEBITO", None, QtGui.QApplication.UnicodeUTF8))
         self.lbltotalbanco.setText(QtGui.QApplication.translate("frmConciliacion", "Total Disponible:", None, QtGui.QApplication.UnicodeUTF8))
         self.lbldiferencia.setText(QtGui.QApplication.translate("frmConciliacion", "Diferencia C$ 0.0000", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabdetails), "")
         self.label_4.setText(QtGui.QApplication.translate("frmConciliacion", "&Buscar", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation), )
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabnavigation),"" )
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("frmConciliacion", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
 
 import res_rc
