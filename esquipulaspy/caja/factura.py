@@ -97,7 +97,7 @@ class FrmFactura( Base, Ui_frmFactura ):
 
     def cancel( self ):
         """
-        Aca se cancela la edicion del documento
+        Aca se cancela la edición del documento
         """
         self.editmodel = None
         self.tablenavigation.setModel( self.navproxymodel )
@@ -654,6 +654,8 @@ class FrmFactura( Base, Ui_frmFactura ):
             self.tablenavigation.setColumnHidden( ESCONTADO, True )
             self.tablenavigation.setColumnHidden( ANULADO, True )
             self.tablenavigation.setColumnHidden( TOTALFAC, True )
+            self.tablenavigation.setColumnHidden( IDBODEGA, True )
+            self.tablenavigation.setColumnHidden( ANULABLE, True )
 
 
         else:

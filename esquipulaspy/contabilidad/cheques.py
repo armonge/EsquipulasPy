@@ -435,7 +435,7 @@ class FrmCheques( Base, Ui_frmCheques ):
 
     @property
     def printIdentifier( self ):
-        self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
+        return self.navmodel.record( self.mapper.currentIndex() ).value( "iddocumento" ).toString()
 
     def newDocument( self ):
         """
@@ -447,7 +447,7 @@ class FrmCheques( Base, Ui_frmCheques ):
         try:
             if not self.database.isOpen():
                 if not self.database.open():
-                    raise UserWarning( u"No se pudo establecer la conexiÃ³n "
+                    raise UserWarning( u"No se pudo establecer la conexión "
                                        + "con la base de datos" )
 
             #Crea modelo para edicion            
@@ -562,10 +562,10 @@ class FrmCheques( Base, Ui_frmCheques ):
                JOIN cuentasxdocumento cd ON cd.idcuenta=cc.idcuenta
                GROUP BY cc.idcuenta;
             """ )
-            if self.cuentabancaria.rowCount()< 0:
+            if self.cuentabancaria.rowCount() < 0:
                     QMessageBox.warning( self,
                                          qApp.organizationName(),
-                                         u"Saldo insuficiente en cuentas bancarias" )           
+                                         u"Saldo insuficiente en cuentas bancarias" )
             line = AccountsSelectorLine()
             record = self.cuentabancaria.record( self.cbocuenta.currentIndex() )
             line.itemId = record.value( "idcuentacontable" ).toInt()[0]
