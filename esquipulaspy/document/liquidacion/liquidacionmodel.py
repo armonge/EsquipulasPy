@@ -802,8 +802,7 @@ class LiquidacionModel( DocumentBase ):
                     )
 
             elif column == IMPUESTOS:
-                return """DAI Parcial = %s\nISC Parcial = %s\nIVA Parcial = %s"\
-TSIM Parcial = %s\n SPE Parcial = %s\n ISO Parcial = %s""" % ( \
+                return "DAI Parcial = %s\nISC Parcial = %s\nIVA Parcial = %s\nTSIM Parcial = %s\nSPE Parcial = %s\nISO Parcial = %s" % ( \
                     moneyfmt( line.daiParcial, 4, "US$" ) , \
                     moneyfmt( line.iscParcial, 4, "US$" ) , \
                     moneyfmt( line.ivaParcial, 4, "US$" ) , \

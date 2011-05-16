@@ -7,11 +7,12 @@ from PyQt4.QtGui import QSortFilterProxyModel, QDataWidgetMapper, QDialog, \
     QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
     QLineEdit, QDateTimeEdit, QMessageBox, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
+
 from decimal import Decimal
 from document.conciliacion import ConciliacionModel, LineaConciliacion
 from ui.Ui_conciliacion import Ui_frmConciliacion
 from utility.base import Base
-from utility.constantes import IDND, IDCHEQUE, IDERROR
+from utility import constantes
 from utility.decorators import if_edit_model
 from utility.moneyfmt import moneyfmt
 import logging
@@ -20,15 +21,13 @@ import logging
 
 
 
-from movimientosbancarios import FrmMovimientosBancarios
-#from wsgiref.validate import status_int
 
 
 FECHA, CONCEPTO, DEBE, HABER, SALDO, CONCILIADO, DELBANCO, \
 IDTIPODOC = range( 8 )
 FECHA, BANCO, CUENTABANCO, MONEDA, CUENTA, SALDOBANCO, SALDOLIBRO, \
 IDCUENTABANCO, IDDOC = range( 9 )
-class FrmConciliacion( Ui_frmConciliacion, Base ):
+class FrmConciliacion( Base , Ui_frmConciliacion ):
     """
     Formulario para crear nuevas conciliaciones bancarias
     """
@@ -41,6 +40,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
 
 
         self.editmodel = None
+
         self.status = True
 
 #        las acciones deberian de estar ocultas
@@ -59,16 +59,16 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         self.detailsmodel = ReadOnlyTableModel( self )
         self.proxymodel = QSortFilterProxyModel( self )
 #        CREAR TODOS LOS PROXY MODEL
-        self.crearModelosFiltrados()
+        self._create_filter_models()
 
         self.detailsmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
 
-        
+
 #        Cargar los modelos en un hilo aparte
         QTimer.singleShot( 0, self.loadModels )
 
 
-    def crearModelosFiltrados( self ):
+    def _create_filter_models( self ):
         #CREAR PROXY MODEL         
 
 
@@ -82,7 +82,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         delbancoproxymodel.setSourceModel( self.proxymodel )
         delbancoproxymodel.setDynamicSortFilter( True )
         delbancoproxymodel.setFilterRole( Qt.EditRole )
-        delbancoproxymodel.setFilterRegExp( "1" )
+        delbancoproxymodel.setFilterRegExp( "0" )
         delbancoproxymodel.setFilterKeyColumn( DELBANCO )
 
 #CREAR PROXY MODEL PARA VERIFICAR SI FUE GENERADO  POR LA EMPRESA
@@ -90,51 +90,41 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         empresaproxymodel.setSourceModel( self.proxymodel )
         empresaproxymodel.setDynamicSortFilter( True )
         empresaproxymodel.setFilterRole( Qt.EditRole )
-        empresaproxymodel.setFilterRegExp( "0" )
+        empresaproxymodel.setFilterRegExp( "1" )
         empresaproxymodel.setFilterKeyColumn( DELBANCO )
 
-        filtroMenos = "^" + str( IDND ) + "$|^" + str( IDCHEQUE ) + "$|^" + str( IDERROR ) + "$"
+        filtroMenos = "^" + str( constantes.IDND ) + "$|^" + str( constantes.IDCHEQUE ) + "$|^" + str( constantes.IDERROR ) +"$|^" + str( constantes.IDERROR ) + "$"
         filtroMas = "[" + filtroMenos + "]"
 
 #CREAR MODELO PARA DEPOSITOS
-        depositosproxymodel = DetalleTableModel( self )
-        depositosproxymodel.setSourceModel( empresaproxymodel )
-        depositosproxymodel.setFilterRegExp( filtroMas )
-        depositosproxymodel.setFilterKeyColumn( IDTIPODOC )
-        self.tablalibromas.setModel( depositosproxymodel )
+        self._setup_proxy_model(DetalleTableModel(self), empresaproxymodel, filtroMas, IDTIPODOC, self.tablalibromas)
 
 #CREAR MODELO PARA CHEQUES
-        chequesproxymodel = DetalleTableModel( self )
-        chequesproxymodel.setSourceModel( empresaproxymodel )
-        chequesproxymodel.setFilterRegExp( filtroMenos )
-        chequesproxymodel.setFilterKeyColumn( IDTIPODOC )
-        self.tablalibromenos.setModel( chequesproxymodel )
+        self._setup_proxy_model(DetalleTableModel(self), empresaproxymodel, filtroMenos, IDTIPODOC, self.tablalibromenos)
 
 
 #CREAR MODELO PARA NOTAS DE CREDITO
-        notascreditoproxymodel = DetalleTableModel( self )
-        notascreditoproxymodel.setSourceModel( delbancoproxymodel )
-        notascreditoproxymodel.setFilterRegExp( filtroMas )
-        notascreditoproxymodel.setFilterKeyColumn( IDTIPODOC )
-        self.tablabancomas.setModel( notascreditoproxymodel )
+        self._setup_proxy_model(DetalleTableModel(self), delbancoproxymodel, filtroMas, IDTIPODOC, self.tablabancomas)
 
 #CREAR MODELO PARA NOTAS DE DEBITO
-        notasdebitoproxymodel = DetalleTableModel( self )
-        notasdebitoproxymodel.setSourceModel( delbancoproxymodel )
-        notasdebitoproxymodel.setFilterRegExp( filtroMenos )
-        notasdebitoproxymodel.setFilterKeyColumn( IDTIPODOC )
-        self.tablabancomenos.setModel( notasdebitoproxymodel )
+        self._setup_proxy_model(DetalleTableModel(self), delbancoproxymodel, filtroMenos, IDTIPODOC, self.tablabancomenos)
+
+    def _setup_proxy_model(self, model, source, regexp, column, table, role = Qt.DisplayRole):
+        model.setSourceModel( source )
+        model.setFilterRegExp( regexp )
+        model.setFilterKeyColumn( column )
+        model.setFilterRole(role)
+        table.setModel( model )
+        
 
     def updateModels( self ):
         """
         Recargar todos los modelos
         """
         try:
-            if not QSqlDatabase.database().isOpen():
-                if not QSqlDatabase.database().open():
-                    raise Exception( "No se pudo abrir la base" )
+            if not(QSqlDatabase.database().isOpen() or QSqlDatabase.database().open()):
+                raise Exception( "No se pudo abrir la base" )
 
-#        El modelo principal
             self.navmodel.setQuery( """
             SELECT
                 c.Fecha,
@@ -173,7 +163,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
             self.tablenavigation.setColumnHidden( IDCUENTABANCO, True )
             self.tablenavigation.setColumnHidden( IDDOC, True )
 
-            self.ocultarCols()
+            self._ocultar_columnas()
 
         except UserWarning as inst:
             logging.error( unicode( inst ) )
@@ -189,17 +179,8 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
 
     def updateDetailFilter( self, _index ):
         if self.tabWidget.currentIndex() == 0:
-#            print self.mapper.currentIndex()
-#            self.tablenavigation.selectRow( self.mapper.currentIndex() )
             self.cargarMovimientos()
 
-#        
-#    @pyqtSlot( "int" )
-#    def on_tabWidget_currentChanged(self,index):
-#        pass
-##        if index == 0:
-##            self.cargarMovimientos()
-#            
     def cargarMovimientos( self ):
         index = self.mapper.currentIndex()
         saldobanco = Decimal( self.navmodel.record( index ).value( "saldobanco" ).toString() )
@@ -214,7 +195,6 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
                     raise Exception( "No se pudo abrir la base" )
             self.detailsmodel.setQuery( "CALL spMovimientoCuenta(" + ctaBanco + "," + fecha.toString( "yyyyMMdd" ) + ");" )
             self.proxymodel.setSourceModel( self.detailsmodel )
-            index = self.detailsmodel.index( self.detailsmodel.rowCount() - 1, CONCILIADO )
         except Exception as inst:
             logging.error( unicode( inst ) )
         finally:
@@ -231,26 +211,26 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         depositos = self.tablalibromas.model().total
         cheques = self.tablalibromenos.model().total
         self.txtcheque.setText( moneyfmt( cheques, 4, "C$" ) )
-        self.txtdeposito.setText( moneyfmt( depositos, 4, "C$" ) )
-        self.txtnotacredito.setText( moneyfmt( nc, 4, "C$" ) )
-        self.txtnotadebito.setText( moneyfmt( nd, 4, "C$" ) )
+        self.txtdeposito.setText( moneyfmt( depositos, 4, self.editmodel.moneda ) )
+        self.txtnotacredito.setText( moneyfmt( nc, 4, self.editmodel.moneda ) )
+        self.txtnotadebito.setText( moneyfmt( nd, 4, self.editmodel.moneda ) )
 
-        self.txttotallibro.setText( moneyfmt( saldobanco + depositos + cheques, 4, "C$" ) )
-        self.txttotalbanco.setText( moneyfmt( saldolibro + nc + nd , 4, "C$" ) )
+        self.txttotallibro.setText( moneyfmt( saldobanco + depositos + cheques, 4, self.editmodel.moneda ) )
+        self.txttotalbanco.setText( moneyfmt( saldolibro + nc + nd , 4, self.editmodel.moneda ) )
         dif = saldobanco + depositos + cheques - ( saldolibro + nc + nd )
-        self.lbldiferencia.setText( moneyfmt( dif, 4, "C$" ) if dif != 0 else "CONCILIADO" )
+        self.lbldiferencia.setText( moneyfmt( dif, 4, self.editmodel.moneda ) if dif != 0 else "CONCILIADO" )
 
     def updateLabels( self ):
-        self.txttotallibro.setText( moneyfmt( self.editmodel.totalLibro, 4, "C$" ) )
-        self.txtcheque.setText( moneyfmt( self.editmodel.cheques, 4, "C$" ) )
-        self.txtdeposito.setText( moneyfmt( self.editmodel.depositos, 4, "C$" ) )
-        self.txtnotacredito.setText( moneyfmt( self.editmodel.notascredito, 4, "C$" ) )
-        self.txtnotadebito.setText( moneyfmt( self.editmodel.notasdebito, 4, "C$" ) )
+        self.txttotallibro.setText( moneyfmt( self.editmodel.total_libro, 4, self.editmodel.moneda ) )
+        self.txtcheque.setText( moneyfmt( self.editmodel.total_cheques, 4, self.editmodel.moneda ) )
+        self.txtdeposito.setText( moneyfmt( self.editmodel.total_depositos, 4, self.editmodel.moneda ) )
+        self.txtnotacredito.setText( moneyfmt( self.editmodel.total_nota_credito, 4, self.editmodel.moneda ) )
+        self.txtnotadebito.setText( moneyfmt( self.editmodel.total_nota_debito, 4, self.editmodel.moneda ) )
 
-        self.txttotalbanco.setText( moneyfmt( self.editmodel.totalBanco, 4, "C$" ) )
+        self.txttotalbanco.setText( moneyfmt( self.editmodel.total_banco, 4, self.editmodel.moneda ) )
+
         dif = self.editmodel.diferencia
-        self.lbldiferencia.setText( ( "Diferencia " + moneyfmt( dif, 4, "C$" ) ) if dif != 0 else "CONCILIADO" )
-
+        self.lbldiferencia.setText( ( "Diferencia " + moneyfmt( dif, 4, self.editmodel.moneda ) ) if dif != 0 else "CONCILIADO" )
 
 
 
@@ -261,7 +241,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         """
         if not self.editmodel is None:
 #            value = self.spbsaldobanco.value()           
-            self.editmodel.saldoInicialBanco = Decimal( str( value ) )
+            self.editmodel.saldo_inicial_banco = Decimal( str( value ) )
             self.updateLabels()
 
 
@@ -271,8 +251,8 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         @param status: false = editando        true = navegando
         """
         self.actionPrint.setVisible( status )
-        self.btnAdd.setVisible(not status)
-        self.btnRemove.setVisible(not status)
+        self.btnAdd.setVisible( not status )
+        self.btnRemove.setVisible( not status )
         self.actionSave.setVisible( not status )
         self.actionCancel.setVisible( not status )
         self.tabnavigation.setEnabled( status )
@@ -299,12 +279,12 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         """
         query = QSqlQuery()
         try:
-            if not QSqlDatabase.database().open():
+            if not QSqlDatabase.database().isOpen() and not QSqlDatabase.database().open():
                 raise UserWarning( u"No se pudo establecer una conexión "
                                    "con la base de datos" )
 
             dlgCuenta = dlgSelectCuenta( self )
-            
+
             fila = -1
     #REPETIR MIENTRAS NO SELECCIONE UNA FILA
             while fila == -1:
@@ -317,47 +297,54 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
     #SALIR
                     return
 
+
+
+
     # SI SELECCIONO UNA FILA SIGUE
-            self.editmodel = ConciliacionModel(self.user.uid)
-        
-            self.txtbanco.setText( dlgCuenta.filtermodel.index( fila, 0 ).data().toString() )
-            self.txtcuentabanco.setText( dlgCuenta.filtermodel.index( fila, 1 ).data().toString() )
-            self.txtmoneda.setText( dlgCuenta.filtermodel.index( fila, 2 ).data().toString() )
-            self.txtcuenta.setText( dlgCuenta.filtermodel.index( fila, 3 ).data().toString() )
-            self.txtcuenta.setToolTip( dlgCuenta.filtermodel.index( fila, 5 ).data().toString() )
+            self.editmodel = ConciliacionModel( 
+                dlgCuenta.data['saldo_inicial_libro'],
+                dlgCuenta.data['fecha'],
+                dlgCuenta.data['banco'],
+                dlgCuenta.data['cuenta_bancaria'],
+                dlgCuenta.data['id_cuenta_contable'],
+                dlgCuenta.data['codigo_cuenta_contable'],
+                dlgCuenta.data['moneda']
+            )
 
-            self.editmodel.idCuentaContable = dlgCuenta.filtermodel.index( fila, 4 ).data().toInt()[0]
+            self.txtbanco.setText( self.editmodel.banco )
+            self.txtcuentabanco.setText( self.editmodel.cuenta_bancaria )
+            self.txtmoneda.setText( self.editmodel.moneda )
+            self.txtcuenta.setText( self.editmodel.codigo_cuenta_contable )
+            self.lblfecha.setText( self.editmodel.datetime.toString( "MMMM yyyy" ).upper() )
 
-            fecha = dlgCuenta.dtPicker.date()
-            self.lblfecha.setText( fecha.toString( "MMMM yyyy" ).upper() )
-            self.editmodel.fechaConciliacion = QDate( fecha.year(), fecha.month(), fecha.daysInMonth() )
 
 
-            if not query.exec_( "CALL spMovimientoCuenta( %d, %s )" % ( self.editmodel.idCuentaContable,
-                self.editmodel.fechaConciliacion.toString( "yyyyMMdd" ) ) ):
+            if not query.exec_( "CALL spMovimientoCuenta( %d, %s )" % ( 
+                    self.editmodel.id_cuenta_contable,
+                    self.editmodel.fecha_conciliacion.toString( "yyyyMMdd" )
+                )
+            ):
                 raise Exception( query.lastError().text() )
 
             row = 0
             while query.next():
-                linea = LineaConciliacion( self.editmodel )
-                linea.fecha = query.value( FECHA ).toString()
-                linea.concepto = query.value( CONCEPTO ).toString()
-                linea.monto = Decimal( query.value( DEBE ).toString() )
-                linea.saldo = Decimal( query.value( 3 ).toString() )
-
-                linea.delBanco = query.value( 5 ).toInt()[0]
-                linea.conciliado = linea.delBanco
-
-                linea.idTipoDoc = query.value( 6 ).toInt()[0]
-                linea.concepto2 = query.value( 7 ).toString()
-                linea.idDoc = query.value( 8 ).toInt()[0]
-
+                linea = LineaConciliacion( 
+                    query.value( 5 ).toBool(), #del_banco
+                    Decimal( query.value( 3 ).toString() ), #saldo_inicial
+                    Decimal( query.value( DEBE ).toString() ), #monto
+                    QDate.fromString( query.value( FECHA ).toString(), 'dd/M/yy' ), #fecha
+                    query.value( 6 ).toInt()[0], # tipo_doc
+                    query.value( 8 ).toInt()[0], # id_documento
+                    query.value( CONCEPTO ).toString() #descripcion
+                )
+                
+                linea.monto = Decimal( query.value( 2 ).toString() )
                 self.editmodel.insertRows( row )
                 self.editmodel.lines[row] = linea
-                row = row + 1
+                row += 1
 
-            self.editmodel.saldoInicialLibro = self.editmodel.lines[row - 1].saldo
-            self.txtsaldolibro.setText( moneyfmt( self.editmodel.lines[row - 1].saldo, 4, "C$" ) )
+            #self.editmodel.saldoInicialLibro = self.editmodel.lines[row - 1].saldo
+            self.txtsaldolibro.setText( moneyfmt( self.editmodel.saldo_inicial_libro, 4, self.editmodel.moneda ) )
             self.updateLabels()
 
             self.proxymodel.setSourceModel( self.editmodel )
@@ -369,7 +356,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
 
             self.tabledetails.resizeColumnsToContents()
 
-            self.ocultarCols()
+            self._ocultar_columnas()
 
             self.editmodel.dataChanged[QModelIndex, QModelIndex].connect( self.updateLabels )
 
@@ -381,26 +368,21 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
             logging.critical( unicode( inst ) )
             QMessageBox.critical( self, qApp.organizationName(),
                                    u"Hubo un error al intentar iniciar una"
-                                   + " nueva conciliación" )
+                                   + u" nueva conciliación" )
         finally:
             if self.database.isOpen():
                 self.database.close()
 
-    def ocultarCols( self ):
-        #OCULTAR COLUMNAS    
-        self.ocultarColumnas( self.tablalibromas )
-        self.ocultarColumnas( self.tablalibromenos )
-        self.ocultarColumnas( self.tablabancomas )
-        self.ocultarColumnas( self.tablabancomenos )
+    def _ocultar_columnas( self ):
+        for table in ( self.tablabancomas, self.tablalibromas, self.tablabancomenos, self.tablalibromenos):
+            table.setColumnHidden( HABER, True )
+            table.setColumnHidden( CONCILIADO, True )
+            table.setColumnHidden( SALDO, True )
+            table.setColumnHidden( IDTIPODOC, True )
+            table.setColumnHidden( DELBANCO, True )
 
-    def ocultarColumnas( self, tabla ):
-        tabla.setColumnHidden( HABER, True )
-        tabla.setColumnHidden( CONCILIADO, True )
-        tabla.setColumnHidden( SALDO, True )
-        tabla.setColumnHidden( IDTIPODOC, True )
-        tabla.setColumnHidden( DELBANCO, True )
         self.tabledetails.setColumnHidden( IDTIPODOC, True )
-#        self.tabledetails.setColumnHidden(DELBANCO,True)
+
 
 
     def save( self ):
@@ -427,21 +409,7 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
                      qApp.organizationName(),
                     "Ha ocurrido un error al guardar el documento" )
 
-    @property
-    def valid( self ):
-        modelo = self.editmodel
-        if modelo.idCuentaContable == 0:
-            QMessageBox.warning( self,
-                     qApp.organizationName(),
-                     "Por favor elija la cuenta bancaria" )
-        elif modelo.diferencia != 0:
-            QMessageBox.warning( self,
-                     qApp.organizationName(),
-                     u"Los saldos según Banco y según libro no están conciliados" )
-        else:
-            return True
 
-        return False
 
 
     def cancel( self ):
@@ -449,37 +417,9 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         self.tablenavigation.setModel( self.navproxymodel )
         self.tabledetails.setModel( self.detailsmodel )
         self.proxymodel.setSourceModel( self.detailsmodel )
-        self.ocultarCols()
+        self._ocultar_columnas()
         self.status = True
 
-    @pyqtSlot( bool )
-    @if_edit_model
-    def on_btnNotasCD_clicked( self, _checked ):
-        pass
-    
-#        notas = dlgMovimientosBancarios( self )
-#        notas.setWindowModality( Qt.WindowModal )
-#        if notas.exec_() == QDialog.Accepted:
-#            row = self.editmodel.rowCount()
-#
-#            datosDoc = notas.editmodel.datos
-#
-#            linea = LineaConciliacion( self.editmodel )
-#            linea.fecha = datosDoc.dateTime.toString( "dd/MM/yy" )
-#            linea.monto = datosDoc.total
-#            linea.idTipoDoc = datosDoc.idTipoDoc
-#
-#            linea.concepto = notas.editmodel.codigoDoc + " " + linea.fecha
-#            linea.saldo = self.editmodel.lines[row - 1].saldo + linea.monto
-#            linea.conciliado = 1
-#            linea.delBanco = 1
-#            linea.concepto2 = notas.editmodel.descripcionDoc + " " + linea.fecha
-#            linea.idDoc = 0
-#            linea.datos = datosDoc
-#            self.editmodel.insertRows( row )
-#            self.editmodel.lines[row] = linea
-#            index = self.editmodel.index( row, CONCILIADO )
-#            self.editmodel.dataChanged.emit( index, index )
 
     @pyqtSlot( bool )
     @if_edit_model
@@ -487,9 +427,8 @@ class FrmConciliacion( Ui_frmConciliacion, Base ):
         filas = []
         for index in self.tabledetails.selectedIndexes():
             pos = index.row()
-            if pos > 0 and ( not ( pos in filas ) ):
-                if self.editmodel.lines[pos].idDoc == 0:
-                    filas.append( pos )
+            if pos > 0 and  not  pos in filas and self.editmodel.lines[pos].idDoc == 0:
+                filas.append( pos )
 
         if len( filas ) > 0:
             filas.sort( None, None, True )
@@ -601,7 +540,38 @@ class dlgSelectCuenta( QDialog ):
         self.tblCuenta.horizontalHeader().setStretchLastSection( True )
         self.tblCuenta.resizeColumnsToContents()
 
+    @property
+    def data( self ):
+        data = {}
+        fila = self.tblCuenta.selectionModel().currentIndex().row()
+        fecha = self.dtPicker.date()
 
+        data['banco'] = self.filtermodel.index( fila, 0 ).data().toString()
+        data['id_cuenta_contable'] = self.filtermodel.index( fila, 4 ).data().toInt()[0]
+        data['codigo_cuenta_contable'] = self.filtermodel.index( fila, 3 ).data().toString()
+        data['cuenta_bancaria'] = self.filtermodel.index( fila, 5 ).data().toString()
+        data['fecha'] = QDate( fecha.year(), fecha.month(), fecha.daysInMonth() )
+        data['moneda'] = self.filtermodel.index( fila, 2 ).data().toString()
+
+
+        if not QSqlDatabase.database().isOpen() and not QSqlDatabase.open():
+            raise Exception( QSqlDatabase.lastError() )
+
+        query = QSqlQuery()
+        if not query.exec_( "CALL spSaldoCuenta( %d, %s )" % ( 
+                data['id_cuenta_contable'],
+                QDate( data['fecha'].year(), data['fecha'].month(), data['fecha'].daysInMonth() ).toString( "yyyyMMdd" )
+            )
+        ):
+            raise Exception( query.lastError().text() )
+
+        query.first()
+
+        data['saldo_inicial_libro'] = Decimal( query.value( 0 ).toString() )
+
+
+
+        return data
 
     def aceptar( self ):
         fecha = QDate.currentDate()

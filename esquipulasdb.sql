@@ -16,6 +16,7 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`categorias` (
   `nombre` VARCHAR(25) NOT NULL COMMENT 'El nombre de la categoria' ,
   `padre` INT(10) UNSIGNED NULL DEFAULT NULL COMMENT 'El id de la categoria padre' ,
   PRIMARY KEY (`idcategoria`) ,
+  INDEX `fk_catsubcategoria_catsubcategoria1` (`padre` ASC) ,
   CONSTRAINT `fk_catsubcategoria_catsubcategoria1`
     FOREIGN KEY (`padre` )
     REFERENCES `esquipulasdb`.`categorias` (`idcategoria` )
@@ -26,8 +27,6 @@ AUTO_INCREMENT = 287
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
-CREATE INDEX `fk_catsubcategoria_catsubcategoria1` ON `esquipulasdb`.`categorias` (`padre` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`marcas`
@@ -37,13 +36,12 @@ DROP TABLE IF EXISTS `esquipulasdb`.`marcas` ;
 CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`marcas` (
   `idmarca` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'El id de la marca' ,
   `nombre` VARCHAR(25) NOT NULL COMMENT 'El nombre de la marca' ,
-  PRIMARY KEY (`idmarca`) )
+  PRIMARY KEY (`idmarca`) ,
+  UNIQUE INDEX `marcaunica` (`nombre` ASC) )
 ENGINE = InnoDB
 AUTO_INCREMENT = 143
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE UNIQUE INDEX `marcaunica` ON `esquipulasdb`.`marcas` (`nombre` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -58,6 +56,10 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`articulos` (
   `ganancia` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '10' COMMENT 'El porcentaje de ganancia \nque se aplica a este\narticulo para obtener el \nprecio sugerido' ,
   `activo` TINYINT(1) UNSIGNED NOT NULL COMMENT 'Si un articulo\nse encuentra \nactivo o no' ,
   PRIMARY KEY USING BTREE (`idarticulo`) ,
+  UNIQUE INDEX `uniqueproduct` (`idmarca` ASC, `idcategoria` ASC) ,
+  UNIQUE INDEX `articulounico` (`idmarca` ASC, `idcategoria` ASC) ,
+  INDEX `fk_articulos_marca1` (`idmarca` ASC) ,
+  INDEX `fk_articulos_categoria1` (`idcategoria` ASC) ,
   CONSTRAINT `fk_articulos_categoria1`
     FOREIGN KEY (`idcategoria` )
     REFERENCES `esquipulasdb`.`categorias` (`idcategoria` )
@@ -72,14 +74,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 7
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE UNIQUE INDEX `uniqueproduct` ON `esquipulasdb`.`articulos` (`idmarca` ASC, `idcategoria` ASC) ;
-
-CREATE UNIQUE INDEX `articulounico` ON `esquipulasdb`.`articulos` (`idmarca` ASC, `idcategoria` ASC) ;
-
-CREATE INDEX `fk_articulos_marca1` ON `esquipulasdb`.`articulos` (`idmarca` ASC) ;
-
-CREATE INDEX `fk_articulos_categoria1` ON `esquipulasdb`.`articulos` (`idcategoria` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -109,6 +103,7 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`tiposdoc` (
   `modulo` TINYINT(3) UNSIGNED NOT NULL COMMENT 'El modulo en el quee ste documento se utiliza' ,
   `seriedoc` MEDIUMINT UNSIGNED NULL ,
   PRIMARY KEY USING BTREE (`idtipodoc`) ,
+  INDEX `fk_tipodoc_modulos1` (`modulo` ASC) ,
   CONSTRAINT `fk_tipodoc_modulos1`
     FOREIGN KEY (`modulo` )
     REFERENCES `esquipulasdb`.`modulos` (`idmodulos` )
@@ -119,8 +114,6 @@ AUTO_INCREMENT = 22
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
-CREATE INDEX `fk_tipodoc_modulos1` ON `esquipulasdb`.`tiposdoc` (`modulo` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`bodegas`
@@ -130,13 +123,12 @@ DROP TABLE IF EXISTS `esquipulasdb`.`bodegas` ;
 CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`bodegas` (
   `idbodega` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'El id de la bodega' ,
   `nombrebodega` VARCHAR(255) NOT NULL COMMENT 'El nombre de la bodega' ,
-  PRIMARY KEY (`idbodega`) )
+  PRIMARY KEY (`idbodega`) ,
+  UNIQUE INDEX `nombreunico` (`nombrebodega` ASC) )
 ENGINE = InnoDB
 AUTO_INCREMENT = 21
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE UNIQUE INDEX `nombreunico` ON `esquipulasdb`.`bodegas` (`nombrebodega` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -149,13 +141,12 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`tiposcambio` (
   `tasa` DECIMAL(8,4) UNSIGNED NOT NULL COMMENT 'La tasa de cambio oficial' ,
   `fecha` DATE NOT NULL COMMENT 'La fecha para este tipo de cambio' ,
   `tasabanco` DECIMAL(8,4) NULL DEFAULT NULL COMMENT 'La tasa del banco, definida por el usuario' ,
-  PRIMARY KEY (`idtc`) )
+  PRIMARY KEY (`idtc`) ,
+  UNIQUE INDEX `fechaunica` (`fecha` ASC) )
 ENGINE = InnoDB
 AUTO_INCREMENT = 213
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE UNIQUE INDEX `fechaunica` ON `esquipulasdb`.`tiposcambio` (`fecha` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -168,6 +159,7 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`conceptos` (
   `descripcion` VARCHAR(100) NOT NULL ,
   `idtipodoc` INT(10) UNSIGNED NOT NULL ,
   PRIMARY KEY USING BTREE (`idconcepto`) ,
+  INDEX `fk_conceptos_tiposdoc1` (`idtipodoc` ASC) ,
   CONSTRAINT `fk_conceptos_tiposdoc1`
     FOREIGN KEY (`idtipodoc` )
     REFERENCES `esquipulasdb`.`tiposdoc` (`idtipodoc` )
@@ -177,8 +169,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE INDEX `fk_conceptos_tiposdoc1` ON `esquipulasdb`.`conceptos` (`idtipodoc` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -231,6 +221,13 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`documentos` (
   `idestado` TINYINT NOT NULL DEFAULT 1 COMMENT 'Estado del documento, si esta pendiente , confirmado o anulado, por defecto esta 1 que es confirmado' ,
   `delbanco` VARCHAR(45) NOT NULL DEFAULT 0 ,
   PRIMARY KEY (`iddocumento`) ,
+  INDEX `fk_documentos_tiposcambio1` USING BTREE (`idtipocambio` ASC) ,
+  INDEX `fk_documentos_bodegas1` (`idbodega` ASC) ,
+  INDEX `fk_documentos_tiposdoc1` (`idtipodoc` ASC) ,
+  INDEX `fk_documento_conceptos1` USING BTREE (`idconcepto` ASC) ,
+  INDEX `fk_documentos_conceptos1` (`idconcepto` ASC) ,
+  INDEX `fk_documentos_cajas1` (`idcaja` ASC) ,
+  INDEX `fk_documentos_estadosdocumento1` (`idestado` ASC) ,
   CONSTRAINT `FK_documentos_tiposdoc1`
     FOREIGN KEY (`idtipodoc` )
     REFERENCES `esquipulasdb`.`tiposdoc` (`idtipodoc` ),
@@ -265,20 +262,6 @@ DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci, 
 COMMENT = 'Entrada y Salida de dinero y productos' ;
 
-CREATE INDEX `fk_documentos_tiposcambio1` USING BTREE ON `esquipulasdb`.`documentos` (`idtipocambio` ASC) ;
-
-CREATE INDEX `fk_documentos_bodegas1` ON `esquipulasdb`.`documentos` (`idbodega` ASC) ;
-
-CREATE INDEX `fk_documentos_tiposdoc1` ON `esquipulasdb`.`documentos` (`idtipodoc` ASC) ;
-
-CREATE INDEX `fk_documento_conceptos1` USING BTREE ON `esquipulasdb`.`documentos` (`idconcepto` ASC) ;
-
-CREATE INDEX `fk_documentos_conceptos1` ON `esquipulasdb`.`documentos` (`idconcepto` ASC) ;
-
-CREATE INDEX `fk_documentos_cajas1` ON `esquipulasdb`.`documentos` (`idcaja` ASC) ;
-
-CREATE INDEX `fk_documentos_estadosdocumento1` ON `esquipulasdb`.`documentos` (`idestado` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`articulosxdocumento`
@@ -296,6 +279,11 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`articulosxdocumento` (
   `nlinea` SMALLINT(6) NULL COMMENT 'para ordenar en la interfaz grafica' ,
   `tccosto` MEDIUMINT(8) UNSIGNED NULL ,
   PRIMARY KEY (`idarticuloxdocumento`) ,
+  UNIQUE INDEX `articuloxdoc` (`iddocumento` ASC, `idarticulo` ASC) ,
+  INDEX `fk_articuloxdocumento_articulos1` (`idarticulo` ASC) ,
+  INDEX `fk_articuloxdocumento_documento1` (`iddocumento` ASC) ,
+  INDEX `fk_articulosxdocumento_articulos1` (`idarticulo` ASC) ,
+  INDEX `fk_articulosxdocumento_tiposcambio1` (`tccosto` ASC) ,
   CONSTRAINT `fk_articuloxdocumento_documentos1`
     FOREIGN KEY (`iddocumento` )
     REFERENCES `esquipulasdb`.`documentos` (`iddocumento` ),
@@ -313,16 +301,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 52
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE UNIQUE INDEX `articuloxdoc` ON `esquipulasdb`.`articulosxdocumento` (`iddocumento` ASC, `idarticulo` ASC) ;
-
-CREATE INDEX `fk_articuloxdocumento_articulos1` ON `esquipulasdb`.`articulosxdocumento` (`idarticulo` ASC) ;
-
-CREATE INDEX `fk_articuloxdocumento_documento1` ON `esquipulasdb`.`articulosxdocumento` (`iddocumento` ASC) ;
-
-CREATE INDEX `fk_articulosxdocumento_articulos1` ON `esquipulasdb`.`articulosxdocumento` (`idarticulo` ASC) ;
-
-CREATE INDEX `fk_articulosxdocumento_tiposcambio1` ON `esquipulasdb`.`articulosxdocumento` (`tccosto` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -351,6 +329,7 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`cuentascontables` (
   `descripcion` VARCHAR(45) NOT NULL COMMENT 'La descripción de esta cuenta' ,
   `esdebe` TINYINT(1) NOT NULL COMMENT 'Para definir si es activo, pasivo o capital' ,
   PRIMARY KEY (`idcuenta`) ,
+  INDEX `fk_cuenta_cuenta1` (`padre` ASC) ,
   CONSTRAINT `fk_cuenta_cuenta1`
     FOREIGN KEY (`padre` )
     REFERENCES `esquipulasdb`.`cuentascontables` (`idcuenta` )
@@ -361,8 +340,6 @@ AUTO_INCREMENT = 356
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci
 COMMENT = 'Es un catalogo de cuentas' ;
-
-CREATE INDEX `fk_cuenta_cuenta1` ON `esquipulasdb`.`cuentascontables` (`padre` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -377,6 +354,7 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`cierrescontables` (
   `fechacierre` DATETIME NOT NULL ,
   `esmensual` TINYINT(1) NOT NULL ,
   PRIMARY KEY (`idcierrecontable`) ,
+  INDEX `fk_cierrecontable_cuentacontable1` (`idCuenta` ASC) ,
   CONSTRAINT `fk_cierrecontable_cuentacontable1`
     FOREIGN KEY (`idCuenta` )
     REFERENCES `esquipulasdb`.`cuentascontables` (`idcuenta` )
@@ -385,8 +363,6 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`cierrescontables` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE INDEX `fk_cierrecontable_cuentacontable1` ON `esquipulasdb`.`cierrescontables` (`idCuenta` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -400,6 +376,7 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`tiposcosto` (
   `esporcentaje` TINYINT(1) NOT NULL COMMENT 'Si este costo es porcentaje o es un valor fijo' ,
   `cuentacontable` INT(10) UNSIGNED NULL DEFAULT NULL COMMENT 'La cuenta contable del tipo de costo' ,
   PRIMARY KEY (`idtipocosto`) ,
+  INDEX `FK_tipocosto_CuentaContable` (`cuentacontable` ASC) ,
   CONSTRAINT `FK_tipocosto_CuentaContable`
     FOREIGN KEY (`cuentacontable` )
     REFERENCES `esquipulasdb`.`cuentascontables` (`idcuenta` ))
@@ -407,8 +384,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE INDEX `FK_tipocosto_CuentaContable` ON `esquipulasdb`.`tiposcosto` (`cuentacontable` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -424,6 +399,8 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`costosagregados` (
   `idtipocosto` INT(10) UNSIGNED NOT NULL COMMENT 'El id del tipo de costo' ,
   `idarticulo` INT(10) UNSIGNED NULL DEFAULT NULL COMMENT 'id del articulo cuando sea DAI, ISC o COMISION' ,
   PRIMARY KEY (`idcostoagregado`) ,
+  INDEX `fk_CostoAgregado_TipoCosto1` (`idtipocosto` ASC) ,
+  INDEX `fk_costoagregado_articulos1` (`idarticulo` ASC) ,
   CONSTRAINT `fk_costoagregado_articulos1`
     FOREIGN KEY (`idarticulo` )
     REFERENCES `esquipulasdb`.`articulos` (`idarticulo` )
@@ -439,10 +416,6 @@ AUTO_INCREMENT = 170
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
-CREATE INDEX `fk_CostoAgregado_TipoCosto1` ON `esquipulasdb`.`costosagregados` (`idtipocosto` ASC) ;
-
-CREATE INDEX `fk_costoagregado_articulos1` ON `esquipulasdb`.`costosagregados` (`idarticulo` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`costosarticulo`
@@ -456,6 +429,8 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`costosarticulo` (
   `activo` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Si este costo esta activo o no' ,
   `idtc` MEDIUMINT(8) UNSIGNED NOT NULL COMMENT 'El id del tipo de cambio' ,
   PRIMARY KEY (`idcostoarticulo`) ,
+  INDEX `fk_costoarticulo_articulos1` (`idarticulo` ASC) ,
+  INDEX `fk_costosarticulo_tiposcambio1` (`idtc` ASC) ,
   CONSTRAINT `fk_costoarticulo_articulos1`
     FOREIGN KEY (`idarticulo` )
     REFERENCES `esquipulasdb`.`articulos` (`idarticulo` )
@@ -471,10 +446,6 @@ AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
-CREATE INDEX `fk_costoarticulo_articulos1` ON `esquipulasdb`.`costosarticulo` (`idarticulo` ASC) ;
-
-CREATE INDEX `fk_costosarticulo_tiposcambio1` ON `esquipulasdb`.`costosarticulo` (`idtc` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`costosxarticuloliquidacion`
@@ -487,6 +458,7 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`costosxarticuloliquidacion` (
   `isc` DECIMAL(12,4) NOT NULL COMMENT 'El valor del costo ISC' ,
   `comision` DECIMAL(12,4) NOT NULL COMMENT 'El valor de la comisión' ,
   PRIMARY KEY (`idarticuloxdocumento`) ,
+  INDEX `fk_table1_articuloxdocumento1` (`idarticuloxdocumento` ASC) ,
   CONSTRAINT `fk_table1_articuloxdocumento1`
     FOREIGN KEY (`idarticuloxdocumento` )
     REFERENCES `esquipulasdb`.`articulosxdocumento` (`idarticuloxdocumento` )
@@ -495,8 +467,6 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`costosxarticuloliquidacion` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE INDEX `fk_table1_articuloxdocumento1` ON `esquipulasdb`.`costosxarticuloliquidacion` (`idarticuloxdocumento` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -508,6 +478,8 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`costosxdocumento` (
   `iddocumento` INT(10) UNSIGNED NOT NULL COMMENT 'El id del documento' ,
   `idcostoagregado` INT(10) UNSIGNED NOT NULL COMMENT 'El id del costo agregado' ,
   PRIMARY KEY (`iddocumento`, `idcostoagregado`) ,
+  INDEX `fk_documento_has_costoagregado_documento1` (`iddocumento` ASC) ,
+  INDEX `fk_documento_has_costoagregado_costoagregado1` (`idcostoagregado` ASC) ,
   CONSTRAINT `fk_documento_has_costoagregado_documento1`
     FOREIGN KEY (`iddocumento` )
     REFERENCES `esquipulasdb`.`documentos` (`iddocumento` )
@@ -521,10 +493,6 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`costosxdocumento` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE INDEX `fk_documento_has_costoagregado_documento1` ON `esquipulasdb`.`costosxdocumento` (`iddocumento` ASC) ;
-
-CREATE INDEX `fk_documento_has_costoagregado_costoagregado1` ON `esquipulasdb`.`costosxdocumento` (`idcostoagregado` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -556,6 +524,9 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`cuentasbancarias` (
   `fechacancelado` DATE NULL DEFAULT NULL COMMENT 'La fecha en que esta cuenta bancaria fue cerrada' ,
   `fechaapertura` DATE NOT NULL COMMENT 'La fecha en que esta cuenta bancaria fue cerrada' ,
   `seriedoc` INT(11)  NOT NULL DEFAULT 1 ,
+  INDEX `fk_cuentabancaria_banco1` (`idbanco` ASC) ,
+  INDEX `fk_cuentabancaria_cuentacontable1` (`idcuentacontable` ASC) ,
+  INDEX `fk_cuentabancaria_tipomoneda1` (`idtipomoneda` ASC) ,
   PRIMARY KEY (`idcuentacontable`) ,
   CONSTRAINT `fk_cuentabancaria_banco1`
     FOREIGN KEY (`idbanco` )
@@ -576,12 +547,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
-CREATE INDEX `fk_cuentabancaria_banco1` ON `esquipulasdb`.`cuentasbancarias` (`idbanco` ASC) ;
-
-CREATE INDEX `fk_cuentabancaria_cuentacontable1` ON `esquipulasdb`.`cuentasbancarias` (`idcuentacontable` ASC) ;
-
-CREATE INDEX `fk_cuentabancaria_tipomoneda1` ON `esquipulasdb`.`cuentasbancarias` (`idtipomoneda` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`cuentasxdocumento`
@@ -594,6 +559,8 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`cuentasxdocumento` (
   `monto` DECIMAL(14,6) NOT NULL COMMENT 'El monto que se afecta en este movimiento' ,
   `nlinea` SMALLINT(6) NULL DEFAULT NULL COMMENT 'Para ordenarlo en la interfaz grafica' ,
   PRIMARY KEY (`iddocumento`, `idcuenta`) ,
+  INDEX `fk_Documento_has_cuenta_cuenta1` (`idcuenta` ASC) ,
+  INDEX `fk_documentoxcuenta_documento1` (`iddocumento` ASC) ,
   CONSTRAINT `fk_documentoxcuenta_documento1`
     FOREIGN KEY (`iddocumento` )
     REFERENCES `esquipulasdb`.`documentos` (`iddocumento` )
@@ -608,10 +575,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
-CREATE INDEX `fk_Documento_has_cuenta_cuenta1` ON `esquipulasdb`.`cuentasxdocumento` (`idcuenta` ASC) ;
-
-CREATE INDEX `fk_documentoxcuenta_documento1` ON `esquipulasdb`.`cuentasxdocumento` (`iddocumento` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`docpadrehijos`
@@ -624,6 +587,8 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`docpadrehijos` (
   `monto` DECIMAL(12,4) UNSIGNED NULL DEFAULT NULL COMMENT 'El monto de esta relación' ,
   `nlinea` SMALLINT NULL COMMENT 'Numero de la linea para ordenarlo en la interfaz grafica\n' ,
   PRIMARY KEY USING BTREE (`idpadre`, `idhijo`) ,
+  INDEX `fk_documento_has_documento_documento1` USING BTREE (`idpadre` ASC) ,
+  INDEX `fk_documento_has_documento_documento2` USING BTREE (`idhijo` ASC) ,
   CONSTRAINT `fk_documento_has_documento_documento2`
     FOREIGN KEY (`idhijo` )
     REFERENCES `esquipulasdb`.`documentos` (`iddocumento` )
@@ -637,10 +602,6 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`docpadrehijos` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE INDEX `fk_documento_has_documento_documento1` USING BTREE ON `esquipulasdb`.`docpadrehijos` (`idpadre` ASC) ;
-
-CREATE INDEX `fk_documento_has_documento_documento2` USING BTREE ON `esquipulasdb`.`docpadrehijos` (`idhijo` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -660,6 +621,7 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`liquidaciones` (
   `segurototal` DECIMAL(12,4) NOT NULL COMMENT 'El seguro total' ,
   `otrosgastos` DECIMAL(12,4) NOT NULL COMMENT 'El total de otros gastos del documento' ,
   PRIMARY KEY (`iddocumento`) ,
+  INDEX `fk_liquidacion_documento1` (`iddocumento` ASC) ,
   CONSTRAINT `fk_liquidacion_documento1`
     FOREIGN KEY (`iddocumento` )
     REFERENCES `esquipulasdb`.`documentos` (`iddocumento` )
@@ -669,8 +631,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 251
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE INDEX `fk_liquidacion_documento1` ON `esquipulasdb`.`liquidaciones` (`iddocumento` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -702,6 +662,10 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`movimientoscaja` (
   `idbanco` INT(10) UNSIGNED NULL ,
   `nlinea` SMALLINT NULL COMMENT 'Numero de la linea para ordenarlo en la interfaz grafica\n' ,
   PRIMARY KEY (`iddocumento`, `idtipomovimiento`, `idtipomoneda`) ,
+  INDEX `fk_pago_tipopago1` (`idtipomovimiento` ASC) ,
+  INDEX `fk_pago_tipomoneda1` (`idtipomoneda` ASC) ,
+  INDEX `fk_pago_documento1` (`iddocumento` ASC) ,
+  INDEX `fk_movimientoscaja_bancos1` (`idbanco` ASC) ,
   CONSTRAINT `fk_pago_documento1`
     FOREIGN KEY (`iddocumento` )
     REFERENCES `esquipulasdb`.`documentos` (`iddocumento` )
@@ -725,14 +689,6 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`movimientoscaja` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE INDEX `fk_pago_tipopago1` ON `esquipulasdb`.`movimientoscaja` (`idtipomovimiento` ASC) ;
-
-CREATE INDEX `fk_pago_tipomoneda1` ON `esquipulasdb`.`movimientoscaja` (`idtipomoneda` ASC) ;
-
-CREATE INDEX `fk_pago_documento1` ON `esquipulasdb`.`movimientoscaja` (`iddocumento` ASC) ;
-
-CREATE INDEX `fk_movimientoscaja_bancos1` ON `esquipulasdb`.`movimientoscaja` (`idbanco` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -765,6 +721,9 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`personas` (
   `tipopersona` TINYINT NOT NULL COMMENT '1 cliente 2 proveedor, 3 vendedor, 4 usuario\n' ,
   `idcuenta` INT(10) UNSIGNED NULL COMMENT 'El id de la cuenta de esta persona' ,
   PRIMARY KEY (`idpersona`) ,
+  UNIQUE INDEX `nombre_unico` USING BTREE (`nombre` ASC, `tipopersona` ASC) ,
+  INDEX `fk_personas_cuentascontables1` (`idcuenta` ASC) ,
+  INDEX `fk_personas_tipospersona1` (`tipopersona` ASC) ,
   CONSTRAINT `fk_personas_cuentascontables1`
     FOREIGN KEY (`idcuenta` )
     REFERENCES `esquipulasdb`.`cuentascontables` (`idcuenta` )
@@ -779,12 +738,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 27
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE UNIQUE INDEX `nombre_unico` USING BTREE ON `esquipulasdb`.`personas` (`nombre` ASC, `tipopersona` ASC) ;
-
-CREATE INDEX `fk_personas_cuentascontables1` ON `esquipulasdb`.`personas` (`idcuenta` ASC) ;
-
-CREATE INDEX `fk_personas_tipospersona1` ON `esquipulasdb`.`personas` (`tipopersona` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -832,6 +785,7 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`usuarios` (
   `estado` TINYINT(1) NOT NULL COMMENT 'El estado de este usuario, habilitado o deshabilitado' ,
   `tipousuario` TINYINT(2) NOT NULL COMMENT 'El tipo de usuario' ,
   PRIMARY KEY (`idusuario`) ,
+  INDEX `fk_usuarios_personas1` (`idusuario` ASC) ,
   CONSTRAINT `fk_usuarios_personas1`
     FOREIGN KEY (`idusuario` )
     REFERENCES `esquipulasdb`.`personas` (`idpersona` )
@@ -840,8 +794,6 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`usuarios` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE INDEX `fk_usuarios_personas1` ON `esquipulasdb`.`usuarios` (`idusuario` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -855,6 +807,7 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`denominaciones` (
   `activo` TINYINT(1)  NOT NULL ,
   `idtipomoneda` TINYINT(3) UNSIGNED NOT NULL ,
   PRIMARY KEY (`iddenominacion`) ,
+  INDEX `fk_denominaciones_tiposmoneda1` (`idtipomoneda` ASC) ,
   CONSTRAINT `fk_denominaciones_tiposmoneda1`
     FOREIGN KEY (`idtipomoneda` )
     REFERENCES `esquipulasdb`.`tiposmoneda` (`idtipomoneda` )
@@ -863,8 +816,6 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`denominaciones` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
-
-CREATE INDEX `fk_denominaciones_tiposmoneda1` ON `esquipulasdb`.`denominaciones` (`idtipomoneda` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -878,6 +829,8 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`lineasarqueo` (
   `iddocumento` INT(10) UNSIGNED NOT NULL COMMENT 'El id del documento' ,
   `iddenominacion` INT NOT NULL ,
   PRIMARY KEY (`idlineaarqueo`) ,
+  INDEX `fk_lineasarqueo_documentos1` (`iddocumento` ASC) ,
+  INDEX `fk_lineasarqueo_denominaciones1` (`iddenominacion` ASC) ,
   CONSTRAINT `fk_lineasarqueo_documentos1`
     FOREIGN KEY (`iddocumento` )
     REFERENCES `esquipulasdb`.`documentos` (`iddocumento` )
@@ -892,10 +845,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
-CREATE INDEX `fk_lineasarqueo_documentos1` ON `esquipulasdb`.`lineasarqueo` (`iddocumento` ASC) ;
-
-CREATE INDEX `fk_lineasarqueo_denominaciones1` ON `esquipulasdb`.`lineasarqueo` (`iddenominacion` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`personasxdocumento`
@@ -907,6 +856,9 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`personasxdocumento` (
   `idpersona` INT(10) UNSIGNED NOT NULL ,
   `idaccion` TINYINT NOT NULL ,
   PRIMARY KEY (`iddocumento`, `idpersona`, `idaccion`) ,
+  INDEX `fk_documentos_has_personas_documentos1` (`iddocumento` ASC) ,
+  INDEX `fk_documentos_has_personas_personas1` (`idpersona` ASC) ,
+  INDEX `fk_personasxdocumento_tipospersona1` (`idaccion` ASC) ,
   CONSTRAINT `fk_documentos_has_personas_documentos1`
     FOREIGN KEY (`iddocumento` )
     REFERENCES `esquipulasdb`.`documentos` (`iddocumento` )
@@ -926,12 +878,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
-CREATE INDEX `fk_documentos_has_personas_documentos1` ON `esquipulasdb`.`personasxdocumento` (`iddocumento` ASC) ;
-
-CREATE INDEX `fk_documentos_has_personas_personas1` ON `esquipulasdb`.`personasxdocumento` (`idpersona` ASC) ;
-
-CREATE INDEX `fk_personasxdocumento_tipospersona1` ON `esquipulasdb`.`personasxdocumento` (`idaccion` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`usuarios_has_roles`
@@ -942,6 +888,8 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`usuarios_has_roles` (
   `idusuario` INT UNSIGNED NOT NULL ,
   `idrol` TINYINT UNSIGNED NOT NULL ,
   PRIMARY KEY (`idusuario`, `idrol`) ,
+  INDEX `fk_usuarios_has_roles_usuarios1` (`idusuario` ASC) ,
+  INDEX `fk_usuarios_has_roles_roles1` (`idrol` ASC) ,
   CONSTRAINT `fk_usuarios_has_roles_usuarios1`
     FOREIGN KEY (`idusuario` )
     REFERENCES `esquipulasdb`.`usuarios` (`idusuario` )
@@ -956,10 +904,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
-CREATE INDEX `fk_usuarios_has_roles_usuarios1` ON `esquipulasdb`.`usuarios_has_roles` (`idusuario` ASC) ;
-
-CREATE INDEX `fk_usuarios_has_roles_roles1` ON `esquipulasdb`.`usuarios_has_roles` (`idrol` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`conciliaciones`
@@ -973,6 +917,9 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`conciliaciones` (
   `fecha` DATE NOT NULL COMMENT 'Fecha para obtener mes y año de la conciliacion' ,
   `idcuentabancaria` INT(10) UNSIGNED NOT NULL COMMENT 'id de la cuenta que fue conciliada' ,
   PRIMARY KEY (`iddocumento`) ,
+  UNIQUE INDEX `fechacuenta` (`idcuentabancaria` ASC, `fecha` ASC) ,
+  INDEX `fk_conciliaciones_documentos1` USING BTREE (`iddocumento` ASC) ,
+  INDEX `fk_conciliaciones_cuentasbancarias1` USING BTREE (`idcuentabancaria` ASC) ,
   CONSTRAINT `fk_conciliaciones_documentos1`
     FOREIGN KEY (`iddocumento` )
     REFERENCES `esquipulasdb`.`documentos` (`iddocumento` )
@@ -987,12 +934,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
 
-CREATE UNIQUE INDEX `fechacuenta` ON `esquipulasdb`.`conciliaciones` (`idcuentabancaria` ASC, `fecha` ASC) ;
-
-CREATE INDEX `fk_conciliaciones_documentos1` USING BTREE ON `esquipulasdb`.`conciliaciones` (`iddocumento` ASC) ;
-
-CREATE INDEX `fk_conciliaciones_cuentasbancarias1` USING BTREE ON `esquipulasdb`.`conciliaciones` (`idcuentabancaria` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `esquipulasdb`.`creditos`
@@ -1005,14 +946,13 @@ CREATE  TABLE IF NOT EXISTS `esquipulasdb`.`creditos` (
   `tasamulta` DECIMAL(12,4) NOT NULL ,
   `pagado` TINYINT(1)  NOT NULL DEFAULT 0 ,
   PRIMARY KEY (`iddocumento`) ,
+  INDEX `fk_creditos_documentos1` (`iddocumento` ASC) ,
   CONSTRAINT `fk_creditos_documentos1`
     FOREIGN KEY (`iddocumento` )
     REFERENCES `esquipulasdb`.`documentos` (`iddocumento` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_creditos_documentos1` ON `esquipulasdb`.`creditos` (`iddocumento` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -2874,6 +2814,63 @@ BEGIN
 END 
 
 $$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure spSaldoCuenta
+-- -----------------------------------------------------
+
+USE `esquipulasdb`;
+DROP procedure IF EXISTS `esquipulasdb`.`spSaldoCuenta`;
+
+DELIMITER $$
+USE `esquipulasdb`$$
+CREATE PROCEDURE `spSaldoCuenta`(IN ID INT,IN FECHACONCI DATETIME)
+BEGIN
+
+      SELECT
+       
+       
+        LAST_DAY(FECHACONCI - INTERVAL 1 MONTH),
+        LAST_DAY(FECHACONCI)+ INTERVAL 1 DAY,
+         0
+      INTO
+        @fechapasada,
+        @fecha,
+        @id
+         ;
+
+
+      SELECT
+      SUM(monto)
+      FROM cuentasxdocumento cd
+      JOIN documentos d ON cd.iddocumento=d.iddocumento
+      WHERE idcuenta=ID
+      AND  d.fechacreacion <=@fechapasada
+      INTO @saldo;
+
+      IF @saldo IS NULL THEN
+          SET @saldo=0;
+      END IF;
+
+      SET @monto=@saldo;
+
+      SELECT
+        
+        SUM(cd.monto )
+        
+      FROM esquipulasdb.cuentasxdocumento cd
+      JOIN cuentascontables c ON cd.idcuenta=c.idcuenta AND c.idcuenta=ID
+      JOIN documentos d ON d.iddocumento  = cd.iddocumento
+      JOIN tiposdoc td ON td.idtipodoc = d.idtipodoc
+      LEFT JOIN tiposcambio tc ON tc.idtc = d.idtipocambio
+      LEFT JOIN docpadrehijos ph ON ph.idhijo=d.iddocumento
+      LEFT JOIN documentos padre ON padre.iddocumento=ph.idpadre AND padre.idtipodoc=24
+      WHERE d.fechacreacion > @fechapasada AND d.fechacreacion< @fecha
+      ORDER by d.fechacreacion
+       ;
+END$$
 
 DELIMITER ;
 

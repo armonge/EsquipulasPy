@@ -4,222 +4,163 @@ Created on 03/07/2010
 
 @author: Luis Carlos Mejia
 '''
-from PyQt4.QtCore import QAbstractTableModel, QVariant, QModelIndex, Qt
-from PyQt4.QtSql import QSqlQuery, QSqlDatabase
+from PyQt4.QtCore import  QVariant, QModelIndex, Qt, QDate
 from decimal import Decimal
-from document.conciliacion.lineaconciliacion import LineaConciliacion
+from lineaconciliacion import LineaConciliacion
 from utility import constantes
 from utility.moneyfmt import moneyfmt
-import logging
+from utility.docbase import DocumentBase
+from utility.decorators import return_decimal
+
 #from utility.constantes import IDCONCILIACION, IDDEPOSITO, IDNC, IDND, IDCHEQUE, IDERROR
 #CAMBIAR columncount()
 FECHA, CONCEPTO, DEBE, HABER, SALDO, CONCILIADO, DELBANCO, IDTIPODOC = range( 8 )
 FECHA, BANCO, CUENTABANCO, MONEDA, CUENTACONTABLE, SALDOBANCO, IDDOC = range( 7 )
-class ConciliacionModel( QAbstractTableModel ):
-    """
-    Esta clase es el modelo utilizado en la tabla en la que se editan los documentos
-    """
-    __documentType = str( constantes.IDCONCILIACION )
-    """
-    @cvar: El id del tipo de documento
-    @type: int
-    """
-    def __init__( self,usuarioId ):
+
+class ConciliacionModel( DocumentBase ):
+    __documentType = constantes.IDCONCILIACION
+
+    def __init__( self, saldo_inicial_libro, fecha, banco, cuenta_bancaria, id_cuenta_contable, codigo_cuenta_contable, moneda ):
+        """
+        @ivar saldo_inicial_libro: El saldo inicial del libro
+        @type saldo_inicial_libro: Decimal 
+        """
         super( ConciliacionModel, self ).__init__()
 
-        self.validError = "La conciliacion no es valida"
+        self._saldo_inicial_libro = saldo_inicial_libro
+
+        self.datetime = fecha
+        self._banco = banco
+        self._id_cuenta_contable = id_cuenta_contable
+        self._cuenta_bancaria = cuenta_bancaria
+        self._codigo_cuenta_contable = codigo_cuenta_contable
+        self._moneda = moneda
         self.lines = []
-        """
-        @ivar:Las lineas en esta conciliación
-        @type: LineaConciliacion[]
-        """
-        self.printedDocumentNumber = ""
-        """
-        @ivar:El numero de esta conciliación
-        @type:string
-        """
-        self.idCuentaContable = 0
-        """
-        @ivar: El  id de la cuenta contable relacionada a la cuenta bancaria
-        @type:int
-        """
-        self.saldoInicialLibro = Decimal( 0 )
-        """
-        @ivar: Saldo segun libro
-        @type:Decimal
-        """
+        self.saldo_inicial_banco = Decimal( 0 )
 
-        self.saldoInicialBanco = Decimal( 0 )
-        """
-        @ivar: Saldo segun banco
-        @type:Decimal
-        """
-        self.cheques = Decimal ( 0 )
-        """
-        @ivar: total de cheques en tránsito
-        @type:Decimal
-        """
-
-        self.notascredito = Decimal ( 0 )
-        """
-        @ivar: total de las notas de crédito que no habian sido registradas
-        @type:Decimal
-        """
-
-        self.notasdebito = Decimal ( 0 )
-        """
-        @ivar: total de las notas de débito que no habian sido registradas
-        @type:Decimal
-        """
-
-        self.depositos = Decimal( 0 )
-        """
-        @ivar: total de depositos en transito
-        @type:Decimal
-        """
-        self.cheques = Decimal( 0 )
-        """
-        @ivar: total de cheques en transito
-        @type:Decimal
-        """
-        self.notasdebito = Decimal( 0 )
-        """
-        @ivar: total de notas de debito
-        @type:Decimal
-        """
-        self.notascredito = Decimal( 0 )
-        """
-        @ivar: total de notas de credito
-        @type:Decimal
-        """
-        self.fechaConciliacion = None
-        """
-        @ivar: Fecha de la conciliacion
-        @type:QDate
-        """
-        self.uid = usuarioId
-        """
-        @ivar: El id del usuario que realiza esta conciliación
-        @type: int
-        """
 
     @property
     def valid( self ):
-        """
-        Un documento es valido cuando 
-        @rtype: bool
-        """
-        if int( self.idCuentaContable ) != 0 and int( self.uid ) != 0:
-            return True
-        return False
+        try:
+            if not self.id_cuenta_contable > 0:
+                raise UserWarning( "No ha elegido la cuenta bancaria" )
+            elif self.diferencia != 0:
+                raise UserWarning(u"Los saldos según banco y según libro no están conciliados")
+        except UserWarning as inst:
+            self._valid_error = unicode( inst )
+            return False
+        return True
 
     @property
-    def totalBanco( self ):
-        """
-        Es el saldo que la cuenta tiene al final del mes
-        @rtype: Decimal 
-        """
-        tmpsubtotal = self.saldoInicialLibro + self.notascredito + self.notasdebito
-        return tmpsubtotal if tmpsubtotal != 0 else Decimal( 0 )
+    def fecha_conciliacion( self ):
+        return QDate( self.datetime.year(), self.datetime.month(), self.datetime.daysInMonth() )
 
     @property
-    def totalLibro( self ):
-        """
-        El subtotal del documento, esto es el total antes de aplicarse el IVA
-        """
-        self.depositos = Decimal ( 0 )
-        self.cheques = Decimal ( 0 )
-        self.notascredito = Decimal ( 0 )
-        self.notasdebito = Decimal ( 0 )
-        for linea in self.lines:
-            if linea.conciliado:
-                if linea.delBanco == 0:
-                    if linea.idTipoDoc in ( constantes.IDCHEQUE, constantes.IDND, constantes.IDERROR ):
-                        self.cheques = self.cheques + linea.monto
-                    else:
-                        self.depositos = self.depositos + linea.monto
-                else:
-                    if linea.idTipoDoc in ( constantes.IDCHEQUE, constantes.IDND ):
-                        self.notasdebito = self.notasdebito + linea.monto
-                    else:
-                        self.notascredito = self.notascredito + linea.monto
+    def id_cuenta_contable( self ):
+        return self._id_cuenta_contable
 
+    @property
+    def cuenta_bancaria( self ):
+        return self._cuenta_bancaria
 
+    @property
+    def codigo_cuenta_contable( self ):
+        return self._codigo_cuenta_contable
 
-        tmpsubtotal = ( self.saldoInicialBanco ) + self.depositos + self.cheques
-        return tmpsubtotal if tmpsubtotal != 0 else Decimal( 0 )
+    @property
+    def cuenta_contable( self ):
+        return self._cuenta_contable
+
+    @property
+    def moneda( self ):
+        return self._moneda
+
+    @property
+    def banco( self ):
+        return self._banco
+
+    @property
+    @return_decimal
+    def saldo_inicial_libro( self ):
+        return self._saldo_inicial_libro
 
     @property
     def diferencia( self ):
-        """
-        Es el saldo que la cuenta tiene al final del mes
-        @rtype: Decimal 
-        """
-        return abs( self.totalBanco - self.totalLibro )
+        return abs( self.total_banco - self.total_libro )
 
-    def rowCount( self, _index = QModelIndex() ):
-        return len( self.lines )
+    @property
+    @return_decimal
+    def total_libro( self ):
+        return self.saldo_inicial_banco + self.total_depositos - self.total_cheques
+
+    @property
+    @return_decimal
+    def total_banco( self ):
+        return self.saldo_inicial_libro + self.total_nota_credito - self.total_nota_debito
+
+    @property
+    @return_decimal
+    def total_depositos( self ):
+        return sum( [ line.monto for line in self.lines if line.conciliado and line.tipo_doc == constantes.IDDEPOSITO ])
+
+    @property
+    @return_decimal
+    def total_cheques( self ):
+        return sum([ line.monto for line in self.lines if line.conciliado and line.tipo_doc == constantes.IDCHEQUE ])
+
+    @property
+    @return_decimal
+    def total_nota_credito( self ):
+        return sum( [ line.monto for line in self.lines if line.conciliado and line.tipo_doc == constantes.IDNOTACREDITO ])
+
+    @property
+    @return_decimal
+    def total_nota_debito( self ):
+        return sum([ line.monto for line in self.lines if line.conciliado and line.tipo_doc == constantes.IDND ])
 
     def columnCount( self, _index = QModelIndex() ):
         return 8
 
     def data( self, index, role = Qt.DisplayRole ):
-        """
-        Esta funcion redefine data en la clase base, es el metodo que se utiliza para mostrar los datos del modelo
-        """
-
-        if not index.isValid():
+        if not index.isValid() or not ( 0 <= index.row() < len( self.lines ) ):
             return None
 
-        column = index.column()
         line = self.lines[index.row()]
+        column = index.column()
 
-        if column == CONCILIADO and role in ( Qt.CheckStateRole, Qt.DisplayRole ) and index.row() > 0:
-            if role == Qt.CheckStateRole:
-                value = QVariant( Qt.Checked ) if self.lines[index.row()].conciliado == 1 else QVariant( Qt.Unchecked )
-                return value
-        elif role == Qt.EditRole:
-            if column in ( DEBE, HABER ):
-                return str( line.monto )
-            elif column == IDTIPODOC:
-                return str( line.idTipoDoc )
-            elif column == CONCILIADO:
-                return line.conciliado
-            elif column == DELBANCO:
-                return str( line.delBanco )
-
-        elif role == Qt.DisplayRole:
-            if column == HABER:
-                return moneyfmt( line.monto * -1, 4, "C$" ) if line.monto < 0 else ""
-            elif column == CONCEPTO:
-                return line.concepto
-            elif column == DEBE:
-                return moneyfmt( line.monto, 4, "C$" ) if line.monto > 0 else ""
-            elif column == SALDO:
-                if line.idDoc != 0 or index.row() == 0:
-                    return moneyfmt( line.saldo, 4, "C$" )
-            elif column == FECHA:
+        if role == Qt.DisplayRole:
+            if column == FECHA:
                 return line.fecha
+            elif column == CONCEPTO:
+                return line.descripcion
+            elif column == DEBE:
+                return moneyfmt( line.monto, 4, self.moneda ) if line.monto > 0 else None
+            elif column == HABER:
+                return moneyfmt( abs( line.monto ), 4, self.moneda ) if line.monto < 0 else None
+            elif column == SALDO:
+                return moneyfmt( line.saldo, 4, self.moneda )
             elif column == DELBANCO:
-                return "Si" if line.delBanco == 1 else "No"
+                return 'Si' if line.del_banco else 'No'
             elif column == IDTIPODOC:
-                return str( line.idTipoDoc )
+                return str( line.tipo_doc )
 
-        elif role == Qt.ToolTipRole:
-            if column == CONCEPTO:
-                return line.concepto2
+        elif role == Qt.EditRole:
+            if column == IDTIPODOC:
+                return str( line.tipo_doc )
+            elif column == DELBANCO:
+                return "1" if line.del_banco else "0"
+            elif column == CONCILIADO:
+                return "1" if line.conciliado else "0"
 
-        else:
-            return None
+        elif role == Qt.CheckStateRole and column == CONCILIADO and index.row() > 0:
+            return QVariant( Qt.Checked if line.conciliado else Qt.Unchecked )
 
-    def flags( self, index ):
+
+    def flags( self , index ):
         if not index.isValid():
             return Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
         if index.column() == CONCILIADO:
-
-            if self.lines[index.row()].delBanco == 1:
-                return Qt.ItemIsEnabled | Qt.ItemIsSelectable
             return Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable
         else:
             return Qt.ItemIsEnabled | Qt.ItemIsSelectable
@@ -229,36 +170,21 @@ class ConciliacionModel( QAbstractTableModel ):
             return False
         if index.column() == CONCILIADO and role == Qt.CheckStateRole:
             if index.row() > 0:
-                self.lines[index.row()].conciliado = 1 if data.toBool() else 0
+                self.lines[index.row()].conciliado = data.toBool()
                 self.dataChanged.emit( index, index )
+
             return True
-
-
-
-    def insertRows( self, position, rows = 1, _index = QModelIndex() ):
-        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
-        for row in range( rows ):
-            self.lines.insert( position + row, LineaConciliacion( self ) )
-        self.endInsertRows()
-#        self.dirty = True 
-        return True
-
-    def removeRows( self, position, rows = 1, index = QModelIndex() ):
-        self.beginRemoveRows( index, position, position + rows - 1 )
-        for _i in range( rows ):
-            self.lines.pop( position )
-        self.endRemoveRows()
 
     def headerData( self, section, orientation, role = Qt.DisplayRole ):
         if role == Qt.TextAlignmentRole:
             if orientation == Qt.Horizontal:
                 return int( Qt.AlignLeft | Qt.AlignVCenter )
             return int( Qt.AlignRight | Qt.AlignVCenter )
+
         if role != Qt.DisplayRole:
             return None
         if orientation == Qt.Horizontal:
-
-            if  section == FECHA:
+            if section == FECHA:
                 return "Fecha"
             elif section == CONCEPTO:
                 return "Concepto"
@@ -273,90 +199,26 @@ class ConciliacionModel( QAbstractTableModel ):
             elif section == DELBANCO:
                 return "Doc. Externo"
 
-    def save( self ):
+    def insertRows( self, position, rows = 1, _index = QModelIndex() ):
         """
-        Este metodo guarda el documento actual en la base de datos
+        Insertar filas en el modelo
+        @rtype: bool
+        @return: Si se pudo insertar la fila en el modelo
         """
 
-        query = QSqlQuery()
-        try:
-            if not self.valid:
-                raise Exception( "El documento a salvar no es valido" )
+        self.beginInsertRows( QModelIndex(), position, position + rows - 1 )
+        for row in range( rows ):
+            self.lines.insert( position + row, LineaConciliacion( self ) )
 
-
-            if not QSqlDatabase.database().transaction():
-                raise Exception( u"No se puedo comenzar la transacción" )
-#OBTENER NUMERO DE DOCUMENTO
-            query.prepare( """SELECT fnConsecutivo(:tipodoc,null)
-                ;
-                """ )
-            query.bindValue( ":idtipodoc", self.__documentType )
-            query.exec_()
-            query.first()
-            self.printedDocumentNumber = query.value( 0 ).toString()
-
-#INSERTAR DOCUMENTO
-            query.prepare( """
-            INSERT INTO documentos (ndocimpreso,fechacreacion,idtipodoc,total)
-            VALUES ( :ndocimpreso,NOW(),:idtipodoc,:total)
-            """ )
-            query.bindValue( ":ndocimpreso", self.printedDocumentNumber )
-            query.bindValue( ":idtipodoc", self.__documentType )
-            query.bindValue( ":total", self.totalBanco.to_eng_string() )
-
-            if not query.exec_():
-                raise Exception( "No se pudo insertar el documento" )
-
-            
-            insertedId = query.lastInsertId().toInt()[0]
-#INSERTAR RELACION CON EL USUARIO                        
-            query.prepare( """
-            INSERT INTO personasxdocumento(iddocumento,idpersona,idaccion)
-            VALUES (:iddoc,:idusuario,:accion)
-            """ )
-
-            query.bindValue( ":iddoc", insertedId )
-            query.bindValue( ":idusuario", self.uid )
-            query.bindValue( ":accion", constantes.AUTOR )
-
-            if not query.exec_():
-                raise Exception( "No se pudo insertar la relacion"\
-                                 + " con el usuario" )
-#INSERTAR DATOS CONCILIACION
-            query.prepare( """
-            INSERT INTO conciliaciones(iddocumento,saldobanco,saldolibro,fecha,
-            idcuentabancaria)
-            VALUES (:iddoc,:saldobanco,:saldolibro,LAST_DAY(:fecha),:idcuenta);
-            """ )
-            query.bindValue( ":iddoc", insertedId )
-#            print self.saldoInicialBanco.to_eng_string()
-            query.bindValue( ":saldobanco", str( self.saldoInicialBanco ) )
-            query.bindValue( ":saldolibro", str( self.saldoInicialLibro ) )
-            query.bindValue( ":fecha", self.fechaConciliacion.toString( "yyyyMMdd" ) )
-            query.bindValue( ":idcuenta", self.idCuentaContable )
-
-            if not query.exec_():
-                raise Exception( "No se pudo insertar la conciliacion" )
-#INSERTAR LAS LINEAS                        
-            for linea in self.lines:
-#                if linea.valid and linea.conciliado:
-                if linea.conciliado:
-                    linea.save( insertedId )
-
-
-            if not QSqlDatabase.database().commit():
-                raise Exception( "No se pudo hacer commit" )
-
-
-        except Exception as inst:
-            logging.error( unicode( inst ) )
-            logging.error( query.lastError().text() )
-            logging.error( QSqlDatabase.database().lastError().text())
-            QSqlDatabase.database().rollback()
-
-            return False
+        self.endInsertRows()
 
         return True
 
 
+    def removeRows( self, position, rows = 1, index = QModelIndex() ):
+        self.beginRemoveRows( index, position, position + rows - 1 )
 
+        for _i in range( rows ):
+            self.lines.pop( position )
+
+        self.endRemoveRows()

@@ -6,19 +6,42 @@ Created on 04/07/2010
 '''
 from decimal import Decimal
 from PyQt4.QtSql import QSqlQuery
-#FIXME: para que sirve parent aca???
-class LineaConciliacion( object ):
-    def __init__( self, parent ):
-        self.idDoc = 0
-        self.fecha = ""
-        self.concepto = ""
+from PyQt4.QtCore import QDate
+from utility.accountselector import AccountsSelectorModel
+
+class LineaConciliacion( AccountsSelectorModel ):
+    def __init__( self , del_banco = False, saldo_inicial = Decimal( 0 ), monto = Decimal( 0 ), fecha = QDate.currentDate(), tipo_doc = 0, id_documento = 0, descripcion = '' ):
+        super( LineaConciliacion, self ).__init__()
+
+        self.id_documento = id_documento
+
+        self.fecha = fecha
+        self.descripcion = descripcion
         self.monto = Decimal( 0 )
-        self.saldo = Decimal( 0 )
-        self.conciliado = 0
-        self.delBanco = 0
-        self.idTipoDoc = 0
-        self.concepto2 = ""
-        self.datos = None
+
+        self._saldo_inicial = saldo_inicial
+
+        self.conciliado = False
+        self.tipo_doc = tipo_doc
+        self.observaciones = ""
+
+        self._del_banco = del_banco
+
+        self.id_concepto = 0
+        self.concepto = ''
+
+
+
+    @property
+    def del_banco( self ):
+        return self._del_banco
+
+    @property
+    def saldo( self ):
+        return self._saldo_inicial + self.monto
+
+   
+
 
     @property
     def valid( self ):

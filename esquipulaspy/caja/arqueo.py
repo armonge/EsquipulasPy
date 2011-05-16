@@ -239,8 +239,7 @@ class FrmArqueo( Ui_frmArqueo, Base ):
             self.tablenavigation.setModel( self.navproxymodel )
             self.tablenavigation.setColumnHidden( IDDOCUMMENTO, True )
 
-            self.tabledetailsC.setColumnHidden( MONEDA, True )
-            self.tabledetailsD.setColumnHidden( MONEDA, True )
+
 
             self.tabledetailsC.setColumnHidden( IDDOCUMMENTOT, True )
             self.tabledetailsC.setColumnHidden( IDDENOMINACION, True )
@@ -251,7 +250,8 @@ class FrmArqueo( Ui_frmArqueo, Base ):
 
 
 
-
+        self.tabledetailsC.setColumnHidden( MONEDA, True )
+        self.tabledetailsD.setColumnHidden( MONEDA, True )
 
     def updateLabels( self ):
         self.lblCashC.setText( "%s / %s" % ( 

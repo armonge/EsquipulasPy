@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtCore import pyqtSlot, Qt, QDate, QDateTime
+from PyQt4.QtCore import pyqtSlot, Qt, QDate
 from PyQt4.QtGui import QMainWindow, QSortFilterProxyModel, QMessageBox, qApp
 from PyQt4.QtSql import QSqlQueryModel, QSqlQuery, QSqlDatabase
 from ui.Ui_cierre import Ui_frmCierreContable
@@ -38,12 +38,12 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
         self.lbltitulo.setText(self.lbltitulo.text()+" "+self.tipocierre)
         if self.tipocierre=="Anual":
             self.dtPicker.setDisplayFormat("yyyy")        
-    @pyqtSlot( QDateTime )
-    def on_dtPicker_dateTimeChanged( self, datetime ):
+    @pyqtSlot( QDate )
+    def on_dtPicker_dateChanged( self, date ):
         """
         Asignar la fecha al objeto __document
         """
-        self.fecha = datetime
+        self.fecha = date
         self.updateModels()
 
     def updateModels( self):
@@ -140,6 +140,7 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
             QMessageBox.warning( self,
              qApp.organizationName(),unicode(inst))
             return False   
+
     def validarCierreMensual(self):
         try:
             query=QSqlQuery()
@@ -185,10 +186,11 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
                 raise UserWarning( "No se pudo ejecutar la consulta para "\
                                    + "verificar si existe un cierre contable" )
             
-            'Verificar si se intenta cerrar el mes actual'
+            #El mes actual no se puede cerrar
+            
             hoy=QDate.currentDate()
-            if self.fecha.toString( "MM" )==hoy.toString("MM"):
-                raise Exception( "No se puede cerrar el mes en proceso" )    
+            if self.fecha.month()==hoy.month() and self.fecha.year() == hoy.year():
+                raise UserWarning( "No se puede cerrar el mes en proceso" )
     
             return True
         
@@ -197,7 +199,8 @@ class FrmCierreContable( Ui_frmCierreContable, QMainWindow ):
             self.toolBar.removeAction( self.actionSave )
             QMessageBox.warning( self,
              qApp.organizationName(),unicode(inst))
-            return False
+             
+        return False
                
     def save( self ):
         if QMessageBox.question( self, qApp.organizationName(),

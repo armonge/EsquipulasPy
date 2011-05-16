@@ -3,7 +3,7 @@
 '''
 Created on 19/05/2010
 
-@author: armonge
+@author: Luis Carlos Mejía García
 '''
 from PyQt4.QtGui import QStyledItemDelegate, QSpinBox
 from PyQt4.QtCore import Qt

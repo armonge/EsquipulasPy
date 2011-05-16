@@ -167,6 +167,11 @@ class AccountsSelectorModel( QAbstractTableModel ):
 
 class AccountsSelectorDelegate( SingleSelectionSearchPanelDelegate ):
     def __init__( self, query, showTable = False ):
+        '''
+        @var query: La consulta a partir de la cual se obtienen las cuentas contables para el modelo
+        @type query: string
+        @var showTable: 
+        '''
         super( AccountsSelectorDelegate, self ).__init__()
         self.showTable = showTable
         query.exec_()

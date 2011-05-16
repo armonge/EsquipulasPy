@@ -8,12 +8,9 @@ from setuptools import setup, find_packages
 
 
 OPTIONS = {}
-FILES = {}
+FILES = {'doc':['doc/manual/*']}
 
-if os.name == 'posix':
-    SCRIPTS = ['esquipulas-inventario', 'esquipulas-caja', 'esquipulas-contabilidad']
-elif os.name == 'nt':
-    SCRIPTS = []
+SCRIPTS = []
 
 setup( 
     name = 'misesquipulas',
@@ -22,10 +19,29 @@ setup(
     author = u'Andrés Reyes Monge, Luis Carlos Mejia Garcia,'\
     ' Marcos Antonio Moreno Gonzales',
     author_email = "armonge@gmail.com",
-    copyright = "GPL V3",
-    packages = find_packages(),
+    url = 'https://sourceforge.net/projects/misesquipulas/',
+    license = "GPL V3",
+    packages = [
+        'esquipulaspy',
+        'esquipulaspy.caja',
+        'esquipulaspy.contabilidad',
+        'esquipulaspy.document',
+        'esquipulaspy.inventario',
+        'esquipulaspy.ui',
+        'esquipulaspy.utility',
+    ],
+    package_dir={'esquipulaspy': 'esquipulaspy'},
+    package_data={'esquipulaspy': ['translations/*.qm']},
     scripts = SCRIPTS,
-    data_files = FILES,
     options = OPTIONS,
+    classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: X11 Applications :: Qt",
+    "License :: OSI Approved :: GNU General Public License (GPL)"
+    "Natural Language :: Spanish",
+    "Programming Language :: Python :: 2.7",
+    "Topic :: Office/Business",
+    ],
+
  )
 
