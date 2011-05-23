@@ -2,7 +2,7 @@
 """
 Module implementing frmConciliacion.
 """
-from PyQt4.QtCore import pyqtSlot, QModelIndex, Qt, QTimer, QDate, QVariant
+from PyQt4.QtCore import pyqtSlot,QDateTime, QModelIndex, Qt, QTimer, QDate, QVariant
 from PyQt4.QtGui import QSortFilterProxyModel, QDataWidgetMapper, QDialog, \
     QTableView, QDialogButtonBox, QVBoxLayout, QAbstractItemView, QFormLayout, \
     QLineEdit, QDateTimeEdit, QMessageBox, qApp
@@ -11,17 +11,14 @@ from PyQt4.QtSql import QSqlQueryModel, QSqlDatabase, QSqlQuery
 from decimal import Decimal
 from document.conciliacion import ConciliacionModel, LineaConciliacion
 from ui.Ui_conciliacion import Ui_frmConciliacion
+from ui.Ui_dlgmovimientosbancarios import Ui_dlgMovimientosBancarios
+from document.movimientosbancarios import MovimientosBancariosModel
+from utility.accountselector import AccountsSelectorDelegate
 from utility.base import Base
 from utility import constantes
 from utility.decorators import if_edit_model
 from utility.moneyfmt import moneyfmt
 import logging
-
-
-
-
-
-
 
 FECHA, CONCEPTO, DEBE, HABER, SALDO, CONCILIADO, DELBANCO, \
 IDTIPODOC = range( 8 )
@@ -38,7 +35,8 @@ class FrmConciliacion( Base , Ui_frmConciliacion ):
 
         super( FrmConciliacion, self ).__init__( parent )
 
-
+        self.user = parent.user
+        
         self.editmodel = None
 
         self.status = True
@@ -244,6 +242,65 @@ class FrmConciliacion( Base , Ui_frmConciliacion ):
             self.editmodel.saldo_inicial_banco = Decimal( str( value ) )
             self.updateLabels()
 
+    @pyqtSlot(  )
+    def on_btnAdd_clicked(self):
+     
+                
+        if not self.database.isOpen():
+            if not self.database.open():
+                raise UserWarning( u"No se pudo establecer la conexión con "\
+                                   + "la base de datos" )
+        try:
+            mov = dlgmovimientosbancarios(self)
+#            Rellenar el combobox de las CONCEPTOS
+
+
+            if mov.conceptosModel.rowCount() == 0:
+                raise UserWarning( u"No existen conceptos en la base de "\
+                                   + "datos que justifiquen la elaboración de Notas de Crédito o Débito" )
+            
+            mov.exec_()
+        except UserWarning as inst:
+            QMessageBox.critical( self, qApp.organizationName(), unicode( inst ) )
+            logging.error( unicode( inst ) )
+            logging.error( mov.conceptosModel.query().lastError().text() )
+#        except Exception as inst:
+#            QMessageBox.critical( self, qApp.organizationName(),
+#                                   "Hubo un problema al tratar de crear"\
+#                                   + " el nuevo pago" )
+#            logging.critical( unicode( inst ) )
+#            logging.error( query.lastError().text() )
+        finally:
+            if QSqlDatabase.database().isOpen():
+                QSqlDatabase.database().close()
+
+
+        
+        #        notas = dlgMovimientosBancarios( self )
+#        notas.setWindowModality( Qt.WindowModal )
+#        if notas.exec_() == QDialog.Accepted:
+#            row = self.editmodel.rowCount()
+#
+#            datosDoc = notas.editmodel.datos
+#
+#            linea = LineaConciliacion( self.editmodel )
+#            linea.fecha = datosDoc.dateTime.toString( "dd/MM/yy" )
+#            linea.monto = datosDoc.total
+#            linea.idTipoDoc = datosDoc.idTipoDoc
+#
+#            linea.concepto = notas.editmodel.codigoDoc + " " + linea.fecha
+#            linea.saldo = self.editmodel.lines[row - 1].saldo + linea.monto
+#            linea.conciliado = 1
+#            linea.delBanco = 1
+#            linea.concepto2 = notas.editmodel.descripcionDoc + " " + linea.fecha
+#            linea.idDoc = 0
+#            linea.datos = datosDoc
+#            self.editmodel.insertRows( row )
+#            self.editmodel.lines[row] = linea
+#            index = self.editmodel.index( row, CONCILIADO )
+#            self.editmodel.dataChanged.emit( index, index )
+        
+
 
     def setControls( self, status ):
         """
@@ -424,6 +481,7 @@ class FrmConciliacion( Base , Ui_frmConciliacion ):
     @pyqtSlot( bool )
     @if_edit_model
     def on_btnremove_clicked( self, _checked ):
+
         filas = []
         for index in self.tabledetails.selectedIndexes():
             pos = index.row()
@@ -438,8 +496,103 @@ class FrmConciliacion( Base , Ui_frmConciliacion ):
             self.updateLabels()
 
 
+class dlgmovimientosbancarios (QDialog,Ui_dlgMovimientosBancarios):
+    def __init__( self, parent  ):
+        super( dlgmovimientosbancarios, self ).__init__( parent ) 
+        self.conceptosModel = QSqlQueryModel() 
+        self.setupUi( self )
+        self.database = QSqlDatabase.database()
+        self.proxymodel = QSortFilterProxyModel()
+        self.editmodel = MovimientosBancariosModel()
+        
+        
+        fecha = self.parent().editmodel.fechaConciliacion
+        self.dtPicker.setMaximumDate(fecha)
+        self.dtPicker.setMinimumDate(QDate(fecha.year(),fecha.month(),1))
+        self.cbtipodoc.addItem(u"Nota de Crédito")
+        self.cbtipodoc.addItem(u"Nota de Débito")
+        
+        self.conceptosModel.setQuery( """
+               SELECT idconcepto, descripcion,idtipodoc FROM conceptos c WHERE idtipodoc in (%d,%d );
+            """ %(constantes.IDNOTACREDITO,constantes.IDND) )
+        
+        
+        self.proxymodel.setSourceModel(self.conceptosModel)
+        self.proxymodel.setFilterKeyColumn(2)
+        self.proxymodel.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        self.cbconcepto.setModel(self.proxymodel)
+        self.cbconcepto.setModelColumn(1)
+        self.buttonBox.rejected.connect( self.reject )
+        self.buttonBox.accepted.connect( self.aceptar )
+        
+        self.editmodel.tipoDoc = constantes.IDDEPOSITO 
 
-#                
+        
+        self.cuentasDelegate = AccountsSelectorDelegate( QSqlQuery( """
+            SELECT c.idcuenta, c.codigo, c.descripcion
+            FROM cuentascontables c
+            JOIN cuentasxdocumento cd ON c.idcuenta = cd.idcuenta
+            WHERE c.idcuenta in (%d,%d,%d)
+            """ %(constantes.CAJAGENERAL,constantes.CAJACHICA, constantes.CAPITAL) ) )
+
+
+        self.editmodel.insertRow( 1 )
+        self.editmodel.lines[0].itemId = parent.editmodel.idCuentaContable
+        self.editmodel.lines[0].code = parent.txtcuenta.text()
+        self.editmodel.lines[0].name = parent.txtcuenta.toolTip()
+        
+
+        self.editmodel.insertRow( 1 )
+        self.editmodel.fechaDoc = QDateTime.currentDateTime()
+        self.editmodel.autorId = parent.user.uid
+            #        Crea un edit delegate para las cuentas
+        self.tabledetails.setItemDelegate( self.cuentasDelegate )
+        self.tabledetails.setModel( self.editmodel )
+        self.tabledetails.setEditTriggers( 
+                          QAbstractItemView.EditKeyPressed |
+                          QAbstractItemView.AnyKeyPressed |
+                          QAbstractItemView.DoubleClicked )
+
+        self.tabledetails.setColumnHidden(0,False)
+        
+        
+    
+    @pyqtSlot( int )
+    def on_cbtipodoc_currentIndexChanged(self,index):
+        self.editmodel.tipoDoc = constantes.IDNOTACREDITO if self.cbtipodoc.currentIndex()== 0 else constantes.IDND
+        self.proxymodel.setFilterRegExp("%d"%self.editmodel.tipoDoc)
+
+    @pyqtSlot( int )
+    def on_cbconcepto_currentIndexChanged(self,index):
+        self.editmodel.conceptoId =self.conceptosModel.record( index ).value( "idconcepto" ).toInt()[0]
+        
+     
+    def aceptar(self):
+        """
+    Guardar el documento actual
+        """
+        self.editmodel.totalDoc =    self.editmodel.lines[0].amount 
+        self.editmodel.tipoDoc = constantes.IDNOTACREDITO if self.cbtipodoc.currentIndex()== 0 else constantes.IDND
+        if self.editmodel.valid:
+#            Base.save( self, True )
+            if QMessageBox.question( self,
+                                     qApp.organizationName(),
+                                      u"¿Desea guardar el documento?",
+                                       QMessageBox.Yes | QMessageBox.No ) == QMessageBox.Yes:
+                if self.editmodel.save():
+                    QMessageBox.information( self,
+                                             qApp.organizationName(),
+                         u"El documento se ha guardado con éxito" )
+                else:
+                    QMessageBox.critical( self,
+                         qApp.organizationName(),
+                        "Ha ocurrido un error al guardar el documento" )
+            self.accept()
+
+            
+        else:
+            QMessageBox.information(None, "Datos Incompletos", self.editmodel.mensajeError)
+
 
 
 #************************************************
